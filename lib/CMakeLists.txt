@@ -46,7 +46,7 @@ set(QwertycoinFramework_LIBS
     QwertycoinFramework_Global
     QwertycoinFramework_Http
     QwertycoinFramework_JsonRpcServer
-    QwertycoinFramework_Logger
+    # QwertycoinFramework_Logger
     QwertycoinFramework_Logging
     QwertycoinFramework_Mnemonics
     QwertycoinFramework_Nigel
@@ -381,7 +381,7 @@ set(QwertycoinFramework_Errors_LIBS
 
 add_library(QwertycoinFramework_Errors STATIC ${QwertycoinFramework_Errors_SOURCES})
 add_library(QwertycoinFramework::Errors ALIAS QwertycoinFramework_Errors)
-# target_include_directories(QwertycoinFramework_Errors PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
+target_include_directories(QwertycoinFramework_Errors PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
 target_link_libraries(QwertycoinFramework_CryptoNoteProtocol PRIVATE ${QwertycoinFramework_Errors_LIBS})
 
 # QwertycoinFramework::Global
@@ -433,7 +433,7 @@ target_include_directories(QwertycoinFramework_JsonRpcServer PRIVATE ${Qwertycoi
 target_link_libraries(QwertycoinFramework_JsonRpcServer PRIVATE ${QwertycoinFramework_JsonRpcServer_LIBS})
 
 # QwertycoinFramework::Logger
-
+#[[
 set(QwertycoinFramework_Logger_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Logger/Logger.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Logger/Logger.h"
@@ -441,7 +441,7 @@ set(QwertycoinFramework_Logger_SOURCES
 
 add_library(QwertycoinFramework_Logger STATIC ${QwertycoinFramework_Logger_SOURCES})
 add_library(QwertycoinFramework::Logger ALIAS QwertycoinFramework_Logger)
-
+]]
 # QwertycoinFramework::Logging
 
 set(QwertycoinFramework_Logging_SOURCES
@@ -658,7 +658,7 @@ set(QwertycoinFramework_SubWallets_LIBS
     QwertycoinFramework::Crypto
     QwertycoinFramework::Errors
     QwertycoinFramework::Global
-    QwertycoinFramework::Logger
+    # QwertycoinFramework::Logger
     QwertycoinFramework::Logging
     QwertycoinFramework::Utilities
     QwertycoinFramework::WalletBackend
@@ -950,7 +950,7 @@ set(QwertycoinFramework_WalletBackend_LIBS
     cryptopp-static
     QwertycoinFramework::Common
     QwertycoinFramework::Global
-    QwertycoinFramework::Logger
+    # QwertycoinFramework::Logger
     QwertycoinFramework::Mnemonics
     QwertycoinFramework::Nigel
     QwertycoinFramework::Serialization
@@ -1026,7 +1026,7 @@ install(TARGETS
             QwertycoinFramework_Global
             QwertycoinFramework_Http
             QwertycoinFramework_JsonRpcServer
-            QwertycoinFramework_Logger
+            # QwertycoinFramework_Logger
             QwertycoinFramework_Logging
             QwertycoinFramework_Mnemonics
             QwertycoinFramework_Nigel

@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "IBlockchainCacheFactory.h"
+#include <CryptoNoteCore/Blockchain/IBlockchainCacheFactory.h>
 #include <Logging/LoggerMessage.h>
 
 namespace CryptoNote {

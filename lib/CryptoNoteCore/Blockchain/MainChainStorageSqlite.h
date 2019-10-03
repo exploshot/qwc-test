@@ -4,11 +4,9 @@
 
 #pragma once
 
-#include "IMainChainStorage.h"
-
-#include "Currency.h"
-
-#include "sqlite3.h"
+#include <CryptoNoteCore/Blockchain/IMainChainStorage.h>
+#include <CryptoNoteCore/Currency.h>
+#include <sqlite3.h>
 
 namespace CryptoNote
 {

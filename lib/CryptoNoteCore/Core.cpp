@@ -18,18 +18,18 @@
 
 #include <Global/Constants.h>
 
-#include <CryptoNoteCore/BlockchainCache.h>
-#include <CryptoNoteCore/BlockchainStorage.h>
-#include <CryptoNoteCore/BlockchainUtils.h>
+#include <CryptoNoteCore/Blockchain/BlockchainCache.h>
+#include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
+#include <CryptoNoteCore/Blockchain/BlockchainUtils.h>
+#include <CryptoNoteCore/Blockchain/MemoryBlockchainStorage.h>
 #include <CryptoNoteCore/Core.h>
 #include <CryptoNoteCore/CoreErrors.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 #include <CryptoNoteCore/ITimeProvider.h>
-#include <CryptoNoteCore/MemoryBlockchainStorage.h>
 #include <CryptoNoteCore/Mixins.h>
-#include <CryptoNoteCore/TransactionApi.h>
-#include <CryptoNoteCore/TransactionPool.h>
-#include <CryptoNoteCore/TransactionPoolCleaner.h>
+#include <CryptoNoteCore/Transactions/TransactionApi.h>
+#include <CryptoNoteCore/Transactions/TransactionPool.h>
+#include <CryptoNoteCore/Transactions/TransactionPoolCleaner.h>
 #include <CryptoNoteCore/UpgradeManager.h>
 
 #include <CryptoNoteProtocol/CryptoNoteProtocolHandlerCommon.h>

@@ -17,7 +17,7 @@
 
 #include "BlockchainWriteBatch.h"
 
-#include "DBUtils.h"
+#include <CryptoNoteCore/Database/DBUtils.h>
 
 using namespace CryptoNote;
 

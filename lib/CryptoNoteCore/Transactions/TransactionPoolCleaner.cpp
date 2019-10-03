@@ -5,10 +5,10 @@
 // Please see the included LICENSE file for more information.
 
 #include "TransactionPoolCleaner.h"
-#include "Core.h"
-#include "Mixins.h"
+#include <CryptoNoteCore/Core.h>
+#include <CryptoNoteCore/Mixins.h>
 
-#include "Common/StringTools.h"
+#include <Common/StringTools.h>
 
 #include <System/InterruptedException.h>
 #include <System/Timer.h>

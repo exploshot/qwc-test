@@ -5,9 +5,9 @@
 
 #include "TransactionPool.h"
 
-#include "Common/int-util.h"
-#include "CryptoNoteBasicImpl.h"
-#include "Common/TransactionExtra.h"
+#include <Common/int-util.h>
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+#include <Common/TransactionExtra.h>
 
 namespace CryptoNote {
 

@@ -19,14 +19,14 @@
 
 #include <vector>
 
-#include "CachedTransaction.h"
-#include "CryptoNote.h"
-#include "Common/CryptoNoteTools.h"
+#include <CryptoNoteCore/Transactions/CachedTransaction.h>
+#include <CryptoNote.h>
+#include <Common/CryptoNoteTools.h>
 
 namespace CryptoNote {
-namespace Utils {
+    namespace Utils {
 
-bool restoreCachedTransactions(const std::vector<BinaryArray>& binaryTransactions, std::vector<CachedTransaction>& transactions);
+        bool restoreCachedTransactions(const std::vector<BinaryArray>& binaryTransactions, std::vector<CachedTransaction>& transactions);
 
-} //namespace Utils
+    } //namespace Utils
 } //namespace CryptoNote

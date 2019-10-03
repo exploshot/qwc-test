@@ -19,10 +19,10 @@
 
 #include <boost/functional/hash.hpp>
 
-#include "IReadBatch.h"
-#include "CryptoNote.h"
-#include "BlockchainCache.h"
-#include "DatabaseCacheData.h"
+#include <IReadBatch.h>
+#include <CryptoNote.h>
+#include <CryptoNoteCore/Blockchain/BlockchainCache.h>
+#include <CryptoNoteCore/Database/DatabaseCacheData.h>
 
 namespace std {
 template <> struct hash<std::pair<CryptoNote::IBlockchainCache::Amount, uint32_t>> {

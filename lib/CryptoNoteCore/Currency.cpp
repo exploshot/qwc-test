@@ -6,7 +6,7 @@
 // Please see the included LICENSE file for more information.
 
 /////////////////////
-#include "Currency.h"
+#include <CryptoNoteCore/Currency.h>
 /////////////////////
 
 #include <boost/algorithm/string/trim.hpp>

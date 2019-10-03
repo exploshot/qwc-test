@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <CryptoNoteCore/BlockchainCache.h>
+#include <CryptoNoteCore/Blockchain/BlockchainCache.h>
 #include <map>
 
 namespace CryptoNote {

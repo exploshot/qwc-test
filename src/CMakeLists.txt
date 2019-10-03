@@ -41,7 +41,7 @@ set(QwertycoinTools_Daemon_LIBS
     QwertycoinFramework::CryptoNoteCore
     QwertycoinFramework::Errors
     QwertycoinFramework::Global
-    QwertycoinFramework::Logger
+    # QwertycoinFramework::Logger
     QwertycoinFramework::P2p
     QwertycoinFramework::Rpc
     QwertycoinFramework::Serialization

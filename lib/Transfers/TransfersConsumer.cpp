@@ -11,16 +11,16 @@
 #include <numeric>
 #include <future>
 
-#include "CommonTypes.h"
-#include "Common/BlockingQueue.h"
-#include "CryptoNoteCore/CryptoNoteBasicImpl.h"
-#include "CryptoNoteCore/CryptoNoteFormatUtils.h"
-#include "CryptoNoteCore/TransactionApi.h"
+#include <Transfers/CommonTypes.h>
+#include <Common/BlockingQueue.h>
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+#include <CryptoNoteCore/CryptoNoteFormatUtils.h>
+#include <CryptoNoteCore/Transactions/TransactionApi.h>
 
 #include <Global/Constants.h>
 
-#include "WalletGreenTypes.h"
-#include "INode.h"
+#include <WalletGreenTypes.h>
+#include <INode.h>
 #include <future>
 
 using namespace Crypto;

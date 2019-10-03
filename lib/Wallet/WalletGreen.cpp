@@ -32,7 +32,7 @@
 #include <CryptoNoteCore/Currency.h>
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
-#include <CryptoNoteCore/TransactionApi.h>
+#include <CryptoNoteCore/Transactions/TransactionApi.h>
 
 #include <ctime>
 

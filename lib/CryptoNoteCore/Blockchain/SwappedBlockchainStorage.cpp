@@ -19,10 +19,10 @@
 
 #include <cassert>
 
-#include "Serialization/CryptoNoteSerialization.h"
-#include "ICoreDefinitions.h"
-#include "MemoryBlockchainStorage.h"
-#include "Serialization/SerializationOverloads.h"
+#include <Serialization/CryptoNoteSerialization.h>
+#include <CryptoNoteCore/ICoreDefinitions.h>
+#include <CryptoNoteCore/Blockchain/MemoryBlockchainStorage.h>
+#include <Serialization/SerializationOverloads.h>
 
 namespace CryptoNote {
 

@@ -19,7 +19,7 @@
 
 #include <boost/range/combine.hpp>
 
-#include "DBUtils.h"
+#include <CryptoNoteCore/Database/DBUtils.h>
 
 #include <Global/Constants.h>
 

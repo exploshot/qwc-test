@@ -17,10 +17,10 @@
 
 #include "DatabaseBlockchainCacheFactory.h"
 
-#include "IDataBase.h"
+#include <IDataBase.h>
 
-#include "BlockchainCache.h"
-#include "DatabaseBlockchainCache.h"
+#include <CryptoNoteCore/Blockchain/BlockchainCache.h>
+#include <CryptoNoteCore/Database/DatabaseBlockchainCache.h>
 
 namespace CryptoNote {
 

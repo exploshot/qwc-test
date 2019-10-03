@@ -19,10 +19,10 @@
 
 #include <unordered_set>
 
-#include "Crypto/crypto.h"
-#include "CryptoNoteCore/Account.h"
-#include "CryptoNoteFormatUtils.h"
-#include "Common/TransactionExtra.h"
+#include <Crypto/crypto.h>
+#include <CryptoNoteCore/Account.h>
+#include <CryptoNoteCore/CryptoNoteFormatUtils.h>
+#include <Common/TransactionExtra.h>
 
 using namespace Crypto;
 

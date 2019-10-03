@@ -31,7 +31,7 @@
 
 #include <iomanip>
 
-#include "JsonHelper.h"
+#include <JsonHelper.h>
 
 #include <Logger/Logger.h>
 #include <Logging/LoggerManager.h>
@@ -40,8 +40,8 @@
 
 #include <NodeRpcProxy/NodeRpcProxy.h>
 
-#include "rapidjson/writer.h"
-#include "rapidjson/stringbuffer.h"
+#include <rapidjson/writer.h>
+#include <rapidjson/stringbuffer.h>
 
 #include <Utilities/Addresses.h>
 #include <Utilities/Utilities.h>
@@ -204,6 +204,7 @@ std::tuple<Error, std::shared_ptr<WalletBackend>> WalletBackend::importWalletFro
     const bool daemonSSL,
     const unsigned int syncThreadCount)
 {
+    
     /* Check the filename is valid */
     if (Error error = checkNewWalletFilename(filename); error != SUCCESS)
     {
@@ -211,7 +212,8 @@ std::tuple<Error, std::shared_ptr<WalletBackend>> WalletBackend::importWalletFro
     }
 
     /* Convert the mnemonic into a private spend key */
-    auto [mnemonicError, privateSpendKey] = Mnemonics::MnemonicToPrivateKey(mnemonicSeed, "English");
+    std::string defaultLang = "English";
+    auto [mnemonicError, privateSpendKey] = Mnemonics::MnemonicToPrivateKey(mnemonicSeed, defaultLang);
 
     if (mnemonicError)
     {

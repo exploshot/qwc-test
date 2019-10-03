@@ -17,11 +17,11 @@
 
 #pragma once
 
-#include "IWriteBatch.h"
+#include <IWriteBatch.h>
 
-#include "BlockchainCache.h"
-#include "CryptoNote.h"
-#include "DatabaseCacheData.h"
+#include <CryptoNoteCore/Blockchain/BlockchainCache.h>
+#include <CryptoNote.h>
+#include <CryptoNoteCore/Database/DatabaseCacheData.h>
 
 namespace CryptoNote {
 

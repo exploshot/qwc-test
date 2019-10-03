@@ -8,8 +8,8 @@
 
 #include <Global/CryptoNoteConfig.h>
 
-#include <CryptoNoteCore/CachedTransaction.h>
-#include <CryptoNoteCore/TransactionApi.h>
+#include <CryptoNoteCore/Transactions/CachedTransaction.h>
+#include <CryptoNoteCore/Transactions/TransactionApi.h>
 
 #include <Utilities/Mixins.h>
 

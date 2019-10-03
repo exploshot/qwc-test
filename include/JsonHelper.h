@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "rapidjson/document.h"
+#include <rapidjson/document.h>
 
 /* Yikes! */
 typedef rapidjson::GenericObject<true, rapidjson::GenericValue<rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>>> JSONObject;

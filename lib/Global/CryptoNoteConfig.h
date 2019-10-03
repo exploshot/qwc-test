@@ -109,8 +109,8 @@ namespace CryptoNote {
 		const uint64_t MAX_EXTRA_SIZE_V2_HEIGHT = 280000; //height at which tx extra is limited to 10240
 
 		/* For new projects forked from this code base, the values immediately below
-   should be changed to 0 to prevent issues with transaction processing
-   and other possible unexpected behavior */
+   		   should be changed to 0 to prevent issues with transaction processing
+   		   and other possible unexpected behavior */
 		const uint64_t TRANSACTION_SIGNATURE_COUNT_VALIDATION_HEIGHT = 280000; //UPGRADE HEIGHT
 		const uint64_t BLOCK_BLOB_SHUFFLE_CHECK_HEIGHT = 280000; //UPGRADE HEIGHT
         const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 280000; //UPGRADE HEIGHT

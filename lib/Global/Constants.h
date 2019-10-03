@@ -5,8 +5,8 @@
 #pragma once
 
 #include <CryptoTypes.h>
-
 #include <vector>
+#include <Global/CryptoNoteConfig.h>
 
 /* You can change things in this file, but you probably shouldn't. Leastways,
    without knowing what you're doing. */
@@ -112,7 +112,8 @@ namespace Constants
 /*!
     The prefix your coins address starts with
 */
-        const uint64_t addressPrefix = 0x14820c;
+        // const uint64_t addressPrefix = 0x14820c;
+        const std::string_view addressPrefix = "QWC";
 
 /*!
     Your coins 'Ticker', e.g. Monero = XMR, Bitcoin = BTC

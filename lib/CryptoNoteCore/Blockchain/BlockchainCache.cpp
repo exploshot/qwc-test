@@ -12,19 +12,19 @@
 
 #include <boost/functional/hash.hpp>
 
-#include "Common/StdInputStream.h"
-#include "Common/StdOutputStream.h"
-#include "Common/ShuffleGenerator.h"
+#include <Common/StdInputStream.h>
+#include <Common/StdOutputStream.h>
+#include <Common/ShuffleGenerator.h>
 
-#include "CryptoNoteCore/CryptoNoteBasicImpl.h"
-#include "Common/CryptoNoteTools.h"
-#include "CryptoNoteCore/BlockchainStorage.h"
-#include "Common/TransactionExtra.h"
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+#include <Common/CryptoNoteTools.h>
+#include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
+#include <Common/TransactionExtra.h>
 
-#include "Serialization/CryptoNoteSerialization.h"
-#include "Serialization/SerializationOverloads.h"
+#include <Serialization/CryptoNoteSerialization.h>
+#include <Serialization/SerializationOverloads.h>
 
-#include "TransactionValidatiorState.h"
+#include <CryptoNoteCore/Transactions/TransactionValidatiorState.h>
 
 namespace CryptoNote {
 

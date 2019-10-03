@@ -5,7 +5,7 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include <CryptoNoteCore/DatabaseBlockchainCache.h>
+#include <CryptoNoteCore/Database/DatabaseBlockchainCache.h>
 
 #include <ctime>
 #include <cstdlib>
@@ -14,11 +14,11 @@
 
 #include <Common/ShuffleGenerator.h>
 
-#include "BlockchainUtils.h"
+#include <CryptoNoteCore/Blockchain/BlockchainUtils.h>
 
-#include "Crypto/hash.h"
+#include <Crypto/hash.h>
 
-#include <CryptoNoteCore/BlockchainStorage.h>
+#include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 
 #include <Common/TransactionExtra.h>

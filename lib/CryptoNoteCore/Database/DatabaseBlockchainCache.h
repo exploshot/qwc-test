@@ -17,15 +17,15 @@
 
 #pragma once
 
-#include "Common/StringView.h"
-#include "Currency.h"
-#include "IBlockchainCache.h"
-#include "CryptoNoteCore/UpgradeManager.h"
+#include <Common/StringView.h>
+#include <CryptoNoteCore/Currency.h>
+#include <CryptoNoteCore/Blockchain/IBlockchainCache.h>
+#include <CryptoNoteCore/Blockchain/IBlockchainCacheFactory.h>
+#include <CryptoNoteCore/Blockchain/BlockchainReadBatch.h>
+#include <CryptoNoteCore/Blockchain/BlockchainWriteBatch.h>
+#include <CryptoNoteCore/UpgradeManager.h>
 #include <IDataBase.h>
-#include <CryptoNoteCore/BlockchainReadBatch.h>
-#include <CryptoNoteCore/BlockchainWriteBatch.h>
-#include <CryptoNoteCore/DatabaseCacheData.h>
-#include <CryptoNoteCore/IBlockchainCacheFactory.h>
+#include <CryptoNoteCore/Database/DatabaseCacheData.h>
 
 namespace CryptoNote {
 

@@ -19,17 +19,17 @@
 #include <System/Event.h>
 #include <System/EventLock.h>
 #include <System/Timer.h>
-#include <CryptoNoteCore/TransactionApi.h>
+#include <CryptoNoteCore/Transactions/TransactionApi.h>
 
-#include "Common/StringTools.h"
-#include "CryptoNoteCore/CryptoNoteBasicImpl.h"
-#include "Common/CryptoNoteTools.h"
+#include <Common/StringTools.h>
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+#include <Common/CryptoNoteTools.h>
 
 #include <Logging/DummyLogger.h>
 
-#include "Rpc/CoreRpcServerCommandsDefinitions.h"
-#include "Rpc/HttpClient.h"
-#include "Rpc/JsonRpc.h"
+#include <Rpc/CoreRpcServerCommandsDefinitions.h>
+#include <Rpc/HttpClient.h>
+#include <Rpc/JsonRpc.h>
 
 #ifndef AUTO_VAL_INIT
 #define AUTO_VAL_INIT(n) boost::value_initialized<decltype(n)>()
