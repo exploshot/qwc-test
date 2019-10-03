@@ -127,7 +127,7 @@ JSONObject getObjectFromJSON(const T &j, const std::string &key)
         );
     }
 
-    return val.Get_Object();
+    return val.GetObject();
 }
 
 template<typename T>

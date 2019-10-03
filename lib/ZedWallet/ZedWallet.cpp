@@ -21,7 +21,7 @@
 #include <ZedWallet/Menu.h>
 #include <ZedWallet/ParseArguments.h>
 #include <ZedWallet/Tools.h>
-#include <Global/WalletConfig.h>
+#include <Global/Constants.h>
 
 int main(int argc, char **argv)
 {

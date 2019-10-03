@@ -103,8 +103,9 @@ std::shared_ptr<WalletInfo> mnemonicImportWallet(CryptoNote::WalletGreen
 
         trim(mnemonicPhrase);
         
+        std::string defaultLan = "English";
         auto [error, privateSpendKey]
-            = Mnemonics::MnemonicToPrivateKey(mnemonicPhrase, "English");
+            = Mnemonics::MnemonicToPrivateKey(mnemonicPhrase, defaultLan);
 
         if (error)
         {

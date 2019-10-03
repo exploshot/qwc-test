@@ -159,7 +159,9 @@ namespace Constants
 /*!
     The number of decimals your coin has
 */
-        const uint8_t numDecimalPlaces = CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT;
+        const uint8_t numDecimalPlaces = CryptoNote::parameters::CRYPTONOTE_DUST_DECIMAL_POINT;
+
+        const uint8_t numDisplayDecimalPlaces = CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT;
 
 /*!
     The length of a standard address for your coin

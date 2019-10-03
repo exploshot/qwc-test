@@ -931,7 +931,7 @@ set(QwertycoinFramework_WalletBackend_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/WalletBackend/BlockDownloader.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/WalletBackend/BlockDownloader.h"
     "${CMAKE_CURRENT_LIST_DIR}/WalletBackend/Constants.h"
-    "${CMAKE_CURRENT_LIST_DIR}/WalletBackend/Eventhandler.h"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletBackend/EventHandler.h"
     "${CMAKE_CURRENT_LIST_DIR}/WalletBackend/JsonSerialization.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/WalletBackend/JsonSerialization.h"
     "${CMAKE_CURRENT_LIST_DIR}/WalletBackend/SynchronizationStatus.cpp"
