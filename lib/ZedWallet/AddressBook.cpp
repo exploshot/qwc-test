@@ -4,7 +4,7 @@
 // Please see the included LICENSE file for more information.
 
 //////////////////////////////////
-#include <zedwallet/AddressBook.h>
+#include <ZedWallet/AddressBook.h>
 //////////////////////////////////
 
 #ifndef MSVC
@@ -16,8 +16,8 @@
 #include <Wallet/WalletUtils.h>
 
 #include <Utilities/ColouredMsg.h>
-#include <zedwallet/Tools.h>
-#include <zedwallet/Transfer.h>
+#include <ZedWallet/Tools.h>
+#include <ZedWallet/Transfer.h>
 #include <Global/Constants.h>
 
 const std::string getAddressBookName(AddressBook addressBook)

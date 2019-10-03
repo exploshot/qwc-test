@@ -4,7 +4,7 @@
 // Please see the included LICENSE file for more information.
 
 /////////////////////////////////////////////
-#include <zedwallet/CommandImplementations.h>
+#include <ZedWallet/CommandImplementations.h>
 /////////////////////////////////////////////
 
 #include <atomic>
@@ -26,15 +26,15 @@
 #include <Utilities/FormatTools.h>
 #include <Utilities/ParseExtra.h>
 
-#include <zedwallet/AddressBook.h>
-#include <zedwallet/Commands.h>
-#include <zedwallet/Fusion.h>
-#include <zedwallet/Menu.h>
-#include <zedwallet/Open.h>
-#include <zedwallet/Sync.h>
-#include <zedwallet/Tools.h>
-#include <zedwallet/Transfer.h>
-#include <zedwallet/Types.h>
+#include <ZedWallet/AddressBook.h>
+#include <ZedWallet/Commands.h>
+#include <ZedWallet/Fusion.h>
+#include <ZedWallet/Menu.h>
+#include <ZedWallet/Open.h>
+#include <ZedWallet/Sync.h>
+#include <ZedWallet/Tools.h>
+#include <ZedWallet/Transfer.h>
+#include <ZedWallet/Types.h>
 
 void changePassword(std::shared_ptr<WalletInfo> walletInfo)
 {

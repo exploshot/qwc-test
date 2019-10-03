@@ -9,8 +9,8 @@
 
 #include <vector>
 
-#include <zedwallet/Commands.h>
-#include <zedwallet/Types.h>
+#include <ZedWallet/Commands.h>
+#include <ZedWallet/Types.h>
 
 std::string yellowANSIMsg(std::string msg);
 

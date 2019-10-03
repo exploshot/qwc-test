@@ -15,7 +15,7 @@
 
 #include <iterator>
 
-#include <zedwallet/Types.h>
+#include <ZedWallet/Types.h>
 
 void confirmPassword(const std::string &walletPass, const std::string &msg="");
 

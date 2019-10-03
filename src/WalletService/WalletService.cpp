@@ -515,7 +515,7 @@ void WalletService::getNodeFee() {
   m_node_fee = node.feeAmount();
 
   if (!m_node_address.empty() && m_node_fee != 0) {
-    // Partially borrowed from <zedwallet/Tools.h>
+    // Partially borrowed from <ZedWallet/Tools.h>
     uint32_t div = static_cast<uint32_t>(pow(10, CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT));
     uint32_t coins = m_node_fee / div;
     uint32_t cents = m_node_fee % div;

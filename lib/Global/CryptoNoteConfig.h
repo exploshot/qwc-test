@@ -79,7 +79,7 @@ namespace CryptoNote {
 		const uint32_t MIXIN_LIMITS_V2_HEIGHT                         		= 1000000;
 		const uint32_t MIXIN_LIMITS_V3_HEIGHT                         		= 1200000;
 
-		/* The mixin to use by default with zedwallet and wallet-service */
+		/* The mixin to use by default with ZedWallet and wallet-service */
 		/* DEFAULT_MIXIN_V1 is the mixin used before MIXIN_LIMITS_V1_HEIGHT is started */
 		const uint64_t DEFAULT_MIXIN 										= MINIMUM_MIXIN;
 		const uint64_t DEFAULT_MIXIN_V1 									= MINIMUM_MIXIN_V1;

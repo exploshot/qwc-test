@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <zedwallet/Types.h>
+#include <ZedWallet/Types.h>
 
 template<typename T>
 std::string parseCommand(const std::vector<T> &printableCommands,

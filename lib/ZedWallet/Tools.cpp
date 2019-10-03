@@ -4,7 +4,7 @@
 // Please see the included LICENSE file for more information.
 
 ////////////////////////////
-#include <zedwallet/Tools.h>
+#include <ZedWallet/Tools.h>
 ////////////////////////////
 
 #include <cmath>
@@ -22,7 +22,7 @@
 
 #include <Utilities/ColouredMsg.h>
 #include <Utilities/Addresses.h>
-#include <zedwallet/PasswordContainer.h>
+#include <ZedWallet/PasswordContainer.h>
 #include <Global/Constants.h>
 
 void confirmPassword(const std::string &walletPass, const std::string &msg)

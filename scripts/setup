@@ -57,7 +57,7 @@ ls -al
 # zip file just in case.
 echo -e "\n\n\n== COMPRESSING BINARIES"
 wget https://raw.githubusercontent.com/plenteum/plenteum/development/LICENSE
-zip plenteum-dev-bin-$(date +%F)-linux.zip miner LICENSE zedwallet Plenteumd wallet-service
+zip plenteum-dev-bin-$(date +%F)-linux.zip miner LICENSE ZedWallet Plenteumd wallet-service
 
 # Create directories to keep always-up-to-date binaries for 
 # PLE Network files. Ideally, your bashrc has aliases to run
@@ -72,11 +72,11 @@ cd ~/Binaries
 # Copy the binaries to the folder we just created for them.
 # Remove the files that are already there just in case.
 rm ~/.Crypto/Plenteum/miner
-rm ~/.Crypto/Plenteum/zedwallet
+rm ~/.Crypto/Plenteum/ZedWallet
 rm ~/.Crypto/Plenteum/Plenteumd
 rm ~/.Crypto/Plenteum/wallet-service
 cp miner ~/.Crypto/Plenteum/miner
-cp zedwallet ~/.Crypto/Plenteum/zedwallet
+cp ZedWallet ~/.Crypto/Plenteum/ZedWallet
 cp Plenteumd ~/.Crypto/Plenteum/Plenteumd
 cp wallet-service ~/.Crypto/Plenteum/wallet-service
 

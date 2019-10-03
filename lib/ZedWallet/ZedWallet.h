@@ -7,7 +7,7 @@
 
 #include <NodeRpcProxy/NodeRpcProxy.h>
 
-#include <zedwallet/Types.h>
+#include <ZedWallet/Types.h>
 
 int main(int argc, char **argv);
 

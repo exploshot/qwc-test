@@ -4,16 +4,16 @@
 // Please see the included LICENSE file for more information.
 
 ///////////////////////////
-#include <zedwallet/Sync.h>
+#include <ZedWallet/Sync.h>
 ///////////////////////////
 
 #include <Common/StringTools.h>
 
 #include <Utilities/ColouredMsg.h>
-#include <zedwallet/CommandImplementations.h>
-#include <zedwallet/GetInput.h>
-#include <zedwallet/Tools.h>
-#include <zedwallet/Types.h>
+#include <ZedWallet/CommandImplementations.h>
+#include <ZedWallet/GetInput.h>
+#include <ZedWallet/Tools.h>
+#include <ZedWallet/Types.h>
 #include <Global/Constants.h>
 
 void checkForNewTransactions(std::shared_ptr<WalletInfo> walletInfo)

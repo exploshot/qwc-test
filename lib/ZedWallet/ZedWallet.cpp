@@ -4,7 +4,7 @@
 // Please see the included LICENSE file for more information.
 
 ////////////////////////////////
-#include <zedwallet/ZedWallet.h>
+#include <ZedWallet/ZedWallet.h>
 ////////////////////////////////
 
 #include <Global/CliHeader.h>
@@ -18,14 +18,14 @@
 #endif
 
 #include <Utilities/ColouredMsg.h>
-#include <zedwallet/Menu.h>
-#include <zedwallet/ParseArguments.h>
-#include <zedwallet/Tools.h>
+#include <ZedWallet/Menu.h>
+#include <ZedWallet/ParseArguments.h>
+#include <ZedWallet/Tools.h>
 #include <Global/WalletConfig.h>
 
 int main(int argc, char **argv)
 {
-    /* On ctrl+c the program seems to throw "zedwallet.exe has stopped
+    /* On ctrl+c the program seems to throw "ZedWallet.exe has stopped
        working" when calling exit(0)... I'm not sure why, this is a bit of
        a hack, it disables that - possibly some deconstructers calling
        terminate() */

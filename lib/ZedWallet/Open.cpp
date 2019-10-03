@@ -4,7 +4,7 @@
 // Please see the included LICENSE file for more information.
 
 ///////////////////////////
-#include <zedwallet/Open.h>
+#include <ZedWallet/Open.h>
 ///////////////////////////
 
 #include <CryptoNoteCore/Account.h>
@@ -15,11 +15,11 @@
 #include <Wallet/WalletErrors.h>
 
 #include <Utilities/ColouredMsg.h>
-#include <zedwallet/CommandImplementations.h>
-#include <zedwallet/Tools.h>
-#include <zedwallet/Transfer.h>
-#include <zedwallet/Types.h>
-#include <zedwallet/PasswordContainer.h>
+#include <ZedWallet/CommandImplementations.h>
+#include <ZedWallet/Tools.h>
+#include <ZedWallet/Transfer.h>
+#include <ZedWallet/Types.h>
+#include <ZedWallet/PasswordContainer.h>
 #include <Global/Constants.h>
 #include <Global/Constants.h>
 

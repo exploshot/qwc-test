@@ -4,7 +4,7 @@
 // Please see the included LICENSE file for more information.
 
 ///////////////////////////////
-#include <zedwallet/Transfer.h>
+#include <ZedWallet/Transfer.h>
 ///////////////////////////////
 
 #include <Common/Base58.h>
@@ -21,8 +21,8 @@
 #include <NodeRpcProxy/NodeErrors.h>
 
 #include <Utilities/ColouredMsg.h>
-#include <zedwallet/Fusion.h>
-#include <zedwallet/Tools.h>
+#include <ZedWallet/Fusion.h>
+#include <ZedWallet/Tools.h>
 #include <Global/Constants.h>
 
 #include <Wallet/WalletErrors.h>

@@ -26,7 +26,7 @@
 #include "JsonOutputStreamSerializer.h"
 #include "KVBinaryInputStreamSerializer.h"
 #include "KVBinaryOutputStreamSerializer.h"
-#include <zedwallet/Types.h>
+#include <ZedWallet/Types.h>
 
 #include <Serialization/BinaryInputStreamSerializer.h>
 #include <Serialization/BinaryOutputStreamSerializer.h>

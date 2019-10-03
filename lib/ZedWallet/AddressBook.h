@@ -3,7 +3,7 @@
 // 
 // Please see the included LICENSE file for more information.
 
-#include <zedwallet/Types.h>
+#include <ZedWallet/Types.h>
 
 void addToAddressBook();
 
