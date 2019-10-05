@@ -12,11 +12,11 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <System/Dispatcher.h>
 
-#include "CryptoNoteCore/CryptoNoteBasicImpl.h"
-#include "CryptoNoteCore/CryptoNoteFormatUtils.h"
-#include "Common/CryptoNoteTools.h"
-#include "CryptoNoteCore/Currency.h"
-#include "P2p/LevinProtocol.h"
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+#include <CryptoNoteCore/CryptoNoteFormatUtils.h>
+#include <Common/CryptoNoteTools.h>
+#include <CryptoNoteCore/Currency.h>
+#include <P2p/LevinProtocol.h>
 
 #include <Serialization/SerializationTools.h>
 

@@ -8,7 +8,7 @@
 
 #include <boost/uuid/uuid.hpp>
 
-#include "CryptoNote.h"
+#include <CryptoNote.h>
 #include "P2pProtocolTypes.h"
 
 namespace CryptoNote {

@@ -17,13 +17,13 @@
 
 #include "TransactionExtra.h"
 
-#include "Common/MemoryInputStream.h"
-#include "Common/StreamTools.h"
-#include "Common/StringTools.h"
+#include <Common/MemoryInputStream.h>
+#include <Common/StreamTools.h>
+#include <Common/StringTools.h>
 
-#include "Serialization/BinaryOutputStreamSerializer.h"
-#include "Serialization/BinaryInputStreamSerializer.h"
-#include "Serialization/SerializationTools.h"
+#include <Serialization/BinaryOutputStreamSerializer.h>
+#include <Serialization/BinaryInputStreamSerializer.h>
+#include <Serialization/SerializationTools.h>
 
 using namespace Crypto;
 using namespace Common;

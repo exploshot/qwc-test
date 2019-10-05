@@ -8,8 +8,8 @@
 
 #include <JsonHelper.h>
 
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
 
 #include <unordered_map>
 #include <optional>

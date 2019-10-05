@@ -22,8 +22,8 @@
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
 
-#include "Serialization/CryptoNoteSerialization.h"
-#include "Serialization/SerializationOverloads.h"
+#include <Serialization/CryptoNoteSerialization.h>
+#include <Serialization/SerializationOverloads.h>
 
 namespace CryptoNote {
 

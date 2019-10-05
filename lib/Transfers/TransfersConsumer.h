@@ -9,12 +9,12 @@
 #pragma once
 
 #include "IBlockchainSynchronizer.h"
-#include "ITransfersSynchronizer.h"
+#include <ITransfersSynchronizer.h>
 #include "TransfersSubscription.h"
 #include "TypeHelpers.h"
 
-#include "Crypto/crypto.h"
-#include "Logging/LoggerRef.h"
+#include <Crypto/crypto.h>
+#include <Logging/LoggerRef.h>
 
 #include "IObservableImpl.h"
 

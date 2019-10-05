@@ -4,7 +4,7 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "CryptoNote.h"
+#include <CryptoNote.h>
 
 #include <tuple>
 

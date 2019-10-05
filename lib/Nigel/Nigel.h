@@ -6,7 +6,7 @@
 
 #include <atomic>
 
-#include "httplib.h"
+#include <httplib.h>
 
 #include <Rpc/CoreRpcServerCommandsDefinitions.h>
 
@@ -18,7 +18,7 @@
 
 #include <unordered_set>
 
-#include "WalletTypes.h"
+#include <WalletTypes.h>
 
 class Nigel
 {

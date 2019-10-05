@@ -9,7 +9,6 @@ add_custom_target(QwertycoinTools)
 add_dependencies(QwertycoinTools
     QwertycoinTools::Daemon
 #    QwertycoinTools::Miner
-#    QwertycoinTools::WalletService
 #    QwertycoinTools::ZedWallet
 #    QwertycoinTools::ZedWallet++
 )
@@ -34,18 +33,16 @@ endif()
 
 set(QwertycoinTools_Daemon_LIBS
     Boost::filesystem
+    cxxopts::cxxopts
     lz4::lz4
     RocksDB::rocksdb
     sqlite3::sqlite3
     QwertycoinFramework::Common
+    QwertycoinFramework::Crypto
     QwertycoinFramework::CryptoNoteCore
-    QwertycoinFramework::Errors
+    QwertycoinFramework::CryptoNoteProtocol
     QwertycoinFramework::Global
-    # QwertycoinFramework::Logger
-    QwertycoinFramework::P2p
-    QwertycoinFramework::Rpc
-    QwertycoinFramework::Serialization
-    QwertycoinFramework::System
+    QwertycoinFramework::Logging
 )
 
 add_executable(QwertycoinTools_Daemon ${QwertycoinTools_Daemon_SOURCES})

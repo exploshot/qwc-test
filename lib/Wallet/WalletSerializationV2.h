@@ -17,11 +17,11 @@
 
 #pragma once
 
-#include "Common/IInputStream.h"
-#include "Common/IOutputStream.h"
-#include "Serialization/ISerializer.h"
-#include "Transfers/TransfersSynchronizer.h"
-#include "Wallet/WalletIndices.h"
+#include <Common/IInputStream.h>
+#include <Common/IOutputStream.h>
+#include <Serialization/ISerializer.h>
+#include <Transfers/TransfersSynchronizer.h>
+#include <Wallet/WalletIndices.h>
 
 namespace CryptoNote {
 

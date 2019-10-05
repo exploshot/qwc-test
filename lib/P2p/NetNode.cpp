@@ -32,19 +32,19 @@
 
 #include "version.h"
 #include <Global/CryptoNoteConfig.h>
-#include "Common/StdInputStream.h"
-#include "Common/StdOutputStream.h"
-#include "Common/Util.h"
-#include "Crypto/crypto.h"
+#include <Common/StdInputStream.h>
+#include <Common/StdOutputStream.h>
+#include <Common/Util.h>
+#include <Crypto/crypto.h>
 #include <Crypto/random.h>
 
 #include "ConnectionContext.h"
 #include "LevinProtocol.h"
 #include "P2pProtocolDefinitions.h"
 
-#include "Serialization/BinaryInputStreamSerializer.h"
-#include "Serialization/BinaryOutputStreamSerializer.h"
-#include "Serialization/SerializationOverloads.h"
+#include <Serialization/BinaryInputStreamSerializer.h>
+#include <Serialization/BinaryOutputStreamSerializer.h>
+#include <Serialization/SerializationOverloads.h>
 
 using namespace Common;
 using namespace Logging;

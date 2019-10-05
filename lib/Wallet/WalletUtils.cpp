@@ -17,9 +17,9 @@
 
 #include "WalletUtils.h"
 
-#include "CryptoNote.h"
-#include "Crypto/crypto.h"
-#include "Wallet/WalletErrors.h"
+#include <CryptoNote.h>
+#include <Crypto/crypto.h>
+#include <Wallet/WalletErrors.h>
 
 namespace CryptoNote {
 

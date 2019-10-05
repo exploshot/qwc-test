@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "INode.h"
+#include <INode.h>
 #include "SynchronizationState.h"
 #include "IBlockchainSynchronizer.h"
 #include "IObservableImpl.h"
@@ -28,7 +28,7 @@
 #include <atomic>
 #include <future>
 
-#include "Logging/LoggerRef.h"
+#include <Logging/LoggerRef.h>
 
 namespace CryptoNote {
 

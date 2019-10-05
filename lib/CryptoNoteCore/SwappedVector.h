@@ -27,10 +27,10 @@
 #include <string>
 #include <vector>
 
-#include "Common/StdInputStream.h"
-#include "Common/StdOutputStream.h"
-#include "Serialization/BinaryInputStreamSerializer.h"
-#include "Serialization/BinaryOutputStreamSerializer.h"
+#include <Common/StdInputStream.h>
+#include <Common/StdOutputStream.h>
+#include <Serialization/BinaryInputStreamSerializer.h>
+#include <Serialization/BinaryOutputStreamSerializer.h>
 
 template<class T> class SwappedVector {
 public:

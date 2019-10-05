@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "Serialization/ISerializer.h"
+#include <Serialization/ISerializer.h>
 
 namespace CryptoNote {
 

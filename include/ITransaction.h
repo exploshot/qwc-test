@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-#include "CryptoNote.h"
+#include <CryptoNote.h>
 
 namespace CryptoNote {
 

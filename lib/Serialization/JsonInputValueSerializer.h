@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "Common/JsonValue.h"
+#include <Common/JsonValue.h>
 #include "ISerializer.h"
 
 namespace CryptoNote {

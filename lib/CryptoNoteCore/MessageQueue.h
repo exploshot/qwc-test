@@ -21,9 +21,9 @@
 
 #include "IntrusiveLinkedList.h"
 
-#include "System/Dispatcher.h"
-#include "System/Event.h"
-#include "System/InterruptedException.h"
+#include <System/Dispatcher.h>
+#include <System/Event.h>
+#include <System/InterruptedException.h>
 
 namespace CryptoNote {
 

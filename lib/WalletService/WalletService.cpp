@@ -13,19 +13,19 @@
 
 #include <boost/filesystem/operations.hpp>
 
-#include "Common/Base58.h"
-#include "Common/CryptoNoteTools.h"
-#include "Common/TransactionExtra.h"
-#include "Common/Util.h"
+#include <Common/Base58.h>
+#include <Common/CryptoNoteTools.h>
+#include <Common/TransactionExtra.h>
+#include <Common/Util.h>
 
-#include "Crypto/crypto.h"
+#include <Crypto/crypto.h>
 
-#include "CryptoNote.h"
+#include <CryptoNote.h>
 
-#include "CryptoNoteCore/Account.h"
-#include "CryptoNoteCore/CryptoNoteBasicImpl.h"
-#include "CryptoNoteCore/CryptoNoteFormatUtils.h"
-#include "CryptoNoteCore/Mixins.h"
+#include <CryptoNoteCore/Account.h>
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+#include <CryptoNoteCore/CryptoNoteFormatUtils.h>
+#include <CryptoNoteCore/Mixins.h>
 
 #include <future>
 
@@ -421,7 +421,8 @@ void generateNewWallet(const CryptoNote::Currency& currency, const WalletConfigu
   {
     log(Logging::INFO, Logging::BRIGHT_WHITE) << "Attempting to import wallet from mnemonic seed";
 
-    auto [error, private_spend_key] = Mnemonics::MnemonicToPrivateKey(conf.mnemonicSeed, "English");
+    std::string defaultLan = "English";
+    auto [error, private_spend_key] = Mnemonics::MnemonicToPrivateKey(conf.mnemonicSeed, defaultLan);
 
     if (error)
     {

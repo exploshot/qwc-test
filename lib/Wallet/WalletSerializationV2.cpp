@@ -17,9 +17,9 @@
 
 #include "WalletSerializationV2.h"
 
-#include "Serialization/CryptoNoteSerialization.h"
-#include "Serialization/BinaryInputStreamSerializer.h"
-#include "Serialization/BinaryOutputStreamSerializer.h"
+#include <Serialization/CryptoNoteSerialization.h>
+#include <Serialization/BinaryInputStreamSerializer.h>
+#include <Serialization/BinaryOutputStreamSerializer.h>
 
 using namespace Common;
 using namespace Crypto;

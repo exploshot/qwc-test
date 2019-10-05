@@ -10,7 +10,7 @@
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/ostreamwrapper.h>
-#include "rapidjson/stringbuffer.h"
+#include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/prettywriter.h>
 #include <fstream>
@@ -18,8 +18,8 @@
 #include <Global/CliHeader.h>
 #include <Global/CryptoNoteConfig.h>
 #include <Logging/ILogger.h>
-#include "Common/PathTools.h"
-#include "Common/Util.h"
+#include <Common/PathTools.h>
+#include <Common/Util.h>
 
 using namespace rapidjson;
 

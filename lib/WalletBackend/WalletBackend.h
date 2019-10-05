@@ -4,13 +4,13 @@
 
 #pragma once
 
-#include "CryptoTypes.h"
+#include <CryptoTypes.h>
 
 #include <Errors/Errors.h>
 
 #include <Nigel/Nigel.h>
 
-#include "rapidjson/document.h"
+#include <rapidjson/document.h>
 
 #include <string>
 

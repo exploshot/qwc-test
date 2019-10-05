@@ -6,7 +6,7 @@
 
 #include <unordered_set>
 
-#include "CryptoNoteProtocol/CryptoNoteProtocolDefinitions.h"
+#include <CryptoNoteProtocol/CryptoNoteProtocolDefinitions.h>
 
 namespace CryptoNote {
 	struct PendingLiteBlock {

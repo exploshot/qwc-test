@@ -21,14 +21,14 @@
 #include <Logging/LoggerRef.h>
 #include <Common/Varint.h>
 
-#include "Serialization/BinaryOutputStreamSerializer.h"
-#include "Serialization/BinaryInputStreamSerializer.h"
-#include "Serialization/CryptoNoteSerialization.h"
+#include <Serialization/BinaryOutputStreamSerializer.h>
+#include <Serialization/BinaryInputStreamSerializer.h>
+#include <Serialization/CryptoNoteSerialization.h>
 
 #include "Account.h"
 #include "CryptoNoteBasicImpl.h"
 
-#include "Common/CryptoNoteTools.h"
+#include <Common/CryptoNoteTools.h>
 
 #include <Global/CryptoNoteConfig.h>
 

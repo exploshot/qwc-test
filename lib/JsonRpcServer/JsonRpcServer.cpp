@@ -11,19 +11,19 @@
 #include <system_error>
 #include <memory>
 #include <sstream>
-#include "HTTP/HttpParserErrorCodes.h"
+#include <Http/HttpParserErrorCodes.h>
 
 #include <System/TcpConnection.h>
 #include <System/TcpListener.h>
 #include <System/TcpStream.h>
 #include <System/Ipv4Address.h>
-#include "HTTP/HttpParser.h"
-#include "HTTP/HttpResponse.h"
-#include "Rpc/JsonRpc.h"
+#include <Http/HttpParser.h>
+#include <Http/HttpResponse.h>
+#include <Rpc/JsonRpc.h>
 
-#include "Common/JsonValue.h"
-#include "Serialization/JsonInputValueSerializer.h"
-#include "Serialization/JsonOutputStreamSerializer.h"
+#include <Common/JsonValue.h>
+#include <Serialization/JsonInputValueSerializer.h>
+#include <Serialization/JsonOutputStreamSerializer.h>
 
 namespace CryptoNote {
 

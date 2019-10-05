@@ -12,10 +12,10 @@
 #include <thread>
 #include <unordered_set>
 
-#include "Common/ObserverManager.h"
-#include "Logging/LoggerRef.h"
-#include "INode.h"
-#include "Rpc/CoreRpcServerCommandsDefinitions.h"
+#include <Common/ObserverManager.h>
+#include <Logging/LoggerRef.h>
+#include <INode.h>
+#include <Rpc/CoreRpcServerCommandsDefinitions.h>
 
 namespace System {
   class ContextGroup;

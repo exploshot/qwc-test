@@ -22,7 +22,7 @@
 #include <vector>
 
 #include "CryptoTypes.h"
-#include "CryptoNote.h"
+#include <CryptoNote.h>
 
 #include <boost/variant.hpp>
 

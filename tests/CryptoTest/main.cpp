@@ -10,10 +10,10 @@
 #include <cxxopts.hpp>
 #include <Global/CliHeader.h>
 
-#include "CryptoNote.h"
-#include "CryptoTypes.h"
-#include "Common/StringTools.h"
-#include "Crypto/crypto.h"
+#include <CryptoNote.h>
+#include <CryptoTypes.h>
+#include <Common/StringTools.h>
+#include <Crypto/crypto.h>
 
 #define PERFORMANCE_ITERATIONS  1000
 #define PERFORMANCE_ITERATIONS_LONG_MULTIPLIER 10

@@ -6,13 +6,13 @@
 
 #pragma once
 
-#include "Common/ConsoleHandler.h"
+#include <Common/ConsoleHandler.h>
 
 #include <Logging/LoggerRef.h>
 #include <Logging/LoggerManager.h>
-#include "Rpc/RpcServer.h"
-#include "Rpc/CoreRpcServerCommandsDefinitions.h"
-#include "Rpc/JsonRpc.h"
+#include <Rpc/RpcServer.h>
+#include <Rpc/CoreRpcServerCommandsDefinitions.h>
+#include <Rpc/JsonRpc.h>
 
 namespace CryptoNote {
 class Core;

@@ -24,7 +24,7 @@
 #include <System/TcpConnection.h>
 #include <System/TcpStream.h>
 
-#include "Serialization/SerializationTools.h"
+#include <Serialization/SerializationTools.h>
 
 namespace CryptoNote {
 

@@ -24,13 +24,13 @@
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
 
-#include "Serialization/ISerializer.h"
-#include "Serialization/SerializationOverloads.h"
-#include "Serialization/BinaryInputStreamSerializer.h"
-#include "Serialization/BinaryOutputStreamSerializer.h"
+#include <Serialization/ISerializer.h>
+#include <Serialization/SerializationOverloads.h>
+#include <Serialization/BinaryInputStreamSerializer.h>
+#include <Serialization/BinaryOutputStreamSerializer.h>
 
-#include "Common/StringOutputStream.h"
-#include "Crypto/crypto.h"
+#include <Common/StringOutputStream.h>
+#include <Crypto/crypto.h>
 
 #include <Global/CryptoNoteConfig.h>
 

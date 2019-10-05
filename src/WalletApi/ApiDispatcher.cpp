@@ -22,7 +22,7 @@
 
 #include <iostream>
 
-#include "json.hpp"
+#include <json.hpp>
 
 #include <WalletApi/Constants.h>
 

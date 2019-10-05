@@ -12,8 +12,8 @@
 #include <vector>
 #include <boost/utility.hpp>
 #include <Global/CryptoNoteConfig.h>
-#include "Crypto/hash.h"
-#include "Logging/LoggerRef.h"
+#include <Crypto/hash.h>
+#include <Logging/LoggerRef.h>
 #include <CryptoNoteCore/Blockchain/CachedBlock.h>
 #include "CryptoNoteBasic.h"
 

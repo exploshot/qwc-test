@@ -23,9 +23,9 @@
 #include <System/TcpConnection.h>
 #include <System/TcpListener.h>
 
-#include "P2p/OnceInInterval.h"
-#include "CryptoNoteProtocol/CryptoNoteProtocolHandler.h"
-#include "Logging/LoggerRef.h"
+#include <P2p/OnceInInterval.h>
+#include <CryptoNoteProtocol/CryptoNoteProtocolHandler.h>
+#include <Logging/LoggerRef.h>
 
 #include "ConnectionContext.h"
 #include "LevinProtocol.h"

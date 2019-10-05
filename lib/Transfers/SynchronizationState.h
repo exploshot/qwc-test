@@ -18,8 +18,8 @@
 #pragma once
 
 #include "CommonTypes.h"
-#include "IStreamSerializable.h"
-#include "Serialization/ISerializer.h"
+#include <IStreamSerializable.h>
+#include <Serialization/ISerializer.h>
 #include <vector>
 #include <map>
 

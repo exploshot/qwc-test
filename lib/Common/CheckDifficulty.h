@@ -20,7 +20,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "Crypto/hash.h"
+#include <Crypto/hash.h>
 
 namespace CryptoNote {
 bool check_hash(const Crypto::Hash &hash, uint64_t difficulty);

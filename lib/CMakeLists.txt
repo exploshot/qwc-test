@@ -58,8 +58,9 @@ set(QwertycoinFramework_LIBS
     QwertycoinFramework_System
     QwertycoinFramework_Transfers
     QwertycoinFramework_Wallet
-    QwertycoinFramework_WalletApi
+    # QwertycoinFramework_WalletApi
     QwertycoinFramework_WalletBackend
+    QwertycoinFramework_WalletService
     QwertycoinFramework_ZedWallet
 )
 
@@ -328,7 +329,9 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
 set(QwertycoinFramework_CryptoNoteCore_LIBS
     Boost::filesystem
     Boost::program_options
+    RocksDB::rocksdb
     sparsehash::sparsehash
+    sqlite3::sqlite3
     QwertycoinFramework::BlockchainExplorer
     QwertycoinFramework::Common
     QwertycoinFramework::Crypto
@@ -906,7 +909,7 @@ target_include_directories(QwertycoinFramework_Wallet PRIVATE ${QwertycoinFramew
 target_link_libraries(QwertycoinFramework_Wallet PRIVATE ${QwertycoinFramework_Wallet_LIBS})
 
 # QwertycoinFramework::WalletApi
-
+#[[
 set(QwertycoinFramework_WalletApi_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/WalletApi/ApiDispatcher.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/WalletApi/ApiDispatcher.h"
@@ -924,7 +927,7 @@ add_library(QwertycoinFramework_WalletApi STATIC ${QwertycoinFramework_WalletApi
 add_library(QwertycoinFramework::WalletApi ALIAS QwertycoinFramework_WalletApi)
 target_include_directories(QwertycoinFramework_WalletApi PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
 target_link_libraries(QwertycoinFramework_WalletApi PRIVATE ${QwertycoinFramework_WalletApi_LIBS})
-
+]]
 # QwertycoinFramework::WalletBackend
 
 set(QwertycoinFramework_WalletBackend_SOURCES
@@ -962,6 +965,47 @@ add_library(QwertycoinFramework_WalletBackend STATIC ${QwertycoinFramework_Walle
 add_library(QwertycoinFramework::WalletBackend ALIAS QwertycoinFramework_WalletBackend)
 target_include_directories(QwertycoinFramework_WalletBackend PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
 target_link_libraries(QwertycoinFramework_WalletBackend PRIVATE ${QwertycoinFramework_WalletBackend_LIBS})
+
+# QwertycoinFramework::WalletService
+
+set(QwertycoinFramework_WalletService_SOURCES
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/ConfigurationManager.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/ConfigurationManager.h"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/main.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/NodeFactory.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/NodeFactory.h"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/PaymentGateService.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/PaymentGateService.h"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/PaymentServiceJsonRpcMessages.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/PaymentServiceJsonRpcMessages.h"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/PaymentServiceJsonRpcServer.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/PaymentServiceJsonRpcServer.h"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/WalletService.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/WalletService.h"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/WalletServiceConfiguration.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/WalletServiceConfiguration.h"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/WalletServiceErrorCategory.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/WalletService/WalletServiceErrorCategory.h"
+)
+
+set(QwertycoinFramework_WalletService_LIBS
+    RapidJSON::rapidjson
+    QwertycoinFramework::Common
+    QwertycoinFramework::Crypto
+    QwertycoinFramework::CryptoNoteCore
+    QwertycoinFramework::Global
+    QwertycoinFramework::Logging
+    QwertycoinFramework::Mnemonics
+    QwertycoinFramework::Rpc
+    QwertycoinFramework::Serialization
+    QwertycoinFramework::Utilities
+    QwertycoinFramework::Wallet
+)
+
+add_library(QwertycoinFramework_WalletService STATIC ${QwertycoinFramework_WalletService_SOURCES})
+add_library(QwertycoinFramework::WalletService ALIAS QwertycoinFramework_WalletService)
+target_include_directories(QwertycoinFramework_WalletService PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
+target_link_libraries(QwertycoinFramework_WalletService PRIVATE ${QwertycoinFramework_WalletService_LIBS})
 
 # QwertycoinFramework::ZedWallet
 
@@ -1038,8 +1082,9 @@ install(TARGETS
             QwertycoinFramework_System
             QwertycoinFramework_Transfers
             QwertycoinFramework_Wallet
-            QwertycoinFramework_WalletApi
+            # QwertycoinFramework_WalletApi
             QwertycoinFramework_WalletBackend
+            # QwertycoinFramework_WalletService
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib/static

@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "Common/ObserverManager.h"
-#include "ITransfersSynchronizer.h"
+#include <Common/ObserverManager.h>
+#include <ITransfersSynchronizer.h>
 #include "IBlockchainSynchronizer.h"
 #include "TypeHelpers.h"
 
@@ -17,7 +17,7 @@
 #include <memory>
 #include <cstring>
 
-#include "Logging/LoggerRef.h"
+#include <Logging/LoggerRef.h>
 
 namespace CryptoNote {
 class Currency;

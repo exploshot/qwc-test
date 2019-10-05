@@ -7,10 +7,10 @@
 #include <Common/CryptoNoteTools.h>
 #include <Common/FileSystemShim.h>
 
-#include "rapidjson/writer.h"
-#include "rapidjson/stringbuffer.h"
+#include <rapidjson/writer.h>
+#include <rapidjson/stringbuffer.h>
 
-#include "sqlite3.h"
+#include <sqlite3.h>
 
 using namespace rapidjson;
 

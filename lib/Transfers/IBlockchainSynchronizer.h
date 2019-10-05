@@ -22,12 +22,12 @@
 #include <system_error>
 #include <unordered_set>
 
-#include "Crypto/crypto.h"
-#include "CryptoNoteCore/CryptoNoteBasic.h"
+#include <Crypto/crypto.h>
+#include <CryptoNoteCore/CryptoNoteBasic.h>
 
-#include "IObservable.h"
+#include <IObservable.h>
 #include "IStreamSerializable.h"
-#include "ITransfersSynchronizer.h"
+#include <ITransfersSynchronizer.h>
 
 namespace CryptoNote {
 

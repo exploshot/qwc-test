@@ -20,13 +20,13 @@
 #include <string>
 #include <sstream>
 
-#include "Common/StdOutputStream.h"
-#include "Serialization/KVBinaryOutputStreamSerializer.h"
-#include "Serialization/SerializationOverloads.h"
-#include "CryptoNoteCore/CryptoNoteFormatUtils.h"
-#include "Serialization/CryptoNoteSerialization.h"
-#include "Common/StdInputStream.h"
-#include "Serialization/KVBinaryInputStreamSerializer.h"
+#include <Common/StdOutputStream.h>
+#include <Serialization/KVBinaryOutputStreamSerializer.h>
+#include <Serialization/SerializationOverloads.h>
+#include <CryptoNoteCore/CryptoNoteFormatUtils.h>
+#include <Serialization/CryptoNoteSerialization.h>
+#include <Common/StdInputStream.h>
+#include <Serialization/KVBinaryInputStreamSerializer.h>
 
 namespace CryptoNote {
 namespace DB {

@@ -12,7 +12,7 @@
 
 #include <Errors/ValidateParameters.h>
 
-#include "linenoise.hpp"
+#include <linenoise.hpp>
 
 #include <Utilities/ColouredMsg.h>
 #include <Utilities/FormatTools.h>

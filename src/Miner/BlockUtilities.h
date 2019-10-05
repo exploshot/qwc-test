@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "CryptoNote.h"
+#include <CryptoNote.h>
 #include "CryptoTypes.h"
 
 #include <cstdint>

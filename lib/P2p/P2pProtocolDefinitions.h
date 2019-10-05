@@ -10,14 +10,14 @@
 
 #include <boost/uuid/uuid.hpp>
 
-#include "Crypto/crypto.h"
+#include <Crypto/crypto.h>
 #include <Global/CryptoNoteConfig.h>
-#include "CryptoNoteCore/CoreStatistics.h"
+#include <CryptoNoteCore/CoreStatistics.h>
 
 // new serialization
-#include "Serialization/ISerializer.h"
-#include "Serialization/SerializationOverloads.h"
-#include "Serialization/CryptoNoteSerialization.h"
+#include <Serialization/ISerializer.h>
+#include <Serialization/SerializationOverloads.h>
+#include <Serialization/CryptoNoteSerialization.h>
 
 namespace CryptoNote
 {

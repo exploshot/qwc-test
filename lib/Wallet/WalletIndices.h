@@ -20,8 +20,8 @@
 #include <map>
 #include <unordered_map>
 
-#include "ITransfersContainer.h"
-#include "WalletGreenTypes.h"
+#include <ITransfersContainer.h>
+#include <WalletGreenTypes.h>
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
@@ -30,8 +30,8 @@
 #include <boost/multi_index/composite_key.hpp>
 #include <boost/multi_index/member.hpp>
 
-#include "Common/FileMappedVector.h"
-#include "Crypto/chacha8.h"
+#include <Common/FileMappedVector.h>
+#include <Crypto/chacha8.h>
 
 namespace CryptoNote {
 

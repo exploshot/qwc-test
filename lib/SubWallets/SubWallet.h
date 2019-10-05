@@ -6,17 +6,17 @@
 
 #include <Crypto/crypto.h>
 
-#include "CryptoTypes.h"
+#include <CryptoTypes.h>
 
 #include <Errors/Errors.h>
 
-#include "rapidjson/document.h"
+#include <rapidjson/document.h>
 
 #include <string>
 
 #include <unordered_set>
 
-#include "WalletTypes.h"
+#include <WalletTypes.h>
 
 class SubWallet
 {

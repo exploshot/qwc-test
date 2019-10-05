@@ -21,9 +21,9 @@
 
 #include "CryptoNoteBasic.h"
 
-#include "Serialization/BinaryOutputStreamSerializer.h"
-#include "Serialization/BinaryInputStreamSerializer.h"
-#include "Serialization/CryptoNoteSerialization.h"
+#include <Serialization/BinaryOutputStreamSerializer.h>
+#include <Serialization/BinaryInputStreamSerializer.h>
+#include <Serialization/CryptoNoteSerialization.h>
 
 namespace Logging {
 class ILogger;

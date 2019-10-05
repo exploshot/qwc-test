@@ -6,8 +6,8 @@
 // Please see the included LICENSE file for more information.
 
 #include "Account.h"
-#include "Serialization/CryptoNoteSerialization.h"
-#include "Crypto/keccak.h"
+#include <Serialization/CryptoNoteSerialization.h>
+#include <Crypto/keccak.h>
 
 namespace CryptoNote {
 //-----------------------------------------------------------------

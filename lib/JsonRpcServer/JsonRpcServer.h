@@ -10,10 +10,10 @@
 
 #include <System/Dispatcher.h>
 #include <System/Event.h>
-#include "Logging/ILogger.h"
-#include "Logging/LoggerRef.h"
-#include "Rpc/HttpServer.h"
-#include "WalletService/ConfigurationManager.h"
+#include <Logging/ILogger.h>
+#include <Logging/LoggerRef.h>
+#include <Rpc/HttpServer.h>
+#include <WalletService/ConfigurationManager.h>
 
 namespace CryptoNote {
 class HttpResponse;

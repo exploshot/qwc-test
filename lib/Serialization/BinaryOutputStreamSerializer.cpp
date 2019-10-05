@@ -19,7 +19,7 @@
 
 #include <cassert>
 #include <stdexcept>
-#include "Common/StreamTools.h"
+#include <Common/StreamTools.h>
 
 using namespace Common;
 

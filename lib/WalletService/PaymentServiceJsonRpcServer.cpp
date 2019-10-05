@@ -10,14 +10,14 @@
 #include <functional>
 
 #include <CryptoTypes.h>
-#include "Crypto/hash.h"
+#include <Crypto/hash.h>
 #include "PaymentServiceJsonRpcMessages.h"
 #include "WalletService.h"
 
-#include "Serialization/JsonInputValueSerializer.h"
-#include "Serialization/JsonOutputStreamSerializer.h"
+#include <Serialization/JsonInputValueSerializer.h>
+#include <Serialization/JsonOutputStreamSerializer.h>
 
-#include "Rpc/JsonRpc.h"
+#include <Rpc/JsonRpc.h>
 
 namespace PaymentService {
 

@@ -7,8 +7,8 @@
 #include "DataBaseConfig.h"
 
 #include <Common/Util.h>
-#include "Common/StringTools.h"
-#include "Crypto/crypto.h"
+#include <Common/StringTools.h>
+#include <Crypto/crypto.h>
 #include <Global/CryptoNoteConfig.h>
 
 using namespace CryptoNote;

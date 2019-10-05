@@ -17,11 +17,11 @@
 
 #pragma once
 
-#include "INode.h"
+#include <INode.h>
 
 #include <string>
 
-#include "Logging/LoggerRef.h"
+#include <Logging/LoggerRef.h>
 
 namespace PaymentService {
 

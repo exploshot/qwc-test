@@ -6,9 +6,9 @@
 
 #include <Common/StringTools.h>
 
-#include "CryptoTypes.h"
+#include <CryptoTypes.h>
 
-#include "json.hpp"
+#include <json.hpp>
 
 #include <SubWallets/SubWallet.h>
 

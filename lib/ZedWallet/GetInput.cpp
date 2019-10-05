@@ -7,7 +7,7 @@
 #include <ZedWallet/GetInput.h>
 ///////////////////////////////
 
-#include "linenoise.hpp"
+#include <linenoise.hpp>
 
 #include <ZedWallet/Sync.h>
 #include <ZedWallet/Tools.h>
