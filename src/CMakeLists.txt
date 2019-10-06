@@ -37,6 +37,7 @@ set(QwertycoinTools_Daemon_LIBS
     lz4::lz4
     RocksDB::rocksdb
     sqlite3::sqlite3
+    stdc++fs
     QwertycoinFramework::Common
     QwertycoinFramework::Crypto
     QwertycoinFramework::CryptoNoteCore
