@@ -17,9 +17,9 @@
 
 #include "TransactionExtra.h"
 
-#include <Common/MemoryInputStream.h>
-#include <Common/StreamTools.h>
-#include <Common/StringTools.h>
+#include "MemoryInputStream.h"
+#include "StreamTools.h"
+#include "StringTools.h"
 
 #include <Serialization/BinaryOutputStreamSerializer.h>
 #include <Serialization/BinaryInputStreamSerializer.h>

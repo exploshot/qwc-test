@@ -46,7 +46,7 @@ set(QwertycoinFramework_LIBS
     QwertycoinFramework_Global
     QwertycoinFramework_Http
     QwertycoinFramework_JsonRpcServer
-    # QwertycoinFramework_Logger
+    QwertycoinFramework_Logger
     QwertycoinFramework_Logging
     QwertycoinFramework_Mnemonics
     QwertycoinFramework_Nigel
@@ -144,9 +144,12 @@ set(QwertycoinFramework_Common_SOURCES
 )
 
 set(QwertycoinFramework_Common_LIBS
+    Boost::filesystem
+    stdc++fs
     Threads::Threads
     QwertycoinFramework::Crypto
     QwertycoinFramework::Global
+    QwertycoinFramework::Serialization
 )
 
 add_library(QwertycoinFramework_Common STATIC ${QwertycoinFramework_Common_SOURCES})
@@ -345,7 +348,7 @@ set(QwertycoinFramework_CryptoNoteCore_LIBS
 add_library(QwertycoinFramework_CryptoNoteCore STATIC ${QwertycoinFramework_CryptoNoteCore_SOURCES})
 add_library(QwertycoinFramework::CryptoNoteCore ALIAS QwertycoinFramework_CryptoNoteCore)
 target_include_directories(QwertycoinFramework_CryptoNoteCore PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_CryptoNoteCore PRIVATE ${QwertycoinFramework_CryptoNoteCore_LIBS})
+target_link_libraries(QwertycoinFramework_CryptoNoteCore PUBLIC ${QwertycoinFramework_CryptoNoteCore_LIBS})
 
 # QwertycoinFramework::CryptoNoteProtocol
 
@@ -382,6 +385,7 @@ set(QwertycoinFramework_Errors_LIBS
     QwertycoinFramework::Crypto
     QwertycoinFramework::Global
     QwertycoinFramework::SubWallets
+    QwertycoinFramework::Utilities
 )
 
 add_library(QwertycoinFramework_Errors STATIC ${QwertycoinFramework_Errors_SOURCES})
@@ -438,7 +442,7 @@ target_include_directories(QwertycoinFramework_JsonRpcServer PRIVATE ${Qwertycoi
 target_link_libraries(QwertycoinFramework_JsonRpcServer PRIVATE ${QwertycoinFramework_JsonRpcServer_LIBS})
 
 # QwertycoinFramework::Logger
-#[[
+
 set(QwertycoinFramework_Logger_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Logger/Logger.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Logger/Logger.h"
@@ -446,7 +450,7 @@ set(QwertycoinFramework_Logger_SOURCES
 
 add_library(QwertycoinFramework_Logger STATIC ${QwertycoinFramework_Logger_SOURCES})
 add_library(QwertycoinFramework::Logger ALIAS QwertycoinFramework_Logger)
-]]
+
 # QwertycoinFramework::Logging
 
 set(QwertycoinFramework_Logging_SOURCES
@@ -1077,7 +1081,7 @@ install(TARGETS
             QwertycoinFramework_Global
             QwertycoinFramework_Http
             QwertycoinFramework_JsonRpcServer
-            # QwertycoinFramework_Logger
+            QwertycoinFramework_Logger
             QwertycoinFramework_Logging
             QwertycoinFramework_Mnemonics
             QwertycoinFramework_Nigel
@@ -1091,7 +1095,8 @@ install(TARGETS
             QwertycoinFramework_Wallet
             # QwertycoinFramework_WalletApi
             QwertycoinFramework_WalletBackend
-            # QwertycoinFramework_WalletService
+            QwertycoinFramework_WalletService
+            QwertycoinFramework_ZedWallet
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib/static

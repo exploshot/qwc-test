@@ -28,9 +28,9 @@
 #include "KVBinaryOutputStreamSerializer.h"
 #include <ZedWallet/Types.h>
 
-#include <Serialization/BinaryInputStreamSerializer.h>
-#include <Serialization/BinaryOutputStreamSerializer.h>
-#include <Serialization/CryptoNoteSerialization.h>
+#include "BinaryInputStreamSerializer.h"
+#include "BinaryOutputStreamSerializer.h"
+#include "CryptoNoteSerialization.h"
 
 namespace Common {
 

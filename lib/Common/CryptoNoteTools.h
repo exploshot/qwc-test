@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include <Common/MemoryInputStream.h>
-#include <Common/StringTools.h>
-#include <Common/VectorOutputStream.h>
+#include "MemoryInputStream.h"
+#include "StringTools.h"
+#include "VectorOutputStream.h"
 
 #include <Global/CryptoNoteConfig.h>
 #include <Global/Constants.h>

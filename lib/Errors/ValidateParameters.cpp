@@ -24,6 +24,8 @@ extern "C"
 #include <Utilities/Mixins.h>
 #include <Utilities/Utilities.h>
 
+#include <SubWallets/SubWallets.h>
+
 Error validateFusionTransaction(
     const uint64_t mixin,
     const std::vector<std::string> subWalletsToTakeFrom,

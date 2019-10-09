@@ -20,7 +20,7 @@
 #include <cstdio>
 #include <cstring>
 
-#include <Common/FileSystemShim.h>
+#include "FileSystemShim.h"
 
 #include <Global/CryptoNoteConfig.h>
 
