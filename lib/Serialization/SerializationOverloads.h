@@ -17,19 +17,19 @@
 
 #pragma once
 
-#include "ISerializer.h"
-
 #include <array>
 #include <cstring>
 #include <list>
 #include <map>
-#include <string>
 #include <set>
+#include <string>
 #include <type_traits>
-#include <vector>
-#include <map>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
+
+#include <Serialization/ISerializer.h>
+
 
 namespace CryptoNote {
 

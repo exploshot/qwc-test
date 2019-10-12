@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include <CryptoTypes.h>
+#include <WalletTypes.h>
+
 #include <Crypto/crypto.h>
 
 #include <SubWallets/SubWallet.h>

@@ -8,8 +8,8 @@ Public domain.
 #include <stdio.h>
 #include <sys/param.h>
 
-#include "chacha8.h"
 #include <Common/int-util.h>
+#include <Crypto/chacha8.h>
 
 /*
  * The following macros are used to obtain exact-width results.

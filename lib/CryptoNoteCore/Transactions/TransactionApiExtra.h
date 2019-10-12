@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include <CryptoNoteCore/CryptoNoteFormatUtils.h>
-
 #include <Common/TransactionExtra.h>
+
+#include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 
 namespace CryptoNote {
 

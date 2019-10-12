@@ -2,14 +2,13 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "MainChainStorageRocksdb.h"
-
+#include <Common/CryptoNoteTools.h>
 #include <Common/FileSystemShim.h>
+
+#include <CryptoNoteCore/Blockchain/MainChainStorageRocksdb.h>
 
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>
-
-#include <Common/CryptoNoteTools.h>
 
 #include <rocksdb/db.h>
 #include <rocksdb/options.h>

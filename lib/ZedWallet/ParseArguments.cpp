@@ -4,15 +4,18 @@
 // Please see the included LICENSE file for more information.
 
 /////////////////////////////////////
-#include <ZedWallet/ParseArguments.h>
 /////////////////////////////////////
 
 #include <cxxopts.hpp>
+
 #include <Global/CliHeader.h>
 #include <Global/CryptoNoteConfig.h>
 #include <Global/Constants.h>
+
+#include <ZedWallet/ParseArguments.h>
 #include <ZedWallet/Tools.h>
-#include "version.h"
+
+#include <version.h>
 
 Config parseArguments(int argc, char **argv)
 {

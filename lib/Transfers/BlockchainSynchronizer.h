@@ -17,18 +17,19 @@
 
 #pragma once
 
-#include <INode.h>
-#include "SynchronizationState.h"
-#include "IBlockchainSynchronizer.h"
-#include "IObservableImpl.h"
-#include "IStreamSerializable.h"
-
-#include <condition_variable>
-#include <mutex>
 #include <atomic>
+#include <condition_variable>
 #include <future>
+#include <mutex>
+
+#include <INode.h>
+#include <IStreamSerializable.h>
 
 #include <Logging/LoggerRef.h>
+
+#include <Transfers/IBlockchainSynchronizer.h>
+#include <Transfers/IObservableImpl.h>
+#include <Transfers/SynchronizationState.h>
 
 namespace CryptoNote {
 

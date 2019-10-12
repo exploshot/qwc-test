@@ -6,11 +6,11 @@
 
 #pragma once
 
+#include <unordered_map>
+#include <stdexcept>
+
 #include <Crypto/random.h>
 
-#include <unordered_map>
-
-#include <stdexcept>
 
 class SequenceEnded: public std::runtime_error {
 public:

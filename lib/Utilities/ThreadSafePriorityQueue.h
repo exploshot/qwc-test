@@ -5,10 +5,8 @@
 #pragma once
 
 #include <condition_variable>
-
-#include <queue>
-
 #include <mutex>
+#include <queue>
 
 template<typename T, typename Comparison = std::less<T>>
 class ThreadSafePriorityQueue

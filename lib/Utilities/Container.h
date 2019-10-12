@@ -4,12 +4,9 @@
 // Please see the included LICENSE file for more information.
 
 #include <algorithm>
-
-#include <vector>
-
-#include <unordered_set>
-
 #include <iterator>
+#include <unordered_set>
+#include <vector>
 
 namespace Utilities
 {

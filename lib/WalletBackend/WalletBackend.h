@@ -4,21 +4,19 @@
 
 #pragma once
 
+#include <string>
+#include <tuple>
+#include <vector>
+
+#include <rapidjson/document.h>
+
 #include <CryptoTypes.h>
 
 #include <Errors/Errors.h>
 
 #include <Nigel/Nigel.h>
 
-#include <rapidjson/document.h>
-
-#include <string>
-
 #include <SubWallets/SubWallets.h>
-
-#include <tuple>
-
-#include <vector>
 
 #include <WalletBackend/WalletSynchronizer.h>
 #include <WalletBackend/WalletSynchronizerRAIIWrapper.h>

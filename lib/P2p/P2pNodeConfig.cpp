@@ -3,8 +3,8 @@
 //
 // Please see the included LICENSE file for more information.
 
-
 #include <Global/CryptoNoteConfig.h>
+
 #include <P2p/P2pNetworks.h>
 #include <P2p/P2pNodeConfig.h>
 

@@ -15,7 +15,7 @@
 
 #include <Utilities/Utilities.h>
 
-#include "version.h"
+#include <version.h>
 
 #include <zedwallet++/Utilities.h>
 

@@ -2,20 +2,15 @@
 //
 // Please see the included LICENSE file for more information.
 
-/////////////////////////////////////////////
-#include <WalletBackend/WalletSynchronizer.h>
-/////////////////////////////////////////////
+#include <future>
+#include <iostream>
 
 #include <Common/StringTools.h>
 
-#include <Global/Config.h>
-#include <Global/Constants.h>
-
 #include <Crypto/crypto.h>
 
-#include <future>
-
-#include <iostream>
+#include <Global/Config.h>
+#include <Global/Constants.h>
 
 #include <Logger/Logger.h>
 
@@ -24,6 +19,7 @@
 #include <Utilities/Utilities.h>
 
 #include <WalletBackend/Constants.h>
+#include <WalletBackend/WalletSynchronizer.h>
 
 ///////////////////////////////////
 /* CONSTRUCTORS / DECONSTRUCTORS */

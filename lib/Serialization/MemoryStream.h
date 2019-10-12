@@ -21,6 +21,7 @@
 #include <cstdint>
 #include <cstring> // memcpy
 #include <vector>
+
 #include <Common/IOutputStream.h>
 
 namespace CryptoNote {
@@ -28,8 +29,7 @@ namespace CryptoNote {
 class MemoryStream: public Common::IOutputStream {
 public:
 
-  MemoryStream() : m_writePos(0) {
-  }
+  MemoryStream() : m_writePos(0) { }
 
   virtual uint64_t writeSome(const void* data, uint64_t size) override {
     if (size == 0) {

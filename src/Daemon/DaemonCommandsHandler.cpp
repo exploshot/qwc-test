@@ -25,7 +25,7 @@
 #include <Utilities/FormatTools.h>
 #include <Utilities/ColouredMsg.h>
 
-#include "version.h"
+#include <version.h>
 
 namespace {
 template <typename T>

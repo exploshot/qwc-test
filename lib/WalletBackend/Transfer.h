@@ -2,7 +2,10 @@
 // 
 // Please see the included LICENSE file for more information.
 
+#include <vector>
+
 #include <CryptoNote.h>
+#include <WalletTypes.h>
 
 #include <Errors/Errors.h>
 
@@ -11,10 +14,6 @@
 #include <Serialization/SerializationTools.h>
 
 #include <SubWallets/SubWallets.h>
-
-#include <vector>
-
-#include <WalletTypes.h>
 
 namespace SendTransaction
 {

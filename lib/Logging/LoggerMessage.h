@@ -18,6 +18,7 @@
 #pragma once
 
 #include <iostream>
+
 #include <Logging/ILogger.h>
 
 namespace Logging {

@@ -4,15 +4,16 @@
 // Please see the included LICENSE file for more information.
 
 ///////////////////////////
-#include <ZedWallet/Menu.h>
 ///////////////////////////
 
 #include <Common/SignalHandler.h>
 
 #include <Utilities/ColouredMsg.h>
+
 #include <ZedWallet/CommandDispatcher.h>
 #include <ZedWallet/Commands.h>
 #include <ZedWallet/GetInput.h>
+#include <ZedWallet/Menu.h>
 #include <ZedWallet/Sync.h>
 #include <ZedWallet/Tools.h>
 

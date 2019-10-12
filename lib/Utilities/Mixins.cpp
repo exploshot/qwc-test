@@ -3,15 +3,12 @@
 //
 // Please see the included LICENSE file for more information.
 
-/////////////////////////////
-#include <Utilities/Mixins.h>
-/////////////////////////////
+#include <sstream>
+#include <tuple>
 
 #include <Global/CryptoNoteConfig.h>
 
-#include <sstream>
-
-#include <tuple>
+#include <Utilities/Mixins.h>
 
 namespace Utilities
 {

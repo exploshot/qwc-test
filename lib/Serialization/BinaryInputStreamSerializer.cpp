@@ -15,14 +15,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "BinaryInputStreamSerializer.h"
-
 #include <algorithm>
 #include <cassert>
 #include <stdexcept>
+
 #include <Common/StreamTools.h>
-#include "SerializationOverloads.h"
+
 #include <Global/CryptoNoteConfig.h>
+
+#include <Serialization/BinaryInputStreamSerializer.h>
+#include <Serialization/SerializationOverloads.h>
 
 using namespace Common;
 

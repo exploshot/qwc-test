@@ -7,8 +7,9 @@
 // Please see the included LICENSE file for more information.
 
 #include <algorithm>
-
 #include <numeric>
+#include <set>
+#include <unordered_set>
 
 #include <Common/CryptoNoteTools.h>
 #include <Common/ShuffleGenerator.h>
@@ -16,7 +17,6 @@
 #include <Common/MemoryInputStream.h>
 #include <Common/TransactionExtra.h>
 
-#include <Global/Constants.h>
 
 #include <CryptoNoteCore/Blockchain/BlockchainCache.h>
 #include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
@@ -34,7 +34,7 @@
 
 #include <CryptoNoteProtocol/CryptoNoteProtocolHandlerCommon.h>
 
-#include <set>
+#include <Global/Constants.h>
 
 #include <System/Timer.h>
 
@@ -42,8 +42,6 @@
 #include <Utilities/FormatTools.h>
 #include <Utilities/LicenseCanary.h>
 #include <Utilities/ParseExtra.h>
-
-#include <unordered_set>
 
 #include <WalletTypes.h>
 

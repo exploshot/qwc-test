@@ -19,8 +19,8 @@
 
 #include <vector>
 #include <Common/IOutputStream.h>
-#include "ISerializer.h"
-#include "MemoryStream.h"
+#include <Serialization/ISerializer.h>
+#include <Serialization/MemoryStream.h>
 
 namespace CryptoNote {
 

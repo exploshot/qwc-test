@@ -21,10 +21,11 @@
 
 #include <Http/HttpRequest.h>
 #include <Http/HttpResponse.h>
-#include <System/TcpConnection.h>
-#include <System/TcpStream.h>
 
 #include <Serialization/SerializationTools.h>
+
+#include <System/TcpConnection.h>
+#include <System/TcpStream.h>
 
 namespace CryptoNote {
 

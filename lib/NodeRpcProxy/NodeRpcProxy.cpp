@@ -3,33 +3,34 @@
 //
 // Please see the included LICENSE file for more information.
 
-
-#include "NodeRpcProxy.h"
-#include "NodeErrors.h"
-
 #include <atomic>
 #include <ctime>
 #include <system_error>
 #include <thread>
 
+#include <Common/CryptoNoteTools.h>
+#include <Common/StringTools.h>
+
+#include <CryptoNoteCore/Transactions/TransactionApi.h>
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+
 #include <Http/HttpRequest.h>
 #include <Http/HttpResponse.h>
+
+#include <Logging/DummyLogger.h>
+
+#include <NodeRpcProxy/NodeErrors.h>
+#include <NodeRpcProxy/NodeRpcProxy.h>
+
+#include <Rpc/CoreRpcServerCommandsDefinitions.h>
+#include <Rpc/HttpClient.h>
+#include <Rpc/JsonRpc.h>
+
 #include <System/ContextGroup.h>
 #include <System/Dispatcher.h>
 #include <System/Event.h>
 #include <System/EventLock.h>
 #include <System/Timer.h>
-#include <CryptoNoteCore/Transactions/TransactionApi.h>
-
-#include <Common/StringTools.h>
-#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
-#include <Common/CryptoNoteTools.h>
-
-#include <Logging/DummyLogger.h>
-
-#include <Rpc/CoreRpcServerCommandsDefinitions.h>
-#include <Rpc/HttpClient.h>
-#include <Rpc/JsonRpc.h>
 
 #ifndef AUTO_VAL_INIT
 #define AUTO_VAL_INIT(n) boost::value_initialized<decltype(n)>()

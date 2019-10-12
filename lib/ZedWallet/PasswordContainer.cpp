@@ -5,10 +5,6 @@
 // 
 // Please see the included LICENSE file for more information.
 
-//////////////////////////////
-#include "PasswordContainer.h"
-//////////////////////////////
-
 #include <iostream>
 #include <memory.h>
 #include <stdio.h>
@@ -25,6 +21,8 @@
 #endif
 
 #include <Utilities/ColouredMsg.h>
+
+#include <ZedWallet/PasswordContainer.h>
 
 namespace Tools
 {

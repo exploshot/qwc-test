@@ -21,8 +21,9 @@
 #include <iostream>
 #include <map>
 #include <string>
-#include "HttpRequest.h"
-#include "HttpResponse.h"
+
+#include <Http/HttpRequest.h>
+#include <Http/HttpResponse.h>
 
 namespace CryptoNote {
 

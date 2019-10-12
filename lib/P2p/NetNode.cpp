@@ -5,8 +5,6 @@
 //
 // Please see the included LICENSE file for more information.
 
-
-
 #include <algorithm>
 #include <fstream>
 
@@ -18,8 +16,24 @@
 #include <miniupnpc/miniupnpc.h>
 #include <miniupnpc/upnpcommands.h>
 
+#include <Common/StdInputStream.h>
+#include <Common/StdOutputStream.h>
+#include <Common/Util.h>
+
+#include <Crypto/crypto.h>
+#include <Crypto/random.h>
+
+#include <Global/CryptoNoteConfig.h>
+
+#include <P2p/ConnectionContext.h>
+#include <P2p/LevinProtocol.h>
 #include <P2p/NetNode.h>
 #include <P2p/P2pNetworks.h>
+#include <P2p/P2pProtocolDefinitions.h>
+
+#include <Serialization/BinaryInputStreamSerializer.h>
+#include <Serialization/BinaryOutputStreamSerializer.h>
+#include <Serialization/SerializationOverloads.h>
 
 #include <System/Context.h>
 #include <System/ContextGroupTimeout.h>
@@ -30,21 +44,7 @@
 #include <System/TcpListener.h>
 #include <System/TcpConnector.h>
 
-#include "version.h"
-#include <Global/CryptoNoteConfig.h>
-#include <Common/StdInputStream.h>
-#include <Common/StdOutputStream.h>
-#include <Common/Util.h>
-#include <Crypto/crypto.h>
-#include <Crypto/random.h>
-
-#include "ConnectionContext.h"
-#include "LevinProtocol.h"
-#include "P2pProtocolDefinitions.h"
-
-#include <Serialization/BinaryInputStreamSerializer.h>
-#include <Serialization/BinaryOutputStreamSerializer.h>
-#include <Serialization/SerializationOverloads.h>
+#include <version.h>
 
 using namespace Common;
 using namespace Logging;

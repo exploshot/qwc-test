@@ -11,7 +11,7 @@
 #include <vector>
 #include <string>
 
-#include "P2pProtocolTypes.h"
+#include <P2p/P2pProtocolTypes.h>
 
 namespace CryptoNote {
 

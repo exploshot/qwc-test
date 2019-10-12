@@ -8,17 +8,17 @@
 
 #pragma once
 
-#include "IBlockchainSynchronizer.h"
+#include <unordered_set>
+
 #include <ITransfersSynchronizer.h>
-#include "TransfersSubscription.h"
-#include "TypeHelpers.h"
 
 #include <Crypto/crypto.h>
 #include <Logging/LoggerRef.h>
 
-#include "IObservableImpl.h"
-
-#include <unordered_set>
+#include <Transfers/IBlockchainSynchronizer.h>
+#include <Transfers/IObservableImpl.h>
+#include <Transfers/TransfersSubscription.h>
+#include <Transfers/TypeHelpers.h>
 
 namespace CryptoNote {
 

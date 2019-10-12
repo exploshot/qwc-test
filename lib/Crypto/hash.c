@@ -19,8 +19,8 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "hash-ops.h"
-#include "keccak.h"
+#include <Crypto/hash-ops.h>
+#include <Crypto/keccak.h>
 
 void hash_permutation(union hash_state *state) {
   keccakf((uint64_t*)state, 24);

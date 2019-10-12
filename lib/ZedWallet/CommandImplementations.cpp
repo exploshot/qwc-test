@@ -4,21 +4,19 @@
 // Please see the included LICENSE file for more information.
 
 /////////////////////////////////////////////
-#include <ZedWallet/CommandImplementations.h>
 /////////////////////////////////////////////
 
 #include <atomic>
-
-#include <Common/StringTools.h>
-
-#include <Global/Constants.h>
-
-#include <CryptoNoteCore/Account.h>
-#include <Common/TransactionExtra.h>
-
 #ifndef MSVC
 #include <fstream>
 #endif
+
+#include <Common/StringTools.h>
+#include <Common/TransactionExtra.h>
+
+#include <CryptoNoteCore/Account.h>
+
+#include <Global/Constants.h>
 
 #include <Mnemonics/Mnemonics.h>
 
@@ -27,6 +25,7 @@
 #include <Utilities/ParseExtra.h>
 
 #include <ZedWallet/AddressBook.h>
+#include <ZedWallet/CommandImplementations.h>
 #include <ZedWallet/Commands.h>
 #include <ZedWallet/Fusion.h>
 #include <ZedWallet/Menu.h>

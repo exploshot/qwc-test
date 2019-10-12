@@ -24,8 +24,8 @@
 #include <thread>
 #include <vector>
 
-#include "BlockingQueue.h"
-#include "ConsoleTools.h"
+#include <Common/BlockingQueue.h>
+#include <Common/ConsoleTools.h>
 
 #ifndef _WIN32
 #include <sys/select.h>

@@ -10,12 +10,17 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+
 #include <boost/utility.hpp>
-#include <Global/CryptoNoteConfig.h>
+
 #include <Crypto/hash.h>
-#include <Logging/LoggerRef.h>
+
 #include <CryptoNoteCore/Blockchain/CachedBlock.h>
-#include "CryptoNoteBasic.h"
+#include <CryptoNoteCore/CryptoNoteBasic.h>
+
+#include <Global/CryptoNoteConfig.h>
+
+#include <Logging/LoggerRef.h>
 
 namespace CryptoNote {
 

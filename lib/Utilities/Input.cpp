@@ -2,13 +2,10 @@
 // 
 // Please see the included LICENSE file for more information.
 
-////////////////////////////
-#include <Utilities/Input.h>
-////////////////////////////
-
 #include <iostream>
 
 #include <Utilities/ColouredMsg.h>
+#include <Utilities/Input.h>
 
 namespace Utilities
 {

@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <Global/CryptoNoteConfig.h>
-
 #include <CryptoNoteCore/Transactions/CachedTransaction.h>
 #include <CryptoNoteCore/Transactions/TransactionApi.h>
+
+#include <Global/CryptoNoteConfig.h>
 
 #include <Utilities/Mixins.h>
 

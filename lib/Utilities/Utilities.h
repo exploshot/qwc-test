@@ -5,16 +5,12 @@
 #pragma once
 
 #include <atomic>
-
 #include <chrono>
+#include <iomanip>
+#include <string>
+#include <vector>
 
 #include <CryptoNote.h>
-
-#include <iomanip>
-
-#include <string>
-
-#include <vector>
 
 #include <Errors/Errors.h>
 

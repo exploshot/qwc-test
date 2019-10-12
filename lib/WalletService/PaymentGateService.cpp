@@ -4,19 +4,22 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "PaymentGateService.h"
-
 #include <future>
 
+#include <Common/ScopeExit.h>
 #include <Common/SignalHandler.h>
 #include <Common/Util.h>
-#include <Logging/LoggerRef.h>
-#include "PaymentServiceJsonRpcServer.h"
 
-#include <Common/ScopeExit.h>
+#include <Logging/LoggerRef.h>
+
 #include <NodeRpcProxy/NodeRpcProxy.h>
+
 #include <System/Context.h>
+
 #include <Wallet/WalletGreen.h>
+
+#include <WalletService/PaymentGateService.h>
+#include <WalletService/PaymentServiceJsonRpcServer.h>
 
 #ifdef ERROR
 #undef ERROR

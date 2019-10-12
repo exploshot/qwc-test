@@ -4,7 +4,8 @@
 // Please see the included LICENSE file for more information.
 
 #pragma once
-#include "CachedTransaction.h"
+
+#include <CryptoNoteCore/Transactions/CachedTransaction.h>
 
 namespace CryptoNote {
 

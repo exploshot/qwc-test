@@ -4,15 +4,12 @@
 
 #pragma once
 
-#include <CryptoTypes.h>
-
 #include <deque>
-
-#include <json.hpp>
-
-#include <JsonHelper.h>
-
 #include <vector>
+
+#include <CryptoTypes.h>
+#include <json.hpp>
+#include <JsonHelper.h>
 
 using nlohmann::json;
 

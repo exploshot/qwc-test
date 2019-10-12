@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <Global/CryptoNoteConfig.h>
-
 #include <list>
+
+#include <Global/CryptoNoteConfig.h>
 
 #include <P2p/P2pProtocolTypes.h>
 #include <P2p/Peerlist.h>

@@ -4,11 +4,12 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "NodeFactory.h"
-
-#include "NodeRpcProxy/NodeRpcProxy.h"
 #include <memory>
 #include <future>
+
+#include <NodeRpcProxy/NodeRpcProxy.h>
+
+#include <WalletService/NodeFactory.h>
 
 namespace PaymentService {
 

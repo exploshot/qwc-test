@@ -18,8 +18,10 @@
 #pragma once
 
 #include <Common/StringTools.h>
+
 #include <Crypto/crypto.h>
 #include <Crypto/hash.h>
+
 #include <CryptoNoteCore/CryptoNoteBasic.h>
 
 

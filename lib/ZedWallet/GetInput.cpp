@@ -3,12 +3,9 @@
 // 
 // Please see the included LICENSE file for more information.
 
-///////////////////////////////
-#include <ZedWallet/GetInput.h>
-///////////////////////////////
-
 #include <linenoise.hpp>
 
+#include <ZedWallet/GetInput.h>
 #include <ZedWallet/Sync.h>
 #include <ZedWallet/Tools.h>
 

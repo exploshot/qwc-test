@@ -5,14 +5,10 @@
 //
 // Please see the included LICENSE file for more information.
 
-/////////////////////
-#include <CryptoNoteCore/Currency.h>
-/////////////////////
+#include <cctype>
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
-
-#include <cctype>
 
 #include <Common/Base58.h>
 #include <Common/CheckDifficulty.h>
@@ -22,6 +18,7 @@
 #include <Common/TransactionExtra.h>
 
 #include <CryptoNoteCore/Account.h>
+#include <CryptoNoteCore/Currency.h>
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 #include <CryptoNoteCore/Difficulty.h>

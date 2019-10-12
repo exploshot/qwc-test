@@ -15,11 +15,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "WalletSerializationV2.h"
-
-#include <Serialization/CryptoNoteSerialization.h>
 #include <Serialization/BinaryInputStreamSerializer.h>
 #include <Serialization/BinaryOutputStreamSerializer.h>
+#include <Serialization/CryptoNoteSerialization.h>
+
+#include <Wallet/WalletSerializationV2.h>
 
 using namespace Common;
 using namespace Crypto;

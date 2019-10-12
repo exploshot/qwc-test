@@ -22,7 +22,7 @@
 #include <istream>
 #include <ostream>
 
-#include "BlockchainExplorerData.h"
+#include <BlockchainExplorerData.h>
 
 namespace CryptoNote {
 

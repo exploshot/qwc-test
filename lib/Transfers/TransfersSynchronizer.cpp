@@ -6,14 +6,16 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "TransfersSynchronizer.h"
-#include "TransfersConsumer.h"
-
 #include <Common/StdInputStream.h>
 #include <Common/StdOutputStream.h>
+
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+
 #include <Serialization/BinaryInputStreamSerializer.h>
 #include <Serialization/BinaryOutputStreamSerializer.h>
+
+#include <Transfers/TransfersConsumer.h>
+#include <Transfers/TransfersSynchronizer.h>
 
 using namespace Common;
 using namespace Crypto;

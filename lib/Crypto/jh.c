@@ -13,10 +13,10 @@
    Last Modified: January 16, 2011
 */
 
-#include "jh.h"
-
 #include <stdint.h>
 #include <string.h>
+
+#include <Crypto/jh.h>
 
 /*typedef unsigned long long uint64;*/
 typedef uint64_t uint64;

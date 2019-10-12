@@ -3,11 +3,25 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "P2pNode.h"
+#include <random>
 
 #include <boost/uuid/uuid_io.hpp>
 
-#include <random>
+#include <Common/StdInputStream.h>
+#include <Common/StdOutputStream.h>
+
+#include <Crypto/random.h>
+
+#include <Global/CryptoNoteConfig.h>
+
+#include <P2p/LevinProtocol.h>
+#include <P2p/P2pConnectionProxy.h>
+#include <P2p/P2pContext.h>
+#include <P2p/P2pContextOwner.h>
+#include <P2p/P2pNode.h>
+
+#include <Serialization/BinaryInputStreamSerializer.h>
+#include <Serialization/BinaryOutputStreamSerializer.h>
 
 #include <System/ContextGroupTimeout.h>
 #include <System/InterruptedException.h>
@@ -15,18 +29,6 @@
 #include <System/OperationTimeout.h>
 #include <System/TcpConnection.h>
 #include <System/TcpConnector.h>
-
-#include <Global/CryptoNoteConfig.h>
-#include <Crypto/random.h>
-#include <Common/StdInputStream.h>
-#include <Common/StdOutputStream.h>
-#include <Serialization/BinaryInputStreamSerializer.h>
-#include <Serialization/BinaryOutputStreamSerializer.h>
-
-#include "LevinProtocol.h"
-#include "P2pConnectionProxy.h"
-#include "P2pContext.h"
-#include "P2pContextOwner.h"
 
 using namespace Common;
 using namespace Logging;

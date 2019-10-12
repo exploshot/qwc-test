@@ -2,15 +2,13 @@
 // 
 // Please see the included LICENSE file for more information.
 
-//////////////////////////
-#include "Logger.h"
-//////////////////////////
-
 #include <algorithm>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+
+#include "Logger.h"
 
 namespace Logger
 {

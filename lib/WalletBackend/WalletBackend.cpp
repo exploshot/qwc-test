@@ -6,15 +6,9 @@
 #include <WalletBackend/WalletBackend.h>
 ////////////////////////////////////////
 
-#include <Common/Base58.h>
-#include <Common/FileSystemShim.h>
-
-#include <Global/CryptoNoteConfig.h>
-
-#include <CryptoNoteCore/Currency.h>
-
-#include <Crypto/crypto.h>
-#include <Crypto/random.h>
+#include <fstream>
+#include <future>
+#include <iomanip>
 
 #include <cryptopp/aes.h>
 #include <cryptopp/algparam.h>
@@ -23,25 +17,30 @@
 #include <cryptopp/sha.h>
 #include <cryptopp/pwdbased.h>
 
-#include <Errors/ValidateParameters.h>
-
-#include <fstream>
-
-#include <future>
-
-#include <iomanip>
+#include <rapidjson/writer.h>
+#include <rapidjson/stringbuffer.h>
 
 #include <JsonHelper.h>
 
+#include <Common/Base58.h>
+#include <Common/FileSystemShim.h>
+
+#include <Crypto/crypto.h>
+#include <Crypto/random.h>
+
+#include <CryptoNoteCore/Currency.h>
+
+#include <Errors/ValidateParameters.h>
+
+#include <Global/CryptoNoteConfig.h>
+
 #include <Logger/Logger.h>
+
 #include <Logging/LoggerManager.h>
 
 #include <Mnemonics/Mnemonics.h>
 
 #include <NodeRpcProxy/NodeRpcProxy.h>
-
-#include <rapidjson/writer.h>
-#include <rapidjson/stringbuffer.h>
 
 #include <Utilities/Addresses.h>
 #include <Utilities/Utilities.h>

@@ -22,6 +22,9 @@
 #include <vector>
 #include <string>
 
+#include <Common/IInputStream.h>
+#include <Common/IOutputStream.h>
+
 namespace Common {
 
 class IInputStream;

@@ -1,9 +1,11 @@
 // Copyright (c) 2018, The TurtleCoin Developers
 //
 // Please see the included LICENSE file for more information.
-#include "WalletServiceConfiguration.h"
-#include <cxxopts.hpp>
+
+#include <fstream>
 #include <string>
+
+#include <cxxopts.hpp>
 
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
@@ -11,12 +13,12 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/prettywriter.h>
-#include <fstream>
 
 #include <Global/CliHeader.h>
 #include <Global/CryptoNoteConfig.h>
 #include <Logging/ILogger.h>
 
+#include <WalletService/WalletServiceConfiguration.h>
 
 using namespace rapidjson;
 

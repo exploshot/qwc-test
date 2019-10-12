@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <fstream>
 #include <map>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
@@ -20,14 +21,11 @@
 #include <boost/filesystem.hpp>
 
 #include <Common/Lazy.h>
+
 #include <Mnemonics/CRC32.h>
 #include <Mnemonics/Mnemonics.h>
 #include <Mnemonics/WordList.h>
 #include <Mnemonics/LanguageBase.h>
-
-#include <sstream>
-
-
 
 namespace Language {
 

@@ -4,12 +4,14 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "NetNodeConfig.h"
-
 #include <Common/Util.h>
 #include <Common/StringTools.h>
-#include <Global/CryptoNoteConfig.h>
+
 #include <Crypto/random.h>
+
+#include <Global/CryptoNoteConfig.h>
+
+#include <P2p/NetNodeConfig.h>
 
 namespace CryptoNote {
 namespace {

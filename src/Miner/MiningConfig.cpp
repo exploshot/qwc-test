@@ -21,7 +21,7 @@
 #include <Common/Util.h>
 
 #include "Logging/ILogger.h"
-#include "version.h"
+#include <version.h>
 
 #include <Errors/ValidateParameters.h>
 

@@ -28,10 +28,11 @@
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/random_access_index.hpp>
 
-#include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
 #include <Common/StringView.h>
-#include <CryptoNoteCore/Currency.h>
+
+#include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
 #include <CryptoNoteCore/Blockchain/IBlockchainCache.h>
+#include <CryptoNoteCore/Currency.h>
 #include <CryptoNoteCore/UpgradeManager.h>
 
 namespace CryptoNote {

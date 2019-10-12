@@ -19,9 +19,11 @@
 
 #include <vector>
 
-#include <CryptoNoteCore/Transactions/CachedTransaction.h>
 #include <CryptoNote.h>
+
 #include <Common/CryptoNoteTools.h>
+
+#include <CryptoNoteCore/Transactions/CachedTransaction.h>
 
 namespace CryptoNote {
     namespace Utils {

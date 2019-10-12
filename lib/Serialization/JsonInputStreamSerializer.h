@@ -20,8 +20,10 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
+
 #include <Common/JsonValue.h>
-#include "JsonInputValueSerializer.h"
+
+#include <Serialization/JsonInputValueSerializer.h>
 
 namespace CryptoNote {
 

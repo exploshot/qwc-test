@@ -16,8 +16,10 @@
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <WalletGreenTypes.h>
-#include "TransfersSubscription.h"
+
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+
+#include <Transfers/TransfersSubscription.h>
 
 using namespace Crypto;
 using namespace Logging;

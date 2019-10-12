@@ -31,6 +31,7 @@
 #include <boost/multi_index/member.hpp>
 
 #include <Common/FileMappedVector.h>
+
 #include <Crypto/chacha8.h>
 
 namespace CryptoNote {

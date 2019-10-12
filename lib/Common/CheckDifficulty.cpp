@@ -3,11 +3,8 @@
 //
 // Please see the included LICENSE file for more information.
 
-////////////////////////////
-#include "CheckDifficulty.h"
-////////////////////////////
-
-#include "int-util.h"
+#include <Common/CheckDifficulty.h>
+#include <Common/int-util.h>
 #include <Crypto/hash.h>
 
 namespace CryptoNote

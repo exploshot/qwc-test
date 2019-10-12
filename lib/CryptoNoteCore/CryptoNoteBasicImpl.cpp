@@ -15,15 +15,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "CryptoNoteBasicImpl.h"
-#include "CryptoNoteFormatUtils.h"
+#include <Common/Base58.h>
 #include <Common/CryptoNoteTools.h>
+#include <Common/int-util.h>
+
+#include <Crypto/hash.h>
+
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+#include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 
 #include <Serialization/CryptoNoteSerialization.h>
-
-#include <Common/Base58.h>
-#include <Crypto/hash.h>
-#include <Common/int-util.h>
 
 using namespace Crypto;
 using namespace Common;

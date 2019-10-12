@@ -15,9 +15,10 @@
 #include <stdio.h>
 
 #include <Common/int-util.h>
-#include "hash-ops.h"
-#include "oaes_lib.h"
-#include "variant2_int_sqrt.h"
+
+#include <Crypto/hash-ops.h>
+#include <Crypto/oaes_lib.h>
+#include <Crypto/variant2_int_sqrt.h>
 
 // Standard Crypto Definitions
 #define AES_BLOCK_SIZE         16

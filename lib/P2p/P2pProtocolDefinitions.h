@@ -6,13 +6,15 @@
 
 #pragma once
 
-#include "P2pProtocolTypes.h"
-
 #include <boost/uuid/uuid.hpp>
 
 #include <Crypto/crypto.h>
-#include <Global/CryptoNoteConfig.h>
+
 #include <CryptoNoteCore/CoreStatistics.h>
+
+#include <Global/CryptoNoteConfig.h>
+
+#include <P2p/P2pProtocolTypes.h>
 
 // new serialization
 #include <Serialization/ISerializer.h>

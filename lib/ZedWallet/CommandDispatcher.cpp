@@ -3,12 +3,10 @@
 // 
 // Please see the included LICENSE file for more information.
 
-////////////////////////////////////////
-#include <ZedWallet/CommandDispatcher.h>
-////////////////////////////////////////
+#include <Utilities/ColouredMsg.h>
 
 #include <ZedWallet/AddressBook.h>
-#include <Utilities/ColouredMsg.h>
+#include <ZedWallet/CommandDispatcher.h>
 #include <ZedWallet/CommandImplementations.h>
 #include <ZedWallet/Fusion.h>
 #include <ZedWallet/Open.h>

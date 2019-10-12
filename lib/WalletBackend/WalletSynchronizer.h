@@ -6,6 +6,8 @@
 
 #include <memory>
 
+#include <WalletTypes.h>
+
 #include <Nigel/Nigel.h>
 
 #include <SubWallets/SubWallets.h>
@@ -17,7 +19,6 @@
 #include <WalletBackend/EventHandler.h>
 #include <WalletBackend/SynchronizationStatus.h>
 
-#include <WalletTypes.h>
 
 typedef std::vector<std::tuple<Crypto::PublicKey, WalletTypes::TransactionInput>> BlockInputsAndOwners;
 typedef std::tuple<WalletTypes::WalletBlockInfo, BlockInputsAndOwners, uint32_t> SemiProcessedBlock;

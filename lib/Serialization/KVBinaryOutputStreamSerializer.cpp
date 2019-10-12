@@ -15,12 +15,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "KVBinaryOutputStreamSerializer.h"
-#include "KVBinaryCommon.h"
-
 #include <cassert>
 #include <stdexcept>
+
 #include <Common/StreamTools.h>
+
+#include <Serialization/KVBinaryCommon.h>
+#include <Serialization/KVBinaryOutputStreamSerializer.h>
 
 using namespace Common;
 using namespace CryptoNote;

@@ -15,10 +15,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "JsonOutputStreamSerializer.h"
 #include <cassert>
 #include <stdexcept>
+
 #include <Common/StringTools.h>
+
+#include <Serialization/JsonOutputStreamSerializer.h>
 
 using Common::JsonValue;
 using namespace CryptoNote;

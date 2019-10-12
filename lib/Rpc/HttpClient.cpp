@@ -15,9 +15,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "HttpClient.h"
-
 #include <Http/HttpParser.h>
+
+#include <Rpc/HttpClient.h>
+
 #include <System/Ipv4Resolver.h>
 #include <System/Ipv4Address.h>
 #include <System/TcpConnector.h>

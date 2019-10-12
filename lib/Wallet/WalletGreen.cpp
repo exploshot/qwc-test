@@ -7,13 +7,17 @@
 //
 // Please see the included LICENSE file for more information.
 
-///////////////////////////////
-#include <Wallet/WalletGreen.h>
-///////////////////////////////
-
 #include <algorithm>
-
 #include <cassert>
+#include <ctime>
+#include <fstream>
+#include <numeric>
+#include <random>
+#include <set>
+#include <tuple>
+#include <utility>
+
+#include <ITransaction.h>
 
 #include <Common/CryptoNoteTools.h>
 #include <Common/ScopeExit.h>
@@ -34,35 +38,20 @@
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 #include <CryptoNoteCore/Transactions/TransactionApi.h>
 
-#include <ctime>
-
-#include <fstream>
-
-#include <ITransaction.h>
-
-#include <numeric>
-
-#include <random>
-
 #include <Serialization/CryptoNoteSerialization.h>
-
-#include <set>
 
 #include <System/EventLock.h>
 #include <System/RemoteContext.h>
 
 #include <Transfers/TransfersContainer.h>
 
-#include <tuple>
-
-#include <utility>
-
 #include <Utilities/Addresses.h>
 #include <Utilities/ParseExtra.h>
 #include <Utilities/Utilities.h>
 
-#include <Wallet/WalletSerializationV2.h>
 #include <Wallet/WalletErrors.h>
+#include <Wallet/WalletGreen.h>
+#include <Wallet/WalletSerializationV2.h>
 #include <Wallet/WalletUtils.h>
 
 #include <WalletBackend/Constants.h>

@@ -4,13 +4,11 @@
 
 #pragma once
 
-#include <Common/ConsoleTools.h>
-
 #include <iomanip>
-
 #include <ostream>
-
 #include <string>
+
+#include <Common/ConsoleTools.h>
 
 template <typename T>
 class ColouredMsg

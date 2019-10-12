@@ -16,7 +16,9 @@
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <Common/CryptoNoteTools.h>
+
 #include <CryptoNoteCore/Database/DatabaseCacheData.h>
+
 #include <Serialization/CryptoNoteSerialization.h>
 #include <Serialization/SerializationOverloads.h>
 

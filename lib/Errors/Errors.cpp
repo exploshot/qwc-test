@@ -2,11 +2,9 @@
 // 
 // Please see the included LICENSE file for more information.
 
-//////////////////////////
-#include "Errors.h"
-//////////////////////////
-
 #include <ostream>
+
+#include <Errors/Errors.h>
 
 std::string Error::getErrorMessage() const
 {

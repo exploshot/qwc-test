@@ -7,12 +7,13 @@
 #include <iostream>
 #include <memory>
 #include <thread>
-
 #include <string.h>
 
 #include <Global/CliHeader.h>
-#include "PaymentGateService.h"
-#include "version.h"
+
+#include <WalletService/PaymentGateService.h>
+
+#include <version.h>
 
 #ifdef WIN32
 #ifndef NOMINMAX

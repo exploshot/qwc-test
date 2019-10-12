@@ -15,14 +15,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "ConsoleTools.h"
-
 #include <stdio.h>
 
+#include <Common/ConsoleTools.h>
+
 #ifdef _WIN32
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
 #include <Windows.h>
 #include <io.h>
 #else
@@ -30,7 +27,9 @@
 #include <unistd.h>
 #endif
 
-namespace Common { namespace Console { 
+namespace Common { 
+  
+namespace Console { 
 
 bool isConsoleTty() {
 #if defined(WIN32)

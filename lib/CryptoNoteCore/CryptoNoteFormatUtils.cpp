@@ -15,22 +15,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "CryptoNoteFormatUtils.h"
-
 #include <set>
-#include <Logging/LoggerRef.h>
+
+#include <Common/CryptoNoteTools.h>
 #include <Common/Varint.h>
+
+#include <CryptoNoteCore/Account.h>
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+#include <CryptoNoteCore/CryptoNoteFormatUtils.h>
+
+#include <Global/CryptoNoteConfig.h>
+
+#include <Logging/LoggerRef.h>
 
 #include <Serialization/BinaryOutputStreamSerializer.h>
 #include <Serialization/BinaryInputStreamSerializer.h>
 #include <Serialization/CryptoNoteSerialization.h>
-
-#include "Account.h"
-#include "CryptoNoteBasicImpl.h"
-
-#include <Common/CryptoNoteTools.h>
-
-#include <Global/CryptoNoteConfig.h>
 
 using namespace Logging;
 using namespace Crypto;

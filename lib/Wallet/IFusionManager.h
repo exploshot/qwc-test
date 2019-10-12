@@ -18,9 +18,7 @@
 #pragma once
 
 #include <cstdint>
-
 #include <string>
-
 #include <utility>
 
 namespace CryptoNote {

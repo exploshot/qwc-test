@@ -17,10 +17,11 @@
 
 #pragma once
 
-#include <CryptoNoteProtocol/ICryptoNoteProtocolQuery.h>
+#include <vector>
+
 #include <CryptoNote.h>
 
-#include <vector>
+#include <CryptoNoteProtocol/ICryptoNoteProtocolQuery.h>
 
 namespace CryptoNote
 {

@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "version.h"
+#include <version.h>
 
 #include <cstdint>
 #include <string>

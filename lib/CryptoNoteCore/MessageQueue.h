@@ -19,7 +19,7 @@
 
 #include <queue>
 
-#include "IntrusiveLinkedList.h"
+#include <CryptoNoteCore/IntrusiveLinkedList.h>
 
 #include <System/Dispatcher.h>
 #include <System/Event.h>

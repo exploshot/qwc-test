@@ -6,11 +6,15 @@
 // Please see the included LICENSE file for more information.
 
 #pragma once
+
 #include <set>
 #include <unordered_set>
-#include "CachedTransaction.h"
+
 #include <CryptoNote.h>
+
 #include <Crypto/crypto.h>
+
+#include <CryptoNoteCore/Transactions/CachedTransaction.h>
 
 namespace CryptoNote {
 

@@ -4,11 +4,14 @@
 
 #pragma once
 
-#include <CryptoNoteCore/Blockchain/IMainChainStorage.h>
-#include <CryptoNoteCore/Currency.h>
-#include <rocksdb/db.h>
-#include <CryptoNoteCore/Database/DataBaseConfig.h>
 #include <memory>
+
+#include <CryptoNoteCore/Blockchain/IMainChainStorage.h>
+#include <CryptoNoteCore/Database/DataBaseConfig.h>
+#include <CryptoNoteCore/Currency.h>
+
+#include <rocksdb/db.h>
+
 
 namespace CryptoNote
 {

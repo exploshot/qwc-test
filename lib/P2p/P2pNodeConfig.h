@@ -17,9 +17,11 @@
 
 #pragma once
 
-#include <boost/uuid/uuid.hpp>
 #include <chrono>
-#include "NetNodeConfig.h"
+
+#include <boost/uuid/uuid.hpp>
+
+#include <P2p/NetNodeConfig.h>
 
 namespace CryptoNote {
 

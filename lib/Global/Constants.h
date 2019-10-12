@@ -4,8 +4,10 @@
 
 #pragma once
 
-#include <CryptoTypes.h>
 #include <vector>
+
+#include <CryptoTypes.h>
+
 #include <Global/CryptoNoteConfig.h>
 
 /* You can change things in this file, but you probably shouldn't. Leastways,

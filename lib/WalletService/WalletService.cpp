@@ -5,11 +5,11 @@
 //
 // Please see the included LICENSE file for more information.
 
-////////////////////////////////////////
-#include <WalletService/WalletService.h>
-////////////////////////////////////////
-
 #include <assert.h>
+#include <future>
+#include <sstream>
+#include <tuple>
+#include <unordered_set>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -27,30 +27,23 @@
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 #include <CryptoNoteCore/Mixins.h>
 
-#include <future>
-
 #include <Mnemonics/Mnemonics.h>
-
-#include <sstream>
 
 #include <System/EventLock.h>
 #include <System/InterruptedException.h>
 #include <System/RemoteContext.h>
 #include <System/Timer.h>
 
-#include <tuple>
-
-#include <unordered_set>
-
 #include <Utilities/Addresses.h>
-
-#include <WalletService/NodeFactory.h>
-#include <WalletService/PaymentServiceJsonRpcMessages.h>
-#include <WalletService/WalletServiceErrorCategory.h>
 
 #include <Wallet/WalletGreen.h>
 #include <Wallet/WalletErrors.h>
 #include <Wallet/WalletUtils.h>
+
+#include <WalletService/NodeFactory.h>
+#include <WalletService/PaymentServiceJsonRpcMessages.h>
+#include <WalletService/WalletService.h>
+#include <WalletService/WalletServiceErrorCategory.h>
 
 namespace PaymentService {
 

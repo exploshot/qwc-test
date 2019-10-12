@@ -5,36 +5,30 @@
 //
 // Please see the included LICENSE file for more information.
 
-//////////////////////////
-#include <Rpc/RpcServer.h>
-//////////////////////////
-
 #include <cmath>
+#include <future>
+#include <unordered_map>
 
+#include <Common/CryptoNoteTools.h>
 #include <Common/StringTools.h>
-
-#include <Global/CryptoNoteConfig.h>
+#include <Common/TransactionExtra.h>
 
 #include <CryptoNoteCore/Core.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 
-#include <Common/CryptoNoteTools.h>
-#include <Common/TransactionExtra.h>
-
 #include <CryptoNoteProtocol/CryptoNoteProtocolHandlerCommon.h>
 
-#include <future>
+#include <Global/CryptoNoteConfig.h>
 
 #include <P2p/NetNode.h>
 
 #include <Rpc/CoreRpcServerErrorCodes.h>
 #include <Rpc/JsonRpc.h>
-
-#include "version.h"
-
-#include <unordered_map>
+#include <Rpc/RpcServer.h>
 
 #include <Utilities/FormatTools.h>
+
+#include <version.h>
 
 #undef ERROR
 

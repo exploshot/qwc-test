@@ -19,7 +19,7 @@
 
 #include <cstdint>
 #include <vector>
-#include "IOutputStream.h"
+#include <Common/IOutputStream.h>
 
 namespace Common {
 

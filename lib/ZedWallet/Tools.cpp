@@ -3,27 +3,24 @@
 // 
 // Please see the included LICENSE file for more information.
 
-////////////////////////////
-#include <ZedWallet/Tools.h>
-////////////////////////////
-
 #include <cmath>
+#include <fstream>
+#include <iostream>
 
 #include <Common/Base58.h>
-#include <Common/StringTools.h>
-
-#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <Common/CryptoNoteTools.h>
+#include <Common/StringTools.h>
 #include <Common/TransactionExtra.h>
 
-#include <fstream>
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 
-#include <iostream>
+#include <Global/Constants.h>
 
 #include <Utilities/ColouredMsg.h>
 #include <Utilities/Addresses.h>
+
 #include <ZedWallet/PasswordContainer.h>
-#include <Global/Constants.h>
+#include <ZedWallet/Tools.h>
 
 void confirmPassword(const std::string &walletPass, const std::string &msg)
 {

@@ -23,10 +23,11 @@
 
 #include <CryptoNote.h>
 
+#include <Common/ArrayView.h>
+
 #include <CryptoNoteCore/Blockchain/CachedBlock.h>
 #include <CryptoNoteCore/Transactions/CachedTransaction.h>
 #include <CryptoNoteCore/Transactions/TransactionValidatiorState.h>
-#include <Common/ArrayView.h>
 
 namespace CryptoNote {
 

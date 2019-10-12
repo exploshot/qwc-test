@@ -17,11 +17,14 @@
 
 #pragma once
 
-#include "CommonTypes.h"
-#include <IStreamSerializable.h>
-#include <Serialization/ISerializer.h>
-#include <vector>
 #include <map>
+#include <vector>
+
+#include <IStreamSerializable.h>
+
+#include <Serialization/ISerializer.h>
+
+#include <Transfers/CommonTypes.h>
 
 namespace CryptoNote {
 

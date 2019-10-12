@@ -5,24 +5,21 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include <CryptoNoteCore/Database/DatabaseBlockchainCache.h>
-
 #include <ctime>
 #include <cstdlib>
 
 #include <boost/iterator/iterator_facade.hpp>
 
+#include <Common/CryptoNoteTools.h>
 #include <Common/ShuffleGenerator.h>
-
-#include <CryptoNoteCore/Blockchain/BlockchainUtils.h>
+#include <Common/TransactionExtra.h>
 
 #include <Crypto/hash.h>
 
+#include <CryptoNoteCore/Blockchain/BlockchainUtils.h>
 #include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
+#include <CryptoNoteCore/Database/DatabaseBlockchainCache.h>
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
-
-#include <Common/TransactionExtra.h>
-#include <Common/CryptoNoteTools.h>
 
 namespace CryptoNote {
 

@@ -15,16 +15,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "ConsoleHandler.h"
-
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 
+#include <Common/ConsoleHandler.h>
+
 #ifdef _WIN32
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
 #include <Windows.h>
 #else
 #include <unistd.h>

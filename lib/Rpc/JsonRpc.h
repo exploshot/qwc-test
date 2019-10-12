@@ -17,12 +17,15 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <boost/foreach.hpp>
 #include <functional>
 
-#include "CoreRpcServerCommandsDefinitions.h"
+#include <boost/optional.hpp>
+#include <boost/foreach.hpp>
+
 #include <Common/JsonValue.h>
+
+#include <Rpc/CoreRpcServerCommandsDefinitions.h>
+
 #include <Serialization/ISerializer.h>
 #include <Serialization/SerializationTools.h>
 

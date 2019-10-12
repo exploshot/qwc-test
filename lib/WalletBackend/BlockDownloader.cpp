@@ -2,10 +2,7 @@
 // 
 // Please see the included LICENSE file for more information.
 
-//////////////////////////////////////////
-#include <WalletBackend/BlockDownloader.h>
-//////////////////////////////////////////
-
+#include <Global/Config.h>
 #include <Global/Constants.h>
 
 #include <Logger/Logger.h>
@@ -13,9 +10,8 @@
 #include <Utilities/FormatTools.h>
 #include <Utilities/Utilities.h>
 
+#include <WalletBackend/BlockDownloader.h>
 #include <WalletBackend/Constants.h>
-
-#include <Global/Config.h>
 
 /* Constructor */
 BlockDownloader::BlockDownloader(

@@ -21,6 +21,7 @@
 
 #include <IReadBatch.h>
 #include <CryptoNote.h>
+
 #include <CryptoNoteCore/Blockchain/BlockchainCache.h>
 #include <CryptoNoteCore/Database/DatabaseCacheData.h>
 

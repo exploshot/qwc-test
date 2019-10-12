@@ -15,13 +15,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "Checkpoints.h"
+#include <fstream>
 
 #include <Common/StringTools.h>
 
-#include <Global/Constants.h>
+#include <CryptoNoteCore/Checkpoints.h>
 
-#include <fstream>
+#include <Global/Constants.h>
 
 using namespace Logging;
 

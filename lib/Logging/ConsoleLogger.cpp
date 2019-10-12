@@ -15,11 +15,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <Logging/ConsoleLogger.h>
 #include <iostream>
 #include <unordered_map>
+
 #include <Common/ConsoleTools.h>
 
+#include <Logging/ConsoleLogger.h>
 
 namespace Logging {
 

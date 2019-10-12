@@ -6,8 +6,6 @@
 #pragma once
 #include <unordered_map>
 
-#include <Crypto/crypto.h>
-
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/composite_key.hpp>
 #include <boost/multi_index/hashed_index.hpp>
@@ -15,10 +13,13 @@
 #include <boost/multi_index/mem_fun.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 
-#include "ITransactionPool.h"
+#include <Crypto/crypto.h>
+
+#include <CryptoNoteCore/Transactions/ITransactionPool.h>
+#include <CryptoNoteCore/Transactions/TransactionValidatiorState.h>
+
 #include <Logging/LoggerMessage.h>
 #include <Logging/LoggerRef.h>
-#include "TransactionValidatiorState.h"
 
 namespace CryptoNote {
 

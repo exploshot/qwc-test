@@ -9,15 +9,14 @@
 
 #include <boost/variant.hpp>
 
-#include "CryptoTypes.h"
-
-#include <Common/StringTools.h>
-
-#include "json.hpp"
-
-#include <JsonHelper.h>
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
+
+#include <CryptoTypes.h>
+#include <json.hpp>
+#include <JsonHelper.h>
+
+#include <Common/StringTools.h>
 
 namespace CryptoNote {
 

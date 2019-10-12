@@ -6,6 +6,7 @@
 
 #include <CryptoNoteCore/Blockchain/IMainChainStorage.h>
 #include <CryptoNoteCore/Currency.h>
+
 #include <sqlite3.h>
 
 namespace CryptoNote

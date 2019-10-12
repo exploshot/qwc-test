@@ -9,10 +9,12 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <string>
-#include <limits>
 #include <initializer_list>
+#include <limits>
+#include <string>
+
 #include <boost/uuid/uuid.hpp>
+
 #include <Crypto/hash.h>
 
 namespace CryptoNote {

@@ -19,10 +19,10 @@
 
 #include <queue>
 
-#include "IP2pNodeInternal.h"
-#include "LevinProtocol.h"
-#include "P2pContextOwner.h"
-#include "P2pInterfaces.h"
+#include <P2p/IP2pNodeInternal.h>
+#include <P2p/LevinProtocol.h>
+#include <P2p/P2pContextOwner.h>
+#include <P2p/P2pInterfaces.h>
 
 namespace CryptoNote {
 

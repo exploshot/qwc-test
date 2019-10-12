@@ -15,15 +15,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "Base58.h"
-
 #include <assert.h>
 #include <string>
 #include <vector>
 
+#include <Common/Base58.h>
+#include <Common/int-util.h>
+#include <Common/Varint.h>
 #include <Crypto/hash.h>
-#include "int-util.h"
-#include "Varint.h"
 
 namespace Tools
 {

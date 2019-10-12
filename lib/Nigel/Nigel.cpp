@@ -2,17 +2,15 @@
 //
 // Please see the included LICENSE file for more information.
 
-////////////////////////
-#include <Nigel/Nigel.h>
-////////////////////////
-
-#include <Global/CryptoNoteConfig.h>
-
 #include <Common/CryptoNoteTools.h>
 
 #include <Errors/ValidateParameters.h>
 
+#include <Global/CryptoNoteConfig.h>
+
 #include <Logger/Logger.h>
+
+#include <Nigel/Nigel.h>
 
 #include <Utilities/Utilities.h>
 

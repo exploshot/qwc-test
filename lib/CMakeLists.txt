@@ -9,6 +9,8 @@ message(STATUS "Generated version.h header: ${CMAKE_CURRENT_BINARY_DIR}/version.
 set(QwertycoinFramework_INCLUDE_DIRS
     "${Boost_INCLUDE_DIRS}"
     "${MINIUPNP_INCLUDE_DIRS}"
+    "${RapidJSON_INCLUDE_DIRS}"
+    "${RockDB_INCLUDE_DIRS}"
     "${SPARSEHASH_INCLUDE_DIRS}"
     "${CMAKE_CURRENT_BINARY_DIR}"
     "${CMAKE_CURRENT_LIST_DIR}"
@@ -58,7 +60,6 @@ set(QwertycoinFramework_LIBS
     QwertycoinFramework_System
     QwertycoinFramework_Transfers
     QwertycoinFramework_Wallet
-    # QwertycoinFramework_WalletApi
     QwertycoinFramework_WalletBackend
     QwertycoinFramework_WalletService
     QwertycoinFramework_ZedWallet
@@ -105,10 +106,8 @@ set(QwertycoinFramework_Common_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Common/FileMappedVector.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Common/FileMappedVector.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/FileSystemShim.h"
-    "${CMAKE_CURRENT_LIST_DIR}/Common/IInputStream.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Common/IInputStream.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/int-util.h"
-    "${CMAKE_CURRENT_LIST_DIR}/Common/IOutputStream.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Common/IOutputStream.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/JsonValue.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Common/JsonValue.h"
@@ -130,6 +129,13 @@ set(QwertycoinFramework_Common_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Common/StdInputStream.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/StdOutputStream.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Common/StdOutputStream.h"
+    "${CMAKE_CURRENT_LIST_DIR}/Common/StreamTools.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Common/StreamTools.h"
+    "${CMAKE_CURRENT_LIST_DIR}/Common/StringBuffer.h"
+    "${CMAKE_CURRENT_LIST_DIR}/Common/StringInputStream.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Common/StringInputStream.h"
+    "${CMAKE_CURRENT_LIST_DIR}/Common/StringOutputStream.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Common/StringOutputStream.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/StringTools.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Common/StringTools.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/StringView.cpp"
@@ -315,7 +321,6 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/IKeyValueStorage.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/IMinerHandler.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/IntrusiveLinkedList.h"
-    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/ITimeProvider.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/ITimeProvider.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/IUpgradeDetector.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/IUpgradeManager.h"
@@ -505,9 +510,14 @@ set(QwertycoinFramework_Nigel_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Nigel/Nigel.h"
 )
 
+set(QwertycoinFramework_Nigel_LIBS
+    QwertycoinFramework::Errors
+)
+
 add_library(QwertycoinFramework_Nigel STATIC ${QwertycoinFramework_Nigel_SOURCES})
 add_library(QwertycoinFramework::Nigel ALIAS QwertycoinFramework_Nigel)
 target_include_directories(QwertycoinFramework_Nigel PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
+target_link_libraries(QwertycoinFramework_Nigel PRIVATE ${QwertycoinFramework_Nigel_LIBS})
 
 # QwertycoinFramework::NodeRpcProxy
 
@@ -534,7 +544,6 @@ target_link_libraries(QwertycoinFramework_NodeRpcProxy PRIVATE ${QwertycoinFrame
 
 set(QwertycoinFramework_P2p_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/P2p/ConnectionContext.h"
-    "${CMAKE_CURRENT_LIST_DIR}/P2p/IP2pNodeInternal.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/P2p/IP2pNodeInternal.h"
     "${CMAKE_CURRENT_LIST_DIR}/P2p/LevinProtocol.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/P2p/LevinProtocol.h"
@@ -550,7 +559,6 @@ set(QwertycoinFramework_P2p_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/P2p/P2pContext.h"
     "${CMAKE_CURRENT_LIST_DIR}/P2p/P2pContextOwner.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/P2p/P2pContextOwner.h"
-    "${CMAKE_CURRENT_LIST_DIR}/P2p/P2pInterfaces.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/P2p/P2pInterfaces.h"
     "${CMAKE_CURRENT_LIST_DIR}/P2p/P2pNetworks.h"
     "${CMAKE_CURRENT_LIST_DIR}/P2p/P2pNode.cpp"
@@ -639,7 +647,6 @@ set(QwertycoinFramework_Serialization_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Serialization/KVBinaryInputStreamSerializer.h"
     "${CMAKE_CURRENT_LIST_DIR}/Serialization/KVBinaryOutputStreamSerializer.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Serialization/KVBinaryOutputStreamSerializer.h"
-    "${CMAKE_CURRENT_LIST_DIR}/Serialization/MemoryStream.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Serialization/MemoryStream.h"
     "${CMAKE_CURRENT_LIST_DIR}/Serialization/SerializationOverloads.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Serialization/SerializationOverloads.h"
@@ -672,8 +679,7 @@ set(QwertycoinFramework_SubWallets_LIBS
     QwertycoinFramework::Crypto
     QwertycoinFramework::Errors
     QwertycoinFramework::Global
-    # QwertycoinFramework::Logger
-    QwertycoinFramework::Logging
+    QwertycoinFramework::Logger
     QwertycoinFramework::Utilities
     QwertycoinFramework::WalletBackend
 )
@@ -919,26 +925,6 @@ add_library(QwertycoinFramework::Wallet ALIAS QwertycoinFramework_Wallet)
 target_include_directories(QwertycoinFramework_Wallet PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
 target_link_libraries(QwertycoinFramework_Wallet PRIVATE ${QwertycoinFramework_Wallet_LIBS})
 
-# QwertycoinFramework::WalletApi
-#[[
-set(QwertycoinFramework_WalletApi_SOURCES
-    "${CMAKE_CURRENT_LIST_DIR}/WalletApi/ApiDispatcher.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/WalletApi/ApiDispatcher.h"
-    "${CMAKE_CURRENT_LIST_DIR}/WalletApi/Constants.h"
-    "${CMAKE_CURRENT_LIST_DIR}/WalletApi/ParseArguments.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/WalletApi/ParseArguments.h"
-    "${CMAKE_CURRENT_LIST_DIR}/WalletApi/WalletApi.cpp"
-)
-
-set(QwertycoinFramework_WalletApi_LIBS
-    QwertycoinFramework::WalletBackend
-)
-
-add_library(QwertycoinFramework_WalletApi STATIC ${QwertycoinFramework_WalletApi_SOURCES})
-add_library(QwertycoinFramework::WalletApi ALIAS QwertycoinFramework_WalletApi)
-target_include_directories(QwertycoinFramework_WalletApi PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_WalletApi PRIVATE ${QwertycoinFramework_WalletApi_LIBS})
-]]
 # QwertycoinFramework::WalletBackend
 
 set(QwertycoinFramework_WalletBackend_SOURCES
@@ -964,7 +950,7 @@ set(QwertycoinFramework_WalletBackend_LIBS
     cryptopp-static
     QwertycoinFramework::Common
     QwertycoinFramework::Global
-    # QwertycoinFramework::Logger
+    QwertycoinFramework::Logger
     QwertycoinFramework::Mnemonics
     QwertycoinFramework::Nigel
     QwertycoinFramework::Serialization
@@ -1093,7 +1079,6 @@ install(TARGETS
             QwertycoinFramework_System
             QwertycoinFramework_Transfers
             QwertycoinFramework_Wallet
-            # QwertycoinFramework_WalletApi
             QwertycoinFramework_WalletBackend
             QwertycoinFramework_WalletService
             QwertycoinFramework_ZedWallet

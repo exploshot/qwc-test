@@ -15,10 +15,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <Logging/LoggerManager.h>
 #include <thread>
+
 #include <Logging/ConsoleLogger.h>
 #include <Logging/FileLogger.h>
+#include <Logging/LoggerManager.h>
 
 namespace Logging {
 

@@ -20,22 +20,23 @@
 #include <functional>
 #include <list>
 
+#include <IStreamSerializable.h>
+
 #include <Logging/LoggerRef.h>
-#include <System/ContextGroup.h>
-#include <System/Dispatcher.h>
-#include <System/Event.h>
-#include <System/TcpListener.h>
-#include <System/Timer.h>
 
-#include "IP2pNodeInternal.h"
-#include "IStreamSerializable.h"
-#include "NetNodeConfig.h"
-
+#include <P2p/IP2pNodeInternal.h>
+#include <P2p/NetNodeConfig.h>
 #include <P2p/P2pInterfaces.h>
 #include <P2p/P2pNodeConfig.h>
 #include <P2p/P2pProtocolDefinitions.h>
 #include <P2p/PeerListManager.h>
 #include <P2p/Peerlist.h>
+
+#include <System/ContextGroup.h>
+#include <System/Dispatcher.h>
+#include <System/Event.h>
+#include <System/TcpListener.h>
+#include <System/Timer.h>
 
 namespace CryptoNote {
 

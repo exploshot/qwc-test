@@ -15,10 +15,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "BlockchainReadBatch.h"
-
 #include <boost/range/combine.hpp>
 
+#include <CryptoNoteCore/Blockchain/BlockchainReadBatch.h>
 #include <CryptoNoteCore/Database/DBUtils.h>
 
 #include <Global/Constants.h>

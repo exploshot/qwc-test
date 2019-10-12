@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-#include "Difficulty.h"
+#include <CryptoNoteCore/Difficulty.h>
 
 #include <Global/CryptoNoteConfig.h>
 

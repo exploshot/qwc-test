@@ -2,10 +2,11 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "MainChainStorageSqlite.h"
 
 #include <Common/CryptoNoteTools.h>
 #include <Common/FileSystemShim.h>
+
+#include <CryptoNoteCore/Blockchain/MainChainStorageSqlite.h>
 
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>

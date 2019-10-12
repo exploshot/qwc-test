@@ -11,7 +11,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
-#include "blake256.h"
+
+#include <Crypto/blake256.h>
 
 #define U8TO32(p) \
     (((uint32_t)((p)[0]) << 24) | ((uint32_t)((p)[1]) << 16) |    \

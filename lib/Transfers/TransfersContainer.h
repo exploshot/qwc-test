@@ -18,8 +18,8 @@
 #pragma once
 
 #include <cstdint>
-#include <unordered_map>
 #include <mutex>
+#include <unordered_map>
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
@@ -27,16 +27,19 @@
 #include <boost/multi_index/mem_fun.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 
-#include <Crypto/crypto.h>
-#include <CryptoNoteCore/CryptoNoteBasic.h>
-#include <Serialization/CryptoNoteSerialization.h>
-#include <CryptoNoteCore/Currency.h>
-#include <Logging/LoggerRef.h>
-#include <Serialization/ISerializer.h>
-#include <Serialization/SerializationOverloads.h>
-
 #include <ITransaction.h>
 #include <ITransfersContainer.h>
+
+#include <Crypto/crypto.h>
+
+#include <CryptoNoteCore/CryptoNoteBasic.h>
+#include <CryptoNoteCore/Currency.h>
+
+#include <Logging/LoggerRef.h>
+
+#include <Serialization/CryptoNoteSerialization.h>
+#include <Serialization/ISerializer.h>
+#include <Serialization/SerializationOverloads.h>
 
 namespace CryptoNote {
 

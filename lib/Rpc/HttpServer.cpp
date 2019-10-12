@@ -15,13 +15,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "HttpServer.h"
 #include <boost/scope_exit.hpp>
 
 #include <Http/HttpParser.h>
+
+#include <Rpc/HttpServer.h>
+
+#include <System/Ipv4Address.h>
 #include <System/InterruptedException.h>
 #include <System/TcpStream.h>
-#include <System/Ipv4Address.h>
 
 using namespace Logging;
 

@@ -4,11 +4,10 @@
 
 #pragma once
 
-#include <Common/StringTools.h>
-
 #include <CryptoTypes.h>
-
 #include <json.hpp>
+
+#include <Common/StringTools.h>
 
 #include <SubWallets/SubWallet.h>
 

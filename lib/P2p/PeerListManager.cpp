@@ -3,14 +3,14 @@
 // 
 // Please see the included LICENSE file for more information.
 
-#include "PeerListManager.h"
-
 #include <algorithm>
-
 #include <time.h>
-#include <System/Ipv4Address.h>
+
+#include <P2p/PeerListManager.h>
 
 #include <Serialization/SerializationOverloads.h>
+
+#include <System/Ipv4Address.h>
 
 void PeerlistManager::serialize(CryptoNote::ISerializer& s) {
   const uint8_t currentVersion = 1;

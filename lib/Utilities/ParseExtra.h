@@ -4,11 +4,11 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include <CryptoTypes.h>
 
-#include <string>
-
-#include <vector>
 
 namespace Utilities
 {

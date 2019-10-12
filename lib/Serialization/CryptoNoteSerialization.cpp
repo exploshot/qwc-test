@@ -15,8 +15,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "CryptoNoteSerialization.h"
-
 #include <algorithm>
 #include <sstream>
 #include <stdexcept>
@@ -24,18 +22,19 @@
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
 
-#include <Serialization/ISerializer.h>
-#include <Serialization/SerializationOverloads.h>
-#include <Serialization/BinaryInputStreamSerializer.h>
-#include <Serialization/BinaryOutputStreamSerializer.h>
-
+#include <Common/CryptoNoteTools.h>
 #include <Common/StringOutputStream.h>
+#include <Common/TransactionExtra.h>
+
 #include <Crypto/crypto.h>
 
 #include <Global/CryptoNoteConfig.h>
 
-#include <Common/CryptoNoteTools.h>
-#include <Common/TransactionExtra.h>
+#include <Serialization/BinaryInputStreamSerializer.h>
+#include <Serialization/BinaryOutputStreamSerializer.h>
+#include <Serialization/CryptoNoteSerialization.h>
+#include <Serialization/ISerializer.h>
+#include <Serialization/SerializationOverloads.h>
 
 using namespace Common;
 

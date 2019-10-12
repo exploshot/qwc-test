@@ -4,13 +4,12 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include <CryptoNote.h>
 
 #include <Errors/Errors.h>
-
-#include <string>
-
-#include <vector>
 
 namespace Utilities
 {

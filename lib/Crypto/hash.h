@@ -47,7 +47,7 @@
 namespace Crypto {
 
   extern "C" {
-#include "hash-ops.h"
+#include <Crypto/hash-ops.h>
   }
 
   /*

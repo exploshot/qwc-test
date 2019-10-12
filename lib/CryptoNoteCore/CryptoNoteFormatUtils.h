@@ -19,7 +19,7 @@
 
 #include <boost/utility/value_init.hpp>
 
-#include "CryptoNoteBasic.h"
+#include <CryptoNoteCore/CryptoNoteBasic.h>
 
 #include <Serialization/BinaryOutputStreamSerializer.h>
 #include <Serialization/BinaryInputStreamSerializer.h>

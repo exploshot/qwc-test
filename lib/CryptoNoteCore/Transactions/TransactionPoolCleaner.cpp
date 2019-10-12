@@ -4,11 +4,11 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "TransactionPoolCleaner.h"
+#include <Common/StringTools.h>
+
+#include <CryptoNoteCore/Transactions/TransactionPoolCleaner.h>
 #include <CryptoNoteCore/Core.h>
 #include <CryptoNoteCore/Mixins.h>
-
-#include <Common/StringTools.h>
 
 #include <System/InterruptedException.h>
 #include <System/Timer.h>

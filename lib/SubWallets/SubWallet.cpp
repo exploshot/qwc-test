@@ -2,13 +2,11 @@
 // 
 // Please see the included LICENSE file for more information.
 
-/////////////////////////////////
-#include <SubWallets/SubWallet.h>
-/////////////////////////////////
-
 #include <Global/Constants.h>
 
 #include <Logger/Logger.h>
+
+#include <SubWallets/SubWallet.h>
 
 #include <Utilities/Utilities.h>
 

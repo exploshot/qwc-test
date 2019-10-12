@@ -4,18 +4,21 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "ConfigurationManager.h"
-
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 #include <CryptoTypes.h>
+
+#include <Common/Util.h>
+
+#include <Crypto/hash.h>
+
+#include <Logging/ILogger.h>
+
 #include <Global/CliHeader.h>
 #include <Global/CryptoNoteConfig.h>
 
-#include <Common/Util.h>
-#include <Crypto/hash.h>
-#include <Logging/ILogger.h>
+#include <WalletService/ConfigurationManager.h>
 
 namespace PaymentService {
 

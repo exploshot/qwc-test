@@ -7,21 +7,28 @@
 
 #pragma once
 
-#include <System/ContextGroup.h>
-#include <System/Dispatcher.h>
-#include <System/Event.h>
-#include <INode.h>
-#include <CryptoNoteCore/Currency.h>
-#include "PaymentServiceJsonRpcMessages.h"
-#undef ERROR //TODO: workaround for windows build. fix it
-#include <Logging/LoggerRef.h>
-
 #include <fstream>
 #include <memory>
+
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/hashed_index.hpp>
+
+#include <INode.h>
+
+#include <CryptoNoteCore/Currency.h>
+
+#include <Logging/LoggerRef.h>
+
+#include <System/ContextGroup.h>
+#include <System/Dispatcher.h>
+#include <System/Event.h>
+
+#undef ERROR //TODO: workaround for windows build. fix it
+
 #include <Wallet/WalletGreen.h>
+
+#include <WalletService/PaymentServiceJsonRpcMessages.h>
 
 namespace CryptoNote {
 class IFusionManager;

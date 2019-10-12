@@ -2,13 +2,10 @@
 // 
 // Please see the included LICENSE file for more information.
 
-/////////////////////////////
-#include <Utilities/String.h>
-/////////////////////////////
-
 #include <algorithm>
-
 #include <sstream>
+
+#include <Utilities/String.h>
 
 namespace Utilities
 {

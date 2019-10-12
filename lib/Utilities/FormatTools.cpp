@@ -4,21 +4,14 @@
 //
 // Please see the included LICENSE file for more information.
 
-
-//////////////////////////////////
-#include <Utilities/FormatTools.h>
-//////////////////////////////////
-
 #include <cstdio>
-
 #include <ctime>
+#include <iomanip>
 
 #include <Global/Constants.h>
 #include <Global/CryptoNoteConfig.h>
 
-#include <iomanip>
-
-#include <Rpc/CoreRpcServerCommandsDefinitions.h>
+#include <Utilities/FormatTools.h>
 
 namespace Utilities
 {

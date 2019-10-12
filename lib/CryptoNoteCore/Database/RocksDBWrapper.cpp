@@ -3,14 +3,14 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "RocksDBWrapper.h"
 
 #include <rocksdb/cache.h>
 #include <rocksdb/table.h>
 #include <rocksdb/db.h>
 #include <rocksdb/utilities/backupable_db.h>
 
-#include "DataBaseErrors.h"
+#include <CryptoNoteCore/Database/RocksDBWrapper.h>
+#include <CryptoNoteCore/Database/DataBaseErrors.h>
 
 using namespace CryptoNote;
 using namespace Logging;
@@ -45,7 +45,7 @@ void RocksDBWrapper::init(const DataBaseConfig& config) {
   } else if (!status.ok() && status.IsInvalidArgument()) {
     logger(INFO) << "DB not found in " << dataDir << ". Creating new DB...";
     dbOptions.create_if_missing = true;
-    rocksdb::Status status = rocksdb::DB::Open(dbOptions, dataDir, &dbPtr);
+    status = rocksdb::DB::Open(dbOptions, dataDir, &dbPtr);
     if (!status.ok()) {
       logger(ERROR) << "DB Error. DB can't be created in " << dataDir << ". Error: " << status.ToString();
       throw std::system_error(make_error_code(CryptoNote::error::DataBaseErrorCodes::INTERNAL_ERROR));

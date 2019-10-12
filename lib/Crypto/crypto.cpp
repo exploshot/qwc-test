@@ -14,15 +14,16 @@
 #include <memory>
 
 #include <Common/Varint.h>
-#include "crypto.h"
-#include "hash.h"
-#include "random.h"
+
+#include <Crypto/crypto.h>
+#include <Crypto/hash.h>
+#include <Crypto/random.h>
 
 namespace Crypto {
 
   extern "C" {
-#include "keccak.h"
-#include "crypto-ops.h"
+#include <Crypto/keccak.h>
+#include <Crypto/crypto-ops.h>
   }
 
   static inline void random_scalar(EllipticCurveScalar &res) {

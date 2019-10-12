@@ -4,11 +4,10 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include <CryptoNote.h>
-
 #include <tuple>
-
 #include <vector>
+
+#include <CryptoNote.h>
 
 #include <Errors/Errors.h>
 

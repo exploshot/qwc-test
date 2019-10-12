@@ -15,8 +15,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "MemoryBlockchainStorage.h"
 #include <cassert>
+
+#include <CryptoNoteCore/Blockchain/MemoryBlockchainStorage.h>
+
 #include <Serialization/SerializationOverloads.h>
 
 using namespace CryptoNote;

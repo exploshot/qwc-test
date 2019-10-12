@@ -15,8 +15,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <Logging/LoggerGroup.h>
 #include <algorithm>
+
+#include <Logging/LoggerGroup.h>
 
 namespace Logging {
 

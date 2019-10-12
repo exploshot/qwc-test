@@ -18,14 +18,11 @@
 #pragma once
 
 #include <algorithm>
-
-#include <Common/StringTools.h>
-
 #include <cstdint>
-
 #include <iterator>
 
-#include "json.hpp"
+#include <Common/StringTools.h>
+#include <json.hpp>
 
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>

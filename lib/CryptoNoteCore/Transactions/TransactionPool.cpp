@@ -3,11 +3,11 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "TransactionPool.h"
-
 #include <Common/int-util.h>
-#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <Common/TransactionExtra.h>
+
+#include <CryptoNoteCore/Transactions/TransactionPool.h>
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 
 namespace CryptoNote {
 

@@ -15,7 +15,7 @@
 
 #include <thread>
 
-#include "version.h"
+#include <version.h>
 
 ApiConfig parseArguments(int argc, char **argv)
 {

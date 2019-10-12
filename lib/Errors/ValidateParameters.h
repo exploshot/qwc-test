@@ -4,15 +4,12 @@
 
 #pragma once
 
-#include "Errors.h"
-
 #include <memory>
-
 #include <string>
-
 #include <unordered_map>
-
 #include <vector>
+
+#include <Errors/Errors.h>
 
 #include <SubWallets/SubWallets.h>
 

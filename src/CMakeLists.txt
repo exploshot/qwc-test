@@ -32,18 +32,12 @@ if(WIN32)
 endif()
 
 set(QwertycoinTools_Daemon_LIBS
-    Boost::filesystem
-    cxxopts::cxxopts
     lz4::lz4
     RocksDB::rocksdb
     sqlite3::sqlite3
-    stdc++fs
-    QwertycoinFramework::Common
-    QwertycoinFramework::Crypto
     QwertycoinFramework::CryptoNoteCore
-    QwertycoinFramework::CryptoNoteProtocol
+    QwertycoinFramework::Errors
     QwertycoinFramework::Global
-    QwertycoinFramework::Logging
 )
 
 add_executable(QwertycoinTools_Daemon ${QwertycoinTools_Daemon_SOURCES})

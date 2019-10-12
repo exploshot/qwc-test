@@ -22,8 +22,8 @@
 namespace CryptoNote {
 
   struct ITimeProvider {
+    virtual ~ITimeProvider() = default;
     virtual time_t now() = 0;
-    virtual ~ITimeProvider() {}
   };
 
   struct RealTimeProvider : public ITimeProvider {

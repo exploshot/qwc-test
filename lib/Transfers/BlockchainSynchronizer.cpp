@@ -15,8 +15,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "BlockchainSynchronizer.h"
-
 #include <functional>
 #include <iostream>
 #include <sstream>
@@ -24,9 +22,12 @@
 
 #include <Common/StreamTools.h>
 #include <Common/StringTools.h>
+
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 #include <CryptoNoteCore/Transactions/TransactionApi.h>
+
+#include <Transfers/BlockchainSynchronizer.h>
 
 using namespace Common;
 using namespace Crypto;

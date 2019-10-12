@@ -18,8 +18,9 @@
 #pragma once
 
 #include <Common/IOutputStream.h>
-#include "ISerializer.h"
-#include "SerializationOverloads.h"
+
+#include <Serialization/ISerializer.h>
+#include <Serialization/SerializationOverloads.h>
 
 namespace CryptoNote {
 

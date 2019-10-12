@@ -27,7 +27,7 @@
 **                                1: return SKEIN_FAIL to flag errors
 **
 ***************************************************************************/
-#include "skein_port.h"                      /* get platform-specific definitions */
+#include <Crypto/skein_port.h>                      /* get platform-specific definitions */
 
 typedef enum
 {

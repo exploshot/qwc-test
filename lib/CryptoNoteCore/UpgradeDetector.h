@@ -22,10 +22,13 @@
 #include <ctime>
 
 #include <Common/StringTools.h>
+
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 #include <CryptoNoteCore/Currency.h>
+
 #include <Global/CryptoNoteConfig.h>
+
 #include <Logging/LoggerRef.h>
 
 namespace CryptoNote {

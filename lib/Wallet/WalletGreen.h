@@ -20,14 +20,16 @@
 #include <queue>
 #include <unordered_map>
 
-#include "IFusionManager.h"
-#include "WalletIndices.h"
-
 #include <Logging/LoggerRef.h>
+
 #include <System/Dispatcher.h>
 #include <System/Event.h>
+
 #include <Transfers/TransfersSynchronizer.h>
 #include <Transfers/BlockchainSynchronizer.h>
+
+#include <Wallet/IFusionManager.h>
+#include <Wallet/WalletIndices.h>
 
 namespace CryptoNote {
 

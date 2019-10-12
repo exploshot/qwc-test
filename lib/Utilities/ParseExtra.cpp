@@ -2,11 +2,9 @@
 //
 // Please see the included LICENSE file for more information.
 
-/////////////////////////////////
-#include <Utilities/ParseExtra.h>
-/////////////////////////////////
-
 #include <Global/Constants.h>
+
+#include <Utilities/ParseExtra.h>
 
 namespace Utilities
 {

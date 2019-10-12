@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <P2p/P2pProtocolTypes.h>
-
 #include <vector>
+
+#include <P2p/P2pProtocolTypes.h>
 
 class Peerlist
 {

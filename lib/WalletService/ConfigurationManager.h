@@ -7,8 +7,10 @@
 #pragma once
 
 #include <CryptoTypes.h>
-#include "WalletServiceConfiguration.h"
+
 #include <P2p/NetNodeConfig.h>
+
+#include <WalletService/WalletServiceConfiguration.h>
 
 namespace PaymentService {
 

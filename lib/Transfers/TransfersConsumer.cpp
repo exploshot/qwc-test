@@ -6,22 +6,22 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "TransfersConsumer.h"
-
-#include <numeric>
 #include <future>
+#include <numeric>
 
-#include <Transfers/CommonTypes.h>
+#include <INode.h>
+#include <WalletGreenTypes.h>
+
 #include <Common/BlockingQueue.h>
+
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 #include <CryptoNoteCore/Transactions/TransactionApi.h>
 
 #include <Global/Constants.h>
 
-#include <WalletGreenTypes.h>
-#include <INode.h>
-#include <future>
+#include <Transfers/CommonTypes.h>
+#include <Transfers/TransfersConsumer.h>
 
 using namespace Crypto;
 using namespace Logging;

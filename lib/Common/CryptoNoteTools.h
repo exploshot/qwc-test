@@ -17,14 +17,14 @@
 
 #pragma once
 
-#include "MemoryInputStream.h"
-#include "StringTools.h"
-#include "VectorOutputStream.h"
+#include <limits>
+
+#include <Common/MemoryInputStream.h>
+#include <Common/StringTools.h>
+#include <Common/VectorOutputStream.h>
 
 #include <Global/CryptoNoteConfig.h>
 #include <Global/Constants.h>
-
-#include <limits>
 
 #include <Serialization/BinaryOutputStreamSerializer.h>
 #include <Serialization/BinaryInputStreamSerializer.h>

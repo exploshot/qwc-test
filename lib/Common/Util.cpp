@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "Util.h"
 
 #include <cstdio>
 #include <cstring>
 
-#include "FileSystemShim.h"
+#include <Common/FileSystemShim.h>
+#include <Common/Util.h>
 
 #include <Global/CryptoNoteConfig.h>
 

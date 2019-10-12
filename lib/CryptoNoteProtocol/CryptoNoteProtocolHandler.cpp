@@ -5,25 +5,28 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "CryptoNoteProtocolHandler.h"
 
 #include <future>
 #include <boost/scope_exit.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <System/Dispatcher.h>
 
+#include <Common/CryptoNoteTools.h>
+
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
-#include <Common/CryptoNoteTools.h>
 #include <CryptoNoteCore/Currency.h>
+
+#include <CryptoNoteProtocol/CryptoNoteProtocolHandler.h>
+
+#include <Global/Constants.h>
+#include <Global/CryptoNoteConfig.h>
+
 #include <P2p/LevinProtocol.h>
 
 #include <Serialization/SerializationTools.h>
 
 #include <Utilities/FormatTools.h>
-
-#include <Global/Constants.h>
-#include <Global/CryptoNoteConfig.h>
 
 using namespace Logging;
 using namespace Common;

@@ -18,7 +18,8 @@
 #pragma once
 
 #include <list>
-#include "P2pProtocolDefinitions.h"
+
+#include <P2p/P2pProtocolDefinitions.h>
 
 namespace CryptoNote {
 

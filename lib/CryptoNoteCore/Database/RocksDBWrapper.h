@@ -23,8 +23,9 @@
 
 #include <rocksdb/db.h>
 
-#include "IDataBase.h"
-#include "DataBaseConfig.h"
+#include <IDataBase.h>
+
+#include <CryptoNoteCore/Database/DataBaseConfig.h>
 
 #include <Logging/LoggerRef.h>
 

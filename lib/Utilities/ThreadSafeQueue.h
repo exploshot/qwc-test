@@ -5,9 +5,7 @@
 #pragma once
 
 #include <condition_variable>
-
 #include <mutex>
-
 #include <queue>
 
 template <typename T>

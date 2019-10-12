@@ -15,13 +15,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "SynchronizationState.h"
-
 #include <Common/StdInputStream.h>
 #include <Common/StdOutputStream.h>
+
 #include <Serialization/BinaryInputStreamSerializer.h>
 #include <Serialization/BinaryOutputStreamSerializer.h>
 #include <Serialization/CryptoNoteSerialization.h>
+
+#include <Transfers/SynchronizationState.h>
 
 using namespace Common;
 

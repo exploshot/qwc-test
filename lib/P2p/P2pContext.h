@@ -20,17 +20,18 @@
 #include <chrono>
 #include <vector>
 
+#include <Global/CryptoNoteConfig.h>
+
+#include <P2p/LevinProtocol.h>
+#include <P2p/P2pInterfaces.h>
+#include <P2p/P2pProtocolDefinitions.h>
+#include <P2p/P2pProtocolTypes.h>
+
 #include <System/ContextGroup.h>
 #include <System/Dispatcher.h>
 #include <System/Event.h>
 #include <System/TcpConnection.h>
 #include <System/Timer.h>
-
-#include <Global/CryptoNoteConfig.h>
-#include "LevinProtocol.h"
-#include "P2pInterfaces.h"
-#include "P2pProtocolDefinitions.h"
-#include "P2pProtocolTypes.h"
 
 namespace CryptoNote {
   

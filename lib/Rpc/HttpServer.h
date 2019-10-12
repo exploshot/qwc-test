@@ -22,13 +22,13 @@
 #include <Http/HttpRequest.h>
 #include <Http/HttpResponse.h>
 
+#include <Logging/LoggerRef.h>
+
 #include <System/ContextGroup.h>
 #include <System/Dispatcher.h>
 #include <System/TcpListener.h>
 #include <System/TcpConnection.h>
 #include <System/Event.h>
-
-#include <Logging/LoggerRef.h>
 
 namespace CryptoNote {
 

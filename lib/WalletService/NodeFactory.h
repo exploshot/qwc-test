@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include <INode.h>
-
 #include <string>
+
+#include <INode.h>
 
 #include <Logging/LoggerRef.h>
 

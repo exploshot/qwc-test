@@ -20,8 +20,8 @@
 #include <string>
 #include <system_error>
 
-#include "IWriteBatch.h"
-#include "IReadBatch.h"
+#include <IWriteBatch.h>
+#include <IReadBatch.h>
 
 namespace CryptoNote {
 

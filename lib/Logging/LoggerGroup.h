@@ -18,6 +18,7 @@
 #pragma once
 
 #include <vector>
+
 #include <Logging/CommonLogger.h>
 
 namespace Logging {

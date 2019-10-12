@@ -15,7 +15,7 @@
 
 #include <CryptoTypes.h>
 
-#include "hash.h"
+#include <Crypto/hash.h>
 
 namespace Crypto {
 

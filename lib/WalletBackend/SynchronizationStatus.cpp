@@ -2,11 +2,8 @@
 // 
 // Please see the included LICENSE file for more information.
 
-////////////////////////////////////////////////
-#include <WalletBackend/SynchronizationStatus.h>
-////////////////////////////////////////////////
-
 #include <WalletBackend/Constants.h>
+#include <WalletBackend/SynchronizationStatus.h>
 
 /////////////////////
 /* CLASS FUNCTIONS */

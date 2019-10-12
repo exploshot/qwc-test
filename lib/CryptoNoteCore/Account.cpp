@@ -5,9 +5,11 @@
 // 
 // Please see the included LICENSE file for more information.
 
-#include "Account.h"
-#include <Serialization/CryptoNoteSerialization.h>
 #include <Crypto/keccak.h>
+
+#include <CryptoNoteCore/Account.h>
+
+#include <Serialization/CryptoNoteSerialization.h>
 
 namespace CryptoNote {
 //-----------------------------------------------------------------

@@ -18,7 +18,8 @@
 #pragma once
 
 #include <memory>
-#include "ITransaction.h"
+
+#include <ITransaction.h>
 
 namespace CryptoNote {
   std::unique_ptr<ITransaction> createTransaction();

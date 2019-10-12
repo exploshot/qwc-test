@@ -4,16 +4,15 @@
 
 #pragma once
 
-#include <CryptoNote.h>
+#include <optional>
+#include <string>
+#include <unordered_map>
 
+#include <CryptoNote.h>
 #include <JsonHelper.h>
 
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
-
-#include <unordered_map>
-#include <optional>
-#include <string>
 
 namespace WalletTypes
 {

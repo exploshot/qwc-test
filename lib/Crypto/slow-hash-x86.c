@@ -10,7 +10,7 @@
 #if !defined NO_AES && (defined(__x86_64__) || (defined(_MSC_VER) && defined(_WIN64)))
   #pragma message ("info: Using slow-hash-x86.c")
 
-  #include "slow-hash-common.h"
+  #include <Crypto/slow-hash-common.h>
 
 // Optimised code below, uses x86-specific intrinsics, SSE2, AES-NI
 // Fall back to more portable code is down at the bottom

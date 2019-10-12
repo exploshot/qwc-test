@@ -12,9 +12,12 @@
 #include <thread>
 #include <unordered_set>
 
-#include <Common/ObserverManager.h>
-#include <Logging/LoggerRef.h>
 #include <INode.h>
+
+#include <Common/ObserverManager.h>
+
+#include <Logging/LoggerRef.h>
+
 #include <Rpc/CoreRpcServerCommandsDefinitions.h>
 
 namespace System {

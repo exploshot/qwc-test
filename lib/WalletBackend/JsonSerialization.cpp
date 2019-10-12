@@ -2,17 +2,14 @@
 // 
 // Please see the included LICENSE file for more information.
 
-////////////////////////////////////////////
-#include <WalletBackend/JsonSerialization.h>
-////////////////////////////////////////////
+#include <tuple>
 
 #include <Common/StringTools.h>
-
-#include <tuple>
 
 #include <SubWallets/SubWallets.h>
 
 #include <WalletBackend/Constants.h>
+#include <WalletBackend/JsonSerialization.h>
 #include <WalletBackend/SynchronizationStatus.h>
 #include <WalletBackend/WalletBackend.h>
 #include <WalletBackend/WalletSynchronizer.h>

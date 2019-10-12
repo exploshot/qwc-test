@@ -3,9 +3,9 @@
 // 
 // Please see the included LICENSE file for more information.
 
-#include <P2p/Peerlist.h>
-
 #include <algorithm>
+
+#include <P2p/Peerlist.h>
 
 Peerlist::Peerlist(std::vector<PeerlistEntry> &peers, size_t maxSize) :
     m_peers(peers), m_maxSize(maxSize)

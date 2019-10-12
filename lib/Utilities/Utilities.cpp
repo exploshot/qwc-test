@@ -2,19 +2,15 @@
 // 
 // Please see the included LICENSE file for more information.
 
-////////////////////////////////
-#include <Utilities/Utilities.h>
-////////////////////////////////
-
 #include <atomic>
+#include <thread>
 
 #include <Common/Base58.h>
 
 #include <Global/CryptoNoteConfig.h>
 
-#include <thread>
-
 #include <Utilities/String.h>
+#include <Utilities/Utilities.h>
 
 namespace Utilities
 {

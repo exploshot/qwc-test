@@ -17,9 +17,10 @@
 
 #pragma once
 
-#include <ITransaction.h>
-#include <functional>
 #include <cstring>
+#include <functional>
+
+#include <ITransaction.h>
 
 namespace CryptoNote {
 

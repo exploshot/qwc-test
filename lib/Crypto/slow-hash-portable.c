@@ -11,7 +11,7 @@
 #if !(!defined NO_AES && (defined(__arm__) || defined(__aarch64__))) && !(!defined NO_AES && (defined(__x86_64__) || (defined(_MSC_VER) && defined(_WIN64))))
   #pragma message ("info: Using slow-hash-portable.c")
 
-  #include "slow-hash-common.h"
+  #include <Crypto/slow-hash-common.h>
 
 void slow_hash_allocate_state(void)
 {

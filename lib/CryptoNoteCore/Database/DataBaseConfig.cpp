@@ -4,11 +4,14 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "DataBaseConfig.h"
 
 #include <Common/Util.h>
 #include <Common/StringTools.h>
+
 #include <Crypto/crypto.h>
+
+#include <CryptoNoteCore/Database/DataBaseConfig.h>
+
 #include <Global/CryptoNoteConfig.h>
 
 using namespace CryptoNote;

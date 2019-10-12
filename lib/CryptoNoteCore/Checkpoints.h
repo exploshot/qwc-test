@@ -16,8 +16,11 @@
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
+
 #include <map>
-#include "CryptoNoteBasicImpl.h"
+
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+
 #include <Logging/LoggerRef.h>
 
 namespace CryptoNote

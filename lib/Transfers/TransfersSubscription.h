@@ -18,10 +18,11 @@
 #pragma once
 
 #include <ITransfersSynchronizer.h>
-#include "TransfersContainer.h"
-#include "IObservableImpl.h"
 
 #include <Logging/LoggerRef.h>
+
+#include <Transfers/IObservableImpl.h>
+#include <Transfers/TransfersContainer.h>
 
 namespace CryptoNote {
 

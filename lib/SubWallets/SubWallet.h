@@ -4,19 +4,17 @@
 
 #pragma once
 
-#include <Crypto/crypto.h>
+#include <string>
+#include <unordered_set>
 
 #include <CryptoTypes.h>
+#include <WalletTypes.h>
+
+#include <Crypto/crypto.h>
 
 #include <Errors/Errors.h>
 
 #include <rapidjson/document.h>
-
-#include <string>
-
-#include <unordered_set>
-
-#include <WalletTypes.h>
 
 class SubWallet
 {

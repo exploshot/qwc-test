@@ -17,14 +17,16 @@
 
 #pragma once
 
+#include <deque>
 #include <list>
+#include <optional>
 #include <ostream>
 #include <unordered_set>
-#include <optional>
-#include <deque>
 
 #include <boost/uuid/uuid.hpp>
+
 #include <Common/StringTools.h>
+
 #include <Crypto/hash.h>
 
 #include <P2p/PendingLiteBlock.h>

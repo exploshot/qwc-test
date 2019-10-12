@@ -5,26 +5,26 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "BlockchainCache.h"
 
 #include <fstream>
 #include <tuple>
 
 #include <boost/functional/hash.hpp>
 
+
+#include <Common/CryptoNoteTools.h>
 #include <Common/StdInputStream.h>
 #include <Common/StdOutputStream.h>
 #include <Common/ShuffleGenerator.h>
-
-#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
-#include <Common/CryptoNoteTools.h>
-#include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
 #include <Common/TransactionExtra.h>
+
+#include <CryptoNoteCore/Blockchain/BlockchainCache.h>
+#include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
+#include <CryptoNoteCore/Transactions/TransactionValidatiorState.h>
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 
 #include <Serialization/CryptoNoteSerialization.h>
 #include <Serialization/SerializationOverloads.h>
-
-#include <CryptoNoteCore/Transactions/TransactionValidatiorState.h>
 
 namespace CryptoNote {
 

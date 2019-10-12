@@ -10,7 +10,7 @@
 #if !defined NO_AES && (defined(__arm__) || defined(__aarch64__))
   #pragma message ("info: Using slow-hash-arm.c")
 
-  #include "slow-hash-common.h"
+  #include <Crypto/slow-hash-common.h>
 
 void slow_hash_allocate_state(void)
 {

@@ -5,20 +5,16 @@
 #pragma once
 
 #include <atomic>
+#include <string>
+#include <thread>
+#include <unordered_set>
 
 #include <httplib.h>
-
-#include <Rpc/CoreRpcServerCommandsDefinitions.h>
+#include <WalletTypes.h>
 
 #include <Global/CryptoNoteConfig.h>
 
-#include <string>
-
-#include <thread>
-
-#include <unordered_set>
-
-#include <WalletTypes.h>
+#include <Rpc/CoreRpcServerCommandsDefinitions.h>
 
 class Nigel
 {

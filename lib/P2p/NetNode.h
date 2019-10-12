@@ -13,7 +13,18 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/functional/hash.hpp>
 
+#include <CryptoNoteProtocol/CryptoNoteProtocolHandler.h>
+
+#include <Logging/LoggerRef.h>
+
+#include <P2p/ConnectionContext.h>
+#include <P2p/LevinProtocol.h>
+#include <P2p/NetNodeCommon.h>
+#include <P2p/NetNodeConfig.h>
+#include <P2p/OnceInInterval.h>
 #include <P2p/P2pNetworks.h>
+#include <P2p/P2pProtocolDefinitions.h>
+#include <P2p/PeerListManager.h>
 
 #include <System/Context.h>
 #include <System/ContextGroup.h>
@@ -23,16 +34,7 @@
 #include <System/TcpConnection.h>
 #include <System/TcpListener.h>
 
-#include <P2p/OnceInInterval.h>
-#include <CryptoNoteProtocol/CryptoNoteProtocolHandler.h>
-#include <Logging/LoggerRef.h>
 
-#include "ConnectionContext.h"
-#include "LevinProtocol.h"
-#include "NetNodeCommon.h"
-#include "NetNodeConfig.h"
-#include "P2pProtocolDefinitions.h"
-#include "PeerListManager.h"
 
 namespace System {
 class TcpConnection;

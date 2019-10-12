@@ -16,7 +16,9 @@
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
+
 #include <cstdint>
+
 #include <CryptoNoteCore/Currency.h>
 
 namespace CryptoNote {

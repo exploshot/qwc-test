@@ -8,6 +8,7 @@
 #pragma once
 
 #include <list>
+
 #include <CryptoNoteCore/CryptoNoteBasic.h>
 
 // ISerializer-based serialization

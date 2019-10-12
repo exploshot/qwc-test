@@ -5,9 +5,11 @@
 // Please see the included LICENSE file for more information.
 
 #pragma once
+
 #include <ctime>
 #include <vector>
 #include <unordered_map>
+
 #include <CryptoNoteCore/Blockchain/BlockchainCache.h>
 #include <CryptoNoteCore/Blockchain/BlockchainMessages.h>
 #include <CryptoNoteCore/Blockchain/CachedBlock.h>
@@ -24,6 +26,7 @@
 #include <CryptoNoteCore/ICoreInformation.h>
 #include <CryptoNoteCore/IUpgradeManager.h>
 #include <CryptoNoteCore/MessageQueue.h>
+
 #include <Logging/LoggerMessage.h>
 
 #include <System/ContextGroup.h>

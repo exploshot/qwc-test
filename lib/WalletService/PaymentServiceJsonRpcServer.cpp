@@ -5,19 +5,19 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "PaymentServiceJsonRpcServer.h"
-
 #include <functional>
 
 #include <CryptoTypes.h>
 #include <Crypto/hash.h>
-#include "PaymentServiceJsonRpcMessages.h"
-#include "WalletService.h"
 
 #include <Serialization/JsonInputValueSerializer.h>
 #include <Serialization/JsonOutputStreamSerializer.h>
 
 #include <Rpc/JsonRpc.h>
+
+#include <WalletService/PaymentServiceJsonRpcMessages.h>
+#include <WalletService/PaymentServiceJsonRpcServer.h>
+#include <WalletService/WalletService.h>
 
 namespace PaymentService {
 

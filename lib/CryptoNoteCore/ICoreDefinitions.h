@@ -18,9 +18,12 @@
 #pragma once
 
 #include <vector>
+
 #include <CryptoNote.h>
 #include <CryptoTypes.h>
 #include <WalletTypes.h>
+
+#include <Serialization/ISerializer.h>
 
 namespace CryptoNote {
 

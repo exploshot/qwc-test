@@ -5,6 +5,9 @@
 #pragma once
 
 #include <atomic>
+#include <vector>
+
+#include <WalletTypes.h>
 
 #include <Nigel/Nigel.h>
 
@@ -12,11 +15,8 @@
 
 #include <Utilities/ThreadSafeDeque.h>
 
-#include <vector>
-
 #include <WalletBackend/SynchronizationStatus.h>
 
-#include <WalletTypes.h>
 
 class BlockDownloader
 {

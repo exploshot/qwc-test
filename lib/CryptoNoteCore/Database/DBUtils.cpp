@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "DBUtils.h"
+#include <CryptoNoteCore/Database/DBUtils.h>
 
 namespace {
   const std::string RAW_BLOCK_NAME = "raw_block";

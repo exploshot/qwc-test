@@ -8,11 +8,14 @@
 
 #include <system_error>
 
-#include <System/Dispatcher.h>
-#include <System/Event.h>
 #include <Logging/ILogger.h>
 #include <Logging/LoggerRef.h>
+
 #include <Rpc/HttpServer.h>
+
+#include <System/Dispatcher.h>
+#include <System/Event.h>
+
 #include <WalletService/ConfigurationManager.h>
 
 namespace CryptoNote {

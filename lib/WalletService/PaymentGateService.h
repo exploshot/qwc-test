@@ -6,13 +6,13 @@
 
 #pragma once
 
-#include "ConfigurationManager.h"
-
 #include <Global/CliHeader.h>
+
 #include <Logging/ConsoleLogger.h>
 #include <Logging/LoggerGroup.h>
 #include <Logging/StreamLogger.h>
 
+#include <WalletService/ConfigurationManager.h>
 #include <WalletService/NodeFactory.h>
 #include <WalletService/WalletService.h>
 

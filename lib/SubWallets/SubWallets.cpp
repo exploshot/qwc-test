@@ -2,17 +2,13 @@
 // 
 // Please see the included LICENSE file for more information.
 
-//////////////////////////////////
-#include <SubWallets/SubWallets.h>
-//////////////////////////////////
+#include <ctime>
+#include <mutex>
+#include <random>
 
 #include <Global/CryptoNoteConfig.h>
 
-#include <ctime>
-
-#include <mutex>
-
-#include <random>
+#include <SubWallets/SubWallets.h>
 
 #include <Utilities/Addresses.h>
 #include <Utilities/Utilities.h>

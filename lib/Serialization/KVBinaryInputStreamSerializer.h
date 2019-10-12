@@ -18,8 +18,9 @@
 #pragma once
 
 #include <Common/IInputStream.h>
-#include "ISerializer.h"
-#include "JsonInputValueSerializer.h"
+
+#include <Serialization/ISerializer.h>
+#include <Serialization/JsonInputValueSerializer.h>
 
 namespace CryptoNote {
 

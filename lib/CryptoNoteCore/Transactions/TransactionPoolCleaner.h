@@ -6,15 +6,16 @@
 
 #pragma once
 
-#include "ITransactionPoolCleaner.h"
 
 #include <chrono>
 #include <unordered_map>
 
 #include <Crypto/crypto.h>
 
+#include <CryptoNoteCore/Transactions/ITransactionPool.h>
+#include <CryptoNoteCore/Transactions/ITransactionPoolCleaner.h>
 #include <CryptoNoteCore/ITimeProvider.h>
-#include "ITransactionPool.h"
+
 #include <Logging/ILogger.h>
 #include <Logging/LoggerRef.h>
 

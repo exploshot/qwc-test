@@ -17,8 +17,8 @@
 #include <CryptoNoteProtocol/CryptoNoteProtocolDefinitions.h>
 #include <Rpc/CoreRpcServerCommandsDefinitions.h>
 
-#include "BlockchainExplorerData.h"
-#include "ITransaction.h"
+#include <BlockchainExplorerData.h>
+#include <ITransaction.h>
 
 #include <WalletTypes.h>
 

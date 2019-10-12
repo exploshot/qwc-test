@@ -16,16 +16,20 @@
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <WalletGreenTypes.h>
-#include "TransfersContainer.h"
+
 #include <Common/StdInputStream.h>
 #include <Common/StdOutputStream.h>
+
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
+
+#include <Global/Constants.h>
+
 #include <Serialization/BinaryInputStreamSerializer.h>
 #include <Serialization/BinaryOutputStreamSerializer.h>
 #include <Serialization/SerializationOverloads.h>
 
-#include <Global/Constants.h>
+#include <Transfers/TransfersContainer.h>
 
 using namespace Common;
 using namespace Crypto;
