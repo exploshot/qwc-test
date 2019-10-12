@@ -7,10 +7,13 @@
 #pragma once
 
 #include <rapidjson/document.h>
-#include <Global/CryptoNoteConfig.h>
-#include <Logging/ILogger.h>
+
 #include <Common/PathTools.h>
 #include <Common/Util.h>
+
+#include <Global/CryptoNoteConfig.h>
+
+#include <Logging/ILogger.h>
 
 using namespace rapidjson;
 

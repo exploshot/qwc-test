@@ -4,7 +4,8 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "DaemonConfiguration.h"
+#include <fstream>
+
 #include <cxxopts.hpp>
 
 #include <rapidjson/document.h>
@@ -13,13 +14,16 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/prettywriter.h>
-#include <fstream>
+
+#include <Common/PathTools.h>
+#include <Common/Util.h>
+
+#include <Daemon/DaemonConfiguration.h>
 
 #include <Global/CliHeader.h>
 #include <Global/CryptoNoteConfig.h>
+
 #include <Logging/ILogger.h>
-#include <Common/PathTools.h>
-#include <Common/Util.h>
 
 using namespace rapidjson;
 

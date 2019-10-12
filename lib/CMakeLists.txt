@@ -9,8 +9,8 @@ message(STATUS "Generated version.h header: ${CMAKE_CURRENT_BINARY_DIR}/version.
 set(QwertycoinFramework_INCLUDE_DIRS
     "${Boost_INCLUDE_DIRS}"
     "${MINIUPNP_INCLUDE_DIRS}"
-    "${RapidJSON_INCLUDE_DIRS}"
-    "${RockDB_INCLUDE_DIRS}"
+    "${RAPIDJSON_INCLUDE_DIRS}"
+    "${ROCKSDB_INCLUDE_DIRS}"
     "${SPARSEHASH_INCLUDE_DIRS}"
     "${CMAKE_CURRENT_BINARY_DIR}"
     "${CMAKE_CURRENT_LIST_DIR}"
@@ -353,7 +353,7 @@ set(QwertycoinFramework_CryptoNoteCore_LIBS
 add_library(QwertycoinFramework_CryptoNoteCore STATIC ${QwertycoinFramework_CryptoNoteCore_SOURCES})
 add_library(QwertycoinFramework::CryptoNoteCore ALIAS QwertycoinFramework_CryptoNoteCore)
 target_include_directories(QwertycoinFramework_CryptoNoteCore PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_CryptoNoteCore PUBLIC ${QwertycoinFramework_CryptoNoteCore_LIBS})
+target_link_libraries(QwertycoinFramework_CryptoNoteCore PRIVATE ${QwertycoinFramework_CryptoNoteCore_LIBS})
 
 # QwertycoinFramework::CryptoNoteProtocol
 

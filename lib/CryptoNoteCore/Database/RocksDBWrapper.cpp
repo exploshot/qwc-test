@@ -3,10 +3,11 @@
 //
 // Please see the included LICENSE file for more information.
 
+#include <cassert>
 
 #include <rocksdb/cache.h>
-#include <rocksdb/table.h>
 #include <rocksdb/db.h>
+#include <rocksdb/table.h>
 #include <rocksdb/utilities/backupable_db.h>
 
 #include <CryptoNoteCore/Database/RocksDBWrapper.h>
@@ -19,13 +20,9 @@ namespace {
   const std::string DB_NAME = "DB";
 }
 
-RocksDBWrapper::RocksDBWrapper(std::shared_ptr<Logging::ILogger> logger) : logger(logger, "RocksDBWrapper"), state(NOT_INITIALIZED){
+RocksDBWrapper::RocksDBWrapper(std::shared_ptr<Logging::ILogger> logger) : logger(logger, "RocksDBWrapper"), state(NOT_INITIALIZED){ }
 
-}
-
-RocksDBWrapper::~RocksDBWrapper() {
-
-}
+RocksDBWrapper::~RocksDBWrapper() { }
 
 void RocksDBWrapper::init(const DataBaseConfig& config) {
   if (state.load() != NOT_INITIALIZED) {
@@ -40,6 +37,9 @@ void RocksDBWrapper::init(const DataBaseConfig& config) {
 
   rocksdb::Options dbOptions = getDBOptions(config);
   rocksdb::Status status = rocksdb::DB::Open(dbOptions, dataDir, &dbPtr);
+
+  assert(status.ok());
+
   if (status.ok()) {
     logger(INFO) << "DB opened in " << dataDir;
   } else if (!status.ok() && status.IsInvalidArgument()) {

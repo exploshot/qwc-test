@@ -5,10 +5,13 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include <Global/CliHeader.h>
+#if defined(WIN32)
+#include <crtdbg.h>
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
 
-#include "DaemonConfiguration.h"
-#include "DaemonCommandsHandler.h"
 #include <Common/ScopeExit.h>
 #include <Common/SignalHandler.h>
 #include <Common/StdOutputStream.h>
@@ -16,34 +19,36 @@
 #include <Common/PathTools.h>
 #include <Common/Util.h>
 #include <Common/FileSystemShim.h>
-#include <Crypto/hash.h>
 #include <Common/CryptoNoteTools.h>
-#include <CryptoNoteCore/Core.h>
-#include <CryptoNoteCore/Currency.h>
-#include <CryptoNoteCore/Database/DatabaseBlockchainCache.h>
-#include <CryptoNoteCore/Database/DatabaseBlockchainCacheFactory.h>
+
+#include <Crypto/hash.h>
+
 #include <CryptoNoteCore/Blockchain/MainChainStorage.h>
 #include <CryptoNoteCore/Blockchain/MainChainStorageSqlite.h>
 #include <CryptoNoteCore/Blockchain/MainChainStorageRocksdb.h>
+#include <CryptoNoteCore/Database/DatabaseBlockchainCache.h>
+#include <CryptoNoteCore/Database/DatabaseBlockchainCacheFactory.h>
 #include <CryptoNoteCore/Database/RocksDBWrapper.h>
-#include <CryptoNoteProtocol/CryptoNoteProtocolHandler.h>
-#include <P2p/NetNode.h>
-#include <P2p/NetNodeConfig.h>
-#include <Rpc/RpcServer.h>
-#include <Serialization/BinaryInputStreamSerializer.h>
-#include <Serialization/BinaryOutputStreamSerializer.h>
+#include <CryptoNoteCore/Core.h>
+#include <CryptoNoteCore/Currency.h>
 
-#include <Global/Checkpoints.h>
+#include <CryptoNoteProtocol/CryptoNoteProtocolHandler.h>
+
+#include <Daemon/DaemonConfiguration.h>
+#include <Daemon/DaemonCommandsHandler.h>
+
 #include <Logging/LoggerManager.h>
 
-#include <Common/FileSystemShim.h>
+#include <Global/Checkpoints.h>
+#include <Global/CliHeader.h>
 
-#if defined(WIN32)
-#include <crtdbg.h>
-#include <io.h>
-#else
-#include <unistd.h>
-#endif
+#include <P2p/NetNode.h>
+#include <P2p/NetNodeConfig.h>
+
+#include <Rpc/RpcServer.h>
+
+#include <Serialization/BinaryInputStreamSerializer.h>
+#include <Serialization/BinaryOutputStreamSerializer.h>
 
 using Common::JsonValue;
 using namespace CryptoNote;

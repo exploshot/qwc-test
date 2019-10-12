@@ -4,9 +4,9 @@
 // 
 // Please see the included LICENSE file for more information.
 
-#include <boost/format.hpp>
-
 #include <ctime>
+
+#include <boost/format.hpp>
 
 #include <CryptoNoteCore/Core.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>

@@ -10,6 +10,7 @@
 
 #include <Logging/LoggerRef.h>
 #include <Logging/LoggerManager.h>
+
 #include <Rpc/RpcServer.h>
 #include <Rpc/CoreRpcServerCommandsDefinitions.h>
 #include <Rpc/JsonRpc.h>
