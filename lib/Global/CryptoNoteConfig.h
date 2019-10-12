@@ -50,19 +50,35 @@ namespace CryptoNote {
 		const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V3 					= 280000; //diff adjustment
 
 		/* This is the unix timestamp of the first "mined" block (technically block 2, not the genesis block)
-		   You can get this value by doing "print_block 2" in Plenteumd. It is used to know what timestamp
+		   You can get this value by doing "print_block 2" in Qwertycoind. It is used to know what timestamp
 		   to import from when the block height cannot be found in the node or the node is offline. */
 		const uint64_t GENESIS_BLOCK_TIMESTAMP 								= 1533098345;
 
 		const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW 						= 100;
 		
-		/* If you Fork PLE Please set the below value to 100000 NOT 10000 as this will fix a mistake we made at mainnetlaunch with transaction sizes */
+		/* If you Fork QWC Please set the below value to 100000 NOT 10000 as this will fix a mistake we made at mainnetlaunch with transaction sizes */
 		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE 			= 10000; //size of block (bytes) after which reward for block calculated using block size
 		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 		= 100000; //size of block (bytes) after which reward for block calculated using block size (fix tx sizes issue)
 		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT 	= CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 		const size_t   CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE 				= 600;
 		const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT 					= 2; // the number of decimal points to display in the wallet and other software
-		const size_t   CRYPTONOTE_DUST_DECIMAL_POINT 						= 8; //the decimal places to calculate DUST up to... 
+		const size_t   CRYPTONOTE_DUST_DECIMAL_POINT 						= 8; //the decimal places to calculate DUST up to...
+
+		/* Premine amount */
+		const uint64_t GENESIS_BLOCK_REWARD                          		= UINT64_C(0);
+
+		/* How to generate a premine:
+		* Compile your code
+		* Run zedwallet, ignore that it can't connect to the daemon, and generate an
+		address. Save this and the keys somewhere safe.
+		* Launch the daemon with these arguments:
+		--print-genesis-tx --genesis-block-reward-address <premine wallet address>
+		For example:
+		TurtleCoind --print-genesis-tx --genesis-block-reward-address TRTLv2Fyavy8CXG8BPEbNeCHFZ1fuDCYCZ3vW5H5LXN4K2M2MHUpTENip9bbavpHvvPwb4NDkBWrNgURAd5DB38FHXWZyoBh4wW
+		* Take the hash printed, and replace it with the hash below in GENESIS_COINBASE_TX_HEX
+		* Recompile, setup your seed nodes, and start mining
+		* You should see your premine appear in the previously generated wallet.
+		*/ 
 
 		//DustFund Parameters
 		const uint64_t CRYPTONOTE_DUST_OUT_LIMIT 							= UINT64_C(1000000); //the limit up to which dust outs should be removed and contributed back to the dust fund

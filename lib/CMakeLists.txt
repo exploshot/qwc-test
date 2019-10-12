@@ -244,8 +244,10 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/IMainChainStorage.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorage.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorage.h"
-    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageRocksdb.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageRocksdb.h"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageLmdb.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageLmdb.h"
+#    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageRocksdb.cpp"
+#    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageRocksdb.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageSqlite.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageSqlite.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MemoryBlockchainCacheFactory.cpp"
@@ -266,8 +268,10 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/DataBaseErrors.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/DBUtils.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/DBUtils.h"
-    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/RocksDBWrapper.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/RocksDBWrapper.h"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/LmDBWrapper.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/LmDBWrapper.h"
+#    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/RocksDBWrapper.cpp"
+#    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/RocksDBWrapper.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Transactions/CachedTransaction.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Transactions/CachedTransaction.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Transactions/ITransactionPool.h"
@@ -337,7 +341,6 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
 set(QwertycoinFramework_CryptoNoteCore_LIBS
     Boost::filesystem
     Boost::program_options
-    RocksDB::rocksdb
     sparsehash::sparsehash
     sqlite3::sqlite3
     stdc++fs

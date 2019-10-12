@@ -54,6 +54,7 @@ namespace DaemonConfig{
       ("c,config-file", "Specify the <path> to a configuration file", cxxopts::value<std::string>(), "<path>")
       ("data-dir", "Specify the <path> to the Blockchain data directory", cxxopts::value<std::string>()->default_value(config.dataDirectory), "<path>")
       ("dump-config", "Prints the current configuration to the screen", cxxopts::value<bool>()->default_value("false")->implicit_value("true"))
+      ("lmdb", "Use lmdb for local cache files", cxxopts::value<bool>(config.useLmdbForLocalCaches)->default_value("false")->implicit_value("true"))
       ("load-checkpoints", "Specify a file <path> containing a CSV of Blockchain checkpoints for faster sync. A value of 'default' uses the built-in checkpoints.",
         cxxopts::value<std::string>()->default_value(config.checkPoints), "<path>")
       ("log-file", "Specify the <path> to the log file", cxxopts::value<std::string>()->default_value(config.logFile), "<path>")
@@ -156,6 +157,11 @@ namespace DaemonConfig{
       if (cli.count("data-dir") > 0)
       {
         config.dataDirectory = cli["data-dir"].as<std::string>();
+      }
+
+      if (cli.count("lmdb") > 0)
+      {
+        config.useLmdbForLocalCaches = cli["lmdb"].as<bool>();
       }
 
       if (cli.count("load-checkpoints") > 0)
@@ -373,6 +379,11 @@ namespace DaemonConfig{
         if (cfgKey.compare("data-dir") == 0)
         {
           config.dataDirectory = cfgValue;
+          updated = true;
+        }
+        else if (cfgKey.compare("lmdb") == 0)
+        {
+          config.useLmdbForLocalCaches = cfgValue.at(0) == '1';
           updated = true;
         }
         else if (cfgKey.compare("load-checkpoints") == 0)
@@ -630,6 +641,11 @@ namespace DaemonConfig{
       config.dataDirectory = j["data-dir"].GetString();
     }
 
+    if (j.HasMember("lmdb"))
+    {
+      config.useLmdbForLocalCaches = j["lmdb"].GetBool();
+    }
+
     if (j.HasMember("load-checkpoints"))
     {
       config.checkPoints = j["load-checkpoints"].GetString();
@@ -808,6 +824,7 @@ namespace DaemonConfig{
     Document::AllocatorType& alloc = j.GetAllocator();
 
     j.AddMember("data-dir", config.dataDirectory, alloc);
+    j.AddMember("lmdb", config.useLmdbForLocalCaches, alloc);
     j.AddMember("load-checkpoints", config.checkPoints, alloc);
     j.AddMember("log-file", config.logFile, alloc);
     j.AddMember("log-level", config.logLevel, alloc);
@@ -824,10 +841,10 @@ namespace DaemonConfig{
     j.AddMember("p2p-bind-ip", config.p2pInterface, alloc);
     j.AddMember("p2p-bind-port", config.p2pPort, alloc);
     j.AddMember("p2p-external-port", config.p2pExternalPort, alloc);
-	j.AddMember("p2p-reset-peerstate", config.p2pResetPeerstate, alloc);
-	j.AddMember("p2p-tx-threshold-count", config.txThresholdCount, alloc);
-	j.AddMember("p2p-tx-threshold-interval", config.txThresholdInterval, alloc);
-	j.AddMember("p2p-ban-import", config.banImportFile, alloc);
+	  j.AddMember("p2p-reset-peerstate", config.p2pResetPeerstate, alloc);
+	  j.AddMember("p2p-tx-threshold-count", config.txThresholdCount, alloc);
+	  j.AddMember("p2p-tx-threshold-interval", config.txThresholdInterval, alloc);
+	  j.AddMember("p2p-ban-import", config.banImportFile, alloc);
     j.AddMember("rpc-bind-ip", config.rpcInterface, alloc);
     j.AddMember("rpc-bind-port", config.rpcPort, alloc);
 

@@ -24,11 +24,11 @@
 #include <Crypto/hash.h>
 
 #include <CryptoNoteCore/Blockchain/MainChainStorage.h>
+#include <CryptoNoteCore/Blockchain/MainChainStorageLmdb.h>
 #include <CryptoNoteCore/Blockchain/MainChainStorageSqlite.h>
-#include <CryptoNoteCore/Blockchain/MainChainStorageRocksdb.h>
 #include <CryptoNoteCore/Database/DatabaseBlockchainCache.h>
 #include <CryptoNoteCore/Database/DatabaseBlockchainCacheFactory.h>
-#include <CryptoNoteCore/Database/RocksDBWrapper.h>
+#include <CryptoNoteCore/Database/LmDBWrapper.h>
 #include <CryptoNoteCore/Core.h>
 #include <CryptoNoteCore/Currency.h>
 
@@ -178,8 +178,8 @@ int main(int argc, char* argv[])
       config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKS_FILENAME,
       config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKINDEXES_FILENAME,
       config.dataDirectory + "/" + CryptoNote::parameters::P2P_NET_DATA_FILENAME,
+      config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKS_FILENAME + ".mdb",
       config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKS_FILENAME + ".sqlite3",
-      config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKS_FILENAME + ".rocksdb",
       config.dataDirectory + "/DB"
     };
 
@@ -230,6 +230,7 @@ int main(int argc, char* argv[])
     }
     CryptoNote::Currency currency = currencyBuilder.currency();
 
+/*
     DataBaseConfig dbConfig;
     dbConfig.init(
       config.dataDirectory,
@@ -239,7 +240,7 @@ int main(int argc, char* argv[])
       config.dbReadCacheSizeMB,
       config.enableDbCompression
     );
-
+*/
     /* If we were told to rewind the blockchain to a certain height
        we will remove blocks until we're back at the height specified */
     if (config.rewindToHeight > 0)
@@ -251,16 +252,19 @@ int main(int argc, char* argv[])
       {
         mainChainStorage = createSwappedMainChainStorageSqlite(config.dataDirectory, currency);
       }
-      else if (config.useRocksdbForLocalCaches )
+      else if (config.useLmdbForLocalCaches)
       {
-        mainChainStorage = createSwappedMainChainStorageRocksdb(config.dataDirectory, currency, dbConfig);
+        mainChainStorage = createSwappedMainChainStorageLmdb(config.dataDirectory, currency);
       }
       else
       {
         mainChainStorage = createSwappedMainChainStorage(config.dataDirectory, currency);
       }
 
-      mainChainStorage->rewindTo(config.rewindToHeight);
+      while(mainChainStorage->getBlockCount() >= config.rewindToHeight)
+      {
+        mainChainStorage->popBlock();
+      }
 
       logger(INFO) << "Blockchain rewound to: " << config.rewindToHeight << std::endl;
     }
@@ -288,17 +292,35 @@ int main(int argc, char* argv[])
     }
 
     NetNodeConfig netNodeConfig;
-    netNodeConfig.init(config.p2pInterface, config.p2pPort, config.p2pExternalPort, config.localIp,
-      config.hideMyPort, config.dataDirectory, config.peers,
-      config.exclusiveNodes, config.priorityNodes,
-      config.seedNodes, config.p2pResetPeerstate);
+    netNodeConfig.init(
+      config.p2pInterface, 
+      config.p2pPort, 
+      config.p2pExternalPort, 
+      config.localIp,
+      config.hideMyPort, 
+      config.dataDirectory, 
+      config.peers,
+      config.exclusiveNodes, 
+      config.priorityNodes,
+      config.seedNodes, 
+      config.p2pResetPeerstate
+    );
+
+    DataBaseConfig dbConfig;
+    dbConfig.init(
+      config.dataDirectory, 
+      config.dbThreads, 
+      config.dbMaxOpenFiles, 
+      config.dbWriteBufferSizeMB, 
+      config.dbReadCacheSizeMB
+    );
 
     if (!Tools::create_directories_if_necessary(dbConfig.getDataDir()))
     {
       throw std::runtime_error("Can't create directory: " + dbConfig.getDataDir());
     }
 
-    RocksDBWrapper database(logManager);
+    LmDBWrapper database(logManager);
     database.init(dbConfig);
     Tools::ScopeExit dbShutdownOnExit([&database] () { database.shutdown(); });
 
@@ -321,9 +343,9 @@ int main(int argc, char* argv[])
     {
       tmainChainStorage = createSwappedMainChainStorageSqlite(config.dataDirectory, currency);
     }
-    else if ( config.useRocksdbForLocalCaches )
+    else if ( config.useLmdbForLocalCaches )
     {
-      tmainChainStorage = createSwappedMainChainStorageRocksdb(config.dataDirectory, currency, dbConfig);
+      tmainChainStorage = createSwappedMainChainStorageLmdb(config.dataDirectory, currency);
     }
     else
     {
