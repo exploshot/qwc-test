@@ -33,6 +33,7 @@ endif()
 
 set(QwertycoinTools_Daemon_LIBS
     lz4::lz4
+    lmdb
     sqlite3::sqlite3
     QwertycoinFramework::CryptoNoteCore
     QwertycoinFramework::Errors

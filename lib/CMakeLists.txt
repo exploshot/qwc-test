@@ -341,6 +341,7 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
 set(QwertycoinFramework_CryptoNoteCore_LIBS
     Boost::filesystem
     Boost::program_options
+    lmdb
     sparsehash::sparsehash
     sqlite3::sqlite3
     stdc++fs

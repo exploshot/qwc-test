@@ -43,3 +43,4 @@ private:
 std::unique_ptr<IMainChainStorage> createSwappedMainChainStorage(const std::string& dataDir, const Currency& currency);
 
 }
+
