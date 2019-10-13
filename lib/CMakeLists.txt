@@ -15,6 +15,7 @@ set(QwertycoinFramework_INCLUDE_DIRS
     "${CMAKE_CURRENT_BINARY_DIR}"
     "${CMAKE_CURRENT_LIST_DIR}"
     "${CMAKE_CURRENT_LIST_DIR}/../include"
+    # "${CMAKE_CURRENT_LIST_DIR}/../external"
 )
 
 if(MSVC)
@@ -246,8 +247,6 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorage.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageLmdb.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageLmdb.h"
-#    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageRocksdb.cpp"
-#    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageRocksdb.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageSqlite.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageSqlite.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MemoryBlockchainCacheFactory.cpp"
@@ -270,8 +269,6 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/DBUtils.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/LmDBWrapper.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/LmDBWrapper.h"
-#    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/RocksDBWrapper.cpp"
-#    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Database/RocksDBWrapper.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Transactions/CachedTransaction.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Transactions/CachedTransaction.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Transactions/ITransactionPool.h"
@@ -1043,7 +1040,7 @@ set(QwertycoinFramework_ZedWallet_SOURCES
 )
 
 set(QwertycoinFramework_ZedWallet_LIBS
-
+    Boost::filesystem
 )
 
 add_library(QwertycoinFramework_ZedWallet STATIC ${QwertycoinFramework_ZedWallet_SOURCES})

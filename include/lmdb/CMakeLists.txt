@@ -1,9 +1,15 @@
 # vim: set ai ts=4 expandtab:
 # ::=========================================================================::
 
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 project(lmdb VERSION 0.9.23)
 find_package(Threads REQUIRED)
+
+if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
+
 SET(HEADERS_LMDB
     lmdb.h
     midl.h

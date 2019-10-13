@@ -3,7 +3,7 @@
 # Licensed under the GNU General Public License, Version 3.
 # See the file LICENSE from this package for details.
 
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.14)
 
 if(POLICY CMP0074)
     # Allow find_package() to use <PackageName>_ROOT variables.
@@ -108,6 +108,7 @@ include(external/sparsehash)
 include(external/sqlite3)
 include(external/Threads)
 
+# add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/external")
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/lib")
 
 if(BUILD_WITH_TOOLS)

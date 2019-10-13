@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <limits>
 #include <random>
 
 namespace Random
@@ -13,7 +14,7 @@ namespace Random
     static thread_local std::mt19937 gen(device());
 
     /* The distribution to get numbers for - in this case, uint8_t */
-    static std::uniform_int_distribution<int> distribution{0, std::numeric_limits<uint8_t>::max()};
+    static std::uniform_int_distribution<int> distribution{0, (std::numeric_limits<uint8_t>::max)()};
 
     /**
      * Generate n random bytes (uint8_t), and place them in *result. Result should be large

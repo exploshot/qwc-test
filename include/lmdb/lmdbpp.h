@@ -16,12 +16,12 @@
 #endif
 
 #if __cplusplus < 201703L
-#error "<lmdb++.h> requires a C++17 compiler (CXXFLAGS='-std=c++17')"
+// #error "<lmdb++.h> requires a C++17 compiler (CXXFLAGS='-std=c++17')"
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <lmdb.h>      /* for MDB_*, mdb_*() */
+#include <lmdb/lmdb.h>      /* for MDB_*, mdb_*() */
 
 #ifdef LMDBXX_DEBUG
 #include <cassert>     /* for assert() */

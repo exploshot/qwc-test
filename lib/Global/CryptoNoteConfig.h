@@ -34,7 +34,7 @@ namespace CryptoNote {
 		const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW 					= 60;
 
 		// MONEY_SUPPLY - total number coins to be generated
-		const uint64_t MONEY_SUPPLY 										= (uint64_t)(-1);
+		const uint64_t MONEY_SUPPLY 										= UINT64_C(-1);
 		const uint64_t COIN                                           		= 100000000;
 		const uint64_t TAIL_EMISSION_REWARD                           		= 1000000000; // 10 Coins
 		const size_t CRYPTONOTE_COIN_VERSION                          		= 1;
