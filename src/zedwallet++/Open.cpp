@@ -154,7 +154,8 @@ std::shared_ptr<WalletBackend> importWalletFromSeed(const ZedConfig &config)
         Utilities::trim(mnemonicSeed);
         
         /* Just to check if it's valid */
-        auto [error, privateSpendKey] = Mnemonics::MnemonicToPrivateKey(mnemonicSeed, "English");
+		std::string defaultLang = "English";
+        auto [error, privateSpendKey] = Mnemonics::MnemonicToPrivateKey(mnemonicSeed, defaultLang);
 
         if (!error)
         {
