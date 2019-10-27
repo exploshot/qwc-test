@@ -47,6 +47,7 @@ uint64_t getSignaturesCount(const TransactionInput& input) {
   struct txin_signature_size_visitor : public boost::static_visitor < uint64_t > {
     uint64_t operator()(const BaseInput& txin) const { return 0; }
     uint64_t operator()(const KeyInput& txin) const { return txin.outputIndexes.size(); }
+    uint64_t operator()(const MultisignatureInput& txin) const { return txin.signatureCount; }
   };
 
   return boost::apply_visitor(txin_signature_size_visitor(), input);
@@ -55,7 +56,9 @@ uint64_t getSignaturesCount(const TransactionInput& input) {
 struct BinaryVariantTagGetter: boost::static_visitor<uint8_t> {
   uint8_t operator()(const CryptoNote::BaseInput) { return  0xff; }
   uint8_t operator()(const CryptoNote::KeyInput) { return  0x2; }
+  uint8_t operator()(const CryptoNote::MultisignatureInput) { return  0x3; }
   uint8_t operator()(const CryptoNote::KeyOutput) { return  0x2; }
+  uint8_t operator()(const CryptoNote::MultisignatureOutput) { return  0x3; }
   uint8_t operator()(const CryptoNote::Transaction) { return  0xcc; }
   uint8_t operator()(const CryptoNote::BlockTemplate) { return  0xbb; }
 };
@@ -84,6 +87,12 @@ void getVariantValue(CryptoNote::ISerializer& serializer, uint8_t tag, CryptoNot
     in = v;
     break;
   }
+  case 0x3: {
+    CryptoNote::MultisignatureInput v;
+    serializer(v, "value");
+    in = v;
+    break;
+  }
   default:
     throw std::runtime_error("Unknown variant tag");
   }
@@ -93,6 +102,12 @@ void getVariantValue(CryptoNote::ISerializer& serializer, uint8_t tag, CryptoNot
   switch(tag) {
   case 0x2: {
     CryptoNote::KeyOutput v;
+    serializer(v, "data");
+    out = v;
+    break;
+  }
+  case 0x3: {
+    CryptoNote::MultisignatureOutput v;
     serializer(v, "data");
     out = v;
     break;
@@ -265,6 +280,12 @@ void serialize(KeyInput& key, ISerializer& serializer) {
   serializer(key.keyImage, "k_image");
 }
 
+void serialize(MultisignatureInput& multisignature, ISerializer& serializer) {
+  serializer(multisignature.amount, "amount");
+  serializer(multisignature.signatureCount, "signatures");
+  serializer(multisignature.outputIndex, "outputIndex");
+}
+
 void serialize(TransactionOutput& output, ISerializer& serializer) {
   serializer(output.amount, "amount");
   serializer(output.target, "target");
@@ -288,6 +309,11 @@ void serialize(TransactionOutputTarget& output, ISerializer& serializer) {
 
 void serialize(KeyOutput& key, ISerializer& serializer) {
   serializer(key.key, "key");
+}
+
+void serialize(MultisignatureOutput& multisignature, ISerializer& serializer) {
+  serializer(multisignature.keys, "keys");
+  serializer(multisignature.requiredSignatureCount, "required_signatures");
 }
 
 void serialize(ParentBlockSerializer& pbs, ISerializer& serializer) {

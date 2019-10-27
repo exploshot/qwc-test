@@ -88,7 +88,7 @@ Crypto::Hash getObjectHash(const T& object) {
   return hash;
 }
 
-inline bool getBaseTransactionHash(const BaseTransaction& tx, Crypto::Hash& hash) {
+inline bool getBaseTransactionHash(const Transaction& tx, Crypto::Hash& hash) {
   if (tx.version < TRANSACTION_VERSION_2) {
     return getObjectHash(tx, hash);
   } else {

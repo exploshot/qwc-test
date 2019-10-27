@@ -30,13 +30,24 @@ struct KeyInput {
   Crypto::KeyImage keyImage;
 };
 
+struct MultisignatureInput {
+  uint64_t amount;
+  uint8_t signatureCount;
+  uint32_t outputIndex;
+};
+
 struct KeyOutput {
   Crypto::PublicKey key;
 };
 
-typedef boost::variant<BaseInput, KeyInput> TransactionInput;
+struct MultisignatureOutput {
+  std::vector<Crypto::PublicKey> keys;
+  uint8_t requiredSignatureCount;
+};
 
-typedef boost::variant<KeyOutput> TransactionOutputTarget;
+typedef boost::variant<BaseInput, KeyInput, MultisignatureInput> TransactionInput;
+
+typedef boost::variant<KeyOutput, MultisignatureOutput> TransactionOutputTarget;
 
 struct TransactionOutput {
   uint64_t amount;
@@ -64,7 +75,7 @@ struct ParentBlock {
   Crypto::Hash previousBlockHash;
   uint16_t transactionCount;
   std::vector<Crypto::Hash> baseTransactionBranch;
-  BaseTransaction baseTransaction;
+  Transaction baseTransaction;
   std::vector<Crypto::Hash> blockchainBranch;
 };
 

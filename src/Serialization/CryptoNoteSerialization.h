@@ -41,7 +41,11 @@ namespace CryptoNote {
 
 struct ParentBlockSerializer {
     ParentBlockSerializer(ParentBlock& parentBlock, uint64_t& timestamp, uint32_t& nonce, bool hashingSerialization, bool headerOnly) :
-      m_parentBlock(parentBlock), m_timestamp(timestamp), m_nonce(nonce), m_hashingSerialization(hashingSerialization), m_headerOnly(headerOnly) {
+      m_parentBlock(parentBlock), 
+      m_timestamp(timestamp), 
+      m_nonce(nonce), 
+      m_hashingSerialization(hashingSerialization), 
+      m_headerOnly(headerOnly) {
     }
 
     ParentBlock& m_parentBlock;
@@ -69,10 +73,12 @@ void serialize(TransactionOutput& in, ISerializer& serializer);
 
 void serialize(BaseInput& gen, ISerializer& serializer);
 void serialize(KeyInput& key, ISerializer& serializer);
+void serialize(MultisignatureInput& multisignature, ISerializer& serializer);
 
 void serialize(TransactionOutput& output, ISerializer& serializer);
 void serialize(TransactionOutputTarget& output, ISerializer& serializer);
 void serialize(KeyOutput& key, ISerializer& serializer);
+void serialize(MultisignatureOutput& multisignature, ISerializer& serializer);
 
 void serialize(BlockHeader& header, ISerializer& serializer);
 void serialize(BlockTemplate& block, ISerializer& serializer);

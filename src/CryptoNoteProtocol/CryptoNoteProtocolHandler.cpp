@@ -785,7 +785,7 @@ int CryptoNoteProtocolHandler::doPushLiteBlock(NOTIFY_NEW_LITE_BLOCK::request ar
 }
 
 int CryptoNoteProtocolHandler::handle_request_chain(int command, NOTIFY_REQUEST_CHAIN::request& arg, CryptoNoteConnectionContext& context) {
-  logger(Logging::TRACE) << context << "NOTIFY_REQUEST_CHAIN: m_block_ids.size()=" << arg.block_ids.size();
+  logger(Logging::DEBUGGING) << context << "NOTIFY_REQUEST_CHAIN: m_block_ids.size()=" << arg.block_ids.size();
 
   if (arg.block_ids.empty()) {
     logger(Logging::DEBUGGING, Logging::BRIGHT_RED) << context << "Failed to handle NOTIFY_REQUEST_CHAIN. block_ids is empty";
@@ -802,7 +802,7 @@ int CryptoNoteProtocolHandler::handle_request_chain(int command, NOTIFY_REQUEST_
   NOTIFY_RESPONSE_CHAIN_ENTRY::request r;
   r.m_block_ids = m_core.findBlockchainSupplement(arg.block_ids, BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT, r.total_height, r.start_height);
 
-  logger(Logging::TRACE) << context << "-->>NOTIFY_RESPONSE_CHAIN_ENTRY: m_start_height=" << r.start_height << ", m_total_height=" << r.total_height << ", m_block_ids.size()=" << r.m_block_ids.size();
+  logger(Logging::DEBUGGING) << context << "-->>NOTIFY_RESPONSE_CHAIN_ENTRY: m_start_height=" << r.start_height << ", m_total_height=" << r.total_height << ", m_block_ids.size()=" << r.m_block_ids.size();
   post_notify<NOTIFY_RESPONSE_CHAIN_ENTRY>(*m_p2p, r, context);
   return 1;
 }

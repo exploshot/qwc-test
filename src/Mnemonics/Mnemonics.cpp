@@ -32,6 +32,7 @@ namespace Language {
     using namespace Mnemonics;
 
     const std::string WordLists::English           ::cName = "English";
+    /*
     const std::string WordLists::Ukrainian         ::cName = "українська мова";
     const std::string WordLists::Polish            ::cName = "język polski";
     const std::string WordLists::German            ::cName = "Deutsch";
@@ -43,11 +44,13 @@ namespace Language {
     const std::string WordLists::Japanese          ::cName = "日本語";
     const std::string WordLists::ChineseSimplified ::cName = "简体中文 (中国)";
     const std::string WordLists::Russian           ::cName = "русский язык";
+    */
 
     typedef std::unordered_map<std::string, Lazy<std::shared_ptr<Base>>> LanguageMap;
 
     const static LanguageMap cLanguageMap = {
         { WordLists::English   ::cName, Lazy<std::shared_ptr<Base>>([](){ return std::make_shared<WordLists::English>();    }) },
+        /*
         { WordLists::Ukrainian ::cName, Lazy<std::shared_ptr<Base>>([](){ return std::make_shared<WordLists::Ukrainian>();  }) },
         { WordLists::Polish    ::cName, Lazy<std::shared_ptr<Base>>([](){ return std::make_shared<WordLists::Polish>();     }) },
         { WordLists::German    ::cName, Lazy<std::shared_ptr<Base>>([](){ return std::make_shared<WordLists::German>();     }) },
@@ -58,7 +61,8 @@ namespace Language {
         { WordLists::Dutch     ::cName, Lazy<std::shared_ptr<Base>>([](){ return std::make_shared<WordLists::Dutch>();      }) },
         { WordLists::Japanese  ::cName, Lazy<std::shared_ptr<Base>>([](){ return std::make_shared<WordLists::Japanese>();   }) },
         { WordLists::ChineseSimplified::cName, Lazy<std::shared_ptr<Base>>([](){ return std::make_shared<WordLists::ChineseSimplified>(); }) },
-        { WordLists::Russian   ::cName, Lazy<std::shared_ptr<Base>>([](){ return std::make_shared<WordLists::Russian>();    }) },
+        { WordLists::Russian   ::cName, Lazy<std::shared_ptr<Base>>([](){ return std::make_shared<WordLists::Russian>();    }) }
+        */
     };
 
 } // namespace Language

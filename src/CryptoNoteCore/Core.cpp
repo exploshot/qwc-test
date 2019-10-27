@@ -262,7 +262,11 @@ Crypto::Hash Core::getBlockHashByIndex(uint32_t blockIndex) const {
 
   throwIfNotInitialized();
 
-  return chainsLeaves[0]->getBlockHash(blockIndex);
+  auto tempHash = chainsLeaves[0]->getBlockHash(blockIndex);
+
+  logger(Logging::DEBUGGING) << "BlockIndex: " << blockIndex << " Hash: " << tempHash;
+
+  return tempHash;
 }
 
 uint64_t Core::getBlockTimestampByIndex(uint32_t blockIndex) const {
@@ -2208,7 +2212,7 @@ std::vector<Crypto::Hash> Core::doBuildSparseChain(const Crypto::Hash& blockHash
     sparseChain.push_back(chain->getBlockHash(blockIndex - i));
   }
 
-  auto genesisBlockHash = chain->getBlockHash(0);
+  Crypto::Hash genesisBlockHash = chain->getBlockHash(0);
   if (sparseChain[0] != genesisBlockHash) {
     sparseChain.push_back(genesisBlockHash);
   }

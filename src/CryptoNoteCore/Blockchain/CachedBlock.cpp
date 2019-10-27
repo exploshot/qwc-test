@@ -37,13 +37,18 @@ const Crypto::Hash& CachedBlock::getTransactionTreeHash() const {
 
 const Crypto::Hash& CachedBlock::getBlockHash() const {
   if (!blockHash.is_initialized()) {
+    std::cout << "Blockhash is not initialized" << std::endl;
     BinaryArray blockBinaryArray = getBlockHashingBinaryArray();
-    if (BLOCK_MAJOR_VERSION_1 <= block.majorVersion) {
+    if (block.timestamp != 0) {
+      std::cout << "Blocktimestamp: " << block.timestamp << std::endl;
       const auto& parentBlock = getParentBlockHashingBinaryArray(false);
       blockBinaryArray.insert(blockBinaryArray.end(), parentBlock.begin(), parentBlock.end());
     }
 
-    blockHash = getObjectHash(blockBinaryArray);
+    Crypto::Hash tempHash = getObjectHash(blockBinaryArray);
+    blockHash = tempHash;
+    
+    std::cout << "Blockhash: " << tempHash << std::endl;
   }
 
   return blockHash.get();

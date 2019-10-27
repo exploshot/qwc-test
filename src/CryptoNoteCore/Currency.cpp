@@ -66,13 +66,14 @@ bool Currency::generateGenesisBlock() {
     return false;
   }
 
-  genesisBlockTemplate.majorVersion = BLOCK_MAJOR_VERSION_0;
+  genesisBlockTemplate.majorVersion = BLOCK_MAJOR_VERSION_1;
   genesisBlockTemplate.minorVersion = BLOCK_MINOR_VERSION_0;
   genesisBlockTemplate.timestamp = 0;
   genesisBlockTemplate.nonce = 70;
 
   //miner::find_nonce_for_given_block(bl, 1, 0);
   cachedGenesisBlock.reset(new CachedBlock(genesisBlockTemplate));
+  logger(DEBUGGING, BRIGHT_BLUE) << "setting new Genesis block, timestamp: " << genesisBlockTemplate.timestamp;
   return true;
 }
 
@@ -164,8 +165,18 @@ size_t Currency::maxBlockCumulativeSize(uint64_t height) const {
   return maxSize;
 }
 
-bool Currency::constructMinerTx(uint8_t blockMajorVersion, uint32_t height, size_t medianSize, uint64_t alreadyGeneratedCoins, size_t currentBlockSize,
-  uint64_t fee, const AccountPublicAddress& minerAddress, Transaction& tx, const BinaryArray& extraNonce/* = BinaryArray()*/, size_t maxOuts/* = 1*/) const {
+bool Currency::constructMinerTx(
+    uint8_t blockMajorVersion, 
+    uint32_t height, 
+    size_t medianSize, 
+    uint64_t alreadyGeneratedCoins, 
+    size_t currentBlockSize,
+    uint64_t fee, 
+    const AccountPublicAddress& minerAddress, 
+    Transaction& tx, 
+    const BinaryArray& extraNonce/* = BinaryArray()*/, 
+    size_t maxOuts/* = 1*/
+  ) const {
 
   tx.inputs.clear();
   tx.outputs.clear();
@@ -190,7 +201,7 @@ bool Currency::constructMinerTx(uint8_t blockMajorVersion, uint32_t height, size
   }
 
   std::vector<uint64_t> outAmounts;
-  decompose_amount_into_digits(blockReward, defaultDustThreshold(height),
+  decompose_amount_into_digits(blockReward, UINT64_C(0),
     [&outAmounts](uint64_t a_chunk) { outAmounts.push_back(a_chunk); },
     [&outAmounts](uint64_t a_dust) { outAmounts.push_back(a_dust); });
 
@@ -410,8 +421,8 @@ uint64_t Currency::getNextDifficulty(uint32_t blockIndex, std::vector<uint64_t> 
 uint64_t Currency::nextDifficulty(uint32_t blockIndex, std::vector<uint64_t> timestamps,
   std::vector<uint64_t> cumulativeDifficulties) const {
 
-std::vector<uint64_t> timestamps_o(timestamps);
-std::vector<uint64_t> cumulativeDifficulties_o(cumulativeDifficulties);
+  std::vector<uint64_t> timestamps_o(timestamps);
+  std::vector<uint64_t> cumulativeDifficulties_o(cumulativeDifficulties);
   uint64_t c_difficultyWindow = difficultyWindowByHeight(blockIndex);
   uint64_t c_difficultyCut = difficultyCutByHeight(blockIndex);
 
@@ -473,12 +484,12 @@ std::vector<uint64_t> cumulativeDifficulties_o(cumulativeDifficulties);
       return 0;
     }
 
-/*
-  Recalculating 'low' and 'timespan' with hardcoded values:
-  DIFFICULTY_CUT=0
-  DIFFICULTY_LAG=0
-  DIFFICULTY_WINDOW=17
-*/
+  /*
+    Recalculating 'low' and 'timespan' with hardcoded values:
+    DIFFICULTY_CUT=0
+    DIFFICULTY_LAG=0
+    DIFFICULTY_WINDOW=17
+  */
     c_difficultyWindow = 17;
     c_difficultyCut = 0;
 
@@ -532,7 +543,7 @@ std::vector<uint64_t> cumulativeDifficulties_o(cumulativeDifficulties);
 }
 
 bool Currency::checkProofOfWorkV1(const CachedBlock& block, uint64_t currentDifficulty) const {
-  if (BLOCK_MAJOR_VERSION_0 != block.getBlock().majorVersion) {
+  if (BLOCK_MAJOR_VERSION_2 == block.getBlock().majorVersion || BLOCK_MAJOR_VERSION_3 == block.getBlock().majorVersion) {
     return false;
   }
 
@@ -541,7 +552,7 @@ bool Currency::checkProofOfWorkV1(const CachedBlock& block, uint64_t currentDiff
 
 bool Currency::checkProofOfWorkV2(const CachedBlock& cachedBlock, uint64_t currentDifficulty) const {
   const auto& block = cachedBlock.getBlock();
-  if (block.majorVersion < BLOCK_MAJOR_VERSION_1) {
+  if (block.majorVersion < BLOCK_MAJOR_VERSION_2) {
     return false;
   }
 
@@ -573,14 +584,14 @@ bool Currency::checkProofOfWorkV2(const CachedBlock& cachedBlock, uint64_t curre
 
 bool Currency::checkProofOfWork(const CachedBlock& block, uint64_t currentDiffic) const {
   switch (block.getBlock().majorVersion) {
-  case BLOCK_MAJOR_VERSION_0:
+  case BLOCK_MAJOR_VERSION_1:
+	case BLOCK_MAJOR_VERSION_4:
+	case BLOCK_MAJOR_VERSION_5:
+	case BLOCK_MAJOR_VERSION_6:
     return checkProofOfWorkV1(block, currentDiffic);
 
-  case BLOCK_MAJOR_VERSION_1:
   case BLOCK_MAJOR_VERSION_2:
   case BLOCK_MAJOR_VERSION_3:
-  case BLOCK_MAJOR_VERSION_4:
-  case BLOCK_MAJOR_VERSION_5:
     return checkProofOfWorkV2(block, currentDiffic);
   }
 
@@ -707,9 +718,9 @@ CurrencyBuilder::CurrencyBuilder(std::shared_ptr<Logging::ILogger> log) : m_curr
 
 Transaction CurrencyBuilder::generateGenesisTransaction() {
   CryptoNote::Transaction tx;
-  CryptoNote::AccountPublicAddress ac = boost::value_initialized<CryptoNote::AccountPublicAddress>();
-  m_currency.constructMinerTx(1, 0, 0, 0, 0, 0, ac, tx); // zero fee in genesis
-  return tx;
+	CryptoNote::AccountPublicAddress ac = boost::value_initialized<CryptoNote::AccountPublicAddress>();
+	m_currency.constructMinerTx(1, 0, 0, 0, 0, 0, ac, tx); // zero fee in genesis
+	return tx;
 }
 
 CurrencyBuilder& CurrencyBuilder::emissionSpeedFactor(unsigned int val) {
