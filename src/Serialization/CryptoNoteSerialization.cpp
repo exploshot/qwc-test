@@ -183,7 +183,7 @@ namespace CryptoNote {
 void serialize(TransactionPrefix& txP, ISerializer& serializer) {
   serializer(txP.version, "version");
 
-  if (CURRENT_TRANSACTION_VERSION < txP.version && serializer.type() == ISerializer::INPUT) {
+  if (CURRENT_TRANSACTION_VERSION < txP.version) {
     throw std::runtime_error("Wrong transaction version");
   }
 
@@ -192,7 +192,7 @@ void serialize(TransactionPrefix& txP, ISerializer& serializer) {
   serializer(txP.outputs, "vout");
   serializeAsBinary(txP.extra, "extra", serializer);
 }
-
+/*
 void serialize(BaseTransaction& tx, ISerializer& serializer) {
   serializer(tx.version, "version");
   serializer(tx.unlockTime, "unlock_time");
@@ -205,13 +205,14 @@ void serialize(BaseTransaction& tx, ISerializer& serializer) {
     serializer(ignored, "ignored");
   }
 }
+*/
 
 void serialize(Transaction& tx, ISerializer& serializer) {
   serialize(static_cast<TransactionPrefix&>(tx), serializer);
 
   uint64_t sigSize = tx.inputs.size();
   //TODO: make arrays without sizes
-//  serializer.beginArray(sigSize, "signatures");
+  //  serializer.beginArray(sigSize, "signatures");
 
   // ignore base transaction
   if (serializer.type() == ISerializer::INPUT && !(sigSize == 1 && tx.inputs[0].type() == typeid(BaseInput))) {
@@ -251,7 +252,7 @@ void serialize(Transaction& tx, ISerializer& serializer) {
       tx.signatures[i] = std::move(signatures);
     }
   }
-//  serializer.endArray();
+  //  serializer.endArray();
 }
 
 void serialize(TransactionInput& in, ISerializer& serializer) {
@@ -331,7 +332,13 @@ void serialize(ParentBlockSerializer& pbs, ISerializer& serializer) {
     }
 
     Crypto::Hash merkleRoot;
-    Crypto::tree_hash_from_branch(pbs.m_parentBlock.baseTransactionBranch.data(), pbs.m_parentBlock.baseTransactionBranch.size(), minerTxHash, 0, merkleRoot);
+    Crypto::tree_hash_from_branch(
+      pbs.m_parentBlock.baseTransactionBranch.data(), 
+      pbs.m_parentBlock.baseTransactionBranch.size(), 
+      minerTxHash, 
+      0, 
+      merkleRoot
+    );
 
     serializer(merkleRoot, "merkleRoot");
   }
@@ -339,6 +346,7 @@ void serialize(ParentBlockSerializer& pbs, ISerializer& serializer) {
   uint64_t txNum = static_cast<uint64_t>(pbs.m_parentBlock.transactionCount);
   serializer(txNum, "numberOfTransactions");
   pbs.m_parentBlock.transactionCount = static_cast<uint16_t>(txNum);
+  std::cout << "I'm here in CryptoNoteSerialization.cpp L349" << std::endl;
   if (pbs.m_parentBlock.transactionCount < 1) {
     throw std::runtime_error("Wrong transactions number");
   }
@@ -413,7 +421,12 @@ void serialize(BlockHeader& header, ISerializer& serializer) {
 void serialize(BlockTemplate& block, ISerializer& serializer) {
   serializeBlockHeader(block, serializer);
 
-  if (block.majorVersion >= BLOCK_MAJOR_VERSION_1) {
+  std::cout << "serialize L421 block version: " << block.majorVersion << std::endl;
+  std::cout << "serialize L421 block timestamp: " << block.timestamp << std::endl;
+  std::cout << "serialize L421 block baseTx unlockTime: " << block.baseTransaction.unlockTime << std::endl;
+
+  if (block.majorVersion == BLOCK_MAJOR_VERSION_2
+        || block.majorVersion == BLOCK_MAJOR_VERSION_3) {
     auto parentBlockSerializer = makeParentBlockSerializer(block, false, false);
     serializer(parentBlockSerializer, "parent_block");
   }

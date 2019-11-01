@@ -39,7 +39,7 @@ const Crypto::Hash& CachedBlock::getBlockHash() const {
   if (!blockHash.is_initialized()) {
     std::cout << "Blockhash is not initialized" << std::endl;
     BinaryArray blockBinaryArray = getBlockHashingBinaryArray();
-    if (block.timestamp != 0) {
+    if (getBlockIndex() != 0) {
       std::cout << "Blocktimestamp: " << block.timestamp << std::endl;
       const auto& parentBlock = getParentBlockHashingBinaryArray(false);
       blockBinaryArray.insert(blockBinaryArray.end(), parentBlock.begin(), parentBlock.end());
@@ -92,17 +92,28 @@ const Crypto::Hash& CachedBlock::getAuxiliaryBlockHeaderHash() const {
 
 const BinaryArray& CachedBlock::getBlockHashingBinaryArray() const {
   if (!blockHashingBinaryArray.is_initialized()) {
+    std::cout << "blockHashingBinaryArray isnt initialized" << std::endl;
     blockHashingBinaryArray = BinaryArray();
     auto& result = blockHashingBinaryArray.get();
+
+    Crypto::Hash tempHash = getObjectHash(result);
+    std::cout << "result: " << tempHash << std::endl;
+
     if (!toBinaryArray(static_cast<const BlockHeader&>(block), result)) {
       blockHashingBinaryArray.reset();
       throw std::runtime_error("Can't serialize BlockHeader");
     }
 
-    const auto& treeHash = getTransactionTreeHash();
+    const Crypto::Hash& treeHash = getTransactionTreeHash();
+    std::cout << "TreeHash: " << treeHash << std::endl;
     result.insert(result.end(), treeHash.data, treeHash.data + 32);
+    tempHash = getObjectHash(result);
+    std::cout << "result2: " << tempHash << std::endl;
     auto transactionCount = Common::asBinaryArray(Tools::get_varint_data(block.transactionHashes.size() + 1));
+    std::cout << "TransactionCount: " << transactionCount.size() + 1<< std::endl;
     result.insert(result.end(), transactionCount.begin(), transactionCount.end());
+    tempHash = getObjectHash(result);
+    std::cout << "result3: " << tempHash << std::endl;
   }
 
   return blockHashingBinaryArray.get();

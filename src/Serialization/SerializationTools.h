@@ -157,22 +157,18 @@ bool loadFromBinaryKeyValue(T& v, const std::string& buf) {
   }
 }
 
-// throws exception if serialization failed
-template<class T>
-std::vector<uint8_t> toBinaryArray(const T& object) {
-  std::vector<uint8_t> ba;
-  Common::VectorOutputStream stream(ba);
-  BinaryOutputStreamSerializer serializer(stream);
-  serialize(const_cast<T&>(object), serializer);
-  return ba;
-}
-
 // noexcept
 template<class T>
-bool toBinaryArray(const T& object, std::vector<uint8_t>& binaryArray) {
+bool toBinaryArray(const T& object, BinaryArray& binaryArray) {
+  std::cout << "toBinaryArray L162" << std::endl;
+  std::cout << "toBinaryArray L162 => Classname: " << typeid(T).name() << std::endl;
   try {
-    binaryArray = toBinaryArray(object);
-  } catch (std::exception&) {
+    std::cout << "toBinaryArray L162 => Try" << std::endl;
+    ::Common::VectorOutputStream stream(binaryArray);
+    BinaryOutputStreamSerializer serializer(stream);
+    serialize(const_cast<T&>(object), serializer);
+  } catch (std::exception& e) {
+    std::cout << "toBinaryArray L162 => Exception: " << e.what() << std::endl;
     return false;
   }
 
@@ -180,18 +176,32 @@ bool toBinaryArray(const T& object, std::vector<uint8_t>& binaryArray) {
 }
 
 template<>
-inline bool toBinaryArray(const std::vector<uint8_t>& object, std::vector<uint8_t>& binaryArray) {
+inline bool toBinaryArray(const BinaryArray& object, BinaryArray& binaryArray) {
+  std::cout << "toBinaryArray L179" << std::endl;
   try {
+    std::cout << "toBinaryArray L179 => Try" << std::endl;
     Common::VectorOutputStream stream(binaryArray);
     BinaryOutputStreamSerializer serializer(stream);
     std::string oldBlob = Common::asString(object);
     serializer(oldBlob, "");
-  } catch (std::exception&) {
+  } catch (std::exception& e) {
+    std::cout << "toBinaryArray L179 => Exception: " << e.what() << std::endl;
     return false;
   }
 
   return true;
 }
+
+// throws exception if serialization failed
+template<class T>
+BinaryArray toBinaryArray(const T& object) {
+  std::cout << "toBinaryArray L197" << std::endl;
+
+  BinaryArray ba;
+  toBinaryArray(object, ba);
+
+  return ba;
+} 
 
 template<class T>
 T fromBinaryArray(const std::vector<uint8_t>& binaryArray) {
@@ -216,4 +226,5 @@ bool fromBinaryArray(T& object, const std::vector<uint8_t>& binaryArray) {
 
   return true;
 }
+
 }

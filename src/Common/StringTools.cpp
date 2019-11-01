@@ -137,7 +137,7 @@ bool fromHex(const std::string& text, std::vector<uint8_t>& data) {
     return false;
   }
 
-  for (uint64_t i = 0; i < text.size() >> 1; ++i) {
+  for (size_t i = 0; i < text.size() >> 1; ++i) {
     uint8_t value1;
     if (!fromHex(text[i << 1], value1)) {
       return false;

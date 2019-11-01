@@ -63,11 +63,18 @@ inline ParentBlockSerializer makeParentBlockSerializer(const BlockTemplate& b, b
 struct AccountKeys;
 struct TransactionExtraMergeMiningTag;
 
-enum class SerializationTag : uint8_t { Base = 0xff, Key = 0x2, Transaction = 0xcc, Block = 0xbb };
+enum class SerializationTag : uint8_t
+{
+    Base = 0xff,
+    Key = 0x2,
+    Multisignature = 0x3,
+    Transaction = 0xcc,
+    Block = 0xbb
+};
 
 void serialize(TransactionPrefix& txP, ISerializer& serializer);
 void serialize(Transaction& tx, ISerializer& serializer);
-void serialize(BaseTransaction& tx, ISerializer& serializer);
+// void serialize(BaseTransaction& tx, ISerializer& serializer);
 void serialize(TransactionInput& in, ISerializer& serializer);
 void serialize(TransactionOutput& in, ISerializer& serializer);
 
