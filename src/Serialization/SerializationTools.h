@@ -160,10 +160,10 @@ bool loadFromBinaryKeyValue(T& v, const std::string& buf) {
 // noexcept
 template<class T>
 bool toBinaryArray(const T& object, BinaryArray& binaryArray) {
-  std::cout << "toBinaryArray L162" << std::endl;
-  std::cout << "toBinaryArray L162 => Classname: " << typeid(T).name() << std::endl;
+  // std::cout << "toBinaryArray L162" << std::endl;
+  // std::cout << "toBinaryArray L162 => Classname: " << typeid(T).name() << std::endl;
   try {
-    std::cout << "toBinaryArray L162 => Try" << std::endl;
+    // std::cout << "toBinaryArray L162 => Try" << std::endl;
     ::Common::VectorOutputStream stream(binaryArray);
     BinaryOutputStreamSerializer serializer(stream);
     serialize(const_cast<T&>(object), serializer);
@@ -177,10 +177,10 @@ bool toBinaryArray(const T& object, BinaryArray& binaryArray) {
 
 template<>
 inline bool toBinaryArray(const BinaryArray& object, BinaryArray& binaryArray) {
-  std::cout << "toBinaryArray L179" << std::endl;
+  // std::cout << "toBinaryArray L179" << std::endl;
   try {
-    std::cout << "toBinaryArray L179 => Try" << std::endl;
-    Common::VectorOutputStream stream(binaryArray);
+    // std::cout << "toBinaryArray L179 => Try" << std::endl;
+    ::Common::VectorOutputStream stream(binaryArray);
     BinaryOutputStreamSerializer serializer(stream);
     std::string oldBlob = Common::asString(object);
     serializer(oldBlob, "");
@@ -195,7 +195,7 @@ inline bool toBinaryArray(const BinaryArray& object, BinaryArray& binaryArray) {
 // throws exception if serialization failed
 template<class T>
 BinaryArray toBinaryArray(const T& object) {
-  std::cout << "toBinaryArray L197" << std::endl;
+  // std::cout << "toBinaryArray L197" << std::endl;
 
   BinaryArray ba;
   toBinaryArray(object, ba);

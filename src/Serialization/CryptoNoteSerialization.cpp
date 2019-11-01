@@ -332,7 +332,9 @@ namespace CryptoNote {
     uint64_t txNum = static_cast<uint64_t>(pbs.m_parentBlock.transactionCount);
     serializer(txNum, "numberOfTransactions");
     pbs.m_parentBlock.transactionCount = static_cast<uint16_t>(txNum);
-    std::cout << "I'm here in CryptoNoteSerialization.cpp L349" << std::endl;
+    std::cout << "I'm here in CryptoNoteSerialization.cpp L306" << std::endl;
+    std::cout << "serialize(ParentBlockSerializer) L306 => previousBlockHash: " << pbs.m_parentBlock.previousBlockHash << std::endl;
+    std::cout << "serialize(ParentBlockSerializer) L306 => txCount: " << txNum << std::endl;
     if (pbs.m_parentBlock.transactionCount < 1) {
       throw std::runtime_error("Wrong transactions number");
     }
@@ -410,9 +412,9 @@ namespace CryptoNote {
   void serialize(BlockTemplate& block, ISerializer& serializer) {
     serializeBlockHeader(block, serializer);
 
-    std::cout << "serialize L421 block version: " << block.majorVersion << std::endl;
-    std::cout << "serialize L421 block timestamp: " << block.timestamp << std::endl;
-    std::cout << "serialize L421 block baseTx unlockTime: " << block.baseTransaction.unlockTime << std::endl;
+    // std::cout << "serialize L421 block version: " << block.majorVersion << std::endl;
+    // std::cout << "serialize L421 block timestamp: " << block.timestamp << std::endl;
+    // std::cout << "serialize L421 block baseTx unlockTime: " << block.baseTransaction.unlockTime << std::endl;
 
     if (block.majorVersion == BLOCK_MAJOR_VERSION_2
           || block.majorVersion == BLOCK_MAJOR_VERSION_3) {

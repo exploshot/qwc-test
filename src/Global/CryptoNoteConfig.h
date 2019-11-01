@@ -86,11 +86,17 @@ namespace CryptoNote {
 
 		const uint64_t MINIMUM_FEE 											= UINT64_C(100000000); //0
 
-		const uint64_t MINIMUM_MIXIN 										= 3;
-		const uint64_t MAXIMUM_MIXIN 										= 12;
+		const uint64_t MINIMUM_MIXIN 										= 0;
+		const uint64_t MAXIMUM_MIXIN 										= 20;
 
 		const uint64_t MINIMUM_MIXIN_V1 									= 0;
-		const uint64_t MAXIMUM_MIXIN_V1 									= 7;
+		const uint64_t MAXIMUM_MIXIN_V1										= 20;
+
+		const uint64_t MIN_TX_MIXIN_SIZE_V2                           		= 0;
+		const uint64_t MAX_TX_MIXIN_SIZE_V2                           		= 20;
+
+		const uint64_t MIN_TX_MIXIN_SIZE_V3                           		= 3;
+		const uint64_t MAX_TX_MIXIN_SIZE_V3                           		= 3;
 
 		/* The heights to activate the mixin limits at */
 		const uint32_t MIXIN_LIMITS_V1_HEIGHT 								= 400000; //height at which new Mixin Limits Kick in
@@ -144,14 +150,14 @@ namespace CryptoNote {
 		const size_t   FUSION_TX_MIN_INPUT_COUNT = 12;
 		const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO = 4;
 
-		const uint32_t UPGRADE_HEIGHT_V2 = 1;
-		const uint32_t UPGRADE_HEIGHT_V3 = 2;
-		const uint32_t UPGRADE_HEIGHT_V4 = 3; // Upgrade height for CN-Lite Variant 1 switch.
-		const uint32_t UPGRADE_HEIGHT_V5 = 65500; // Upgrade height for DustFund V1.
-		const uint32_t UPGRADE_HEIGHT_V6 = 67500;  //fix tx sizes issues
-		const uint32_t UPGRADE_HEIGHT_V7 = 130000;  //CN Turtle
+		const uint32_t UPGRADE_HEIGHT_V2 = 40000;
+		const uint32_t UPGRADE_HEIGHT_V3 = 46000;
+		const uint32_t UPGRADE_HEIGHT_V4 = 110520; // Upgrade height for CN-Lite Variant 1 switch.
+		const uint32_t UPGRADE_HEIGHT_V5 = 250720; // Upgrade height for DustFund V1.
+		const uint32_t UPGRADE_HEIGHT_V6 = 4294967294;  //fix tx sizes issues
+		const uint32_t UPGRADE_HEIGHT_V7 = 4294967295;  //CN Turtle
 
-		const uint32_t UPGRADE_HEIGHT_CURRENT = UPGRADE_HEIGHT_V7;
+		const uint32_t UPGRADE_HEIGHT_CURRENT = UPGRADE_HEIGHT_V5;
 		const unsigned UPGRADE_VOTING_THRESHOLD = 90;               // percent
 		const uint32_t UPGRADE_VOTING_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
 		const uint32_t UPGRADE_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks

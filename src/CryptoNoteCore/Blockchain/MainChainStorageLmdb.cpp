@@ -62,7 +62,7 @@ MainChainStorageLmdb::MainChainStorageLmdb(const std::string &blocksFilename, co
     }
     catch (std::exception &e)
     {
-        throw std::runtime_error("Failed to create database" + std::string(e.what()));
+        throw std::runtime_error("Failed to create database: " + std::string(e.what()));
     }
 
     // prepare tx handle

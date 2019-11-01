@@ -20,7 +20,7 @@ namespace
     const std::string DB_NAME = "DB";
     const std::string TESTNET_DB_NAME = "testnet_DB";
     /* @todo: parameterize this? cmd args? */
-    const uint64_t MAX_DIRTY = 200000;
+    const uint64_t MAX_DIRTY = 10000;
     /* min. available/empty room in the db */
     const size_t MAPSIZE_MIN_AVAIL = 512ULL * 1024 * 1024;
 } // namespace

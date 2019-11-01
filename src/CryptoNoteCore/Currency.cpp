@@ -42,7 +42,6 @@ bool Currency::init() {
   }
 
   try {
-    logger(DEBUGGING, BRIGHT_CYAN) << "try to get BlockHash from Genesis.";
     cachedGenesisBlock->getBlockHash();
   } catch (std::exception& e) {
     logger(ERROR, BRIGHT_RED) << "Failed to get genesis block hash: " << e.what();
@@ -70,20 +69,13 @@ bool Currency::generateGenesisBlock() {
   }
 
   auto tempBA = getObjectHash(minerTxBlob);
-  logger(DEBUGGING, BRIGHT_CYAN) << "genesisCoinbaseTxHex: " << genesisCoinbaseTxHex;
-  logger(DEBUGGING, BRIGHT_CYAN) << "minerTxBlob: " << tempBA;
 
   genesisBlockTemplate.majorVersion = BLOCK_MAJOR_VERSION_1;
-  logger(DEBUGGING, BRIGHT_CYAN) << "setting new Genesis block, majorVersion: " << genesisBlockTemplate.majorVersion;
   genesisBlockTemplate.minorVersion = BLOCK_MINOR_VERSION_0;
-  logger(DEBUGGING, BRIGHT_CYAN) << "setting new Genesis block, minorVersion: " << genesisBlockTemplate.minorVersion;
   genesisBlockTemplate.timestamp = 0;
-  logger(DEBUGGING, BRIGHT_CYAN) << "setting new Genesis block, timestamp: " << genesisBlockTemplate.timestamp;
   genesisBlockTemplate.nonce = 70;
-  logger(DEBUGGING, BRIGHT_CYAN) << "setting new Genesis block, nonce: " << genesisBlockTemplate.nonce;
 
   auto tempHash =  getObjectHash(genesisBlockTemplate);
-  logger(DEBUGGING, BRIGHT_CYAN) << "Genesis Hash: " << tempHash;
 
   //miner::find_nonce_for_given_block(bl, 1, 0);
   cachedGenesisBlock.reset(new CachedBlock(genesisBlockTemplate));

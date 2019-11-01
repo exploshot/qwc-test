@@ -280,25 +280,28 @@ bool CryptoNoteProtocolHandler::process_payload_sync_data(
     /* Find out how many days behind/ahead we are from the remote height */
     uint64_t days = std::abs(diff) / (24 * 60 * 60 / m_currency.difficultyTarget());
 
-    std::stringstream ss;
+    std::stringstream ss0;
+    std::stringstream ss1;
+    std::stringstream ss2;
 
-    ss << "Your " << CRYPTONOTE_NAME << " node is syncing with the network ";
+    ss0 << "Your " << CRYPTONOTE_NAME << " node is syncing with the network ";
 
     /* We're behind the remote node */
     if (diff >= 0)
     {
-        ss << "(" << Utilities::get_sync_percentage(currentHeight, remoteHeight)
-          << "% complete) ";
+        ss0 << "(" << Utilities::get_sync_percentage(currentHeight, remoteHeight)
+          << "% complete) (" << currentHeight << "/" << remoteHeight << ")";
 
-        ss << "You are " << diff << " blocks (" << days << " days) behind ";
+        ss1 << "You are " << diff << " blocks (" << days << " days) behind ";
     }
     /* We're ahead of the remote node, no need to print percentages */
     else
     {
-        ss << "You are " << std::abs(diff) << " blocks (" << days << " days) ahead ";
+        ss1 << "You are " << std::abs(diff) << " blocks (" << days << " days) ahead ";
     }
 
-    ss << "the current peer you're connected to. Please be patient while we synchronise with the network! ";
+    ss1 << "the current peer you're connected to.";
+    ss2 << "Please be patient while we synchronise with the network! \n";
 
     auto logLevel = Logging::TRACE;
     /* Log at different levels depending upon if we're ahead, behind, and if it's
@@ -314,7 +317,9 @@ bool CryptoNoteProtocolHandler::process_payload_sync_data(
             logLevel = Logging::DEBUGGING;
         }
     }
-    logger(logLevel, Logging::BRIGHT_GREEN) << context << ss.str();
+    logger(logLevel, Logging::BRIGHT_GREEN) << context << ss0.str();
+    logger(logLevel, Logging::BRIGHT_GREEN) << context << ss1.str();
+    logger(logLevel, Logging::BRIGHT_GREEN) << context << ss2.str();
 
     logger(Logging::DEBUGGING) << "Remote top block height: " << hshd.current_height << ", id: " << hshd.top_id;
     //let the socket to send response to handshake, but request callback, to let send request data after response

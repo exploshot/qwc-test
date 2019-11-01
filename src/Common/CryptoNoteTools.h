@@ -58,55 +58,55 @@ namespace CryptoNote {
     template<class T>
     bool getObjectHash(const T& object, Crypto::Hash& hash) {
         BinaryArray ba;
-        std::cout << "getObjectHash L61" << std::endl;
-        std::cout << "getObjectHash L61 Class" << typeid(T).name() <<std::endl;
+        // std::cout << "getObjectHash L61" << std::endl;
+        // std::cout << "getObjectHash L61 Class" << typeid(T).name() <<std::endl;
         if (!toBinaryArray(object, ba)) {
-            std::cout << "getObjectHash L61: presents you a NULL_HASH" << std::endl;
+            // std::cout << "getObjectHash L61: presents you a NULL_HASH" << std::endl;
             hash = Constants::NULL_HASH;
             return false;
         }
 
         hash = getBinaryArrayHash(ba);
-        std::cout << "getObjectHash L61 => hash: " << hash << std::endl;
+        // std::cout << "getObjectHash L61 => hash: " << hash << std::endl;
         return true;
     }
 
     template<class T>
     bool getObjectHash(const T& object, Crypto::Hash& hash, size_t& size) {
         BinaryArray ba;
-        std::cout << "getObjectHash L74" << std::endl;
-        std::cout << "getObjectHash L74 Class" << typeid(T).name() <<std::endl;
+        // std::cout << "getObjectHash L74" << std::endl;
+        // std::cout << "getObjectHash L74 Class" << typeid(T).name() <<std::endl;
         if (!toBinaryArray(object, ba)) {
             hash = Constants::NULL_HASH;
-            std::cout << "getObjectHash L74: presents you a NULL_HASH" << std::endl;
+            // std::cout << "getObjectHash L74: presents you a NULL_HASH" << std::endl;
             size = (std::numeric_limits<size_t>::max)();
             return false;
         }
 
         size = ba.size();
         hash = getBinaryArrayHash(ba);
-        std::cout << "getObjectHash L74 => hash: " << hash << std::endl;
+        // std::cout << "getObjectHash L74 => hash: " << hash << std::endl;
         return true;
     }
 
     template<class T>
     Crypto::Hash getObjectHash(const T& object) {
-        std::cout << "getObjectHash L91" << std::endl;
-        std::cout << "getObjectHash L91 Class" << typeid(T).name() <<std::endl;
+        // std::cout << "getObjectHash L91" << std::endl;
+        // std::cout << "getObjectHash L91 Class" << typeid(T).name() <<std::endl;
 
         Crypto::Hash hash;
 
-        std::cout << "getObjectHash L91 => Hash0: " << hash << std::endl;
+        // std::cout << "getObjectHash L91 => Hash0: " << hash << std::endl;
         
         getObjectHash(object, hash);
 
-        std::cout << "getObjectHash L91 => Hash1: " << hash << std::endl;
+        // std::cout << "getObjectHash L91 => Hash1: " << hash << std::endl;
 
         return hash;
     }
 
     inline bool getBaseTransactionHash(const Transaction& tx, Crypto::Hash& hash) {
-        if (tx.version < TRANSACTION_VERSION_2) {
+        if (tx.version != TRANSACTION_VERSION_2) {
             return getObjectHash(tx, hash);
         } else {
             BinaryArray data 

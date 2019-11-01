@@ -37,10 +37,10 @@ const Crypto::Hash& CachedBlock::getTransactionTreeHash() const {
 
 const Crypto::Hash& CachedBlock::getBlockHash() const {
   if (!blockHash.is_initialized()) {
-    std::cout << "Blockhash is not initialized" << std::endl;
+    // std::cout << "Blockhash is not initialized" << std::endl;
     BinaryArray blockBinaryArray = getBlockHashingBinaryArray();
-    if (getBlockIndex() != 0) {
-      std::cout << "Blocktimestamp: " << block.timestamp << std::endl;
+    if (BLOCK_MAJOR_VERSION_2 == block.majorVersion || BLOCK_MAJOR_VERSION_3 == block.majorVersion) {
+      // std::cout << "Blocktimestamp: " << block.timestamp << std::endl;
       const auto& parentBlock = getParentBlockHashingBinaryArray(false);
       blockBinaryArray.insert(blockBinaryArray.end(), parentBlock.begin(), parentBlock.end());
     }
@@ -48,7 +48,7 @@ const Crypto::Hash& CachedBlock::getBlockHash() const {
     Crypto::Hash tempHash = getObjectHash(blockBinaryArray);
     blockHash = tempHash;
     
-    std::cout << "Blockhash: " << tempHash << std::endl;
+    // std::cout << "Blockhash: " << tempHash << std::endl;
   }
 
   return blockHash.get();
@@ -61,10 +61,17 @@ const Crypto::Hash& CachedBlock::getBlockLongHash() const
         return blockLongHash.get();
     }
 
+    std::vector<uint8_t> bd;
+    if (block.majorVersion == CryptoNote::BLOCK_MAJOR_VERSION_1 || block.majorVersion >= CryptoNote::BLOCK_MAJOR_VERSION_4) {
+      bd = getBlockHashingBinaryArray();
+    } else if (block.majorVersion == CryptoNote::BLOCK_MAJOR_VERSION_2 || block.majorVersion == CryptoNote::BLOCK_MAJOR_VERSION_3) {
+      bd = getParentBlockHashingBinaryArray(true);
+    }
+    /*
     const std::vector<uint8_t> &rawHashingBlock = block.majorVersion == CryptoNote::BLOCK_MAJOR_VERSION_1
         ? getBlockHashingBinaryArray()
         : getParentBlockHashingBinaryArray(true);
-
+    */
     blockLongHash = Hash();
 
     try
@@ -72,7 +79,7 @@ const Crypto::Hash& CachedBlock::getBlockLongHash() const
         const auto hashingAlgorithm
             = CryptoNote::HASHING_ALGORITHMS_BY_BLOCK_VERSION.at(block.majorVersion);
 
-        hashingAlgorithm(rawHashingBlock.data(), rawHashingBlock.size(), blockLongHash.get());
+        hashingAlgorithm(bd.data(), bd.size(), blockLongHash.get());
 
         return blockLongHash.get();
     }
@@ -92,12 +99,12 @@ const Crypto::Hash& CachedBlock::getAuxiliaryBlockHeaderHash() const {
 
 const BinaryArray& CachedBlock::getBlockHashingBinaryArray() const {
   if (!blockHashingBinaryArray.is_initialized()) {
-    std::cout << "blockHashingBinaryArray isnt initialized" << std::endl;
+    // std::cout << "blockHashingBinaryArray isnt initialized" << std::endl;
     blockHashingBinaryArray = BinaryArray();
     auto& result = blockHashingBinaryArray.get();
 
     Crypto::Hash tempHash = getObjectHash(result);
-    std::cout << "result: " << tempHash << std::endl;
+    // std::cout << "result: " << tempHash << std::endl;
 
     if (!toBinaryArray(static_cast<const BlockHeader&>(block), result)) {
       blockHashingBinaryArray.reset();
@@ -105,15 +112,15 @@ const BinaryArray& CachedBlock::getBlockHashingBinaryArray() const {
     }
 
     const Crypto::Hash& treeHash = getTransactionTreeHash();
-    std::cout << "TreeHash: " << treeHash << std::endl;
+    // std::cout << "TreeHash: " << treeHash << std::endl;
     result.insert(result.end(), treeHash.data, treeHash.data + 32);
     tempHash = getObjectHash(result);
-    std::cout << "result2: " << tempHash << std::endl;
+    // std::cout << "result2: " << tempHash << std::endl;
     auto transactionCount = Common::asBinaryArray(Tools::get_varint_data(block.transactionHashes.size() + 1));
-    std::cout << "TransactionCount: " << transactionCount.size() + 1<< std::endl;
+    // std::cout << "TransactionCount: " << transactionCount.size() + 1<< std::endl;
     result.insert(result.end(), transactionCount.begin(), transactionCount.end());
     tempHash = getObjectHash(result);
-    std::cout << "result3: " << tempHash << std::endl;
+    // std::cout << "result3: " << tempHash << std::endl;
   }
 
   return blockHashingBinaryArray.get();
@@ -146,6 +153,7 @@ const BinaryArray& CachedBlock::getParentBlockBinaryArray(bool headerOnly) const
 }
 
 const BinaryArray& CachedBlock::getParentBlockHashingBinaryArray(bool headerOnly) const {
+  std::cout << "CachedBlock.cpp getParentBlockHashingBinaryArray L148" << std::endl;
   if (headerOnly) {
     if (!parentBlockHashingBinaryArrayHeaderOnly.is_initialized()) {
       auto serializer = makeParentBlockSerializer(block, true, true);
