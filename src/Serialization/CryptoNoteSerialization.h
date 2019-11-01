@@ -40,12 +40,18 @@ bool serialize(EllipticCurvePoint& ecPoint, Common::StringView name, CryptoNote:
 namespace CryptoNote {
 
 struct ParentBlockSerializer {
-    ParentBlockSerializer(ParentBlock& parentBlock, uint64_t& timestamp, uint32_t& nonce, bool hashingSerialization, bool headerOnly) :
-      m_parentBlock(parentBlock), 
-      m_timestamp(timestamp), 
-      m_nonce(nonce), 
-      m_hashingSerialization(hashingSerialization), 
-      m_headerOnly(headerOnly) {
+    ParentBlockSerializer(
+        ParentBlock& parentBlock, 
+        uint64_t& timestamp, 
+        uint32_t& nonce, 
+        bool hashingSerialization, 
+        bool headerOnly) 
+        : m_parentBlock(parentBlock), 
+          m_timestamp(timestamp), 
+          m_nonce(nonce), 
+          m_hashingSerialization(hashingSerialization), 
+          m_headerOnly(headerOnly) 
+    {
     }
 
     ParentBlock& m_parentBlock;
@@ -55,9 +61,19 @@ struct ParentBlockSerializer {
     bool m_headerOnly;
 };
 
-inline ParentBlockSerializer makeParentBlockSerializer(const BlockTemplate& b, bool hashingSerialization, bool headerOnly) {
-    BlockTemplate& blockRef = const_cast<BlockTemplate&>(b);
-    return ParentBlockSerializer(blockRef.parentBlock, blockRef.timestamp, blockRef.nonce, hashingSerialization, headerOnly);
+inline ParentBlockSerializer makeParentBlockSerializer(
+    const BlockTemplate& b, 
+    bool hashingSerialization, 
+    bool headerOnly) 
+{
+    auto &blockRef = const_cast<BlockTemplate &>(b);
+    return ParentBlockSerializer{
+        blockRef.parentBlock, 
+        blockRef.timestamp, 
+        blockRef.nonce, 
+        hashingSerialization, 
+        headerOnly
+    };
 }
 
 struct AccountKeys;
@@ -74,7 +90,6 @@ enum class SerializationTag : uint8_t
 
 void serialize(TransactionPrefix& txP, ISerializer& serializer);
 void serialize(Transaction& tx, ISerializer& serializer);
-// void serialize(BaseTransaction& tx, ISerializer& serializer);
 void serialize(TransactionInput& in, ISerializer& serializer);
 void serialize(TransactionOutput& in, ISerializer& serializer);
 

@@ -1544,25 +1544,47 @@ bool Core::getBlockTemplate(BlockTemplate& b, const AccountPublicAddress& adr, c
   b = boost::value_initialized<BlockTemplate>();
   b.majorVersion = getBlockMajorVersionForHeight(height);
 
-  if (b.majorVersion == BLOCK_MAJOR_VERSION_0) {
-    b.minorVersion = currency.upgradeHeight(BLOCK_MAJOR_VERSION_1) == IUpgradeDetector::UNDEF_HEIGHT ? BLOCK_MINOR_VERSION_1 : BLOCK_MINOR_VERSION_0;
-  } else if (b.majorVersion >= BLOCK_MAJOR_VERSION_1) {
-    if (currency.upgradeHeight(BLOCK_MAJOR_VERSION_2) == IUpgradeDetector::UNDEF_HEIGHT) {
-      b.minorVersion = b.majorVersion == BLOCK_MAJOR_VERSION_1 ? BLOCK_MINOR_VERSION_1 : BLOCK_MINOR_VERSION_0;
+  if (b.majorVersion == BLOCK_MAJOR_VERSION_1) {
+    b.minorVersion =
+      currency.upgradeHeight(BLOCK_MAJOR_VERSION_2) == IUpgradeDetector::UNDEF_HEIGHT
+      ? BLOCK_MINOR_VERSION_1
+      : BLOCK_MINOR_VERSION_0;
+  } else if (b.majorVersion==BLOCK_MAJOR_VERSION_2 || b.majorVersion==BLOCK_MAJOR_VERSION_3) {
+    if(currency.upgradeHeight(BLOCK_MAJOR_VERSION_3)==IUpgradeDetector::UNDEF_HEIGHT){
+      b.minorVersion =
+        b.majorVersion == BLOCK_MAJOR_VERSION_2
+        ? BLOCK_MINOR_VERSION_1
+        : BLOCK_MINOR_VERSION_0;
     } else {
       b.minorVersion = BLOCK_MINOR_VERSION_0;
     }
 
-    b.parentBlock.majorVersion = BLOCK_MAJOR_VERSION_0;
+    b.parentBlock.majorVersion = BLOCK_MAJOR_VERSION_1;
     b.parentBlock.majorVersion = BLOCK_MINOR_VERSION_0;
     b.parentBlock.transactionCount = 1;
+    TransactionExtraMergeMiningTag mm_tag = boost::value_initialized<decltype(mm_tag)>();
 
-    TransactionExtraMergeMiningTag mmTag = boost::value_initialized<decltype(mmTag)>();
-    if (!appendMergeMiningTagToExtra(b.parentBlock.baseTransaction.extra, mmTag)) {
+    if (!appendMergeMiningTagToExtra(b.parentBlock.baseTransaction.extra, mm_tag)) {
       logger(Logging::ERROR, Logging::BRIGHT_RED)
-          << "Failed to append merge mining tag to extra of the parent block miner transaction";
+        << "Failed to append merge mining tag "
+        << "to extra of the parent block miner transaction";
       return false;
     }
+  } else if (b.majorVersion == BLOCK_MAJOR_VERSION_4) {
+    b.minorVersion =
+      currency.upgradeHeight(BLOCK_MAJOR_VERSION_4) == IUpgradeDetector::UNDEF_HEIGHT
+        ? BLOCK_MINOR_VERSION_1
+        : BLOCK_MINOR_VERSION_0;
+  } else if (b.majorVersion >= BLOCK_MAJOR_VERSION_5) {
+    b.minorVersion =
+      currency.upgradeHeight(BLOCK_MAJOR_VERSION_5) == IUpgradeDetector::UNDEF_HEIGHT
+        ? BLOCK_MINOR_VERSION_1
+        : BLOCK_MINOR_VERSION_0;
+  } else if (b.majorVersion >= BLOCK_MAJOR_VERSION_6) {
+    b.minorVersion =
+      currency.upgradeHeight(BLOCK_MAJOR_VERSION_6) == IUpgradeDetector::UNDEF_HEIGHT
+        ? BLOCK_MINOR_VERSION_1
+        : BLOCK_MINOR_VERSION_0;
   }
 
   b.previousBlockHash = getTopBlockHash();
@@ -1926,6 +1948,7 @@ std::vector<Crypto::Hash> CryptoNote::Core::getBlockHashes(uint32_t startBlockIn
 }
 
 std::error_code Core::validateBlock(const CachedBlock& cachedBlock, IBlockchainCache* cache, uint64_t& minerReward) {
+  logger(Logging::DEBUGGING, Logging::BRIGHT_CYAN) << "Core.cpp validateBlock L1928";
   const auto& block = cachedBlock.getBlock();
   auto previousBlockIndex = cache->getBlockIndex(block.previousBlockHash);
   // assert(block.previousBlockHash == cache->getBlockHash(previousBlockIndex));
@@ -1937,10 +1960,10 @@ std::error_code Core::validateBlock(const CachedBlock& cachedBlock, IBlockchainC
   }
 
   if (block.majorVersion >= BLOCK_MAJOR_VERSION_1) {
-    if (block.majorVersion == BLOCK_MAJOR_VERSION_1 && block.parentBlock.majorVersion > BLOCK_MAJOR_VERSION_0) {
+    if (block.majorVersion == BLOCK_MAJOR_VERSION_1 && block.parentBlock.majorVersion > BLOCK_MAJOR_VERSION_1) {
       logger(Logging::ERROR, Logging::BRIGHT_RED) << "Parent block of block " << cachedBlock.getBlockHash() << " has wrong major version: "
                                 << static_cast<int>(block.parentBlock.majorVersion) << ", at index " << cachedBlock.getBlockIndex()
-                                << " expected version is " << static_cast<int>(BLOCK_MAJOR_VERSION_0);
+                                << " expected version is " << static_cast<int>(BLOCK_MAJOR_VERSION_1);
       return error::BlockValidationError::PARENT_BLOCK_WRONG_VERSION;
     }
 
