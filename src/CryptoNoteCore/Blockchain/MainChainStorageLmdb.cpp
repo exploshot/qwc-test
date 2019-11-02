@@ -22,8 +22,8 @@ using namespace CryptoNote;
 
 namespace
 {
-const uint64_t MAX_DIRTY = 10000;
-const size_t MAPSIZE_MIN_AVAIL = 512ULL * 1024 * 1024;
+const uint64_t MAX_DIRTY = 100000;
+const size_t MAPSIZE_MIN_AVAIL = 16ULL * 1024 * 1024;;
 } // namespace
 
 namespace CryptoNote
@@ -48,7 +48,7 @@ MainChainStorageLmdb::MainChainStorageLmdb(const std::string &blocksFilename, co
     size_t mapsize = fs::file_size(m_dbpath);
     if (mapsize == 0)
     {
-        // starts with 512M
+        // starts with 128M
         mapsize += MAPSIZE_MIN_AVAIL;
     }
 
@@ -299,8 +299,15 @@ void MainChainStorageLmdb::checkResize()
         // flush to disk (only when NOT using MDB_NOSYNC flag)
         m_db.sync(true);
 
-        mapsize += 1ULL << 30;
-        m_db.set_mapsize(mapsize);    
+        mapsize += 1ULL << 23;
+        try
+        {
+            m_db.set_mapsize(mapsize);        
+        }
+        catch (const std::exception &e)
+        {
+            std::cout << "DB_RESIZE_FAILED_FAILED: " << e.what() <<std::endl;
+        }
     }
 }
 

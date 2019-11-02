@@ -153,7 +153,6 @@ const BinaryArray& CachedBlock::getParentBlockBinaryArray(bool headerOnly) const
 }
 
 const BinaryArray& CachedBlock::getParentBlockHashingBinaryArray(bool headerOnly) const {
-  std::cout << "CachedBlock.cpp getParentBlockHashingBinaryArray L148" << std::endl;
   if (headerOnly) {
     if (!parentBlockHashingBinaryArrayHeaderOnly.is_initialized()) {
       auto serializer = makeParentBlockSerializer(block, true, true);

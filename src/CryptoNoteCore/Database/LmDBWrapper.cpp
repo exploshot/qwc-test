@@ -20,9 +20,9 @@ namespace
     const std::string DB_NAME = "DB";
     const std::string TESTNET_DB_NAME = "testnet_DB";
     /* @todo: parameterize this? cmd args? */
-    const uint64_t MAX_DIRTY = 10000;
+    const size_t MAX_DIRTY = 100000;
     /* min. available/empty room in the db */
-    const size_t MAPSIZE_MIN_AVAIL = 512ULL * 1024 * 1024;
+    const size_t MAPSIZE_MIN_AVAIL = 16ULL * 1024 * 1024;
 } // namespace
 
 LmDBWrapper::LmDBWrapper(std::shared_ptr<Logging::ILogger> logger) : logger(logger, "LmDBWrapper"), state(NOT_INITIALIZED)
@@ -31,6 +31,14 @@ LmDBWrapper::LmDBWrapper(std::shared_ptr<Logging::ILogger> logger) : logger(logg
 
 LmDBWrapper::~LmDBWrapper()
 {
+    try {
+        m_db.sync();
+        m_db.close();
+    }
+    catch (...)
+    {
+
+    }
 }
 
 void LmDBWrapper::init(const DataBaseConfig &config)
@@ -40,7 +48,7 @@ void LmDBWrapper::init(const DataBaseConfig &config)
         throw std::system_error(make_error_code(CryptoNote::error::DataBaseErrorCodes::ALREADY_INITIALIZED));
     }
 
-    logger(INFO) << "Initializing DB using lmdb backend";
+    logger(INFO) << "Initializing DB using LMDB backend";
 
     /* set m_dbDir & m_dbFile fore easy reuse */
     setDataDir(config);
@@ -81,14 +89,20 @@ void LmDBWrapper::init(const DataBaseConfig &config)
         mapsize += MAPSIZE_MIN_AVAIL;
     }
 
-    logger(DEBUGGING) << "Initial DB mapsize: " << mapsize << " bytes";
+    logger(INFO, BRIGHT_CYAN) 
+        << "Initial DB mapsize: " 
+        << mapsize << " bytes (" 
+        << mapsize / (1024 * 1024) 
+        << " MiB)";
+
     m_db.set_mapsize(mapsize);
     
 	std::string dbDirTemp = m_dbDir.string();
-	logger(INFO) << "Opening DB in " << dbDirTemp;
+	logger(INFO, BRIGHT_CYAN) << "Opening DB in " << dbDirTemp;
     try
     {
-        m_db.open(dbDirTemp.c_str(), MDB_NOSYNC | MDB_WRITEMAP | MDB_MAPASYNC | MDB_NORDAHEAD, 0664);
+        m_db.open(m_dbDir.c_str(), MDB_NOSYNC|MDB_NORDAHEAD, 0664);
+        // m_db.open(m_dbDir.c_str(), MDB_NOSYNC | MDB_WRITEMAP | MDB_MAPASYNC | MDB_NORDAHEAD, 0664);
     }
     catch (const std::exception &e)
     {
@@ -229,7 +243,7 @@ std::error_code LmDBWrapper::write(IWriteBatch &batch)
     if (m_dirty >= MAX_DIRTY)
     {
         m_dirty = 0;
-        logger(TRACE) << "Flushing dirty commits to disk";
+        logger(DEBUGGING) << "Flushing dirty commits to disk";
         m_db.sync(false);
     }
 
@@ -293,7 +307,6 @@ fs::path LmDBWrapper::getDataDir(const DataBaseConfig &config)
 
 void LmDBWrapper::renewRoTxHandle()
 {
-    //logger(TRACE) << "DB_RENEW_RO...";
     if(rotxn == nullptr)
     {
         lmdb::txn_begin(m_db, nullptr, MDB_RDONLY, &rotxn);
@@ -306,7 +319,7 @@ void LmDBWrapper::renewRoTxHandle()
     }
     catch (const std::exception &e)
     {
-        logger(TRACE) << "DB_RO_TXN_RESET_FAILED: " << e.what();
+        logger(DEBUGGING) << "DB_RO_TXN_RESET_FAILED: " << e.what();
     }
 
     try
@@ -315,7 +328,7 @@ void LmDBWrapper::renewRoTxHandle()
     }
     catch (const std::exception &e)
     {
-        logger(TRACE) << "DB_RO_TXN_RENEW_FAILED: " << e.what();
+        logger(DEBUGGING) << "DB_RO_TXN_RENEW_FAILED: " << e.what();
     }
 }
 
@@ -355,7 +368,8 @@ void LmDBWrapper::checkResize(const bool init)
 {
     size_t size_avail;
     size_t mapsize;
-    
+    size_t oldSize;
+
     renewRoTxHandle();
     
     {
@@ -364,14 +378,15 @@ void LmDBWrapper::checkResize(const bool init)
         MDB_envinfo info;
         lmdb::env_info(m_db, &info);
 
-        mapsize = info.me_mapsize;
+        oldSize = info.me_mapsize;
+        mapsize = oldSize;
         const size_t size_used = stat.ms_psize * info.me_last_pgno;
         size_avail = mapsize - size_used;
     }
 
     if (size_avail >= MAPSIZE_MIN_AVAIL)
     {
-        logger(TRACE) << "DB Resize: no resize required, size avail: " << size_avail << " bytes.";
+        logger(TRACE) << "DB Resize: no resize required, size avail: " << size_avail << " bytes. ";
         return;
     }
 
@@ -390,16 +405,25 @@ void LmDBWrapper::checkResize(const bool init)
 
     m_db.sync(true);
 
-    const size_t extra = 1ULL << 30;
+    const size_t extra = 1 << 23; // 128 MiB
     mapsize += extra;
 
-    logger(DEBUGGING) << "Resizing database. New mapsize: " << mapsize << " bytes.";
+    logger(INFO, BRIGHT_CYAN) 
+        << "Resizing database. New mapsize: " 
+        << mapsize << " bytes. (" 
+        << mapsize / (1024 * 1024) 
+        << " MiB)";
     try
     {
-        m_db.set_mapsize(mapsize);
+        m_db.set_mapsize(mapsize);        
     }
     catch (const std::exception &e)
     {
         logger(ERROR) << "DB_RESIZE_FAILED_FAILED: " << e.what();
     }
+
+    logger(INFO, BRIGHT_CYAN) 
+        << "LMDB Mapsize resized. Old: " 
+        << oldSize / (1024 * 1024)
+        << " MiB New: " << mapsize / (1024 * 1024) << " MiB.";
 }

@@ -68,14 +68,10 @@ bool Currency::generateGenesisBlock() {
     return false;
   }
 
-  auto tempBA = getObjectHash(minerTxBlob);
-
   genesisBlockTemplate.majorVersion = BLOCK_MAJOR_VERSION_1;
   genesisBlockTemplate.minorVersion = BLOCK_MINOR_VERSION_0;
   genesisBlockTemplate.timestamp = 0;
   genesisBlockTemplate.nonce = 70;
-
-  auto tempHash =  getObjectHash(genesisBlockTemplate);
 
   //miner::find_nonce_for_given_block(bl, 1, 0);
   cachedGenesisBlock.reset(new CachedBlock(genesisBlockTemplate));
@@ -116,51 +112,83 @@ size_t Currency::difficultyBlocksCountByHeight(uint32_t height) const
 }
 
 size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVersion) const {
-	if (blockMajorVersion < BLOCK_MAJOR_VERSION_4) {
-		return m_blockGrantedFullRewardZone;
-	}
-	else {
-		return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1; //fix tx sizes issue
-	}
+    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
+        return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;
+    } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_3) {
+        return m_blockGrantedFullRewardZone;
+    } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {
+        return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;
+    } else {
+        return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;
+    }
 }
 
 uint32_t Currency::upgradeHeight(uint8_t majorVersion) const {
-  if (majorVersion == BLOCK_MAJOR_VERSION_1) {
-    return m_upgradeHeightV2;
-  } else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
-    return m_upgradeHeightV3;
-  } else if (majorVersion == BLOCK_MAJOR_VERSION_3) {
-    return m_upgradeHeightV4;
-  } else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
-	return m_upgradeHeightV6; //height of fix for tx sizes
+  if (majorVersion == BLOCK_MAJOR_VERSION_6) {
+    return m_upgradeHeightV6;
   } else if (majorVersion == BLOCK_MAJOR_VERSION_5) {
-	return m_upgradeHeightV7; //cn turtle
+    return m_upgradeHeightV5;
+  } else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
+    return m_upgradeHeightV4;
+  } else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
+    return m_upgradeHeightV2;
+  } else if (majorVersion == BLOCK_MAJOR_VERSION_3) {
+    return m_upgradeHeightV3;
   } else {
     return static_cast<uint32_t>(-1);
   }
 }
 
-bool Currency::getBlockReward(uint8_t blockMajorVersion, size_t medianSize, size_t currentBlockSize, uint64_t alreadyGeneratedCoins,
-  uint64_t fee, uint64_t& reward, int64_t& emissionChange) const {
-  assert(alreadyGeneratedCoins <= m_moneySupply);
-  assert(m_emissionSpeedFactor > 0 && m_emissionSpeedFactor <= 8 * sizeof(uint64_t));
+bool Currency::getBlockReward(
+    uint8_t blockMajorVersion, 
+    size_t medianSize, 
+    size_t currentBlockSize, 
+    uint64_t alreadyGeneratedCoins,
+    uint64_t fee, 
+    uint64_t& reward, 
+    int64_t& emissionChange,
+    uint32_t height,
+    uint32_t blockTarget) const {
 
-  uint64_t baseReward = (m_moneySupply - alreadyGeneratedCoins) >> m_emissionSpeedFactor;
+    assert(alreadyGeneratedCoins <= m_moneySupply);
+    assert(m_emissionSpeedFactor > 0 && m_emissionSpeedFactor <= 8 * sizeof(uint64_t));
 
-  size_t blockGrantedFullRewardZone = blockGrantedFullRewardZoneByBlockVersion(blockMajorVersion);
-  medianSize = std::max(medianSize, blockGrantedFullRewardZone);
-  if (currentBlockSize > UINT64_C(2) * medianSize) {
-    logger(TRACE) << "Block cumulative size is too big: " << currentBlockSize << ", expected less than " << 2 * medianSize;
-    return false;
-  }
+    uint64_t baseReward = (m_moneySupply - alreadyGeneratedCoins) >> m_emissionSpeedFactor;
 
-  uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
-  uint64_t penalizedFee = blockMajorVersion >= BLOCK_MAJOR_VERSION_1 ? getPenalizedAmount(fee, medianSize, currentBlockSize) : fee;
+    if (alreadyGeneratedCoins + CryptoNote::parameters::TAIL_EMISSION_REWARD >= m_moneySupply
+        || baseReward < CryptoNote::parameters::TAIL_EMISSION_REWARD) {
+        baseReward = CryptoNote::parameters::TAIL_EMISSION_REWARD;
+    }
 
-  emissionChange = penalizedBaseReward - (fee - penalizedFee);
-  reward = penalizedBaseReward + penalizedFee;
+    size_t blockGrantedFullRewardZone = blockGrantedFullRewardZoneByBlockVersion(blockMajorVersion);
+    medianSize = std::max(medianSize, blockGrantedFullRewardZone);
+    if (currentBlockSize > medianSize * UINT64_C(2)) {
+      logger(INFO) << "Block cumulative size is too big: " << currentBlockSize << ", expected less than " << medianSize * 2;
+      return false;
+    }
 
-  return true;
+    uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
+    uint64_t penalizedFee = fee;
+    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_2) {
+        penalizedFee = getPenalizedAmount(fee, medianSize, currentBlockSize);
+    }
+
+    double consistency = 1.0;
+    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_REWARD_SCHEME && difficultyTarget() != 0) {
+        // blockTarget is (Timestamp of New Block - Timestamp of Previous Block)
+        consistency = blockTarget / difficultyTarget();
+
+        // consistency range is 0..2
+        consistency = std::max<double>(consistency, 0.0);
+        consistency = std::min<double>(consistency, 2.0);
+    }
+
+    double penalizedReward = static_cast<double>(penalizedBaseReward + penalizedFee);
+
+    emissionChange = penalizedBaseReward - (fee - penalizedFee);
+    reward = static_cast<uint64_t>(penalizedReward * consistency);
+
+    return true;
 }
 
 size_t Currency::maxBlockCumulativeSize(uint64_t height) const {
@@ -201,7 +229,16 @@ bool Currency::constructMinerTx(
 
   uint64_t blockReward;
   int64_t emissionChange;
-  if (!getBlockReward(blockMajorVersion, medianSize, currentBlockSize, alreadyGeneratedCoins, fee, blockReward, emissionChange)) {
+  if (!getBlockReward(
+      blockMajorVersion, 
+      medianSize, 
+      currentBlockSize, 
+      alreadyGeneratedCoins, 
+      fee, 
+      blockReward, 
+      emissionChange,
+      height,
+      difficultyTarget())) {
     logger(INFO) << "Block is too big";
     return false;
   }

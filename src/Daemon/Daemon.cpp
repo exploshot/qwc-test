@@ -55,79 +55,86 @@ using namespace CryptoNote;
 using namespace Logging;
 using namespace DaemonConfig;
 
-void print_genesis_tx_hex(const bool blockExplorerMode, std::shared_ptr<LoggerManager> logManager)
+void printGenesisTxHex(const bool blockExplorerMode, std::shared_ptr<LoggerManager> logManager)
 {
-  CryptoNote::CurrencyBuilder currencyBuilder(logManager);
-  currencyBuilder.isBlockexplorer(blockExplorerMode);
+    CryptoNote::CurrencyBuilder currencyBuilder(logManager);
+    currencyBuilder.isBlockexplorer(blockExplorerMode);
 
-  CryptoNote::Currency currency = currencyBuilder.currency();
+    CryptoNote::Currency currency = currencyBuilder.currency();
 
-  const auto transaction = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();
+    const auto transaction = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();
 
-  std::string transactionHex = Common::toHex(CryptoNote::toBinaryArray(transaction));
-  std::cout << getProjectCLIHeader() << std::endl << std::endl
-    << "Replace the current GENESIS_COINBASE_TX_HEX line in src/Global/CryptoNoteConfig.h with this one:" << std::endl
-    << "const char GENESIS_COINBASE_TX_HEX[] = \"" << transactionHex << "\";" << std::endl;
-
-  return;
+    std::string transactionHex = Common::toHex(CryptoNote::toBinaryArray(transaction));
+    std::cout 
+        << getProjectCLIHeader() << std::endl 
+        << std::endl
+        << "Replace the current GENESIS_COINBASE_TX_HEX line in src/Global/CryptoNoteConfig.h with this one:" 
+        << std::endl
+        << "const char GENESIS_COINBASE_TX_HEX[] = \"" << transactionHex << "\";" 
+        << std::endl;
 }
 
-JsonValue buildLoggerConfiguration(Level level, const std::string& logfile) {
-  JsonValue loggerConfiguration(JsonValue::OBJECT);
-  loggerConfiguration.insert("globalLevel", static_cast<int64_t>(level));
+JsonValue buildLoggerConfiguration(Level level, const std::string& logfile) 
+{
+    JsonValue loggerConfiguration(JsonValue::OBJECT);
+    loggerConfiguration.insert("globalLevel", static_cast<int64_t>(level));
 
-  JsonValue& cfgLoggers = loggerConfiguration.insert("loggers", JsonValue::ARRAY);
+    JsonValue& cfgLoggers = loggerConfiguration.insert("loggers", JsonValue::ARRAY);
 
-  JsonValue& fileLogger = cfgLoggers.pushBack(JsonValue::OBJECT);
-  fileLogger.insert("type", "file");
-  fileLogger.insert("filename", logfile);
-  fileLogger.insert("level", static_cast<int64_t>(TRACE));
+    JsonValue& fileLogger = cfgLoggers.pushBack(JsonValue::OBJECT);
+    fileLogger.insert("type", "file");
+    fileLogger.insert("filename", logfile);
+    fileLogger.insert("level", static_cast<int64_t>(TRACE));
 
-  JsonValue& consoleLogger = cfgLoggers.pushBack(JsonValue::OBJECT);
-  consoleLogger.insert("type", "console");
-  consoleLogger.insert("level", static_cast<int64_t>(TRACE));
-  consoleLogger.insert("pattern", "%D %T %L ");
+    JsonValue& consoleLogger = cfgLoggers.pushBack(JsonValue::OBJECT);
+    consoleLogger.insert("type", "console");
+    consoleLogger.insert("level", static_cast<int64_t>(TRACE));
+    consoleLogger.insert("pattern", "%D %T %L ");
 
-  return loggerConfiguration;
+    return loggerConfiguration;
 }
 
 int main(int argc, char* argv[])
 {
-  fs::path temp = fs::path(argv[0]).filename();
-  DaemonConfiguration config = initConfiguration(temp.string().c_str());
+    fs::path temp = fs::path(argv[0]).filename();
+    DaemonConfiguration config = initConfiguration(temp.string().c_str());
 
 #ifdef WIN32
-  _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+    _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 #endif
 
-  const auto logManager = std::make_shared<LoggerManager>();
-  LoggerRef logger(logManager, "daemon");
+    const auto logManager = std::make_shared<LoggerManager>();
+    LoggerRef logger(logManager, "daemon");
 
-  // Initial loading of CLI parameters
-  handleSettings(argc, argv, config);
+    // Initial loading of CLI parameters
+    handleSettings(argc, argv, config);
 
-  if (config.printGenesisTx) // Do we weant to generate the Genesis Tx?
-  {
-    print_genesis_tx_hex(false, logManager);
-    exit(0);
-  }
+    if (config.printGenesisTx) // Do we weant to generate the Genesis Tx?
+    {
+        printGenesisTxHex(false, logManager);
+        exit(0);
+    }
 
   // If the user passed in the --config-file option, we need to handle that first
   if (!config.configFile.empty())
   {
     try
     {
-      if(updateConfigFormat(config.configFile, config))
+      if (updateConfigFormat(config.configFile, config))
       {
-          std::cout << std::endl << "Updating daemon configuration format..." << std::endl;
+          std::cout 
+              << std::endl 
+              << "Updating daemon configuration format..." 
+              << std::endl;
+              
           asFile(config, config.configFile);
       }
     }
     catch(std::runtime_error& e)
     {
-      std::cout << std::endl << "There was an error parsing the specified configuration file. Please check the file and try again:"
-        << std::endl << e.what() << std::endl;
-      exit(1);
+        std::cout << std::endl << "There was an error parsing the specified configuration file. Please check the file and try again:"
+          << std::endl << e.what() << std::endl;
+        exit(1);
     }
     catch(std::exception& e)
     {

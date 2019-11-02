@@ -317,9 +317,9 @@ bool CryptoNoteProtocolHandler::process_payload_sync_data(
             logLevel = Logging::DEBUGGING;
         }
     }
-    logger(logLevel, Logging::BRIGHT_GREEN) << context << ss0.str();
-    logger(logLevel, Logging::BRIGHT_GREEN) << context << ss1.str();
-    logger(logLevel, Logging::BRIGHT_GREEN) << context << ss2.str();
+    logger(logLevel, Logging::BRIGHT_GREEN) << ss0.str();
+    logger(logLevel, Logging::BRIGHT_GREEN) << ss1.str();
+    logger(logLevel, Logging::BRIGHT_GREEN) << ss2.str();
 
     logger(Logging::DEBUGGING) << "Remote top block height: " << hshd.current_height << ", id: " << hshd.top_id;
     //let the socket to send response to handshake, but request callback, to let send request data after response

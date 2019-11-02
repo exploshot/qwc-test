@@ -734,7 +734,7 @@ void DatabaseBlockchainCache::pushTransaction(const CachedTransaction& cachedTra
                                               uint16_t transactionBlockIndex,
                                               BlockchainWriteBatch& batch) {
 
-  logger(Logging::DEBUGGING) << "push transaction with hash " << cachedTransaction.getTransactionHash();
+  logger(Logging::TRACE) << "push transaction with hash " << cachedTransaction.getTransactionHash();
   const auto& tx = cachedTransaction.getTransaction();
 
   ExtendedTransactionInfo transactionCacheInfo;
@@ -800,7 +800,7 @@ void DatabaseBlockchainCache::pushTransaction(const CachedTransaction& cachedTra
 
   batch.insertCachedTransaction(transactionCacheInfo, getCachedTransactionsCount() + 1);
   transactionsCount = *transactionsCount + 1;
-  logger(Logging::DEBUGGING) << "push transaction with hash " << cachedTransaction.getTransactionHash() << " finished";
+  logger(Logging::TRACE) << "push transaction with hash " << cachedTransaction.getTransactionHash() << " finished";
 }
 
 uint32_t DatabaseBlockchainCache::updateKeyOutputCount(Amount amount, int32_t diff) const {
@@ -868,8 +868,9 @@ void DatabaseBlockchainCache::pushBlock(const CachedBlock& cachedBlock,
                                         const TransactionValidatorState& validatorState, size_t blockSize,
                                         uint64_t generatedCoins, uint64_t blockDifficulty, RawBlock&& rawBlock) {
   BlockchainWriteBatch batch;
-  logger(Logging::DEBUGGING) << "push block with hash " << cachedBlock.getBlockHash() << ", and "
-                             << cachedTransactions.size() + 1 << " transactions"; //+1 for base transaction
+  logger(Logging::TRACE) 
+      << "push block with hash (" << cachedBlock.getBlockHash() << "), and "
+      << cachedTransactions.size() + 1 << " transactions"; //+1 for base transaction
 
   // TODO: cache top block difficulty, size, timestamp, coins; use it here
   auto lastBlockInfo = getCachedBlockInfo(getTopBlockIndex());
@@ -924,7 +925,7 @@ void DatabaseBlockchainCache::pushBlock(const CachedBlock& cachedBlock,
 
   topBlockIndex = *topBlockIndex + 1;
   topBlockHash = cachedBlock.getBlockHash();
-  logger(Logging::DEBUGGING) << "push block " << cachedBlock.getBlockHash() << " completed";
+  logger(Logging::TRACE) << "push block " << cachedBlock.getBlockHash() << " completed";
 
   unitsCache.push_back(blockInfo);
   if (unitsCache.size() > unitsCacheSize) {

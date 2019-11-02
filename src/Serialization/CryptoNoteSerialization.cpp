@@ -332,9 +332,6 @@ namespace CryptoNote {
     uint64_t txNum = static_cast<uint64_t>(pbs.m_parentBlock.transactionCount);
     serializer(txNum, "numberOfTransactions");
     pbs.m_parentBlock.transactionCount = static_cast<uint16_t>(txNum);
-    std::cout << "I'm here in CryptoNoteSerialization.cpp L306" << std::endl;
-    std::cout << "serialize(ParentBlockSerializer) L306 => previousBlockHash: " << pbs.m_parentBlock.previousBlockHash << std::endl;
-    std::cout << "serialize(ParentBlockSerializer) L306 => txCount: " << txNum << std::endl;
     if (pbs.m_parentBlock.transactionCount < 1) {
       throw std::runtime_error("Wrong transactions number");
     }

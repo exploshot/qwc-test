@@ -57,9 +57,10 @@ namespace CryptoNote {
 		const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW 						= 100;
 		
 		/* If you Fork QWC Please set the below value to 100000 NOT 10000 as this will fix a mistake we made at mainnetlaunch with transaction sizes */
-		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE 			= 10000; //size of block (bytes) after which reward for block calculated using block size
-		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 		= 100000; //size of block (bytes) after which reward for block calculated using block size (fix tx sizes issue)
-		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT 	= CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
+		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE      = 10000; // 1.0; 3.0
+		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2   = 1000000; // 2.0; 4.0; 5.0
+		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1   = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
+		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 		const size_t   CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE 				= 600;
 		const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT 					= 2; // the number of decimal points to display in the wallet and other software
 		const size_t   CRYPTONOTE_DUST_DECIMAL_POINT 						= 8; //the decimal places to calculate DUST up to...
@@ -156,6 +157,8 @@ namespace CryptoNote {
 		const uint32_t UPGRADE_HEIGHT_V5 = 250720; // Upgrade height for DustFund V1.
 		const uint32_t UPGRADE_HEIGHT_V6 = 4294967294;  //fix tx sizes issues
 		const uint32_t UPGRADE_HEIGHT_V7 = 4294967295;  //CN Turtle
+
+		const uint32_t UPGRADE_HEIGHT_REWARD_SCHEME = 800000;
 
 		const uint32_t UPGRADE_HEIGHT_CURRENT = UPGRADE_HEIGHT_V5;
 		const unsigned UPGRADE_VOTING_THRESHOLD = 90;               // percent
