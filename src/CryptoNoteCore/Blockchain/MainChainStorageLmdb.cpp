@@ -17,14 +17,11 @@
 
 #include <CryptoNoteCore/Blockchain/MainChainStorageLmdb.h>
 
+#include <Global/Constants.h>
+
 using namespace rapidjson;
 using namespace CryptoNote;
-
-namespace
-{
-const uint64_t MAX_DIRTY = 100000;
-const size_t MAPSIZE_MIN_AVAIL = 16ULL * 1024 * 1024;;
-} // namespace
+using namespace LMDB;
 
 namespace CryptoNote
 {
@@ -106,7 +103,7 @@ void MainChainStorageLmdb::pushBlock(const RawBlock &rawBlock)
         lmdb::txn_commit(wtxn);
 
         // flush to disk (only when using MDB_NOSYNC)
-        //m_db.sync();
+        // m_db.sync();
 
         // resize when needed
         checkResize();
@@ -299,7 +296,7 @@ void MainChainStorageLmdb::checkResize()
         // flush to disk (only when NOT using MDB_NOSYNC flag)
         m_db.sync(true);
 
-        mapsize += 1ULL << 23;
+        mapsize += 1ULL << SHIFTING_VAL;
         try
         {
             m_db.set_mapsize(mapsize);        

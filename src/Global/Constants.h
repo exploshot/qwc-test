@@ -107,126 +107,139 @@ namespace Constants
     });
 } // namespace Constants
 
-/*!
-    Make sure everything in here is const - or it won't compile!
-*/
-    namespace WalletConfig {
+    /*!
+        Make sure everything in here is const - or it won't compile!
+    */
+namespace WalletConfig 
+{
 
-/*!
-    The prefix your coins address starts with
-*/
+    /*!
+        The prefix your coins address starts with
+    */
         // const uint64_t addressPrefix = 0x14820c;
         const std::string_view addressPrefix = "QWC";
 
-/*!
-    Your coins 'Ticker', e.g. Monero = XMR, Bitcoin = BTC
-*/
+    /*!
+        Your coins 'Ticker', e.g. Monero = XMR, Bitcoin = BTC
+    */
         const std::string ticker = "QWC";
 
-/*!
-    The filename to output the CSV to in save_csv
-*/
+    /*!
+        The filename to output the CSV to in save_csv
+    */
         const std::string csvFilename = "transactions.csv";
 
-/*!
-    The filename to read+write the address book to - consider starting with
-    a leading '.' to make it hidden under mac+linux
-*/
+    /*!
+        The filename to read+write the address book to - consider starting with
+        a leading '.' to make it hidden under mac+linux
+    */
         const std::string addressBookFilename = ".addressBook.json";
 
-/*!
-    The name of your deamon
-*/
+    /*!
+        The name of your deamon
+    */
         const std::string daemonName = "qwertycoind";
 
-/*!
-    The name to call this wallet
-*/
+    /*!
+        The name to call this wallet
+    */
         const std::string walletName = "simplewallet";
 
-/*!
-    The name of service/walletd, the programmatic rpc interface to a wallet
-*/
+    /*!
+        The name of service/walletd, the programmatic rpc interface to a wallet
+    */
         const std::string walletdName = "qwertycoin-service";
 
-/*!
-    The full name of your crypto
-*/
+    /*!
+        The full name of your crypto
+    */
         const std::string coinName = std::string(CryptoNote::CRYPTONOTE_NAME);
 
-/*!
-    Where can your users contact you for support? E.g. discord
-*/
+    /*!
+        Where can your users contact you for support? E.g. discord
+    */
         const std::string contactLink = "http://chat.qwertycoin.org";
 
-/*!
-    The number of decimals your coin has
-*/
+    /*!
+        The number of decimals your coin has
+    */
         const uint8_t numDecimalPlaces = CryptoNote::parameters::CRYPTONOTE_DUST_DECIMAL_POINT;
 
         const uint8_t numDisplayDecimalPlaces = CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT;
 
-/*!
-    The length of a standard address for your coin
-*/
+    /*!
+        The length of a standard address for your coin
+    */
         const uint16_t standardAddressLength = 98;
 
-/*!
-    The length of an integrated address for your coin - It's the same as
-    a normal address, but there is a paymentID included in there - since
-    payment ID's are 64 chars, and base58 encoding is done by encoding
-    chunks of 8 chars at once into blocks of 11 chars, we can calculate
-    this automatically
-*/
+    /*!
+        The length of an integrated address for your coin - It's the same as
+        a normal address, but there is a paymentID included in there - since
+        payment ID's are 64 chars, and base58 encoding is done by encoding
+        chunks of 8 chars at once into blocks of 11 chars, we can calculate
+        this automatically
+    */
         const uint16_t integratedAddressLength = standardAddressLength + ((64 * 11) / 8);
 
-/*!
-    The default fee value to use with transactions (in ATOMIC units!)
-*/
+    /*!
+        The default fee value to use with transactions (in ATOMIC units!)
+    */
         const uint64_t defaultFee = CryptoNote::parameters::MINIMUM_FEE;
 
-/*!
-    The minimum fee value to allow with transactions (in ATOMIC units!)
-*/
+    /*!
+        The minimum fee value to allow with transactions (in ATOMIC units!)
+    */
         const uint64_t minimumFee = CryptoNote::parameters::MINIMUM_FEE;
 
-/*!
-    The minimum amount allowed to be sent - usually 1 (in ATOMIC units!)
-*/
+    /*!
+        The minimum amount allowed to be sent - usually 1 (in ATOMIC units!)
+    */
         const uint64_t minimumSend = 1;
 
-/*!
-    Is a mixin of zero disabled on your network?
-*/
+    /*!
+        Is a mixin of zero disabled on your network?
+    */
         const bool mixinZeroDisabled = false;
 
-/*!
-    If a mixin of zero is disabled, at what height was it disabled?
-    E.g. fork height, or 0, if never allowed. This is ignored if a
-    mixin of zero is allowed
-*/
+    /*!
+        If a mixin of zero is disabled, at what height was it disabled?
+        E.g. fork height, or 0, if never allowed. This is ignored if a
+        mixin of zero is allowed
+    */
         const uint64_t mixinZeroDisabledHeight = CryptoNote::parameters::MIXIN_LIMITS_V2_HEIGHT;
 
-/*!
-    Should we process coinbase transactions? We can skip them to speed up
-    syncing, as most people don't have solo mined transactions
-*/
+    /*!
+        Should we process coinbase transactions? We can skip them to speed up
+        syncing, as most people don't have solo mined transactions
+    */
         const bool processCoinbaseTransactions = true;
 
-/*!
-    Max size of a post body response - 10MB
-    Will decrease the amount of blocks requested from the daemon if this
-    is exceeded.
-    Note - blockStoreMemoryLimit - maxBodyResponseSize should be greater
-    than zero, or no data will get cached.
-    Further note: Currently blocks request are not decreased if this is
-    exceeded. Needs to be implemented in future?
-*/
+    /*!
+        Max size of a post body response - 10MB
+        Will decrease the amount of blocks requested from the daemon if this
+        is exceeded.
+        Note - blockStoreMemoryLimit - maxBodyResponseSize should be greater
+        than zero, or no data will get cached.
+        Further note: Currently blocks request are not decreased if this is
+        exceeded. Needs to be implemented in future?
+    */
         const size_t maxBodyResponseSize = 1024 * 1024 * 10;
 
-/*!
-    The amount of memory to use storing downloaded blocks - 50MB
-*/
+    /*!
+        The amount of memory to use storing downloaded blocks - 50MB
+    */
         const size_t blockStoreMemoryLimit = 1024 * 1024 * 50;
 
-    } // namespace WalletConfig
+} // namespace WalletConfig
+
+namespace LMDB
+{
+    const std::string DB_NAME = "DB";
+    const std::string TESTNET_DB_NAME = "testnet_DB";
+    /* @todo: parameterize this? cmd args? */
+    const size_t MAX_DIRTY = 20000;
+    /* min. available/empty room in the db */
+    const size_t MAPSIZE_MIN_AVAIL = 5120ULL * 1024 * 1024;
+    const int SHIFTING_VAL = 30;
+
+}

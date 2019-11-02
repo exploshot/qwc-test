@@ -7,6 +7,7 @@
 
 #include "DataBaseErrors.h"
 #include <Common/FileSystemShim.h>
+#include <Global/Constants.h>
 
 #include <iostream>
 #include <fstream>
@@ -14,16 +15,8 @@
 
 using namespace CryptoNote;
 using namespace Logging;
+using namespace LMDB;
 
-namespace
-{
-    const std::string DB_NAME = "DB";
-    const std::string TESTNET_DB_NAME = "testnet_DB";
-    /* @todo: parameterize this? cmd args? */
-    const size_t MAX_DIRTY = 100000;
-    /* min. available/empty room in the db */
-    const size_t MAPSIZE_MIN_AVAIL = 16ULL * 1024 * 1024;
-} // namespace
 
 LmDBWrapper::LmDBWrapper(std::shared_ptr<Logging::ILogger> logger) : logger(logger, "LmDBWrapper"), state(NOT_INITIALIZED)
 {
@@ -101,8 +94,7 @@ void LmDBWrapper::init(const DataBaseConfig &config)
 	logger(INFO, BRIGHT_CYAN) << "Opening DB in " << dbDirTemp;
     try
     {
-        m_db.open(m_dbDir.c_str(), MDB_NOSYNC|MDB_NORDAHEAD, 0664);
-        // m_db.open(m_dbDir.c_str(), MDB_NOSYNC | MDB_WRITEMAP | MDB_MAPASYNC | MDB_NORDAHEAD, 0664);
+        m_db.open(dbDirTemp.c_str(), MDB_NOSYNC | MDB_WRITEMAP | MDB_MAPASYNC | MDB_NORDAHEAD, 0664);
     }
     catch (const std::exception &e)
     {
@@ -244,7 +236,7 @@ std::error_code LmDBWrapper::write(IWriteBatch &batch)
     {
         m_dirty = 0;
         logger(DEBUGGING) << "Flushing dirty commits to disk";
-        m_db.sync(false);
+        m_db.sync(true);
     }
 
     return errCode;
@@ -351,7 +343,7 @@ void LmDBWrapper::renewRwTxHandle(bool sync)
 
     if (sync)
     {
-        m_db.sync(false);
+        m_db.sync(true);
     }
 
     try
@@ -405,7 +397,7 @@ void LmDBWrapper::checkResize(const bool init)
 
     m_db.sync(true);
 
-    const size_t extra = 1 << 23; // 128 MiB
+    const size_t extra = 1 << SHIFTING_VAL;
     mapsize += extra;
 
     logger(INFO, BRIGHT_CYAN) 
