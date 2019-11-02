@@ -21,7 +21,7 @@
 #include <atomic>
 #include <unordered_set>
 
-#include <IBlockchainExplorer.h>
+#include <BlockchainExplorer/IBlockchainExplorer.h>
 #include <INode.h>
 
 #include <BlockchainExplorer/BlockchainExplorerErrors.h>

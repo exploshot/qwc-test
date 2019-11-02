@@ -11,7 +11,7 @@
 #include <vector>
 #include <optional>
 
-#include <BlockchainExplorerData.h>
+#include <BlockchainExplorer/BlockchainExplorerData.h>
 #include <CryptoNote.h>
 
 #include <CryptoNoteCore/Blockchain/BlockchainMessages.h>

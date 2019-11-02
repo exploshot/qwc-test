@@ -368,7 +368,8 @@ namespace Crypto
             throw nlohmann::json::parse_error(err);
         }
     }
-}
+
+} // namespace Crypto
 
 namespace std
 {

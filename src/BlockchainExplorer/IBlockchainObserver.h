@@ -18,45 +18,24 @@
 
 #pragma once
 
-#ifdef ANDROID
+#include <BlockchainExplorer/BlockchainExplorerData.h>
 
-#include <cerrno>
-#include <climits>
-#include <cstdlib>
-#include <stdexcept>
-#include <sstream>
-#include <string>
+namespace CryptoNote {
 
-namespace std {
+    class IBlockchainObserver
+    {
+        typedef std::pair<Crypto::Hash, TransactionRemoveReason> RemovedTransactionDetails;
 
-template <typename T>
-string to_string(T value)
-{
-    std::ostringstream os;
-    os << value;
-    return os.str();
-}
+    public:
+        virtual ~IBlockchainObserver() = default;
 
-/*
-inline unsigned long stoul (std::string const &str, size_t *idx = 0, int base = 10)
-{
-    char *endp;
-    unsigned long value = strtoul(str.c_str(), &endp, base);
-    if (endp == str.c_str()) {
-        throw std::invalid_argument("my_stoul");
-    }
+        virtual void blockchainSynchronized(const BlockDetails &topBlock) {}
 
-    if (value == ULONG_MAX && errno == ERANGE) {
-        throw std::out_of_range("my_stoul");
-    }
+        virtual void blockchainUpdated(const std::vector<BlockDetails> &newBlocks,
+                                       const std::vector<BlockDetails> &orphanedBlocks) {}
 
-    if (idx) {
-        *idx = endp - str.c_str();
-    }
+        virtual void poolUpdated(const std::vector<TransactionDetails> &newTransactions,
+                                 const std::vector<RemovedTransactionDetails> &removedTransactions) {}
+    };
 
-    return value;
-}
-*/
-} // namespace std
-
-#endif
+} // namespace CryptoNote

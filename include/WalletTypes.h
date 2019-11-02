@@ -51,10 +51,12 @@ namespace WalletTypes
 
         size_t memoryUsage() const
         {
-            return keyOutputs.size() * sizeof(KeyOutput) + sizeof(keyOutputs) +
-                   sizeof(hash) +
-                   sizeof(transactionPublicKey) +
-                   sizeof(unlockTime);
+            return keyOutputs.size() 
+                   * sizeof(KeyOutput) 
+                   + sizeof(keyOutputs) 
+                   + sizeof(hash) 
+                   + sizeof(transactionPublicKey) 
+                   + sizeof(unlockTime);
         }
     };
 
@@ -70,9 +72,13 @@ namespace WalletTypes
 
         size_t memoryUsage() const
         {
-            return paymentID.size() * sizeof(char) + sizeof(paymentID) +
-                   keyInputs.size() * sizeof(CryptoNote::KeyInput) + sizeof(keyInputs) +
-                   RawCoinbaseTransaction::memoryUsage();
+            return paymentID.size() 
+                   * sizeof(char) 
+                   + sizeof(paymentID) 
+                   + keyInputs.size() 
+                   * sizeof(CryptoNote::KeyInput) 
+                   + sizeof(keyInputs) 
+                   + RawCoinbaseTransaction::memoryUsage();
         }
     };
 
@@ -108,11 +114,11 @@ namespace WalletTypes
             
             return coinbaseTransaction 
                         ? coinbaseTransaction->memoryUsage() 
-                        : sizeof(coinbaseTransaction) +
-                   txUsage +
-                   sizeof(blockHeight) +
-                   sizeof(blockHash) +
-                   sizeof(blockTimestamp);
+                        : sizeof(coinbaseTransaction) 
+                    + txUsage 
+                    + sizeof(blockHeight) 
+                    + sizeof(blockHash) 
+                    + sizeof(blockTimestamp);
         }
     };
 
@@ -203,14 +209,14 @@ namespace WalletTypes
         void fromJSON(const JSONValue &j)
         {
             keyImage.fromString(getStringFromJSON(j, "keyImage"));
-            amount = getUint64FromJSON(j, "amount");
-            blockHeight = getUint64FromJSON(j, "blockHeight");
+            amount              = getUint64FromJSON(j, "amount");
+            blockHeight         = getUint64FromJSON(j, "blockHeight");
             transactionPublicKey.fromString(getStringFromJSON(j, "transactionPublicKey"));
-            transactionIndex = getUint64FromJSON(j, "transactionIndex");
-            globalOutputIndex = getUint64FromJSON(j, "globalOutputIndex");
+            transactionIndex    = getUint64FromJSON(j, "transactionIndex");
+            globalOutputIndex   = getUint64FromJSON(j, "globalOutputIndex");
             key.fromString(getStringFromJSON(j, "key"));
-            spendHeight = getUint64FromJSON(j, "spendHeight");
-            unlockTime = getUint64FromJSON(j, "unlockTime");
+            spendHeight         = getUint64FromJSON(j, "spendHeight");
+            unlockTime          = getUint64FromJSON(j, "unlockTime");
             parentTransactionHash.fromString(getStringFromJSON(j, "parentTransactionHash"));
         }
     };
@@ -231,9 +237,7 @@ namespace WalletTypes
         }
 
         TransactionInput input;
-
         Crypto::PublicKey publicSpendKey;
-
         Crypto::SecretKey privateSpendKey;
     };
 
@@ -429,12 +433,12 @@ namespace WalletTypes
                 }
 
                 hash.fromString(getStringFromJSON(j, "hash"));
-                fee = getUint64FromJSON(j, "fee");
-                blockHeight = getUint64FromJSON(j, "blockHeight");
-                timestamp = getUint64FromJSON(j, "timestamp");
-                paymentID = getStringFromJSON(j, "paymentID");
-                unlockTime = getUint64FromJSON(j, "unlockTime");
-                isCoinbaseTransaction = getBoolFromJSON(j, "isCoinbaseTransaction");
+                fee                     = getUint64FromJSON(j, "fee");
+                blockHeight             = getUint64FromJSON(j, "blockHeight");
+                timestamp               = getUint64FromJSON(j, "timestamp");
+                paymentID               = getStringFromJSON(j, "paymentID");
+                unlockTime              = getUint64FromJSON(j, "unlockTime");
+                isCoinbaseTransaction   = getBoolFromJSON(j, "isCoinbaseTransaction");
             }
     };
 
@@ -538,10 +542,10 @@ namespace WalletTypes
             w.coinbaseTransaction = j.at("coinbaseTX").get<RawCoinbaseTransaction>();
         }
 
-        w.transactions = j.at("transactions").get<std::vector<RawTransaction>>();
-        w.blockHeight = j.at("blockHeight").get<uint64_t>();
-        w.blockHash = j.at("blockHash").get<Crypto::Hash>();
-        w.blockTimestamp = j.at("blockTimestamp").get<uint64_t>();
+        w.transactions      = j.at("transactions").get<std::vector<RawTransaction>>();
+        w.blockHeight       = j.at("blockHeight").get<uint64_t>();
+        w.blockHash         = j.at("blockHash").get<Crypto::Hash>();
+        w.blockTimestamp    = j.at("blockTimestamp").get<uint64_t>();
     }
 
     inline void to_json(nlohmann::json &j, const RawCoinbaseTransaction &r)
@@ -556,9 +560,9 @@ namespace WalletTypes
 
     inline void from_json(const nlohmann::json &j, RawCoinbaseTransaction &r)
     {
-        r.keyOutputs = j.at("outputs").get<std::vector<KeyOutput>>();
-        r.hash = j.at("hash").get<Crypto::Hash>();
-        r.transactionPublicKey = j.at("txPublicKey").get<Crypto::PublicKey>();
+        r.keyOutputs            = j.at("outputs").get<std::vector<KeyOutput>>();
+        r.hash                  = j.at("hash").get<Crypto::Hash>();
+        r.transactionPublicKey  = j.at("txPublicKey").get<Crypto::PublicKey>();
 
         /* We need to try to get the unlockTime from an integer in the json
            however, if that fails because we're talking to a blockchain

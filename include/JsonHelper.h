@@ -7,9 +7,14 @@
 #include <rapidjson/document.h>
 
 /* Yikes! */
-typedef rapidjson::GenericObject<true, rapidjson::GenericValue<rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>>> JSONObject;
+typedef rapidjson::GenericObject<
+    true, 
+    rapidjson::GenericValue<rapidjson::UTF8<char>, 
+    rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>>> JSONObject;
 
-typedef rapidjson::GenericValue<rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> JSONValue;
+typedef rapidjson::GenericValue<
+    rapidjson::UTF8<char>, 
+    rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> JSONValue;
 
 static const std::string kTypeNames[] =
 { 

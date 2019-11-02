@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <BlockchainExplorerData.h>
+#include <BlockchainExplorer/BlockchainExplorerData.h>
 #include <WalletTypes.h>
 
 #include <Crypto/hash.h>
