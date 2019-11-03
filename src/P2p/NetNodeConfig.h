@@ -15,40 +15,51 @@
 
 namespace CryptoNote {
 
-class NetNodeConfig {
-public:
-  NetNodeConfig();
-  bool init(const std::string interface, const int port, const int external, const bool localIp,
-              const bool hidePort, const std::string dataDir, const std::vector<std::string> addPeers,
-              const std::vector<std::string> addExclusiveNodes, const std::vector<std::string> addPriorityNodes,
-              const std::vector<std::string> addSeedNodes, const bool p2pResetPeerState);
+    class NetNodeConfig {
+    public:
+        NetNodeConfig();
+        bool init(
+            const std::string interface, 
+            const int port, 
+            const int external, 
+            const bool localIp,
+            const bool hidePort, 
+            const std::string dataDir, 
+            const std::vector<std::string> addPeers,
+            const std::vector<std::string> addExclusiveNodes, 
+            const std::vector<std::string> addPriorityNodes,
+            const std::vector<std::string> addSeedNodes, 
+            const bool p2pResetPeerState,
+            const std::string addExclusiveVersion);
 
-  std::string getP2pStateFilename() const;
-  bool getP2pStateReset() const;
-  std::string getBindIp() const;
-  uint16_t getBindPort() const;
-  uint16_t getExternalPort() const;
-  bool getAllowLocalIp() const;
-  std::vector<PeerlistEntry> getPeers() const;
-  std::vector<NetworkAddress> getPriorityNodes() const;
-  std::vector<NetworkAddress> getExclusiveNodes() const;
-  std::vector<NetworkAddress> getSeedNodes() const;
-  bool getHideMyPort() const;
-  std::string getConfigFolder() const;
+        bool getAllowLocalIp() const;
+        bool getHideMyPort() const;
+        bool getP2pStateReset() const;
+        std::string getBindIp() const;
+        std::string getConfigFolder() const;
+        std::string getExclusiveVersion() const;
+        std::string getP2pStateFilename() const;
+        uint16_t getBindPort() const;
+        uint16_t getExternalPort() const;
+        std::vector<NetworkAddress> getExclusiveNodes() const;
+        std::vector<NetworkAddress> getPriorityNodes() const;
+        std::vector<NetworkAddress> getSeedNodes() const;
+        std::vector<PeerlistEntry> getPeers() const;
 
-private:
-  std::string bindIp;
-  uint16_t bindPort;
-  uint16_t externalPort;
-  bool allowLocalIp;
-  std::vector<PeerlistEntry> peers;
-  std::vector<NetworkAddress> priorityNodes;
-  std::vector<NetworkAddress> exclusiveNodes;
-  std::vector<NetworkAddress> seedNodes;
-  bool hideMyPort;
-  std::string configFolder;
-  std::string p2pStateFilename;
-  bool p2pStateReset;
-};
+    private:
+        bool allowLocalIp;
+        bool hideMyPort;
+        bool p2pStateReset;
+        std::string bindIp;
+        std::string configFolder;
+        std::string exclusiveVersion;
+        std::string p2pStateFilename;
+        uint16_t bindPort;
+        uint16_t externalPort;
+        std::vector<PeerlistEntry> peers;
+        std::vector<NetworkAddress> priorityNodes;
+        std::vector<NetworkAddress> exclusiveNodes;
+        std::vector<NetworkAddress> seedNodes;
+    };
 
 } //namespace nodetool

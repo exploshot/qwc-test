@@ -20,6 +20,7 @@
 #include <Serialization/ISerializer.h>
 #include <Serialization/SerializationOverloads.h>
 #include <Serialization/CryptoNoteSerialization.h>
+#include <version.h>
 
 namespace CryptoNote
 {
@@ -52,6 +53,7 @@ namespace CryptoNote
     uint64_t local_time;
     uint32_t my_port;
     uint64_t peer_id;
+    std::string node_version = PROJECT_VERSION;
 
     void serialize(ISerializer& s) {
       KV_MEMBER(network_id)
@@ -62,6 +64,7 @@ namespace CryptoNote
       KV_MEMBER(peer_id)
       KV_MEMBER(local_time)
       KV_MEMBER(my_port)
+      KV_MEMBER(node_version)
     }
   };
 

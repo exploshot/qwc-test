@@ -43,6 +43,7 @@ class PeerlistManager
 
     private:
         std::string m_config_folder;
+        const std::string m_node_version;
         bool m_allow_local_ip;
         std::vector<PeerlistEntry> m_peers_gray;
         std::vector<PeerlistEntry> m_peers_white;

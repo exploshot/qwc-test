@@ -34,7 +34,7 @@
 #include <System/TcpConnection.h>
 #include <System/TcpListener.h>
 
-
+#include <version.h>
 
 namespace System {
 class TcpConnection;
@@ -229,6 +229,7 @@ namespace CryptoNote
     bool m_allow_local_ip;
     bool m_hide_my_port;
     std::string m_p2p_state_filename;
+    std::string m_node_version;
     bool m_p2p_state_reset;
 
     System::Dispatcher& m_dispatcher;

@@ -179,23 +179,27 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
     return ret;
   }
 
-  NodeServer::NodeServer(System::Dispatcher& dispatcher, CryptoNote::CryptoNoteProtocolHandler& payload_handler, std::shared_ptr<Logging::ILogger> log) :
-    m_dispatcher(dispatcher),
-    m_workingContextGroup(dispatcher),
-    m_payload_handler(payload_handler),
-    m_allow_local_ip(false),
-    m_hide_my_port(false),
-    m_network_id(QWERTYCOIN_NETWORK),
-    logger(log, "node_server"),
-    m_stopEvent(m_dispatcher),
-    m_idleTimer(m_dispatcher),
-    m_timedSyncTimer(m_dispatcher),
-    m_timeoutTimer(m_dispatcher),
-    m_stop(false),
-    // intervals
-    // m_peer_handshake_idle_maker_interval(CryptoNote::P2P_DEFAULT_HANDSHAKE_INTERVAL),
-    m_connections_maker_interval(1),
-    m_peerlist_store_interval(60*30, false) {
+  NodeServer::NodeServer(
+      System::Dispatcher& dispatcher, 
+      CryptoNote::CryptoNoteProtocolHandler& payload_handler, 
+      std::shared_ptr<Logging::ILogger> log) :
+
+      m_dispatcher(dispatcher),
+      m_workingContextGroup(dispatcher),
+      m_payload_handler(payload_handler),
+      m_allow_local_ip(false),
+      m_hide_my_port(false),
+      m_network_id(QWERTYCOIN_NETWORK),
+      logger(log, "node_server"),
+      m_stopEvent(m_dispatcher),
+      m_idleTimer(m_dispatcher),
+      m_timedSyncTimer(m_dispatcher),
+      m_timeoutTimer(m_dispatcher),
+      m_stop(false),
+      // intervals
+      // m_peer_handshake_idle_maker_interval(CryptoNote::P2P_DEFAULT_HANDSHAKE_INTERVAL),
+      m_connections_maker_interval(1),
+      m_peerlist_store_interval(60 * 30, false) {
   }
 
   void NodeServer::serialize(ISerializer& s) {
@@ -246,17 +250,21 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
 
 #undef INVOKE_HANDLER
 
-  bool NodeServer::init_config() {
+  bool NodeServer::init_config()
+  {
     try {
       std::string state_file_path = m_config_folder + "/" + m_p2p_state_filename;
       bool loaded = false;
 
-      try {
+      try
+      {
         std::ifstream p2p_data;
 
         std::ios_base::openmode open_mode = std::ios_base::binary | std::ios_base::in;
+
         /* --p2p-reset-peerstate daemon option 
           Truncates the file if want the peer state reset */
+
         if(m_p2p_state_reset) {
           open_mode |= std::ios_base::trunc;
         }
@@ -268,12 +276,18 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
           CryptoNote::serialize(*this, a);
           loaded = true;
         }
-      } catch (const std::exception& e) {
-        logger(ERROR, BRIGHT_RED) << "Failed to load config from file '" << state_file_path << "': " << e.what();
+      }
+      catch (const std::exception& e)
+      {
+          logger(ERROR, BRIGHT_RED)
+              << "Failed to load config from file '"
+              << state_file_path
+              << "': "
+              << e.what();
       }
 
       if (!loaded) {
-        make_default_config();
+          make_default_config();
       }
 
       //at this moment we have hardcoded config
@@ -336,6 +350,7 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
     m_port = std::to_string(config.getBindPort());
     m_external_port = config.getExternalPort();
     m_allow_local_ip = config.getAllowLocalIp();
+    m_node_version = config.getExclusiveVersion();
 
     auto peers = config.getPeers();
     std::copy(peers.begin(), peers.end(), std::back_inserter(m_command_line_peers));
@@ -405,9 +420,16 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
       return false;
     }
 
-    for(auto& p: m_command_line_peers)
+    for(auto& p: m_command_line_peers) {
       m_peerlist.append_with_peer_white(p);
+    }
 
+    if (!m_node_version.empty()) {
+      logger(INFO, BRIGHT_GREEN) 
+          << "[VERSION BLOCKING] Daemon Version: "
+          << m_node_version
+          << " - block daemons that do not reply with this specified version.";
+    }
     //only in case if we really sure that we have external visible ip
     m_have_address = true;
     m_ip_address = 0;
@@ -522,15 +544,31 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
     m_payload_handler.get_payload_sync_data(arg.payload_data);
 
     if (!proto.invoke(COMMAND_HANDSHAKE::ID, arg, rsp)) {
-      logger(Logging::DEBUGGING) << context << "A daemon on the network has departed. MSG: Failed to invoke COMMAND_HANDSHAKE, closing connection.";
+      logger(Logging::DEBUGGING) 
+        << context 
+        << "A daemon on the network has departed. MSG: "
+        << "Failed to invoke COMMAND_HANDSHAKE, closing connection.";
       return false;
     }
 
     context.version = rsp.node_data.version;
 
     if (rsp.node_data.network_id != m_network_id) {
-      logger(Logging::DEBUGGING) << context << "COMMAND_HANDSHAKE Failed, wrong network! (" << rsp.node_data.network_id << "), closing connection.";
+      logger(Logging::DEBUGGING) 
+        << context 
+        << "COMMAND_HANDSHAKE Failed, wrong network! (" 
+        << rsp.node_data.network_id 
+        << "), closing connection.";
       return false;
+    }
+
+    if (!m_node_version.empty()) {
+      if (rsp.node_data.node_version != m_node_version) {
+          logger(Logging::DEBUGGING, Logging::BRIGHT_RED)
+              << context
+              << "Command_HANDSHAKE: invoked, but peer is not running"
+              << "the exclusive version specified, dropping connection!";
+      }
     }
 
     if (rsp.node_data.version < CryptoNote::P2P_MINIMUM_VERSION) {
@@ -566,7 +604,6 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
     logger(Logging::DEBUGGING) << context << "COMMAND_HANDSHAKE INVOKED OK";
     return true;
   }
-
 
   bool NodeServer::timedSync() {
     COMMAND_TIMED_SYNC::request arg = boost::value_initialized<COMMAND_TIMED_SYNC::request>();
@@ -919,6 +956,7 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
       node_data.my_port = m_external_port ? m_external_port : m_listeningPort;
     else
       node_data.my_port = 0;
+    node_data.node_version = m_node_version;
     node_data.network_id = m_network_id;
     return true;
   }
