@@ -22,13 +22,13 @@
 #include <string>
 #include <vector>
 
+#include <boost/variant.hpp>
+
 #include <CryptoTypes.h>
 #include <CryptoNote.h>
 
-#include <boost/variant.hpp>
 
 namespace CryptoNote {
-
     enum class TransactionRemoveReason : uint8_t
     {
         INCLUDED_IN_BLOCK = 0,

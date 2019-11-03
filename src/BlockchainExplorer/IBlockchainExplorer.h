@@ -19,45 +19,45 @@
 #pragma once
 
 #include <array>
-#include <vector>
 #include <istream>
 #include <ostream>
+#include <vector>
 
 #include <BlockchainExplorer/IBlockchainObserver.h>
 
 namespace CryptoNote {
-
-    class IBlockchainExplorer {
+    class IBlockchainExplorer 
+    {
     public:
         virtual ~IBlockchainExplorer() = default;
 
         virtual void init() = 0;
         virtual void shutdown() = 0;
 
-        virtual bool addObserver(IBlockchainObserver* observer) = 0;
-        virtual bool removeObserver(IBlockchainObserver* observer) = 0;
+        virtual bool addObserver(IBlockchainObserver *observer) = 0;
+        virtual bool removeObserver(IBlockchainObserver *observer) = 0;
 
-        virtual bool getBlocks(const std::vector<uint32_t>& blockHeights,
-                               std::vector<std::vector<BlockDetails>>& blocks) = 0;
-        virtual bool getBlocks(const std::vector<Crypto::Hash>& blockHashes,
-                               std::vector<BlockDetails>& blocks) = 0;
+        virtual bool getBlocks(const std::vector<uint32_t> &blockHeights,
+                               std::vector<std::vector<BlockDetails>> &blocks) = 0;
+        virtual bool getBlocks(const std::vector<Crypto::Hash> &blockHashes,
+                               std::vector<BlockDetails> &blocks) = 0;
         virtual bool getBlocks(uint64_t timestampBegin,
                                uint64_t timestampEnd,
                                uint32_t blocksNumberLimit,
-                               std::vector<BlockDetails>& blocks,
+                               std::vector<BlockDetails> &blocks,
                                uint32_t& blocksNumberWithinTimestamps) = 0;
 
-        virtual bool getBlockchainTop(BlockDetails& topBlock) = 0;
+        virtual bool getBlockchainTop(BlockDetails &topBlock) = 0;
 
-        virtual bool getPoolState(const std::vector<Crypto::Hash>& knownPoolTransactionHashes,
+        virtual bool getPoolState(const std::vector<Crypto::Hash> &knownPoolTransactionHashes,
                                   Crypto::Hash knownBlockchainTop,
-                                  bool& isBlockchainActual,
-                                  std::vector<TransactionDetails>& newTransactions,
-                                  std::vector<Crypto::Hash>& removedTransactions) = 0;
-        virtual bool getTransactions(const std::vector<Crypto::Hash>& transactionHashes,
-                                     std::vector<TransactionDetails>& transactions) = 0;
-        virtual bool getTransactionsByPaymentId(const Crypto::Hash& paymentId,
-                                                std::vector<TransactionDetails>& transactions) = 0;
+                                  bool &isBlockchainActual,
+                                  std::vector<TransactionDetails> &newTransactions,
+                                  std::vector<Crypto::Hash> &removedTransactions) = 0;
+        virtual bool getTransactions(const std::vector<Crypto::Hash> &transactionHashes,
+                                     std::vector<TransactionDetails> &transactions) = 0;
+        virtual bool getTransactionsByPaymentId(const Crypto::Hash &paymentId,
+                                                std::vector<TransactionDetails> &transactions) = 0;
 
         virtual uint64_t getRewardBlocksWindows() = 0;
         virtual uint64_t getFullRewardMaxBlockSize(uint8_t majorVersion) = 0;

@@ -21,7 +21,7 @@
 #include <BlockchainExplorer/BlockchainExplorerData.h>
 
 namespace CryptoNote {
-
+    
     class IBlockchainObserver
     {
         typedef std::pair<Crypto::Hash, TransactionRemoveReason> RemovedTransactionDetails;
