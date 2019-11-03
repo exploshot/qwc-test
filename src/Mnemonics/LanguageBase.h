@@ -102,18 +102,20 @@ namespace Language
                     trimmed = *it;
                 }
                 if (trimmedWordMap.find(trimmed) != trimmedWordMap.end()) {
-                    //LOG_PRINT_L0("Duplicate prefix in " << language_name
-                    // << " word list: " << trimmed);
-                } else {
-                    throw std::runtime_error("Duplicate prefix in "+ languageName
-                                             + " word list: " + trimmed);
-                }
+                    if (flags & ALLOW_DUPLICATE_PREFIXES) {
+                        //LOG_PRINT_L0("Duplicate prefix in " << language_name
+                        //<< " word list: " << trimmed);
+                    } else {
+                        throw std::runtime_error("Duplicate prefix in "+ languageName
+                                                 + " word list: " + trimmed);
+                    }
+                } 
                 trimmedWordMap[trimmed] = ii;
             }
         }
     public:
         Base(const std::string& languageName,
-             const std::vector<std::string>& words,
+             const std::vector<std::string> &words,
              uint32_t prefixLength)
              : wordList(words),
                uniquePrefixLength(prefixLength),

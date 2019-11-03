@@ -71,7 +71,16 @@ namespace Mnemonics
 {
     std::tuple<Error, Crypto::SecretKey> MnemonicToPrivateKey(const std::string words, std::string &languageName)
     {
-        const size_t len = words.size();
+        std::vector<std::string> wordList;
+
+        std::istringstream stream(words);
+
+        /* Convert whitespace separated string into vector of words */
+        for (std::string word; stream >> word;) {
+            wordList.push_back(word);
+        }
+
+        const size_t len = wordList.size();
 
         /* Mnemonics must be 25 words long */
         if (len != 25)
