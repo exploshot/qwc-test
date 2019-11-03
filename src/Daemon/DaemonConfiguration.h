@@ -15,6 +15,8 @@
 
 #include <Logging/ILogger.h>
 
+#include <version.h>
+
 using namespace rapidjson;
 
 namespace DaemonConfig {
@@ -55,6 +57,7 @@ namespace DaemonConfig {
       useRocksdbForLocalCaches = false;
       enableDbCompression = false;
       resync = false;
+      exclusiveVersion = PROJECT_VERSION;
     }
 
     std::string dataDirectory;
@@ -63,6 +66,7 @@ namespace DaemonConfig {
     std::string rpcInterface;
     std::string p2pInterface;
     std::string checkPoints;
+    std::string exclusiveVersion;
 
     std::vector<std::string> peers;
     std::vector<std::string> priorityNodes;

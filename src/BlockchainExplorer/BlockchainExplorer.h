@@ -32,6 +32,11 @@
 #include <INode.h>
 
 namespace CryptoNote {
+    enum State {
+        NOT_INITIALIZED,
+        INITIALIZED
+    };
+    
     class BlockchainExplorer : public IBlockchainExplorer, public INodeObserver 
     {
         class PoolUpdateGuard
@@ -53,10 +58,7 @@ namespace CryptoNote {
             std::atomic<State> m_state;
         };
 
-        enum State {
-            NOT_INITIALIZED,
-            INITIALIZED
-        };
+        
     public:
         BlockchainExplorer(INode &node, std::shared_ptr<Logging::ILogger> logger);
         BlockchainExplorer(const BlockchainExplorer &) = delete;

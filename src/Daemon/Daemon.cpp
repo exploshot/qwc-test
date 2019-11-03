@@ -310,7 +310,8 @@ int main(int argc, char* argv[])
       config.exclusiveNodes, 
       config.priorityNodes,
       config.seedNodes, 
-      config.p2pResetPeerstate
+      config.p2pResetPeerstate,
+      config.exclusiveVersion
     );
 
     DataBaseConfig dbConfig;
