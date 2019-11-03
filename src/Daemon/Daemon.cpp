@@ -375,6 +375,7 @@ int main(int argc, char* argv[])
     CryptoNote::CryptoNoteProtocolHandler cprotocol(currency, dispatcher, ccore, nullptr, logManager);
 	/*cprotocol.setTxThreshold(config.txThresholdCount);
 	cprotocol.setTxThresholdInterval(config.txThresholdInterval);
+  */
 	if (!config.banImportFile.empty()) {
 		if (!boost::filesystem::exists(config.banImportFile)) {
 			logger(WARNING) << "Unable to import banned ips, file not found: " << config.banImportFile;
@@ -391,7 +392,7 @@ int main(int argc, char* argv[])
 				logger(WARNING) << "Invalid ip in p2p ban import: " << line;
 			}
 		}
-	}*/
+	}
     CryptoNote::NodeServer p2psrv(dispatcher, cprotocol, logManager);
     CryptoNote::RpcServer rpcServer(dispatcher, logManager, ccore, p2psrv, cprotocol);
 

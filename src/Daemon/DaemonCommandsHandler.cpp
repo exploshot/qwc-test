@@ -67,9 +67,9 @@ DaemonCommandsHandler::DaemonCommandsHandler(CryptoNote::Core& core, CryptoNote:
   m_consoleHandler.setHandler("print_pool_sh", boost::bind(&DaemonCommandsHandler::print_pool_sh, this, _1), "Print transaction pool (short format)");
   m_consoleHandler.setHandler("set_log", boost::bind(&DaemonCommandsHandler::set_log, this, _1), "set_log <level> - Change current log level, <level> is a number 0-4");
   m_consoleHandler.setHandler("status", boost::bind(&DaemonCommandsHandler::status, this, _1), "Show daemon status");
-  //m_consoleHandler.setHandler("ban_ip", boost::bind(&DaemonCommandsHandler::ip_ban, this, _1), "Bans the provided ips from the p2p interface.");
-  //m_consoleHandler.setHandler("unban_ip", boost::bind(&DaemonCommandsHandler::ip_unban, this, _1), "Unbans the provided ips from the p2p interface.");
-  //m_consoleHandler.setHandler("unban_all_ip", boost::bind(&DaemonCommandsHandler::ip_unban_all, this, _1), "Removes all bans from the p2p interface.");
+  m_consoleHandler.setHandler("ban_ip", boost::bind(&DaemonCommandsHandler::ip_ban, this, _1), "Bans the provided ips from the p2p interface.");
+  m_consoleHandler.setHandler("unban_ip", boost::bind(&DaemonCommandsHandler::ip_unban, this, _1), "Unbans the provided ips from the p2p interface.");
+  m_consoleHandler.setHandler("unban_all_ip", boost::bind(&DaemonCommandsHandler::ip_unban_all, this, _1), "Removes all bans from the p2p interface.");
   //m_consoleHandler.setHandler("tx_threshold", boost::bind(&DaemonCommandsHandler::tx_threshold, this, _1), "Prints the current transactions threshold in use.");
   //m_consoleHandler.setHandler("set_tx_threshold", boost::bind(&DaemonCommandsHandler::tx_threshold_set, this, _1), "Sets the transactions threshold. ([#count] [#seconds])");
 }
@@ -330,7 +330,7 @@ bool DaemonCommandsHandler::status(const std::vector<std::string>& args)
   
   return true;
 }
-/*
+
 bool DaemonCommandsHandler::ip_ban(const std::vector<std::string> &args)
 {
 	std::vector<uint32_t> ips;
@@ -368,7 +368,7 @@ bool DaemonCommandsHandler::ip_unban_all(const std::vector<std::string> &args)
 	m_srv.get_payload_object().unbanAll();
 	return true;
 }
-
+/*
 bool DaemonCommandsHandler::tx_threshold(const std::vector<std::string> &args)
 {
 	std::cout << m_srv.get_payload_object().txThreshold() << " transactions / "

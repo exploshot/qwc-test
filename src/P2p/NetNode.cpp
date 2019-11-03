@@ -23,6 +23,8 @@
 #include <Crypto/crypto.h>
 #include <Crypto/random.h>
 
+#include <CryptoNoteProtocol/CryptoNoteProtocolHandler.h>
+
 #include <Global/CryptoNoteConfig.h>
 
 #include <P2p/ConnectionContext.h>
@@ -564,10 +566,27 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
 
     if (!m_node_version.empty()) {
       if (rsp.node_data.node_version != m_node_version) {
-          logger(Logging::DEBUGGING, Logging::BRIGHT_RED)
+          logger(Logging::INFO, Logging::BRIGHT_RED)
               << context
-              << "Command_HANDSHAKE: invoked, but peer is not running"
+              << "Command_HANDSHAKE: invoked, but peer is not running "
               << "the exclusive version specified, dropping connection!";
+
+          std::string bCon = context.connection.getPeerAddressAndPort().first.toDottedDecimal();
+          uint32_t bIntCon = context.connection.getPeerAddressAndPort().first.getValue();
+
+          try {
+            m_payload_handler.ban(bIntCon);
+            logger(Logging::INFO)
+                << context
+                << " banned!";
+          }
+          catch(const std::exception& e) {
+            logger(Logging::ERROR)
+              << bCon
+              << " not banned, "
+              << e.what();
+          }
+          
       }
     }
 

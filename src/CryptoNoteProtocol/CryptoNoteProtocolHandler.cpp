@@ -178,10 +178,10 @@ void CryptoNoteProtocolHandler::set_p2p_endpoint(IP2pEndpoint* p2p) {
 }
 
 void CryptoNoteProtocolHandler::onConnectionOpened(CryptoNoteConnectionContext& context) {
-	/*if (isBanned(context)) {
+	if (isBanned(context)) {
 		logger(DEBUGGING) << context << "Banned ip connected, shutting down connection.";
 		context.m_state = CryptoNoteConnectionContext::state_shutdown;
-	}*/
+	}
 }
 
 void CryptoNoteProtocolHandler::onConnectionClosed(CryptoNoteConnectionContext& context) {
@@ -365,11 +365,11 @@ int CryptoNoteProtocolHandler::handleCommand(bool is_notify, int command, const 
   int ret = 0;
   handled = true;
 
- /* if (isBanned(ctx)) {
+  if (isBanned(ctx)) {
 	  logger(DEBUGGING) << ctx << " is trying to invoke a command but is banned, dropping connection...";
 	  ctx.m_state = CryptoNoteConnectionContext::state_shutdown;
 	  return 1;
-  }*/
+  }
 
   switch (command) {
     HANDLE_NOTIFY(NOTIFY_NEW_BLOCK, handle_notify_new_block)
@@ -620,6 +620,7 @@ int CryptoNoteProtocolHandler::processObjects(
 }
 /*
 IP Banning & TX Threshold
+*/
 void CryptoNoteProtocolHandler::ban(uint32_t ip)
 {
 	std::lock_guard<std::mutex> _{ m_bannedMutex };
@@ -647,7 +648,7 @@ bool CryptoNoteProtocolHandler::isBanned(CryptoNoteConnectionContext &context) c
 	(void)_;
 	return m_bannedIps.find(context.m_remote_ip) != m_bannedIps.end();
 }
-
+/*
 uint64_t CryptoNoteProtocolHandler::txThresholdInterval() const
 {
 	return m_transactionsPushedInterval.load();
