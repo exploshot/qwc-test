@@ -245,7 +245,7 @@ namespace LMDB
     /* @todo: parameterize this? cmd args? */
     const size_t MAX_DIRTY = 20000;
     /* min. available/empty room in the db */
-    const size_t MAPSIZE_MIN_AVAIL = 1 * Constants::KILOBYTE;
+    const size_t MAPSIZE_MIN_AVAIL = 32 * Constants::GIGABYTE;
     /* Shift << n / MEGABYTE = 
        Shift 18446744071562067968   : 17592186042368 MiB.   31
        Shift 1073741824             : 1024 MiB.             30
@@ -265,6 +265,6 @@ namespace LMDB
        Shift 65536                  : 0.0625 MiB.           16
        Shift 32768                  : 0.03125 MiB.          15
     */
-    const int SHIFTING_VAL = 15;
+    const int SHIFTING_VAL = 18;
     
 }

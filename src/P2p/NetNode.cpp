@@ -573,7 +573,7 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
 
           std::string bCon = context.connection.getPeerAddressAndPort().first.toDottedDecimal();
           uint32_t bIntCon = context.connection.getPeerAddressAndPort().first.getValue();
-
+/*
           try {
             m_payload_handler.ban(bIntCon);
             logger(Logging::INFO)
@@ -586,7 +586,7 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
               << " not banned, "
               << e.what();
           }
-          
+*/          
       }
     }
 
