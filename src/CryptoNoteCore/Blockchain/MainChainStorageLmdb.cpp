@@ -18,6 +18,7 @@
 #include <CryptoNoteCore/Blockchain/MainChainStorageLmdb.h>
 
 #include <Global/Constants.h>
+#include <Global/LMDBConfig.h>
 
 using namespace rapidjson;
 using namespace CryptoNote;
@@ -55,7 +56,7 @@ MainChainStorageLmdb::MainChainStorageLmdb(const std::string &blocksFilename, co
     {
         //m_db.open(blocksFilename.c_str(), MDB_NOSUBDIR|MDB_NORDAHEAD|MDB_NOMETASYNC|MDB_WRITEMAP|MDB_MAPASYNC, 0664);
         //m_db.open(blocksFilename.c_str(), MDB_NOSUBDIR|MDB_NOSYNC|MDB_WRITEMAP|MDB_MAPASYNC|MDB_NORDAHEAD, 0664);
-        m_db.open(blocksFilename.c_str(), MDB_NOSUBDIR | MDB_NOMETASYNC | MDB_WRITEMAP | MDB_MAPASYNC | MDB_NORDAHEAD, 0664);
+        m_db.open(blocksFilename.c_str(), MDB_NOSUBDIR|MDB_NOMETASYNC|MDB_WRITEMAP|MDB_MAPASYNC|MDB_NORDAHEAD, 0664);
     }
     catch (std::exception &e)
     {
@@ -64,10 +65,7 @@ MainChainStorageLmdb::MainChainStorageLmdb(const std::string &blocksFilename, co
 
     // prepare tx handle
     lmdb::txn_begin(m_db, nullptr, MDB_RDONLY, &rtxn);
-    rodbi = lmdb::dbi::open(rtxn, nullptr);
-
     lmdb::txn_begin(m_db, nullptr, 0, &wtxn);
-    rwdbi = lmdb::dbi::open(wtxn, nullptr);
 
     // initialize blockcount cache counter
     initializeBlockCount();
@@ -86,8 +84,7 @@ MainChainStorageLmdb::~MainChainStorageLmdb()
         lmdb::txn_commit(wtxn);
     }
 
-    m_db.sync(true);
-    m_db.close();
+    m_db.sync();
 }
 
 void MainChainStorageLmdb::pushBlock(const RawBlock &rawBlock)
@@ -118,11 +115,16 @@ void MainChainStorageLmdb::pushBlock(const RawBlock &rawBlock)
     rawBlock.toJSON(writer);
 
     {
-        rwdbi.put(wtxn, std::to_string(m_blockcount), rblock.GetString());
+        lmdb::dbi dbi = lmdb::dbi::open(wtxn, nullptr);
+
+        dbi.put(wtxn, std::to_string(m_blockcount), rblock.GetString());
 
         if (m_blockcount == 0)
         {
-            renewRwTxn(true);
+            // renewRwTxn(true);
+            lmdb::txn_commit(wtxn);
+            m_db.sync();
+            lmdb::txn_begin(m_db, nullptr, 0, &wtxn);
         }
 
         // increment cached block count couter
@@ -134,19 +136,20 @@ void MainChainStorageLmdb::pushBlock(const RawBlock &rawBlock)
 
 void MainChainStorageLmdb::popBlock()
 {
-
+    lmdb::dbi dbi;
     
-    renewRwTxn(false);
+    renewRoTxn();
 
     {
-        auto cursor = lmdb::cursor::open(wtxn, rwdbi);
+        lmdb::dbi dbi = lmdb::dbi::open(rtxn, nullptr);
+        auto cursor = lmdb::cursor::open(wtxn, dbi);
         std::string_view key, val;
         if (cursor.get(key, val, MDB_LAST))
         {
             cursor.del();
             cursor.close();
-            // lmdb::txn_commit(wtxn);
-            // lmdb::txn_begin(m_db, nullptr, 0, &wtxn);
+            lmdb::txn_commit(wtxn);
+            lmdb::txn_begin(m_db, nullptr, 0, &wtxn);
         }
         else
         {
@@ -161,30 +164,38 @@ RawBlock MainChainStorageLmdb::getBlockByIndex(const uint32_t index)
 
     renewRoTxn();
 
+    lmdb::dbi dbi;
     RawBlock rawBlock;
 
-    std::string_view val;
-    if (rodbi.get(rtxn, std::to_string(index), val))
     {
-        Document doc;
-        if (!doc.Parse<0>(std::string(val)).HasParseError())
+        try
         {
-            rawBlock.fromJSON(doc);
-            found = true;
+            dbi = lmdb::dbi::open(rtxn, nullptr);
         }
-        else
+        catch(const std::exception& e)
         {
-            std::cout << doc.GetParseError() << std::endl;
+            try { lmdb::txn_commit(wtxn); } catch (...){}
+            throw std::runtime_error("Could not find block in cache for given blockIndex: " + std::string(e.what()));
+        }
+            
+        std::string_view val;
+        if (dbi.get(rtxn, std::to_string(index), val))
+        {
+            Document doc;
+            if (!doc.Parse<0>(std::string(val)).HasParseError() ) {
+                rawBlock.fromJSON(doc);
+                found = true;
+            }else{
+                std::cout << doc.GetParseError() << std::endl;
+            }
         }
     }
-    
 
     if (!found)
     {
         try
         {
             lmdb::txn_commit(wtxn);
-            m_db.sync(false);
         }
         catch (...)
         {
@@ -206,8 +217,8 @@ void MainChainStorageLmdb::initializeBlockCount()
 
     renewRoTxn();
     {
-        
-        MDB_stat stat = rodbi.stat(rtxn);
+        lmdb::dbi dbi = lmdb::dbi::open(rtxn, nullptr);
+        MDB_stat stat = dbi.stat(rtxn);
         m_blockcount = stat.ms_entries;
     }
 }
@@ -215,15 +226,18 @@ void MainChainStorageLmdb::initializeBlockCount()
 void MainChainStorageLmdb::clear()
 {
     throw std::runtime_error("NotImplemented");
-    renewRwTxn(false);
 
     {
-        rwdbi.drop(wtxn, 0);
+        lmdb::dbi dbi = lmdb::dbi::open(wtxn, nullptr);
+        dbi.drop(wtxn, 0);
+        lmdb::txn_commit(wtxn);
+        lmdb::txn_begin(m_db, nullptr, 0, &wtxn);
     }
 }
 
 void MainChainStorageLmdb::renewRoTxn()
 {
+    /*
     if(rtxn == nullptr)
     {
         lmdb::txn_begin(m_db, nullptr, MDB_RDONLY, &rtxn);
@@ -245,6 +259,9 @@ void MainChainStorageLmdb::renewRoTxn()
     catch (...)
     {
     }
+    */
+    try{ lmdb::txn_reset(rtxn); } catch(...){}
+    try{ lmdb::txn_renew(rtxn); } catch(...){}
 }
 
 void MainChainStorageLmdb::renewRwTxn(bool sync)
@@ -283,29 +300,28 @@ void MainChainStorageLmdb::checkResize()
     size_t size_avail = 0;
     size_t mapsize = 0;
 
+    // reset/renew ro cursor
+    renewRoTxn();
+
     {
-        MDB_stat stat = rodbi.stat(rtxn);
+        lmdb::dbi dbi = lmdb::dbi::open(rtxn, nullptr);
+        MDB_stat stat = dbi.stat(rtxn);
         MDB_envinfo info;
         lmdb::env_info(m_db, &info);
         mapsize = info.me_mapsize;
         size_avail = mapsize - (stat.ms_psize * info.me_last_pgno);
     }
 
-    if (size_avail < MAPSIZE_MIN_AVAIL)
+    if (size_avail > MAPSIZE_MIN_AVAIL)
     {
-        // flush to disk (only when NOT using MDB_NOSYNC flag)
+        return;
+    }
+
+    // flush to disk (only when NOT using MDB_NOSYNC flag)
         m_db.sync(true);
 
         mapsize += 1ULL << SHIFTING_VAL;
-        try
-        {
-            m_db.set_mapsize(mapsize);        
-        }
-        catch (const std::exception &e)
-        {
-            std::cout << "DB_RESIZE_FAILED_FAILED: " << e.what() <<std::endl;
-        }
-    }
+        m_db.set_mapsize(mapsize); 
 }
 
 std::unique_ptr<IMainChainStorage> createSwappedMainChainStorageLmdb(const std::string &dataDir, const Currency &currency)

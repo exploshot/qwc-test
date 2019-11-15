@@ -40,8 +40,6 @@ namespace CryptoNote
             lmdb::env m_db = lmdb::env::create();
             mutable MDB_txn *rtxn;
             mutable MDB_txn *wtxn;
-            lmdb::dbi rodbi;
-            lmdb::dbi rwdbi;
             mutable std::atomic_int m_blockcount;
             mutable std::atomic_int m_dirty;
             fs::path m_dbpath;

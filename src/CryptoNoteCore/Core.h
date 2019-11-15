@@ -37,8 +37,14 @@ namespace CryptoNote {
 
 class Core : public ICore, public ICoreInformation {
 public:
-  Core(const Currency& currency, std::shared_ptr<Logging::ILogger> logger, Checkpoints&& checkpoints, System::Dispatcher& dispatcher,
-       std::unique_ptr<IBlockchainCacheFactory>&& blockchainCacheFactory, std::unique_ptr<IMainChainStorage>&& mainChainStorage);
+  Core(
+      const Currency& currency, 
+      std::shared_ptr<Logging::ILogger> logger, 
+      Checkpoints&& checkpoints, 
+      System::Dispatcher& dispatcher,
+      std::unique_ptr<IBlockchainCacheFactory>&& blockchainCacheFactory, 
+      std::unique_ptr<IMainChainStorage>&& mainChainStorage);
+      
   virtual ~Core();
 
   virtual bool addMessageQueue(MessageQueue<BlockchainMessage>&  messageQueue) override;

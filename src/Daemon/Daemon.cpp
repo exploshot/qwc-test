@@ -237,17 +237,6 @@ int main(int argc, char* argv[])
     }
     CryptoNote::Currency currency = currencyBuilder.currency();
 
-/*
-    DataBaseConfig dbConfig;
-    dbConfig.init(
-      config.dataDirectory,
-      config.dbThreads,
-      config.dbMaxOpenFiles,
-      config.dbWriteBufferSizeMB,
-      config.dbReadCacheSizeMB,
-      config.enableDbCompression
-    );
-*/
     /* If we were told to rewind the blockchain to a certain height
        we will remove blocks until we're back at the height specified */
     if (config.rewindToHeight > 0)

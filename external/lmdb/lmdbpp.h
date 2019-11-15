@@ -2,7 +2,7 @@
 
 #ifndef LMDBXX_H
 #define LMDBXX_H
-#define LMDBXX_TXN_ID
+
 /**
  * <lmdb++.h> - C++17 wrapper for LMDB.
  *
@@ -12,25 +12,27 @@
  */
 
 #ifndef __cplusplus
-// #error "<lmdb++.h> requires a C++ compiler"
+//#error "<lmdb++.h> requires a C++ compiler"
 #endif
 
 #if __cplusplus < 201703L
-// #error "<lmdb++.h> requires a C++17 compiler (CXXFLAGS='-std=c++17')"
+//#error "<lmdb++.h> requires a C++17 compiler (CXXFLAGS='-std=c++17')"
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "lmdb.h"      /* for MDB_*, mdb_*() */
+#include <lmdb.h>      /* for MDB_*, mdb_*() */
 
 #ifdef LMDBXX_DEBUG
 #include <cassert>     /* for assert() */
 #endif
 #include <cstddef>     /* for std::size_t */
 #include <cstdio>      /* for std::snprintf() */
+#include <cstring>     /* for std::memcpy() */
 #include <stdexcept>   /* for std::runtime_error */
 #include <string_view> /* for std::string_view */
 #include <limits>      /* for std::numeric_limits<> */
+#include <memory>      /* for std::addressof */
 
 namespace lmdb {
   using mode = mdb_mode_t;
@@ -50,8 +52,6 @@ namespace lmdb {
   class panic_error;
   class version_mismatch_error;
   class map_full_error;
-  class txn_full_error;
-  class map_need_resize;
   class bad_dbi_error;
 }
 
@@ -187,16 +187,6 @@ public:
   using runtime_error::runtime_error;
 };
 
-class lmdb::txn_full_error final : public lmdb::runtime_error {
-public:
-  using runtime_error::runtime_error;
-};
-
-class lmdb::map_need_resize final : public lmdb::runtime_error {
-public:
-  using runtime_error::runtime_error;
-};
-
 /**
  * Exception class for `MDB_BAD_DBI` errors.
  *
@@ -217,9 +207,7 @@ lmdb::error::raise(const char* const origin,
     case MDB_CORRUPTED:        throw corrupted_error{origin, rc};
     case MDB_PANIC:            throw panic_error{origin, rc};
     case MDB_VERSION_MISMATCH: throw version_mismatch_error{origin, rc};
-    case MDB_MAP_RESIZED:      throw map_need_resize{origin, rc};
     case MDB_MAP_FULL:         throw map_full_error{origin, rc};
-    case MDB_TXN_FULL:         throw txn_full_error{origin, rc};
 #ifdef MDB_BAD_DBI
     case MDB_BAD_DBI:          throw bad_dbi_error{origin, rc};
 #endif
@@ -1247,7 +1235,6 @@ namespace lmdb {
 /**
  * Resource class for `MDB_dbi` handles.
  *
- * @note Instances of this class are movable, but not copyable.
  * @see http://symas.com/mdb/doc/group__mdb.html#gadbe68a06c448dfb62da16443d251a78b
  */
 class lmdb::dbi {
@@ -1290,23 +1277,6 @@ public:
    */
   dbi(const MDB_dbi handle) noexcept
     : _handle{handle} {}
-
-  /**
-   * Move constructor.
-   */
-  dbi(dbi&& other) noexcept {
-    std::swap(_handle, other._handle);
-  }
-
-  /**
-   * Move assignment operator.
-   */
-  dbi& operator=(dbi&& other) noexcept {
-    if (this != &other) {
-      std::swap(_handle, other._handle);
-    }
-    return *this;
-  }
 
   /**
    * Destructor.
@@ -1666,13 +1636,13 @@ namespace lmdb {
   }
 
   /**
-   * Creates a std::string_view that points to a temporary copy of v.
+   * Creates a std::string_view that points to the memory occupied by v.
    *
    * @param v
    */
   template<typename T>
-  static inline std::string_view to_sv(T v) {
-    return std::string_view(reinterpret_cast<char*>(&v), sizeof(v));
+  static inline std::string_view to_sv(const T &v) {
+    return std::string_view(reinterpret_cast<const char*>(std::addressof(v)), sizeof(v));
   }
 
   /**
@@ -1694,7 +1664,9 @@ namespace lmdb {
   template<typename T>
   static inline T from_sv(std::string_view v) {
     if (v.size() != sizeof(T)) error::raise("from_sv", MDB_BAD_VALSIZE);
-    return *(reinterpret_cast<T*>(const_cast<char*>(v.data())));
+    T ret;
+    std::memcpy(&ret, const_cast<char*>(v.data()), sizeof(T));
+    return ret;
   }
 }
 
