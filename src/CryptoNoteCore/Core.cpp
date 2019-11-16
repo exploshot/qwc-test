@@ -955,12 +955,13 @@ std::error_code Core::addBlock(const CachedBlock& cachedBlock, RawBlock&& rawBlo
   auto previousBlockIndex = cache->getBlockIndex(previousBlockHash);
 
   bool addOnTop = cache->getTopBlockIndex() == previousBlockIndex;
+  /*
   auto maxBlockCumulativeSize = currency.maxBlockCumulativeSize(previousBlockIndex + 1);
   if (cumulativeBlockSize > maxBlockCumulativeSize) {
     logger(Logging::DEBUGGING) << "Block " << blockStr << " has too big cumulative size";
     return error::BlockValidationError::CUMULATIVE_BLOCK_SIZE_TOO_BIG;
   }
-
+  */
   uint64_t minerReward = 0;
   auto blockValidationResult = validateBlock(cachedBlock, cache, minerReward);
   if (blockValidationResult) {

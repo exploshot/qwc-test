@@ -62,7 +62,7 @@ namespace CryptoNote {
 		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1   = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 		const size_t   CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE 				= 600;
-		const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT 					= 2; // the number of decimal points to display in the wallet and other software
+		const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT 					= 8; // the number of decimal points to display in the wallet and other software
 		const size_t   CRYPTONOTE_DUST_DECIMAL_POINT 						= 8; //the decimal places to calculate DUST up to...
 
 		/* Premine amount */
@@ -171,19 +171,14 @@ namespace CryptoNote {
 		const uint64_t FORK_HEIGHTS[] =
 		{
 			0,
-			1,
-			2,
-			3,
-			65500, //first fork to introduce DUST fund
-			67500, //fix tx sizes issue
-			130000, // CN Turtle
-			280000, //Difficulty Update
-			400000, // mixin limits reset
-			500000 // next fork height (dust v2 & net protect)
+			40000,
+			46000,
+			110520,
+			250720
 		};
 
 		/* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
-		const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX = 8; //supports up to diff update
+		const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX = 4; //supports up to diff update
 
 		const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
 
