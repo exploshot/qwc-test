@@ -7,7 +7,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 
     target_compile_options(codecov
         INTERFACE
-        -O0 # no optimization
+        -O # no optimization
         -g # generate debug info
         --coverage # sets all required flags
     )
