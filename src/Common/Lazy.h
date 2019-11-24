@@ -36,7 +36,8 @@ namespace
     /*
      *  Exception thrown on attempt to access an uninitialized Lazy
      */
-    struct uninitialized_lazy_exception : public std::runtime_error {
+    struct uninitialized_lazy_exception : public std::runtime_error 
+    {
         uninitialized_lazy_exception()
             : std::runtime_error("Uninitialized lazy value.")
         {
@@ -44,14 +45,15 @@ namespace
     };
 
     template<typename T>
-    struct Lazy {
+    struct Lazy 
+    {
         /*!
             Default constructor
         */
         Lazy()
             : m_bInitialized(false),
-            m_initializer(DefaultInitializer),
-            m_deinitializer(DefaultDeinitializer)
+              m_initializer(DefaultInitializer),
+              m_deinitializer(DefaultDeinitializer)
         {
         }
 
@@ -59,10 +61,10 @@ namespace
             Construct with initializer and optional deinitializer functor
         */
         Lazy(std::function<T(void)> initializer,
-            std::function<void(T &)> deinitializer = DefaultDeinitializer)
+             std::function<void(T &)> deinitializer = DefaultDeinitializer)
             : m_bInitialized(false),
-            m_initializer(initializer),
-            m_deinitializer(deinitializer)
+              m_initializer(initializer),
+              m_deinitializer(deinitializer)
         {
         }
 
@@ -71,8 +73,8 @@ namespace
         */
         explicit Lazy(const Lazy &o)
             : m_bInitialized(false),
-            m_initializer(o.m_initializer),
-            m_deinitializer(o.m_deinitializer)
+              m_initializer(o.m_initializer),
+              m_deinitializer(o.m_deinitializer)
         {
             if (o.m_bInitialized) {
                 construct(*o.valuePtr());
@@ -101,8 +103,8 @@ namespace
         */
         Lazy(const T &v)
             : m_bInitialized(false),
-            m_initializer(DefaultInitializer),
-            m_deinitializer(DefaultDeinitializer)
+              m_initializer(DefaultInitializer),
+              m_deinitializer(DefaultDeinitializer)
         {
             construct(v);
         }
@@ -138,8 +140,10 @@ namespace
         */
         T &force() const
         {
-            if (!m_bInitialized)
+            if (!m_bInitialized) {
                 construct(m_initializer());
+            }
+                
             return *valuePtr();
         }
 

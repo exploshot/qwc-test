@@ -22,8 +22,8 @@
 
 namespace Tools
 {
-  std::string getDefaultDataDirectory();
-  std::string get_os_version_string();
-  bool create_directories_if_necessary(const std::string& path);
-  bool directoryExists(const std::string& path);
-}
+    std::string getDefaultDataDirectory();
+    std::string getOsVersionString();
+    bool createDirectoriesIfNecessary(const std::string &path);
+    bool directoryExists(const std::string &path);
+} // namespace Tools

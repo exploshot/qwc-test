@@ -12,56 +12,66 @@
 #include <Crypto/random.h>
 
 
-class SequenceEnded: public std::runtime_error {
+class SequenceEnded: public std::runtime_error
+{
 public:
-  SequenceEnded() : std::runtime_error("shuffle sequence ended") {
-  }
+    SequenceEnded() : std::runtime_error("shuffle sequence ended")
+    {
+    }
 
-  ~SequenceEnded(){}
+    ~SequenceEnded()
+    {
+    }
 };
 
 template <typename T>
-class ShuffleGenerator {
+class ShuffleGenerator 
+{
 public:
 
-  ShuffleGenerator(T n) :
-    N(n), count(n) {}
-
-  T operator()() {
-
-    if (count == 0) {
-      throw SequenceEnded();
+    ShuffleGenerator(T n) 
+        : N(n), 
+          count(n) 
+    {
     }
 
-    T value = Random::randomValue<T>(0, --count);
+    T operator()() 
+    {
+        if (count == 0) {
+            throw SequenceEnded();
+        }
 
-    auto rvalIt = selected.find(count);
-    auto rval = rvalIt != selected.end() ? rvalIt->second : count;
+        T value = Random::randomValue<T>(0, --count);
 
-    auto lvalIt = selected.find(value);
+        auto rvalIt = selected.find(count);
+        auto rval = rvalIt != selected.end() ? rvalIt->second : count;
 
-    if (lvalIt != selected.end()) {
-      value = lvalIt->second;
-      lvalIt->second = rval;
-    } else {
-      selected[value] = rval;
+        auto lvalIt = selected.find(value);
+
+        if (lvalIt != selected.end()) {
+            value = lvalIt->second;
+            lvalIt->second = rval;
+        } else {
+            selected[value] = rval;
+        }
+
+        return value;
     }
 
-    return value;
-  }
+    bool empty() const 
+    {
+        return count == 0;
+    }
 
-  bool empty() const {
-    return count == 0;
-  }
-
-  void reset() {
-    count = N;
-    selected.clear();
-  }
+    void reset()
+    {
+        count = N;
+        selected.clear();
+    }
 
 private:
 
-  std::unordered_map<T, T> selected;
-  T count;
-  const T N;
+    std::unordered_map<T, T> selected;
+    T count;
+    const T N;
 };

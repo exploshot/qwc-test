@@ -23,5 +23,5 @@
 #include <Crypto/hash.h>
 
 namespace CryptoNote {
-bool check_hash(const Crypto::Hash &hash, uint64_t difficulty);
-}
+    bool checkHash(const Crypto::Hash &hash, uint64_t difficulty);
+} // namespace CryptoNote

@@ -19,29 +19,30 @@
 
 #include <cstdint>
 
-namespace Common { namespace Console {
+namespace Common { 
+    namespace Console {
+        enum class Color : uint8_t {
+            // default
+            Default,
+            // main
+            Blue,
+            Green,
+            Red,
+            Yellow,
+            White,
+            Cyan,
+            Magenta,
+            // bright
+            BrightBlue,
+            BrightGreen,
+            BrightRed,
+            BrightYellow,
+            BrightWhite,
+            BrightCyan,
+            BrightMagenta
+        };
 
-enum class Color : uint8_t {
-  Default,
-
-  Blue,
-  Green,
-  Red,
-  Yellow,
-  White,
-  Cyan,
-  Magenta,
-
-  BrightBlue,
-  BrightGreen,
-  BrightRed,
-  BrightYellow,
-  BrightWhite,
-  BrightCyan,
-  BrightMagenta
-};
-
-void setTextColor(Color color);
-bool isConsoleTty();
-
-}}
+        void setTextColor(Color color);
+        bool isConsoleTty();
+    } // namespace Console
+} // namespace Common

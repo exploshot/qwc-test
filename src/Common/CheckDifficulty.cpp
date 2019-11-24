@@ -4,7 +4,7 @@
 // Please see the included LICENSE file for more information.
 
 #include <Common/CheckDifficulty.h>
-#include <Common/int-util.h>
+#include <Common/IIntUtil.h>
 #include <Crypto/hash.h>
 
 namespace CryptoNote
@@ -38,7 +38,7 @@ namespace CryptoNote
         return a + b < a || (c && a + b == (uint64_t) -1);
     }
 
-    bool check_hash(const Crypto::Hash &hash, uint64_t difficulty)
+    bool checkHash(const Crypto::Hash &hash, uint64_t difficulty)
     {
         uint64_t low, high, top, cur;
         // First check the highest word, this will most likely fail for a random hash.

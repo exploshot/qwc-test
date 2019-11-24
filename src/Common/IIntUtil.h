@@ -33,9 +33,7 @@
 #if defined(_MSC_VER)
 #include <stdlib.h>
 
-#   if (!defined (__cplusplus) && (!defined (inline)))
-#       define inline __inline
-#   endif
+#define inline __inline
 
 static inline uint32_t rol32(uint32_t x, int r)
 {
@@ -59,25 +57,27 @@ static inline uint64_t rol64(uint64_t x, int r)
 }
 #endif
 
-static inline uint64_t hi_dword(uint64_t val)
+static inline uint64_t hiDword(uint64_t val)
 {
     return val >> 32;
 }
 
-static inline uint64_t lo_dword(uint64_t val)
+static inline uint64_t loDword(uint64_t val)
 {
     return val & 0xFFFFFFFF;
 }
 
-static inline uint64_t mul128(uint64_t multiplier, uint64_t multiplicand, uint64_t *product_hi)
+static inline uint64_t mul128(uint64_t multiplier, 
+                            uint64_t multiplicand, 
+                            uint64_t *productHi)
 {
     // multiplier   = ab = a * 2^32 + b
     // multiplicand = cd = c * 2^32 + d
     // ab * cd = a * c * 2^64 + (a * d + b * c) * 2^32 + b * d
-    uint64_t a = hi_dword(multiplier);
-    uint64_t b = lo_dword(multiplier);
-    uint64_t c = hi_dword(multiplicand);
-    uint64_t d = lo_dword(multiplicand);
+    uint64_t a = hiDword(multiplier);
+    uint64_t b = loDword(multiplier);
+    uint64_t c = hiDword(multiplicand);
+    uint64_t d = loDword(multiplicand);
 
     uint64_t ac = a * c;
     uint64_t ad = a * d;
@@ -87,17 +87,17 @@ static inline uint64_t mul128(uint64_t multiplier, uint64_t multiplicand, uint64
     uint64_t adbc = ad + bc;
     uint64_t adbc_carry = adbc < ad ? 1 : 0;
 
-    // multiplier * multiplicand = product_hi * 2^64 + product_lo
-    uint64_t product_lo = bd + (adbc << 32);
-    uint64_t product_lo_carry = product_lo < bd ? 1 : 0;
-    *product_hi = ac + (adbc >> 32) + (adbc_carry << 32) + product_lo_carry;
+    // multiplier * multiplicand = productHi * 2^64 + productLo
+    uint64_t productLo = bd + (adbc << 32);
+    uint64_t productLoCarry = productLo < bd ? 1 : 0;
+    *productHi = ac + (adbc >> 32) + (adbc_carry << 32) + productLoCarry;
 
-    assert(ac <= *product_hi);
+    assert(ac <= *productHi);
 
-    return product_lo;
+    return productLo;
 }
 
-static inline uint64_t div_with_reminder(uint64_t dividend, uint32_t divisor, uint32_t *remainder)
+static inline uint64_t divWithReminder(uint64_t dividend, uint32_t divisor, uint32_t *remainder)
 {
     dividend |= ((uint64_t)*remainder) << 32;
     *remainder = dividend % divisor;
@@ -106,24 +106,24 @@ static inline uint64_t div_with_reminder(uint64_t dividend, uint32_t divisor, ui
 }
 
 // Long division with 2^32 base
-static inline uint32_t div128_32(uint64_t dividend_hi,
-                                 uint64_t dividend_lo,
+static inline uint32_t div128_32(uint64_t dividendHi,
+                                 uint64_t dividendLo,
                                  uint32_t divisor,
-                                 uint64_t *quotient_hi,
-                                 uint64_t *quotient_lo)
+                                 uint64_t *quotientHi,
+                                 uint64_t *quotientLo)
 {
-    uint64_t dividend_dwords[4];
+    uint64_t dividendDwords[4];
     uint32_t remainder = 0;
 
-    dividend_dwords[3] = hi_dword(dividend_hi);
-    dividend_dwords[2] = lo_dword(dividend_hi);
-    dividend_dwords[1] = hi_dword(dividend_lo);
-    dividend_dwords[0] = lo_dword(dividend_lo);
+    dividendDwords[3] = hiDword(dividendHi);
+    dividendDwords[2] = loDword(dividendHi);
+    dividendDwords[1] = hiDword(dividendLo);
+    dividendDwords[0] = loDword(dividendLo);
 
-    *quotient_hi  = div_with_reminder(dividend_dwords[3], divisor, &remainder) << 32;
-    *quotient_hi |= div_with_reminder(dividend_dwords[2], divisor, &remainder);
-    *quotient_lo  = div_with_reminder(dividend_dwords[1], divisor, &remainder) << 32;
-    *quotient_lo |= div_with_reminder(dividend_dwords[0], divisor, &remainder);
+    *quotientHi  = divWithReminder(dividendDwords[3], divisor, &remainder) << 32;
+    *quotientHi |= divWithReminder(dividendDwords[2], divisor, &remainder);
+    *quotientLo  = divWithReminder(dividendDwords[1], divisor, &remainder) << 32;
+    *quotientLo |= divWithReminder(dividendDwords[0], divisor, &remainder);
 
     return remainder;
 }
@@ -181,10 +181,12 @@ static inline uint64_t swap64(uint64_t x)
 #else
 #define UNUSED
 #endif
-static inline void mem_inplace_ident(void *mem UNUSED, size_t n UNUSED) { }
+static inline void memInplaceIdent(void *mem UNUSED, size_t n UNUSED) 
+{
+}
 #undef UNUSED
 
-static inline void mem_inplace_swap32(void *mem, size_t n)
+static inline void memInplaceSwap32(void *mem, size_t n)
 {
     size_t i;
     for (i = 0; i < n; i++) {
@@ -192,7 +194,7 @@ static inline void mem_inplace_swap32(void *mem, size_t n)
     }
 }
 
-static inline void mem_inplace_swap64(void *mem, size_t n)
+static inline void memInplaceSwap64(void *mem, size_t n)
 {
     size_t i;
     for (i = 0; i < n; i++) {
@@ -200,17 +202,17 @@ static inline void mem_inplace_swap64(void *mem, size_t n)
     }
 }
 
-static inline void memcpy_ident32(void *dst, const void *src, size_t n)
+static inline void memcpyIdent32(void *dst, const void *src, size_t n)
 {
     memcpy(dst, src, 4 * n);
 }
 
-static inline void memcpy_ident64(void *dst, const void *src, size_t n)
+static inline void memcpyIdent64(void *dst, const void *src, size_t n)
 {
     memcpy(dst, src, 8 * n);
 }
 
-static inline void memcpy_swap32(void *dst, const void *src, size_t n)
+static inline void memcpySwap32(void *dst, const void *src, size_t n)
 {
     size_t i;
     for (i = 0; i < n; i++) {
@@ -218,7 +220,7 @@ static inline void memcpy_swap32(void *dst, const void *src, size_t n)
     }
 }
 
-static inline void memcpy_swap64(void *dst, const void *src, size_t n)
+static inline void memcpySwap64(void *dst, const void *src, size_t n)
 {
     size_t i;
     for (i = 0; i < n; i++) {
@@ -234,7 +236,7 @@ static inline void memcpy_swap64(void *dst, const void *src, size_t n)
 // k       - k parameter - in our case, how many blocks we have actually seen
 //           !!! k must not be zero
 // return  - ln(p)
-static inline double calc_poisson_ln(double lam, uint64_t k)
+static inline double calcPoissonLn(double lam, uint64_t k)
 {
     double logx = -lam + k * log(lam);
     do {
@@ -253,18 +255,18 @@ static_assert(false, "BYTE_ORDER is undefined. Perhaps, GNU extensions are not e
 #define SWAP32BE SWAP32
 #define swap32le ident32
 #define swap32be swap32
-#define mem_inplace_swap32le mem_inplace_ident
-#define mem_inplace_swap32be mem_inplace_swap32
-#define memcpy_swap32le memcpy_ident32
-#define memcpy_swap32be memcpy_swap32
+#define memInplaceSwap32le memInplaceIdent
+#define memInplaceSwap32be memInplaceSwap32
+#define memcpySwap32le memcpyIdent32
+#define memcpySwap32be memcpySwap32
 #define SWAP64LE IDENT64
 #define SWAP64BE SWAP64
 #define swap64le ident64
 #define swap64be swap64
-#define mem_inplace_swap64le mem_inplace_ident
-#define mem_inplace_swap64be mem_inplace_swap64
-#define memcpy_swap64le memcpy_ident64
-#define memcpy_swap64be memcpy_swap64
+#define memInplaceSwap64le memInplaceIdent
+#define memInplaceSwap64be memInplaceSwap64
+#define memcpy_swap64le memcpyIdent64
+#define memcpy_swap64be memcpySwap64
 #endif
 
 #if BYTE_ORDER == BIG_ENDIAN
@@ -272,16 +274,16 @@ static_assert(false, "BYTE_ORDER is undefined. Perhaps, GNU extensions are not e
 #define SWAP32LE SWAP32
 #define swap32be ident32
 #define swap32le swap32
-#define mem_inplace_swap32be mem_inplace_ident
-#define mem_inplace_swap32le mem_inplace_swap32
-#define memcpy_swap32be memcpy_ident32
-#define memcpy_swap32le memcpy_swap32
+#define memInplaceSwap32be memInplaceIdent
+#define memInplaceSwap32le memInplaceSwap32
+#define memcpySwap32be memcpyIdent32
+#define memcpySwap32le memcpySwap32
 #define SWAP64BE IDENT64
 #define SWAP64LE SWAP64
 #define swap64be ident64
 #define swap64le swap64
-#define mem_inplace_swap64be mem_inplace_ident
-#define mem_inplace_swap64le mem_inplace_swap64
-#define memcpy_swap64be memcpy_ident64
-#define memcpy_swap64le memcpy_swap64
+#define memInplaceSwap64be memInplaceIdent
+#define memInplaceSwap64le memInplaceSwap64
+#define memcpy_swap64be memcpyIdent64
+#define memcpy_swap64le memcpySwap64
 #endif

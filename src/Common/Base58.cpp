@@ -20,238 +20,286 @@
 #include <vector>
 
 #include <Common/Base58.h>
-#include <Common/int-util.h>
+#include <Common/IIntUtil.h>
 #include <Common/Varint.h>
 #include <Crypto/hash.h>
 
 namespace Tools
 {
-  namespace Base58
-  {
-    namespace
+    namespace Base58
     {
-      const char alphabet[] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-      const uint64_t alphabet_size = sizeof(alphabet) - 1;
-      const uint64_t encoded_block_sizes[] = {0, 2, 3, 5, 6, 7, 9, 10, 11};
-      const uint64_t full_block_size = sizeof(encoded_block_sizes) / sizeof(encoded_block_sizes[0]) - 1;
-      const uint64_t full_encoded_block_size = encoded_block_sizes[full_block_size];
-      const uint64_t addr_checksum_size = 4;
-
-      struct reverse_alphabet
+      namespace
       {
-        reverse_alphabet()
-        {
-          m_data.resize(alphabet[alphabet_size - 1] - alphabet[0] + 1, -1);
+          const char     alphabet[] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+          const uint64_t alphabetSize = sizeof(alphabet) - 1;
+          const uint64_t encodedBlockSizes[] = {0, 2, 3, 5, 6, 7, 9, 10, 11};
+          const uint64_t fullBlockSize = sizeof(encodedBlockSizes) / sizeof(encodedBlockSizes[0]) - 1;
+          const uint64_t fullEncodedBlockSize = encodedBlockSizes[fullBlockSize];
+          const uint64_t addressChecksumSize = 4;
 
-          for (uint64_t i = 0; i < alphabet_size; ++i)
+          struct ReverseAlphabet
           {
-            uint64_t idx = static_cast<uint64_t>(alphabet[i] - alphabet[0]);
-            m_data[idx] = static_cast<int8_t>(i);
-          }
-        }
+              ReverseAlphabet()
+              {
+                  m_data.resize(alphabet[alphabetSize - 1] - alphabet[0] + 1, -1);
 
-        int operator()(char letter) const
-        {
-          uint64_t idx = static_cast<uint64_t>(letter - alphabet[0]);
-          return idx < m_data.size() ? m_data[idx] : -1;
-        }
+                  for (uint64_t i = 0; i < alphabetSize; ++i) {
+                      uint64_t idx = static_cast<uint64_t>(alphabet[i] - alphabet[0]);
+                      m_data[idx] = static_cast<int8_t>(i);
+                  }
+              }
 
-        static reverse_alphabet instance;
+              int operator()(char letter) const
+              {
+                  uint64_t idx = static_cast<uint64_t>(letter - alphabet[0]);
+                  return idx < m_data.size() ? m_data[idx] : -1;
+              }
 
-      private:
-        std::vector<int8_t> m_data;
-      };
+              static ReverseAlphabet instance;
 
-      reverse_alphabet reverse_alphabet::instance;
+          private:
+              std::vector<int8_t> m_data;
+          };
 
-      struct decoded_block_sizes
-      {
-        decoded_block_sizes()
-        {
-          m_data.resize(encoded_block_sizes[full_block_size] + 1, -1);
-          for (uint64_t i = 0; i <= full_block_size; ++i)
+          ReverseAlphabet ReverseAlphabet::instance;
+
+          struct DecodedBlockSizes
           {
-            m_data[encoded_block_sizes[i]] = static_cast<int>(i);
+              DecodedBlockSizes()
+              {
+                  m_data.resize(encodedBlockSizes[fullBlockSize] + 1, -1);
+
+                  for (uint64_t i = 0; i <= fullBlockSize; ++i) {
+                      m_data[encodedBlockSizes[i]] = static_cast<int>(i);
+                  }
+              }
+
+              int operator()(uint64_t encodedBlockSize) const
+              {
+                  assert(encodedBlockSize <= fullEncodedBlockSize);
+                  
+                  return m_data[encodedBlockSize];
+              }
+
+              static DecodedBlockSizes instance;
+
+          private:
+              std::vector<int> m_data;
+          };
+
+          DecodedBlockSizes DecodedBlockSizes::instance;
+
+          uint64_t uint8beTo64(const uint8_t *data, uint64_t size)
+          {
+              assert(1 <= size && size <= sizeof(uint64_t));
+
+              uint64_t res = 0;
+              switch (9 - size) {
+              case 1:            
+                  res |= *data++; 
+                  /* fallthrough */
+              case 2: 
+                  res <<= 8; 
+                  res |= *data++; 
+                  /* fallthrough */
+              case 3: 
+                  res <<= 8; 
+                  res |= *data++; 
+                  /* fallthrough */
+              case 4: 
+                  res <<= 8; 
+                  res |= *data++; 
+                  /* fallthrough */
+              case 5: 
+                  res <<= 8; 
+                  res |= *data++; 
+                  /* fallthrough */
+              case 6: 
+                  res <<= 8; 
+                  res |= *data++; 
+                  /* fallthrough */
+              case 7: 
+                  res <<= 8; 
+                  res |= *data++; 
+                  /* fallthrough */
+              case 8: 
+                  res <<= 8; 
+                  res |= *data; 
+                  break;
+              default: 
+                  assert(false);
+              }
+
+              return res;
           }
-        }
 
-        int operator()(uint64_t encoded_block_size) const
-        {
-          assert(encoded_block_size <= full_encoded_block_size);
-          return m_data[encoded_block_size];
-        }
+          void uint64To8be(uint64_t num, uint64_t size, uint8_t *data)
+          {
+              assert(1 <= size && size <= sizeof(uint64_t));
 
-        static decoded_block_sizes instance;
+              uint64_t num_be = SWAP64BE(num);
+              memcpy(data, reinterpret_cast<uint8_t *>(&num_be) + sizeof(uint64_t) - size, size);
+          }
 
-      private:
-        std::vector<int> m_data;
-      };
+          void encodeBlock(const char *block, uint64_t size, char *res)
+          {
+              assert(1 <= size && size <= fullBlockSize);
 
-      decoded_block_sizes decoded_block_sizes::instance;
+              uint64_t num = uint8beTo64(reinterpret_cast<const uint8_t *>(block), size);
+              int i = static_cast<int>(encodedBlockSizes[size]) - 1;
+              while (0 < num) {
+                  uint64_t remainder = num % alphabetSize;
+                  num /= alphabetSize;
+                  res[i] = alphabet[remainder];
+                  --i;
+              }
+          }
 
-      uint64_t uint_8be_to_64(const uint8_t* data, uint64_t size)
+          bool decodeBlock(const char *block, uint64_t size, char *res)
+          {
+              assert(1 <= size && size <= fullEncodedBlockSize);
+
+              int resSize = DecodedBlockSizes::instance(size);
+              if (resSize <= 0)
+                  return false; // Invalid block size
+
+              uint64_t resNum = 0;
+              uint64_t order = 1;
+              for (uint64_t i = size - 1; i < size; --i) {
+                  int digit = ReverseAlphabet::instance(block[i]);
+                  if (digit < 0) {
+                      return false; // Invalid symbol
+                  }                      
+
+                  uint64_t productHi;
+                  uint64_t tmp = resNum + mul128(order, digit, &productHi);
+                  if (tmp < resNum || 0 != productHi) {
+                      return false; // Overflow
+                  }                      
+
+                  resNum = tmp;
+                  order *= alphabetSize; // Never overflows, 58^10 < 2^64
+              }
+
+              if (static_cast<uint64_t>(resSize) < fullBlockSize 
+                  && (UINT64_C(1) << (8 * resSize)) <= resNum) {
+                  return false; // Overflow
+              }
+                
+
+              uint64To8be(resNum, resSize, reinterpret_cast<uint8_t*>(res));
+
+              return true;
+          }
+      } // namespace
+
+      std::string encode(const std::string &data)
       {
-        assert(1 <= size && size <= sizeof(uint64_t));
+          if (data.empty()) {
+              return std::string();
+          }
+            
 
-        uint64_t res = 0;
-        switch (9 - size)
-        {
-        case 1:            res |= *data++; /* fallthrough */
-        case 2: res <<= 8; res |= *data++; /* fallthrough */
-        case 3: res <<= 8; res |= *data++; /* fallthrough */
-        case 4: res <<= 8; res |= *data++; /* fallthrough */
-        case 5: res <<= 8; res |= *data++; /* fallthrough */
-        case 6: res <<= 8; res |= *data++; /* fallthrough */
-        case 7: res <<= 8; res |= *data++; /* fallthrough */
-        case 8: res <<= 8; res |= *data; break;
-        default: assert(false);
-        }
+          uint64_t fullBlockCount = data.size() / fullBlockSize;
+          uint64_t lastBlockSize = data.size() % fullBlockSize;
+          uint64_t resSize = fullBlockCount * fullEncodedBlockSize 
+                             + encodedBlockSizes[lastBlockSize];
 
-        return res;
+          std::string res(resSize, alphabet[0]);
+          for (uint64_t i = 0; i < fullBlockCount; ++i) {
+              encodeBlock(data.data() + i * fullBlockSize, 
+                          fullBlockSize, 
+                          &res[i * fullEncodedBlockSize]);
+          }
+
+          if (0 < lastBlockSize) {
+              encodeBlock(data.data() + fullBlockCount * fullBlockSize, 
+                          lastBlockSize, 
+                          &res[fullBlockCount * fullEncodedBlockSize]);
+          }
+
+          return res;
       }
 
-      void uint_64_to_8be(uint64_t num, uint64_t size, uint8_t* data)
+      bool decode(const std::string &enc, std::string &data)
       {
-        assert(1 <= size && size <= sizeof(uint64_t));
+          if (enc.empty()) {
+              data.clear();
+              return true;
+          }
 
-        uint64_t num_be = SWAP64BE(num);
-        memcpy(data, reinterpret_cast<uint8_t*>(&num_be) + sizeof(uint64_t) - size, size);
+          uint64_t fullBlockCount = enc.size() / fullEncodedBlockSize;
+          uint64_t lastBlockSize = enc.size() % fullEncodedBlockSize;
+          int lastBlockDecodedSize = DecodedBlockSizes::instance(lastBlockSize);
+
+          if (lastBlockDecodedSize < 0) {
+              return false; // Invalid enc length
+          }
+            
+          uint64_t dataSize = fullBlockCount * fullBlockSize + lastBlockDecodedSize;
+
+          data.resize(dataSize, 0);
+
+          for (uint64_t i = 0; i < fullBlockCount; ++i) {
+              if (!decodeBlock(enc.data() + i * fullEncodedBlockSize, 
+                              fullEncodedBlockSize, 
+                              &data[i * fullBlockSize])) {
+                  return false;
+              }
+          }
+
+          if (0 < lastBlockSize) {
+              if (!decodeBlock(enc.data() + fullBlockCount * fullEncodedBlockSize, 
+                              lastBlockSize,
+                                &data[fullBlockCount * fullBlockSize])) {
+                  return false;                    
+              }
+          }
+
+          return true;
       }
 
-      void encode_block(const char* block, uint64_t size, char* res)
+      std::string encodeAddress(uint64_t tag, const std::string &data)
       {
-        assert(1 <= size && size <= full_block_size);
+          std::string buf = getVarintData(tag);
+          buf += data;
+          Crypto::Hash hash = Crypto::CnFastHash(buf.data(), buf.size());
+          const char *hashData = reinterpret_cast<const char *>(&hash);
+          buf.append(hashData, addressChecksumSize);
 
-        uint64_t num = uint_8be_to_64(reinterpret_cast<const uint8_t*>(block), size);
-        int i = static_cast<int>(encoded_block_sizes[size]) - 1;
-        while (0 < num)
-        {
-          uint64_t remainder = num % alphabet_size;
-          num /= alphabet_size;
-          res[i] = alphabet[remainder];
-          --i;
-        }
+          return encode(buf);
       }
 
-      bool decode_block(const char* block, uint64_t size, char* res)
+      bool decodeAddress(std::string addr, uint64_t &tag, std::string &data)
       {
-        assert(1 <= size && size <= full_encoded_block_size);
+          std::string addrData;
+          bool r = decode(addr, addrData);
+          if (!r) {
+              return false;
+          }
+          if (addrData.size() <= addressChecksumSize) {
+              return false;
+          }
 
-        int res_size = decoded_block_sizes::instance(size);
-        if (res_size <= 0)
-          return false; // Invalid block size
+          std::string checksum(addressChecksumSize, '\0');
+          checksum = addrData.substr(addrData.size() - addressChecksumSize);
 
-        uint64_t res_num = 0;
-        uint64_t order = 1;
-        for (uint64_t i = size - 1; i < size; --i)
-        {
-          int digit = reverse_alphabet::instance(block[i]);
-          if (digit < 0)
-            return false; // Invalid symbol
+          addrData.resize(addrData.size() - addressChecksumSize);
+          Crypto::Hash hash = Crypto::CnFastHash(addrData.data(), addrData.size());
+          std::string expectedChecksum(reinterpret_cast<const char *>(&hash), addressChecksumSize);
 
-          uint64_t product_hi;
-          uint64_t tmp = res_num + mul128(order, digit, &product_hi);
-          if (tmp < res_num || 0 != product_hi)
-            return false; // Overflow
+          if (expectedChecksum != checksum) {
+              return false;
+          }
 
-          res_num = tmp;
-          order *= alphabet_size; // Never overflows, 58^10 < 2^64
-        }
+          int read = Tools::readVarint(addrData.begin(), addrData.end(), tag);
+          if (read <= 0) {
+              return false;
+          }
 
-        if (static_cast<uint64_t>(res_size) < full_block_size && (UINT64_C(1) << (8 * res_size)) <= res_num)
-          return false; // Overflow
+          data = addrData.substr(read);
 
-        uint_64_to_8be(res_num, res_size, reinterpret_cast<uint8_t*>(res));
-
-        return true;
+          return true;
       }
-    }
-
-    std::string encode(const std::string& data)
-    {
-      if (data.empty())
-        return std::string();
-
-      uint64_t full_block_count = data.size() / full_block_size;
-      uint64_t last_block_size = data.size() % full_block_size;
-      uint64_t res_size = full_block_count * full_encoded_block_size + encoded_block_sizes[last_block_size];
-
-      std::string res(res_size, alphabet[0]);
-      for (uint64_t i = 0; i < full_block_count; ++i)
-      {
-        encode_block(data.data() + i * full_block_size, full_block_size, &res[i * full_encoded_block_size]);
-      }
-
-      if (0 < last_block_size)
-      {
-        encode_block(data.data() + full_block_count * full_block_size, last_block_size, &res[full_block_count * full_encoded_block_size]);
-      }
-
-      return res;
-    }
-
-    bool decode(const std::string& enc, std::string& data)
-    {
-      if (enc.empty())
-      {
-        data.clear();
-        return true;
-      }
-
-      uint64_t full_block_count = enc.size() / full_encoded_block_size;
-      uint64_t last_block_size = enc.size() % full_encoded_block_size;
-      int last_block_decoded_size = decoded_block_sizes::instance(last_block_size);
-      if (last_block_decoded_size < 0)
-        return false; // Invalid enc length
-      uint64_t data_size = full_block_count * full_block_size + last_block_decoded_size;
-
-      data.resize(data_size, 0);
-      for (uint64_t i = 0; i < full_block_count; ++i)
-      {
-        if (!decode_block(enc.data() + i * full_encoded_block_size, full_encoded_block_size, &data[i * full_block_size]))
-          return false;
-      }
-
-      if (0 < last_block_size)
-      {
-        if (!decode_block(enc.data() + full_block_count * full_encoded_block_size, last_block_size,
-          &data[full_block_count * full_block_size]))
-          return false;
-      }
-
-      return true;
-    }
-
-    std::string encode_addr(uint64_t tag, const std::string& data)
-    {
-      std::string buf = get_varint_data(tag);
-      buf += data;
-      Crypto::Hash hash = Crypto::cn_fast_hash(buf.data(), buf.size());
-      const char* hash_data = reinterpret_cast<const char*>(&hash);
-      buf.append(hash_data, addr_checksum_size);
-      return encode(buf);
-    }
-
-    bool decode_addr(std::string addr, uint64_t& tag, std::string& data)
-    {
-      std::string addr_data;
-      bool r = decode(addr, addr_data);
-      if (!r) return false;
-      if (addr_data.size() <= addr_checksum_size) return false;
-
-      std::string checksum(addr_checksum_size, '\0');
-      checksum = addr_data.substr(addr_data.size() - addr_checksum_size);
-
-      addr_data.resize(addr_data.size() - addr_checksum_size);
-      Crypto::Hash hash = Crypto::cn_fast_hash(addr_data.data(), addr_data.size());
-      std::string expected_checksum(reinterpret_cast<const char*>(&hash), addr_checksum_size);
-      if (expected_checksum != checksum) return false;
-
-      int read = Tools::read_varint(addr_data.begin(), addr_data.end(), tag);
-      if (read <= 0) return false;
-
-      data = addr_data.substr(read);
-      return true;
-    }
-  }
-}
+    } // namespace Base58
+} // namespace Tools
