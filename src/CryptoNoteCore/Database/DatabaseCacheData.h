@@ -23,20 +23,28 @@
 
 namespace CryptoNote {
 
-struct KeyOutputInfo {
-  Crypto::PublicKey publicKey;
-  Crypto::Hash transactionHash;
-  uint64_t unlockTime;
-  uint16_t outputIndex;
+    struct KeyOutputInfo 
+    {
+        Crypto::PublicKey publicKey;
+        Crypto::Hash transactionHash;
+        uint64_t unlockTime;
+        uint16_t outputIndex;
 
-  void serialize(CryptoNote::ISerializer& s);
-};
+        void serialize(CryptoNote::ISerializer &s);
+    };
 
-// inherit here to avoid breaking IBlockchainCache interface
-struct ExtendedTransactionInfo : CachedTransactionInfo {
-  //CachedTransactionInfo tx;
-  std::map<IBlockchainCache::Amount, std::vector<IBlockchainCache::GlobalOutputIndex>> amountToKeyIndexes; //global key output indexes spawned in this transaction
-  void serialize(ISerializer& s);
-};
+    /*!
+        inherit here to avoid breaking IBlockchainCache interface
+    */
+    struct ExtendedTransactionInfo : CachedTransactionInfo 
+    {
+        /*!
+            CachedTransactionInfo tx;
 
-}
+            global key output indexes spawned in this transaction
+        */
+        std::map<IBlockchainCache::Amount, 
+                 std::vector<IBlockchainCache::GlobalOutputIndex>> amountToKeyIndexes;
+        void serialize(ISerializer &s);
+    };
+} // namespace CryptoNote

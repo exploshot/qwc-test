@@ -18,9 +18,9 @@
 #include <CryptoNoteCore/Database/DataBaseErrors.h>
 
 namespace CryptoNote {
-namespace error {
+    namespace error {
 
-DataBaseErrorCategory DataBaseErrorCategory::INSTANCE;
+        DataBaseErrorCategory DataBaseErrorCategory::INSTANCE;
 
-} //namespace error
+    } //namespace error
 } //namespace CryptoNote

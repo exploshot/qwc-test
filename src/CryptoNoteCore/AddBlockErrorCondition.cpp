@@ -18,16 +18,16 @@
 #include <CryptoNoteCore/AddBlockErrorCondition.h>
 
 namespace CryptoNote {
-namespace error {
+    namespace error {
 
-AddBlockErrorConditionCategory AddBlockErrorConditionCategory::INSTANCE;
+        AddBlockErrorConditionCategory AddBlockErrorConditionCategory::INSTANCE;
 
 
-std::error_condition make_error_condition(AddBlockErrorCondition e) {
-  return std::error_condition(
-      static_cast<int>(e),
-      AddBlockErrorConditionCategory::INSTANCE);
-}
+        std::error_condition make_error_condition(AddBlockErrorCondition e) 
+        {
+            return std::error_condition(static_cast<int>(e),
+                                        AddBlockErrorConditionCategory::INSTANCE);
+        }
 
-}
-}
+    } // namespace error
+} // namespace CryptoNote

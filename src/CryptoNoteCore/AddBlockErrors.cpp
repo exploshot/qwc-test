@@ -18,9 +18,9 @@
 #include <CryptoNoteCore/AddBlockErrors.h>
 
 namespace CryptoNote {
-namespace error {
+    namespace error {
 
-AddBlockErrorCategory AddBlockErrorCategory::INSTANCE;
+        AddBlockErrorCategory AddBlockErrorCategory::INSTANCE;
 
-}
-}
+    } // namespace error
+} // namespace CryptoNote

@@ -22,22 +22,27 @@
 
 namespace CryptoNote {
 
-class SwappedBlockchainStorage : public BlockchainStorage::IBlockchainStorageInternal {
-public:
-  SwappedBlockchainStorage(const std::string& indexFileName, const std::string& dataFileName);
-  virtual ~SwappedBlockchainStorage() override;
+    class SwappedBlockchainStorage : public BlockchainStorage::IBlockchainStorageInternal 
+    {
+    public:
+        SwappedBlockchainStorage(const std::string& indexFileName, 
+                                 const std::string& dataFileName);
 
-  virtual void pushBlock(RawBlock&& rawBlock) override;
+        virtual ~SwappedBlockchainStorage() override;
 
-  //Returns MemoryBlockchainStorage with elements from [splitIndex, blocks.size() - 1].
-  //Original SwappedBlockchainStorage will contain elements from [0, splitIndex - 1].
-  virtual std::unique_ptr<BlockchainStorage::IBlockchainStorageInternal> splitStorage(uint32_t splitIndex) override;
+        virtual void pushBlock(RawBlock&& rawBlock) override;
 
-  virtual RawBlock getBlockByIndex(uint32_t index) const override;
-  virtual uint32_t getBlockCount() const override;
+        /*!
+            Returns MemoryBlockchainStorage with elements from [splitIndex, blocks.size() - 1].
+            Original SwappedBlockchainStorage will contain elements from [0, splitIndex - 1].
+        */
+        virtual std::unique_ptr<BlockchainStorage::IBlockchainStorageInternal> 
+        splitStorage(uint32_t splitIndex) override;
 
-private:
-  mutable SwappedVector<RawBlock> blocks;
-};
+        virtual RawBlock getBlockByIndex(uint32_t index) const override;
+        virtual uint32_t getBlockCount() const override;
 
-}
+    private:
+        mutable SwappedVector<RawBlock> blocks;
+    };
+} // namespace CryptoNote

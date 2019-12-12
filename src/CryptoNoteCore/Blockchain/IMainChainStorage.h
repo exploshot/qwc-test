@@ -21,17 +21,17 @@
 
 namespace CryptoNote {
 
-class IMainChainStorage {
-public:
-  virtual ~IMainChainStorage() { }
+    class IMainChainStorage 
+    {
+    public:
+        virtual ~IMainChainStorage() { }
 
-  virtual void pushBlock(const RawBlock& rawBlock) = 0;
-  virtual void popBlock() = 0;
+        virtual void pushBlock(const RawBlock &rawBlock) = 0;
+        virtual void popBlock() = 0;
 
-  virtual RawBlock getBlockByIndex(const uint32_t index) = 0;
-  virtual uint32_t getBlockCount() const = 0;
+        virtual RawBlock getBlockByIndex(const uint32_t index) = 0;
+        virtual uint32_t getBlockCount() const = 0;
 
-  virtual void clear() = 0;
-};
-
-}
+        virtual void clear() = 0;
+    };
+} // namespace CryptoNote

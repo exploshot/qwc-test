@@ -18,9 +18,9 @@
 #include <CryptoNoteCore/CoreErrors.h>
 
 namespace CryptoNote {
-namespace error {
+    namespace error {
 
-CoreErrorCategory CoreErrorCategory::INSTANCE;
+        CoreErrorCategory CoreErrorCategory::INSTANCE;
 
-}
-}
+    } // namespace error
+} // namespace CryptoNote

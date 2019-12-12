@@ -18,9 +18,9 @@
 #include <CryptoNoteCore/BlockValidationErrors.h>
 
 namespace CryptoNote {
-namespace error {
+    namespace error {
 
-BlockValidationErrorCategory BlockValidationErrorCategory::INSTANCE;
+        BlockValidationErrorCategory BlockValidationErrorCategory::INSTANCE;
 
-}
-}
+    } // namespace error
+} // namespace CryptoNote

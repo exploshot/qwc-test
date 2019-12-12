@@ -11,16 +11,17 @@
 #include <CryptoNoteCore/Transactions/ITransactionPool.h>
 
 namespace Crypto {
-struct Hash;
-}
+    struct Hash;
+} // namespace Crypto
 
 namespace CryptoNote {
 
-class ITransactionPoolCleanWrapper: public ITransactionPool {
-public:
-  virtual ~ITransactionPoolCleanWrapper() {}
+    class ITransactionPoolCleanWrapper: public ITransactionPool 
+    {
+    public:
+        virtual ~ITransactionPoolCleanWrapper() {}
 
-  virtual std::vector<Crypto::Hash> clean(const uint32_t height) = 0;
-};
+        virtual std::vector<Crypto::Hash> clean(const uint32_t height) = 0;
+    };
 
 } //namespace CryptoNote

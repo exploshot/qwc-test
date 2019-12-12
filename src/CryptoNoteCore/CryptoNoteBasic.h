@@ -22,5 +22,5 @@
 #include <CryptoNote.h>
 
 namespace CryptoNote {
-  KeyPair generateKeyPair();
-}
+    KeyPair generateKeyPair();
+} // namespace CryptoNote

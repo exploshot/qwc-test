@@ -21,14 +21,14 @@
 
 namespace CryptoNote {
 
-class ICoreInformation {
-public:
-  virtual ~ICoreInformation() {}
+    class ICoreInformation 
+    {
+    public:
+        virtual ~ICoreInformation() {}
 
-  virtual size_t getPoolTransactionCount() const = 0;
-  virtual size_t getBlockchainTransactionCount() const = 0;
-  virtual size_t getAlternativeBlockCount() const = 0;
-  virtual std::vector<Transaction> getPoolTransactions() const = 0;
-};
-
-}
+        virtual size_t getPoolTransactionCount() const = 0;
+        virtual size_t getBlockchainTransactionCount() const = 0;
+        virtual size_t getAlternativeBlockCount() const = 0;
+        virtual std::vector<Transaction> getPoolTransactions() const = 0;
+    };
+} // namespace CryptoNote

@@ -17,9 +17,9 @@
 
 #include <Common/Base58.h>
 #include <Common/CryptoNoteTools.h>
-#include <Common/int-util.h>
+#include <Common/IIntUtil.h>
 
-#include <Crypto/hash.h>
+#include <Crypto/Hash.h>
 
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
@@ -31,54 +31,51 @@ using namespace Common;
 
 namespace CryptoNote {
 
-  /************************************************************************/
-  /* CryptoNote helper functions                                          */
-  /************************************************************************/
-  //-----------------------------------------------------------------------------------------------
-  uint64_t getPenalizedAmount(uint64_t amount, size_t medianSize, size_t currentBlockSize) {
-    static_assert(sizeof(size_t) >= sizeof(uint32_t), "size_t is too small");
-    assert(currentBlockSize <= 2 * medianSize);
-    assert(medianSize <= std::numeric_limits<uint32_t>::max());
-    assert(currentBlockSize <= std::numeric_limits<uint32_t>::max());
+    uint64_t getPenalizedAmount(uint64_t amount, size_t medianSize, size_t currentBlockSize) 
+    {
+        static_assert(sizeof(size_t) >= sizeof(uint32_t), "size_t is too small");
+        assert(currentBlockSize <= 2 * medianSize);
+        assert(medianSize <= std::numeric_limits<uint32_t>::max());
+        assert(currentBlockSize <= std::numeric_limits<uint32_t>::max());
 
-    if (amount == 0) {
-      return 0;
+        if (amount == 0) {
+            return 0;
+        }
+
+        if (currentBlockSize <= medianSize) {
+            return amount;
+        }
+
+        uint64_t productHi;
+        /*!
+            BUGFIX by Monero Project: 32-bit saturation bug (e.g. ARM7),
+            the result was being treated as 32-bit by default
+        */
+        uint64_t multiplicand = UINT64_C(2) * medianSize - currentBlockSize;
+        multiplicand *= currentBlockSize;
+        uint64_t productLo = mul128(amount, multiplicand, &productHi);
+
+        uint64_t penalizedAmountHi;
+        uint64_t penalizedAmountLo;
+        div128_32(productHi, 
+                  productLo, 
+                  static_cast<uint32_t>(medianSize), 
+                  &penalizedAmountHi, 
+                  &penalizedAmountLo);
+        div128_32(penalizedAmountHi, 
+                  penalizedAmountLo, 
+                  static_cast<uint32_t>(medianSize), 
+                  &penalizedAmountHi, 
+                  &penalizedAmountLo);
+
+        assert(0 == penalizedAmountHi);
+        assert(penalizedAmountLo < amount);
+
+        return penalizedAmountLo;
     }
+} // namespace CryptoNote
 
-    if (currentBlockSize <= medianSize) {
-      return amount;
-    }
-
-    uint64_t productHi;
-    // BUGFIX by Monero Project: 32-bit saturation bug (e.g. ARM7),
-    // the result was being treated as 32-bit by default
-    uint64_t multiplicand = UINT64_C(2) * medianSize - currentBlockSize;
-    multiplicand *= currentBlockSize;
-    uint64_t productLo = mul128(amount, multiplicand, &productHi);
-
-    uint64_t penalizedAmountHi;
-    uint64_t penalizedAmountLo;
-    div128_32(
-        productHi, 
-        productLo, 
-        static_cast<uint32_t>(medianSize), 
-        &penalizedAmountHi, 
-        &penalizedAmountLo);
-    div128_32(
-        penalizedAmountHi, 
-        penalizedAmountLo, 
-        static_cast<uint32_t>(medianSize), 
-        &penalizedAmountHi, 
-        &penalizedAmountLo);
-
-    assert(0 == penalizedAmountHi);
-    assert(penalizedAmountLo < amount);
-
-    return penalizedAmountLo;
-  }
-}
-
-//--------------------------------------------------------------------------------
-bool parse_hash256(const std::string& str_hash, Crypto::Hash& hash) {
-  return Common::podFromHex(str_hash, hash);
+bool parseHash256(const std::string &str_hash, Crypto::Hash &hash) 
+{
+    return Common::podFromHex(str_hash, hash);
 }

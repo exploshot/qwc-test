@@ -5,42 +5,49 @@
 // 
 // Please see the included LICENSE file for more information.
 
-#include <Crypto/keccak.h>
+#include <Crypto/Keccak.h>
 
 #include <CryptoNoteCore/Account.h>
 
 #include <Serialization/CryptoNoteSerialization.h>
 
 namespace CryptoNote {
-//-----------------------------------------------------------------
-AccountBase::AccountBase() {
-  setNull();
-}
-//-----------------------------------------------------------------
-void AccountBase::setNull() {
-  m_keys = AccountKeys();
-}
-//-----------------------------------------------------------------
-void AccountBase::generate() {
+    AccountBase::AccountBase() 
+    {
+        setNull();
+    }
 
-  Crypto::generate_keys(m_keys.address.spendPublicKey, m_keys.spendSecretKey);
+    void AccountBase::setNull() 
+    {
+        m_keys = AccountKeys();
+    }
 
-  /* We derive the view secret key by taking our spend secret key, hashing
-     with keccak-256, and then using this as the seed to generate a new set
-     of keys - the public and private view keys. See generate_deterministic_keys */
+    void AccountBase::generate() 
+    {
 
-  Crypto::crypto_ops::generateViewFromSpend(m_keys.spendSecretKey, m_keys.viewSecretKey, m_keys.address.viewPublicKey);
-  m_creation_timestamp = time(NULL);
+      Crypto::generateKeys(m_keys.address.spendPublicKey, m_keys.spendSecretKey);
 
-}
-//-----------------------------------------------------------------
-const AccountKeys &AccountBase::getAccountKeys() const {
-  return m_keys;
-}
-//-----------------------------------------------------------------
+      /*!
+          We derive the view secret key by taking our spend secret key, hashing
+          with keccak-256, and then using this as the seed to generate a new set
+          of keys - the public and private view keys. See generateDeterministicKeys
+      */
 
-void AccountBase::serialize(ISerializer &s) {
-  s(m_keys, "m_keys");
-  s(m_creation_timestamp, "m_creation_timestamp");
-}
-}
+      Crypto::CryptoOps::generateViewFromSpend(m_keys.spendSecretKey, 
+                                               m_keys.viewSecretKey, 
+                                               m_keys.address.viewPublicKey);
+      m_creation_timestamp = time(NULL);
+
+    }
+    
+    const AccountKeys &AccountBase::getAccountKeys() const 
+    {
+        return m_keys;
+    }
+
+    void AccountBase::serialize(ISerializer &s) 
+    {
+        s(m_keys, "m_keys");
+        s(m_creation_timestamp, "m_creation_timestamp");
+    }
+} // namespace CryptoNote

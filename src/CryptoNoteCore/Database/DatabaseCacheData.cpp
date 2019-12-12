@@ -33,7 +33,7 @@ void KeyOutputInfo::serialize(ISerializer& s) {
   s(publicKey, "public_key");
   s(transactionHash, "transaction_hash");
   s(unlockTime, "unlock_time");
-  s(outputIndex, "output_index");
+  s(outputIndex, "outputIndex");
 }
 
 }

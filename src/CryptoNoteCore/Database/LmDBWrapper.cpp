@@ -36,19 +36,22 @@ LmDBWrapper::~LmDBWrapper()
     }
 }
 
-void LmDBWrapper::init(const DataBaseConfig& config)
+void LmDBWrapper::init(const DataBaseConfig &config)
 {
-    if (state.load() != NOT_INITIALIZED)
-    {
+    if (state.load() != NOT_INITIALIZED) {
         throw std::system_error(make_error_code(CryptoNote::error::DataBaseErrorCodes::ALREADY_INITIALIZED));
     }
 
     logger(INFO) << "Initializing DB using lmdb backend";
 
-    /* set m_dbDir & m_dbFile fore easy reuse */
+    /*!
+        set m_dbDir & m_dbFile fore easy reuse
+    */
     setDataDir(config);
 
-    /* create db dir if  not already exists (lmbd not automatically create it) */
+    /*!
+        create db dir if  not already exists (lmbd not automatically create it) 
+    */
     if( !fs::exists(m_dbDir) || !fs::is_directory(m_dbDir) ) {
         if(!fs::create_directory(m_dbDir)) {
             logger(ERROR) << "Failed to create db directory";
@@ -65,7 +68,9 @@ void LmDBWrapper::init(const DataBaseConfig& config)
         file.close();
     }
 
-    /* set initial mapsize */
+    /*!
+        set initial mapsize
+    */
     uint64_t mapsize = 0;
     try { 
         mapsize = fs::file_size(m_dbFile);
@@ -73,7 +78,9 @@ void LmDBWrapper::init(const DataBaseConfig& config)
     }
 
     if( mapsize == 0) {
-        // starts with 512M
+        /*!
+            starts with 64M
+        */
         mapsize += MAPSIZE_MIN_AVAIL;
     }
     
@@ -87,12 +94,14 @@ void LmDBWrapper::init(const DataBaseConfig& config)
     logger(INFO) << "Opening DB in " << m_dbDir;
     try {
         m_db.open(m_dbDir.c_str(), MDB_NOSYNC|MDB_WRITEMAP|MDB_MAPASYNC|MDB_NORDAHEAD, 0664);
-    } catch(const std::exception& e) {
+    } catch(const std::exception &e) {
         logger(ERROR) << "Failed to open database: " << e.what();
         throw std::system_error(make_error_code(CryptoNote::error::DataBaseErrorCodes::INTERNAL_ERROR));
     }
     
-    // resize mapsize if needed
+    /*!
+        resize mapsize if needed
+    */
     checkResize();
 
     logger(INFO) << "DB opened in " << m_dbDir;
@@ -112,7 +121,7 @@ void LmDBWrapper::shutdown()
     state.store(NOT_INITIALIZED);
 }
 
-void LmDBWrapper::destroy(const DataBaseConfig& config)
+void LmDBWrapper::destroy(const DataBaseConfig &config)
 {
     if (state.load() != NOT_INITIALIZED) {
         throw std::system_error(make_error_code(CryptoNote::error::DataBaseErrorCodes::ALREADY_INITIALIZED));
@@ -138,13 +147,15 @@ void LmDBWrapper::destroy(const DataBaseConfig& config)
     m_db.sync();
 }
 
-std::error_code LmDBWrapper::write(IWriteBatch& batch)
+std::error_code LmDBWrapper::write(IWriteBatch &batch)
 {
     if (state.load() != INITIALIZED) {
         throw std::system_error(make_error_code(CryptoNote::error::DataBaseErrorCodes::NOT_INITIALIZED));
     }
 
-    /* resize if needed */
+    /*!
+        resize if needed
+    */
     checkResize();
 
     MDB_txn *wtxn;
@@ -154,7 +165,7 @@ std::error_code LmDBWrapper::write(IWriteBatch& batch)
     try {
         lmdb::txn_begin(m_db, nullptr, 0, &wtxn);
     }
-    catch (const std::exception& e) {
+    catch (const std::exception &e) {
         logger(ERROR) << "Failed to prepare db write transaction: " << e.what();
         throw std::system_error(make_error_code(CryptoNote::error::DataBaseErrorCodes::INTERNAL_ERROR));
     }
@@ -166,7 +177,7 @@ std::error_code LmDBWrapper::write(IWriteBatch& batch)
         const std::vector<std::pair<std::string, std::string>> rawData(batch.extractRawDataToInsert());
         logger(TRACE) << "Writing rawdata, len: " << rawData.size();
 
-        for (const std::pair<std::string, std::string>& kvPair : rawData) {
+        for (const std::pair<std::string, std::string> &kvPair : rawData) {
             if(dbi.put(wtxn, kvPair.first, kvPair.second)) {
                 m_dirty++;
             } else {
@@ -180,7 +191,7 @@ std::error_code LmDBWrapper::write(IWriteBatch& batch)
         // delete
         const std::vector<std::string> rawKeys(batch.extractRawKeysToRemove());
         logger(TRACE) << "Removing rawKeys, len: " << rawKeys.size();
-        for (const std::string& key : rawKeys) {
+        for (const std::string &key : rawKeys) {
             if ( dbi.del(wtxn, key) ) {
                 m_dirty++;
             } else {
@@ -192,7 +203,7 @@ std::error_code LmDBWrapper::write(IWriteBatch& batch)
 
     try {
         lmdb::txn_commit(wtxn);
-    } catch (const std::exception& e) {
+    } catch (const std::exception &e) {
         logger(ERROR) << "Failed to commit db transactions: " << e.what();
         throw std::system_error(make_error_code(CryptoNote::error::DataBaseErrorCodes::INTERNAL_ERROR));
     }
@@ -226,7 +237,10 @@ void LmDBWrapper::checkResize()
     }
     
     if(size_avail > MAPSIZE_MIN_AVAIL) {
-        logger(TRACE) << "DB Resize: no resize required, size avail: " << size_avail << " bytes.";
+        logger(TRACE) 
+            << "DB Resize: no resize required, size avail: " 
+            << size_avail 
+            << " bytes.";
         return;
     }
     
@@ -235,11 +249,14 @@ void LmDBWrapper::checkResize()
     const uint64_t extra = 1ULL << SHIFTING_VAL;
     mapsize += extra;
     
-    logger(DEBUGGING) << "Resizing database. New mapsize: " << mapsize << " bytes.";
+    logger(DEBUGGING) 
+        << "Resizing database. New mapsize: " 
+        << mapsize 
+        << " bytes.";
     m_db.set_mapsize(mapsize);
 }
 
-std::error_code LmDBWrapper::read(IReadBatch& batch)
+std::error_code LmDBWrapper::read(IReadBatch &batch)
 {
     if (state.load() != INITIALIZED) {
         throw std::runtime_error("Not initialized.");
@@ -255,25 +272,30 @@ std::error_code LmDBWrapper::read(IReadBatch& batch)
         auto rtxn = lmdb::txn::begin(m_db, nullptr, MDB_RDONLY);
         dbi = lmdb::dbi::open(rtxn, nullptr);
 
-        for (const std::string& key : rawKeys) {
+        for (const std::string &key : rawKeys) {
             std::string_view val;
             if(dbi.get(rtxn, key, val)) {
                 values.push_back(std::string(val));
                 resultStates.push_back(true);
             } else {
-                // @todo: get rid of this
-                // rocksdb MultiGet compat: pass empty string if the key wasn't found
+                /*!
+                    TODO: get rid of this
+                    rocksdb MultiGet compat: pass empty string if the key wasn't found
+                */
                 values.push_back(std::string(""));
                 resultStates.push_back(false);
             }
         }
-    } // rtxn will be aborted/dropped here
+    }
+    /*!
+        rtxn will be aborted/dropped here
+    */
 
     batch.submitRawResult(values, resultStates);
     return std::error_code();
 }
 
-void LmDBWrapper::setDataDir(const DataBaseConfig& config)
+void LmDBWrapper::setDataDir(const DataBaseConfig &config)
 {
     if (config.getTestnet()) {
         m_dbDir = fs::path(config.getDataDir() + '/' + TESTNET_DB_NAME);
@@ -283,7 +305,7 @@ void LmDBWrapper::setDataDir(const DataBaseConfig& config)
     m_dbFile = fs::path(m_dbDir / "data.mdb");
 }
 
-fs::path LmDBWrapper::getDataDir(const DataBaseConfig& config)
+fs::path LmDBWrapper::getDataDir(const DataBaseConfig &config)
 {
     return m_dbDir;
 }

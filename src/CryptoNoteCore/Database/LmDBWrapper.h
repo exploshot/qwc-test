@@ -11,15 +11,13 @@
 
 #include <lmdbpp.h>
 
-#include "IDataBase.h"
-#include "DataBaseConfig.h"
+#include <IDataBase.h>
 
-#include <Logging/LoggerRef.h>
 #include <Common/FileSystemShim.h>
+#include <CryptoNoteCore/Database/DataBaseConfig.h>
+#include <Logging/LoggerRef.h>
 
-namespace CryptoNote
-{
-
+namespace CryptoNote {
     class LmDBWrapper : public IDataBase
     {
     public:
@@ -29,21 +27,21 @@ namespace CryptoNote
         LmDBWrapper(const LmDBWrapper&) = delete;
         LmDBWrapper(LmDBWrapper&&) = delete;
 
-        LmDBWrapper& operator=(const LmDBWrapper&) = delete;
-        LmDBWrapper& operator=(LmDBWrapper&&) = delete;
+        LmDBWrapper &operator=(const LmDBWrapper&) = delete;
+        LmDBWrapper &operator=(LmDBWrapper&&) = delete;
 
-        void init(const DataBaseConfig& config);
+        void init(const DataBaseConfig &config);
         void shutdown();
 
-        void destroy(const DataBaseConfig& config); //Be careful with this method!
+        void destroy(const DataBaseConfig &config); //Be careful with this method!
 
-        std::error_code write(IWriteBatch& batch) override;
-        std::error_code read(IReadBatch& batch) override;
+        std::error_code write(IWriteBatch &batch) override;
+        std::error_code read(IReadBatch &batch) override;
 
     private:
         void checkResize();
-        void setDataDir(const DataBaseConfig& config);
-        fs::path getDataDir(const DataBaseConfig& config);
+        void setDataDir(const DataBaseConfig &config);
+        fs::path getDataDir(const DataBaseConfig &config);
 
         enum State
         {

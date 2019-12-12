@@ -18,9 +18,9 @@
 #include <CryptoNoteCore/Transactions/TransactionValidationErrors.h>
 
 namespace CryptoNote {
-namespace error {
+    namespace error {
 
-TransactionValidationErrorCategory TransactionValidationErrorCategory::INSTANCE;
+        TransactionValidationErrorCategory TransactionValidationErrorCategory::INSTANCE;
 
-}
-}
+    } // namespace error
+} //namespace CryptoNote
