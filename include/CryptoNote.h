@@ -225,4 +225,4 @@ namespace CryptoNote {
         }
     }
 
-}
+} // namespace CryptoNote

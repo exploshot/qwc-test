@@ -11150,8 +11150,8 @@ struct adl_serializer
     @param[in] j         JSON value to read from
     @param[in,out] val  value to write to
     */
-    template<typename BasicJsonType, typename ValueType>
-    static void from_json(BasicJsonType&& j, ValueType& val) noexcept(
+    template<typename BasicJsonType, typename value_type>
+    static void from_json(BasicJsonType&& j, value_type& val) noexcept(
         noexcept(::nlohmann::from_json(std::forward<BasicJsonType>(j), val)))
     {
         ::nlohmann::from_json(std::forward<BasicJsonType>(j), val);
@@ -11166,11 +11166,11 @@ struct adl_serializer
     @param[in,out] j  JSON value to write to
     @param[in] val     value to read from
     */
-    template<typename BasicJsonType, typename ValueType>
-    static void to_json(BasicJsonType& j, ValueType&& val) noexcept(
-        noexcept(::nlohmann::to_json(j, std::forward<ValueType>(val))))
+    template<typename BasicJsonType, typename value_type>
+    static void to_json(BasicJsonType& j, value_type&& val) noexcept(
+        noexcept(::nlohmann::to_json(j, std::forward<value_type>(val))))
     {
-        ::nlohmann::to_json(j, std::forward<ValueType>(val));
+        ::nlohmann::to_json(j, std::forward<value_type>(val));
     }
 };
 }
@@ -13631,29 +13631,29 @@ class basic_json
     Explicit type conversion between the JSON value and a compatible value
     which is [CopyConstructible](https://en.cppreference.com/w/cpp/named_req/CopyConstructible)
     and [DefaultConstructible](https://en.cppreference.com/w/cpp/named_req/DefaultConstructible).
-    The value is converted by calling the @ref json_serializer<ValueType>
+    The value is converted by calling the @ref json_serializer<value_type>
     `from_json()` method.
 
     The function is equivalent to executing
     @code {.cpp}
-    ValueType ret;
-    JSONSerializer<ValueType>::from_json(*this, ret);
+    value_type ret;
+    JSONSerializer<value_type>::from_json(*this, ret);
     return ret;
     @endcode
 
     This overloads is chosen if:
-    - @a ValueType is not @ref basic_json,
-    - @ref json_serializer<ValueType> has a `from_json()` method of the form
-      `void from_json(const basic_json&, ValueType&)`, and
-    - @ref json_serializer<ValueType> does not have a `from_json()` method of
-      the form `ValueType from_json(const basic_json&)`
+    - @a value_type is not @ref basic_json,
+    - @ref json_serializer<value_type> has a `from_json()` method of the form
+      `void from_json(const basic_json&, value_type&)`, and
+    - @ref json_serializer<value_type> does not have a `from_json()` method of
+      the form `value_type from_json(const basic_json&)`
 
     @tparam ValueTypeCV the provided value type
-    @tparam ValueType the returned value type
+    @tparam value_type the returned value type
 
-    @return copy of the JSON value, converted to @a ValueType
+    @return copy of the JSON value, converted to @a value_type
 
-    @throw what @ref json_serializer<ValueType> `from_json()` method throws
+    @throw what @ref json_serializer<value_type> `from_json()` method throws
 
     @liveexample{The example below shows several conversions from JSON values
     to other types. There a few things to note: (1) Floating-point numbers can
@@ -13664,25 +13664,25 @@ class basic_json
 
     @since version 2.1.0
     */
-    template<typename ValueTypeCV, typename ValueType = detail::uncvref_t<ValueTypeCV>,
+    template<typename ValueTypeCV, typename value_type = detail::uncvref_t<ValueTypeCV>,
              detail::enable_if_t <
-                 not detail::is_basic_json<ValueType>::value and
-                 detail::has_from_json<basic_json_t, ValueType>::value and
-                 not detail::has_non_default_from_json<basic_json_t, ValueType>::value,
+                 not detail::is_basic_json<value_type>::value and
+                 detail::has_from_json<basic_json_t, value_type>::value and
+                 not detail::has_non_default_from_json<basic_json_t, value_type>::value,
                  int> = 0>
-    ValueType get() const noexcept(noexcept(
-                                       JSONSerializer<ValueType>::from_json(std::declval<const basic_json_t&>(), std::declval<ValueType&>())))
+    value_type get() const noexcept(noexcept(
+                                       JSONSerializer<value_type>::from_json(std::declval<const basic_json_t&>(), std::declval<value_type&>())))
     {
         // we cannot static_assert on ValueTypeCV being non-const, because
         // there is support for get<const basic_json_t>(), which is why we
         // still need the uncvref
         static_assert(not std::is_reference<ValueTypeCV>::value,
                       "get() cannot be used with reference types, you might want to use get_ref()");
-        static_assert(std::is_default_constructible<ValueType>::value,
+        static_assert(std::is_default_constructible<value_type>::value,
                       "types must be DefaultConstructible when used with get()");
 
-        ValueType ret;
-        JSONSerializer<ValueType>::from_json(*this, ret);
+        value_type ret;
+        JSONSerializer<value_type>::from_json(*this, ret);
         return ret;
     }
 
@@ -13692,7 +13692,7 @@ class basic_json
     Explicit type conversion between the JSON value and a compatible value
     which is **not** [CopyConstructible](https://en.cppreference.com/w/cpp/named_req/CopyConstructible)
     and **not** [DefaultConstructible](https://en.cppreference.com/w/cpp/named_req/DefaultConstructible).
-    The value is converted by calling the @ref json_serializer<ValueType>
+    The value is converted by calling the @ref json_serializer<value_type>
     `from_json()` method.
 
     The function is equivalent to executing
@@ -13701,27 +13701,27 @@ class basic_json
     @endcode
 
     This overloads is chosen if:
-    - @a ValueType is not @ref basic_json and
-    - @ref json_serializer<ValueType> has a `from_json()` method of the form
-      `ValueType from_json(const basic_json&)`
+    - @a value_type is not @ref basic_json and
+    - @ref json_serializer<value_type> has a `from_json()` method of the form
+      `value_type from_json(const basic_json&)`
 
-    @note If @ref json_serializer<ValueType> has both overloads of
+    @note If @ref json_serializer<value_type> has both overloads of
     `from_json()`, this one is chosen.
 
     @tparam ValueTypeCV the provided value type
-    @tparam ValueType the returned value type
+    @tparam value_type the returned value type
 
-    @return copy of the JSON value, converted to @a ValueType
+    @return copy of the JSON value, converted to @a value_type
 
-    @throw what @ref json_serializer<ValueType> `from_json()` method throws
+    @throw what @ref json_serializer<value_type> `from_json()` method throws
 
     @since version 2.1.0
     */
-    template<typename ValueTypeCV, typename ValueType = detail::uncvref_t<ValueTypeCV>,
-             detail::enable_if_t<not std::is_same<basic_json_t, ValueType>::value and
-                                 detail::has_non_default_from_json<basic_json_t, ValueType>::value,
+    template<typename ValueTypeCV, typename value_type = detail::uncvref_t<ValueTypeCV>,
+             detail::enable_if_t<not std::is_same<basic_json_t, value_type>::value and
+                                 detail::has_non_default_from_json<basic_json_t, value_type>::value,
                                  int> = 0>
-    ValueType get() const noexcept(noexcept(
+    value_type get() const noexcept(noexcept(
                                        JSONSerializer<ValueTypeCV>::from_json(std::declval<const basic_json_t&>())))
     {
         static_assert(not std::is_reference<ValueTypeCV>::value,
@@ -13906,15 +13906,15 @@ class basic_json
     Implicit type conversion between the JSON value and a compatible value.
     The call is realized by calling @ref get() const.
 
-    @tparam ValueType non-pointer type compatible to the JSON value, for
+    @tparam value_type non-pointer type compatible to the JSON value, for
     instance `int` for JSON integer numbers, `bool` for JSON booleans, or
     `std::vector` types for JSON arrays. The character type of @ref string_t
     as well as an initializer list of this type is excluded to avoid
     ambiguities as these types implicitly convert to `std::string`.
 
-    @return copy of the JSON value, converted to type @a ValueType
+    @return copy of the JSON value, converted to type @a value_type
 
-    @throw type_error.302 in case passed type @a ValueType is incompatible
+    @throw type_error.302 in case passed type @a value_type is incompatible
     to the JSON value type (e.g., the JSON value is of type boolean, but a
     string is requested); see example below
 
@@ -13929,22 +13929,22 @@ class basic_json
 
     @since version 1.0.0
     */
-    template < typename ValueType, typename std::enable_if <
-                   not std::is_pointer<ValueType>::value and
-                   not std::is_same<ValueType, detail::json_ref<basic_json>>::value and
-                   not std::is_same<ValueType, typename string_t::value_type>::value and
-                   not detail::is_basic_json<ValueType>::value
+    template < typename value_type, typename std::enable_if <
+                   not std::is_pointer<value_type>::value and
+                   not std::is_same<value_type, detail::json_ref<basic_json>>::value and
+                   not std::is_same<value_type, typename string_t::value_type>::value and
+                   not detail::is_basic_json<value_type>::value
 #ifndef _MSC_VER  // fix for issue #167 operator<< ambiguity under VS2015
-                   and not std::is_same<ValueType, std::initializer_list<typename string_t::value_type>>::value
+                   and not std::is_same<value_type, std::initializer_list<typename string_t::value_type>>::value
 #if defined(JSON_HAS_CPP_17) && defined(_MSC_VER) and _MSC_VER <= 1914
-                   and not std::is_same<ValueType, typename std::string_view>::value
+                   and not std::is_same<value_type, typename std::string_view>::value
 #endif
 #endif
                    , int >::type = 0 >
-    operator ValueType() const
+    operator value_type() const
     {
         // delegate the call to get<>() const
-        return get<ValueType>();
+        return get<value_type>();
     }
 
     /// @}
@@ -14439,7 +14439,7 @@ class basic_json
     @param[in] key  key of the element to access
     @param[in] default_value  the value to return if @a key is not found
 
-    @tparam ValueType type compatible to JSON values, for instance `int` for
+    @tparam value_type type compatible to JSON values, for instance `int` for
     JSON integer numbers, `bool` for JSON booleans, or `std::vector` types for
     JSON arrays. Note the type of the expected value at @a key and the default
     value @a default_value must be compatible.
@@ -14462,9 +14462,9 @@ class basic_json
 
     @since version 1.0.0
     */
-    template<class ValueType, typename std::enable_if<
-                 std::is_convertible<basic_json_t, ValueType>::value, int>::type = 0>
-    ValueType value(const typename object_t::key_type& key, const ValueType& default_value) const
+    template<class value_type, typename std::enable_if<
+                 std::is_convertible<basic_json_t, value_type>::value, int>::type = 0>
+    value_type value(const typename object_t::key_type& key, const value_type& default_value) const
     {
         // at only works for objects
         if (JSON_LIKELY(is_object()))
@@ -14484,7 +14484,7 @@ class basic_json
 
     /*!
     @brief overload for a default value of type const char*
-    @copydoc basic_json::value(const typename object_t::key_type&, ValueType) const
+    @copydoc basic_json::value(const typename object_t::key_type&, value_type) const
     */
     string_t value(const typename object_t::key_type& key, const char* default_value) const
     {
@@ -14512,7 +14512,7 @@ class basic_json
     @param[in] ptr  a JSON pointer to the element to access
     @param[in] default_value  the value to return if @a ptr found no value
 
-    @tparam ValueType type compatible to JSON values, for instance `int` for
+    @tparam value_type type compatible to JSON values, for instance `int` for
     JSON integer numbers, `bool` for JSON booleans, or `std::vector` types for
     JSON arrays. Note the type of the expected value at @a key and the default
     value @a default_value must be compatible.
@@ -14532,9 +14532,9 @@ class basic_json
 
     @since version 2.0.2
     */
-    template<class ValueType, typename std::enable_if<
-                 std::is_convertible<basic_json_t, ValueType>::value, int>::type = 0>
-    ValueType value(const json_pointer& ptr, const ValueType& default_value) const
+    template<class value_type, typename std::enable_if<
+                 std::is_convertible<basic_json_t, value_type>::value, int>::type = 0>
+    value_type value(const json_pointer& ptr, const value_type& default_value) const
     {
         // at only works for objects
         if (JSON_LIKELY(is_object()))
@@ -14555,7 +14555,7 @@ class basic_json
 
     /*!
     @brief overload for a default value of type const char*
-    @copydoc basic_json::value(const json_pointer&, ValueType) const
+    @copydoc basic_json::value(const json_pointer&, value_type) const
     */
     string_t value(const json_pointer& ptr, const char* default_value) const
     {

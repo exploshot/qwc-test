@@ -143,7 +143,8 @@ namespace CryptoNote {
         std::vector<WalletTransfer> transfers;
     };
 
-    struct TransactionsInBlockInfo {
+    struct TransactionsInBlockInfo 
+    {
         Crypto::Hash blockHash;
         std::vector<WalletTransactionWithTransfers> transactions;
     };

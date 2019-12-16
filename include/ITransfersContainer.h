@@ -22,7 +22,7 @@
 #include <limits>
 #include <vector>
 
-#include <Crypto/hash.h>
+#include <Crypto/Hash.h>
 
 #include <ITransaction.h>
 #include <IObservable.h>
@@ -67,7 +67,10 @@ namespace CryptoNote {
         uint32_t spendingBlockHeight;
         uint64_t timestamp;
         Crypto::Hash spendingTransactionHash;
-        Crypto::KeyImage keyImage;  //!< \attention Used only for TransactionTypes::OutputType::Key
+        /*!
+            Used only for TransactionTypes::OutputType::Key
+        */
+        Crypto::KeyImage keyImage;
         uint32_t inputInTransaction;
     };
 
@@ -77,14 +80,20 @@ namespace CryptoNote {
     public:
         enum Flags : uint32_t 
         {
-            // state
+            /*!
+                state
+            */
             IncludeStateUnlocked = 0x01,
             IncludeStateLocked = 0x02,
             IncludeStateSoftLocked = 0x04,
             IncludeStateSpent = 0x08,
-            // output type
+            /*!
+                output type
+            */
             IncludeTypeKey = 0x100,
-            // combinations
+            /*!
+                combinations
+            */
             IncludeStateAll = 0xff,
             IncludeTypeAll = 0xff00,
 
@@ -106,12 +115,14 @@ namespace CryptoNote {
         virtual bool getTransactionInformation(
             const Crypto::Hash& transactionHash, 
             TransactionInformation& info,
-            uint64_t* amountIn = nullptr, 
-            uint64_t* amountOut = nullptr) const = 0;
+            uint64_t *amountIn = nullptr, 
+            uint64_t *amountOut = nullptr) const = 0;
         virtual std::vector<TransactionOutputInformation> getTransactionOutputs(
             const Crypto::Hash& transactionHash, 
             uint32_t flags = IncludeDefault) const = 0;
-        //only type flags are feasible for this function
+        /*!
+            only type flags are feasible for this function
+        */
         virtual std::vector<TransactionOutputInformation> getTransactionInputs(
             const Crypto::Hash& transactionHash, 
             uint32_t flags) const = 0;

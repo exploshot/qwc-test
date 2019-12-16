@@ -12,7 +12,7 @@
 #include <system_error>
 #include <vector>
 
-#include <Crypto/crypto.h>
+#include <Crypto/Crypto.h>
 #include <CryptoNoteCore/CryptoNoteBasic.h>
 #include <CryptoNoteProtocol/CryptoNoteProtocolDefinitions.h>
 #include <Rpc/CoreRpcServerCommandsDefinitions.h>
@@ -24,7 +24,8 @@
 
 namespace CryptoNote {
 
-    class INodeObserver {
+    class INodeObserver 
+    {
     public:
         virtual ~INodeObserver() = default;
 
@@ -71,7 +72,10 @@ namespace CryptoNote {
         Crypto::Hash prevHash;
         uint32_t nonce;
         bool isAlternative;
-        uint32_t depth; // last block index = current block index + depth
+        /*!
+            last block index = current block index + depth
+        */
+        uint32_t depth; 
         uint64_t difficulty;
         uint64_t reward;
     };
@@ -85,12 +89,18 @@ namespace CryptoNote {
         virtual bool addObserver(INodeObserver *observer) = 0;
         virtual bool removeObserver(INodeObserver *observer) = 0;
 
-        //precondition: must be called in dispatcher's thread
+        /*!
+            precondition: must be called in dispatcher's thread
+        */
         virtual void init(const Callback& callback) = 0;
-        //precondition: must be called in dispatcher's thread
+        /*!
+            precondition: must be called in dispatcher's thread
+        */
         virtual bool shutdown() = 0;
 
-        //precondition: all of following methods must not be invoked in dispatcher's thread
+        /*!
+            precondition: all of following methods must not be invoked in dispatcher's thread
+        */
         virtual void getFeeInfo() = 0;
         virtual uint32_t getLastLocalBlockHeight() const = 0;
         virtual uint32_t getLastKnownBlockHeight() const = 0;

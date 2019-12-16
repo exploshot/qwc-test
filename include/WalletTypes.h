@@ -22,31 +22,43 @@ namespace WalletTypes
 
         uint64_t amount;
 
-        /* Daemon doesn't supply this, blockchain cache api does. */
+        /*!
+            Daemon doesn't supply this, blockchain cache api does.
+        */
         std::optional<uint64_t> globalOutputIndex;
     };
 
-    /* A coinbase transaction (i.e., a miner reward, there is one of these in
-       every block). Coinbase transactions have no inputs.
+    /*!
+        A coinbase transaction (i.e., a miner reward, there is one of these in
+        every block). Coinbase transactions have no inputs.
 
-       We call this a raw transaction, because it is simply key images and
-       amounts */
+        We call this a raw transaction, because it is simply key images and
+        amounts
+    */
     struct RawCoinbaseTransaction
     {
-        /* The outputs of the transaction, amounts and keys */
+        /*!
+            The outputs of the transaction, amounts and keys
+        */
         std::vector<KeyOutput> keyOutputs;
 
-        /* The hash of the transaction */
+        /*!
+            The hash of the transaction 
+        */
         Crypto::Hash hash;
 
-        /* The public key of this transaction, taken from the tx extra */
+        /*!
+            The public key of this transaction, taken from the tx extra
+        */
         Crypto::PublicKey transactionPublicKey;
 
-        /* When this transaction's inputs become spendable. Some genius thought
-           it was a good idea to use this field as both a block height, and a
-           unix timestamp. If the value is greater than
-           CRYPTONOTE_MAX_BLOCK_NUMBER (In cryptonoteconfig) it is treated
-           as a unix timestamp, else it is treated as a block height. */
+        /*!
+            When this transaction's inputs become spendable. Some genius thought
+            it was a good idea to use this field as both a block height, and a
+            unix timestamp. If the value is greater than
+            CRYPTONOTE_MAX_BLOCK_NUMBER (In cryptonoteconfig) it is treated
+            as a unix timestamp, else it is treated as a block height.
+        */
         uint64_t unlockTime;
 
         size_t memoryUsage() const
@@ -60,14 +72,20 @@ namespace WalletTypes
         }
     };
 
-    /* A raw transaction, simply key images and amounts */
+    /*!
+        A raw transaction, simply key images and amounts
+    */
     struct RawTransaction : RawCoinbaseTransaction
     {
-        /* The transaction payment ID - may be an empty string */
+        /*!
+            The transaction payment ID - may be an empty string 
+        */
         std::string paymentID;
 
-        /* The inputs used for a transaction, can be used to track outgoing
-           transactions */
+        /*!
+            The inputs used for a transaction, can be used to track outgoing
+            transactions
+        */
         std::vector<CryptoNote::KeyInput> keyInputs;
 
         size_t memoryUsage() const
@@ -82,23 +100,35 @@ namespace WalletTypes
         }
     };
 
-    /* A 'block' with the very basics needed to sync the transactions */
+    /*!
+        A 'block' with the very basics needed to sync the transactions
+    */
     struct WalletBlockInfo
     {
-        /* The coinbase transaction. Optional, since we can skip fetching
-           coinbase transactions from daemon. */
+        /*!
+            The coinbase transaction. Optional, since we can skip fetching
+            coinbase transactions from daemon.
+        */
         std::optional<RawCoinbaseTransaction> coinbaseTransaction;
 
-        /* The transactions in the block */
+        /*!
+            The transactions in the block 
+        */
         std::vector<RawTransaction> transactions;
 
-        /* The block height (duh!) */
+        /*!
+            The block height (duh!) 
+        */
         uint64_t blockHeight;
 
-        /* The hash of the block */
+        /*!
+            The hash of the block
+        */
         Crypto::Hash blockHash;
 
-        /* The timestamp of the block */
+        /*!
+            The timestamp of the block
+        */
         uint64_t blockTimestamp;
 
         size_t memoryUsage() const
@@ -124,28 +154,42 @@ namespace WalletTypes
 
     struct TransactionInput
     {
-        /* The key image of this amount */
+        /*!
+            The key image of this amount
+        */
         Crypto::KeyImage keyImage;
 
-        /* The value of this key image */
+        /*!
+            The value of this key image
+        */
         uint64_t amount;
 
-        /* The block height this key images transaction was included in
-           (Need this for removing key images that were received on a forked
-           chain) */
+        /*!
+            The block height this key images transaction was included in
+            (Need this for removing key images that were received on a forked
+            chain)
+        */
         uint64_t blockHeight;
 
-        /* The transaction public key that was included in the tx_extra of the
-           transaction */
+        /*!
+            The transaction public key that was included in the txExtra of the
+            transaction 
+        */
         Crypto::PublicKey transactionPublicKey;
 
-        /* The index of this input in the transaction */
+        /*!
+            The index of this input in the transaction
+        */
         uint64_t transactionIndex;
 
-        /* The index of this output in the 'DB' */
+        /*!
+            The index of this output in the 'DB'
+        */
         std::optional<uint64_t> globalOutputIndex;
 
-        /* The transaction key we took from the key outputs */
+        /*!
+            The transaction key we took from the key outputs
+        */
         Crypto::PublicKey key;
 
         /* If spent, what height did we spend it at. Used to remove spent
@@ -153,13 +197,17 @@ namespace WalletTypes
            forked chain. */
         uint64_t spendHeight;
 
-        /* When does this input unlock for spending. Default is instantly
-           unlocked, or blockHeight + CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW
-           for a coinbase/miner transaction. Users can specify a custom
-           unlock height however. */
+        /*!
+            When does this input unlock for spending. Default is instantly
+            unlocked, or blockHeight + CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW
+            for a coinbase/miner transaction. Users can specify a custom
+            unlock height however.
+        */
         uint64_t unlockTime;
 
-        /* The transaction hash of the transaction that contains this input */
+        /*!
+            The transaction hash of the transaction that contains this input
+        */
         Crypto::Hash parentTransactionHash;
 
         bool operator==(const TransactionInput &other)
@@ -167,7 +215,9 @@ namespace WalletTypes
             return keyImage == other.keyImage;
         }
 
-        /* Converts the class to a json object */
+        /*!
+            Converts the class to a json object
+        */
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.StartObject();
@@ -205,7 +255,9 @@ namespace WalletTypes
             writer.EndObject();
         }
 
-        /* Initializes the class from a json string */
+        /*!
+            Initializes the class from a json string 
+        */
         void fromJSON(const JSONValue &j)
         {
             keyImage.fromString(getStringFromJSON(j, "keyImage"));
@@ -221,8 +273,10 @@ namespace WalletTypes
         }
     };
 
-    /* Includes the owner of the input so we can sign the input with the
-       correct keys */
+    /*!
+        Includes the owner of the input so we can sign the input with the
+        correct keys 
+    */
     struct TxInputAndOwner
     {
         TxInputAndOwner(
@@ -243,13 +297,19 @@ namespace WalletTypes
 
     struct TransactionDestination
     {
-        /* The public spend key of the receiver of the transaction output */
+        /*!
+            The public spend key of the receiver of the transaction output 
+        */
         Crypto::PublicKey receiverPublicSpendKey;
 
-        /* The public view key of the receiver of the transaction output */
+        /*!
+            The public view key of the receiver of the transaction output 
+        */
         Crypto::PublicKey receiverPublicViewKey;
 
-        /* The amount of the transaction output */
+        /*!
+            The amount of the transaction output
+        */
         uint64_t amount;
     };
 
@@ -261,22 +321,34 @@ namespace WalletTypes
 
     struct ObscuredInput
     {
-        /* The outputs, including our real output, and the fake mixin outputs */
+        /*!
+            The outputs, including our real output, and the fake mixin outputs
+        */
         std::vector<GlobalIndexKey> outputs;
 
-        /* The index of the real output in the outputs vector */
+        /*!
+            The index of the real output in the outputs vector 
+        */
         uint64_t realOutput;
 
-        /* The real transaction public key */
+        /*!
+            The real transaction public key
+        */
         Crypto::PublicKey realTransactionPublicKey;
 
-        /* The index in the transaction outputs vector */
+        /*!
+            The index in the transaction outputs vector
+        */
         uint64_t realOutputTransactionIndex;
 
-        /* The amount being sent */
+        /*!
+            The amount being sent
+        */
         uint64_t amount;
 
-        /* The owners keys, so we can sign the input correctly */
+        /*!
+            The owners keys, so we can sign the input correctly
+        */
         Crypto::PublicKey ownerPublicSpendKey;
 
         Crypto::SecretKey ownerPrivateSpendKey;
@@ -285,106 +357,114 @@ namespace WalletTypes
     class Transaction
     {
         public:
+            Transaction() 
+            {
+            };
 
-            //////////////////
-            /* Constructors */
-            //////////////////
+            /*!
+                Mapping of public key to transaction amount, can be multiple
+                if one transaction sends to multiple subwallets
+            */
+            Transaction(const std::unordered_map<Crypto::PublicKey, int64_t> transfers,
+                        const Crypto::Hash hash,
+                        const uint64_t fee,
+                        const uint64_t timestamp,
+                        const uint64_t blockHeight,
+                        const std::string paymentID,
+                        const uint64_t unlockTime,
+                        const bool isCoinbaseTransaction) 
 
-            Transaction() {};
-
-            Transaction(
-                /* Mapping of public key to transaction amount, can be multiple
-                   if one transaction sends to multiple subwallets */
-                const std::unordered_map<Crypto::PublicKey, int64_t> transfers,
-                const Crypto::Hash hash,
-                const uint64_t fee,
-                const uint64_t timestamp,
-                const uint64_t blockHeight,
-                const std::string paymentID,
-                const uint64_t unlockTime,
-                const bool isCoinbaseTransaction) :
-
-                transfers(transfers),
-                hash(hash),
-                fee(fee),
-                timestamp(timestamp),
-                blockHeight(blockHeight),
-                paymentID(paymentID),
-                unlockTime(unlockTime),
-                isCoinbaseTransaction(isCoinbaseTransaction)
+                :   transfers(transfers),
+                    hash(hash),
+                    fee(fee),
+                    timestamp(timestamp),
+                    blockHeight(blockHeight),
+                    paymentID(paymentID),
+                    unlockTime(unlockTime),
+                    isCoinbaseTransaction(isCoinbaseTransaction)
             {
             }
-
-            /////////////////////////////
-            /* Public member functions */
-            /////////////////////////////
 
             int64_t totalAmount() const
             {
                 int64_t sum = 0;
 
-                for (const auto [pubKey, amount] : transfers)
-                {
+                for (const auto [pubKey, amount] : transfers) {
                     sum += amount;
                 }
 
                 return sum;
             }
 
-            /* It's worth noting that this isn't a conclusive check for if a
-               transaction is a fusion transaction - there are some requirements
-               it has to meet - but we don't need to check them, as the daemon
-               will handle that for us - Any transactions that come to the
-               wallet (assuming a non malicious daemon) that are zero and not
-               a coinbase, is a fusion transaction */
+            /*!
+                It's worth noting that this isn't a conclusive check for if a
+                transaction is a fusion transaction - there are some requirements
+                it has to meet - but we don't need to check them, as the daemon
+                will handle that for us - Any transactions that come to the
+                wallet (assuming a non malicious daemon) that are zero and not
+                a coinbase, is a fusion transaction
+            */
             bool isFusionTransaction() const
             {
                 return fee == 0 && !isCoinbaseTransaction;
             }
 
-            /////////////////////////////
-            /* Public member variables */
-            /////////////////////////////
+            /*!
+                A map of public keys to amounts, since one transaction can go to
+                multiple addresses. These can be positive or negative, for example
+                one address might have sent 10,000 QWC (-10000) to two recipients
+                (+5000), (+5000)
 
-            /* A map of public keys to amounts, since one transaction can go to
-               multiple addresses. These can be positive or negative, for example
-               one address might have sent 10,000 TRTL (-10000) to two recipients
-               (+5000), (+5000)
-
-               All the public keys in this map, are ones that the wallet container
-               owns, it won't store amounts belonging to random people */
+                All the public keys in this map, are ones that the wallet container
+                owns, it won't store amounts belonging to random people
+            */
             std::unordered_map<Crypto::PublicKey, int64_t> transfers;
 
-            /* The hash of the transaction */
+            /*!
+                The hash of the transaction
+            */
             Crypto::Hash hash;
 
-            /* The fee the transaction was sent with (always positive) */
+            /*!
+                The fee the transaction was sent with (always positive)
+            */
             uint64_t fee;
 
-            /* The blockheight this transaction is in */
+            /*!
+                The blockheight this transaction is in
+            */
             uint64_t blockHeight;
 
-            /* The timestamp of this transaction (taken from the block timestamp) */
+            /*!
+                The timestamp of this transaction (taken from the block timestamp)
+            */
             uint64_t timestamp;
 
-            /* The paymentID of this transaction (will be an empty string if no pid) */
+            /*!
+                The paymentID of this transaction (will be an empty string if no pid)
+            */
             std::string paymentID;
 
-            /* When does the transaction unlock */
+            /*!
+                When does the transaction unlock
+            */
             uint64_t unlockTime;
 
-            /* Was this transaction a miner reward / coinbase transaction */
+            /*!
+                Was this transaction a miner reward / coinbase transaction
+            */
             bool isCoinbaseTransaction;
 
-            /* Converts the class to a json object */
+            /*!
+                Converts the class to a json object 
+            */
             void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
             {
                 writer.StartObject();
 
                 writer.Key("transfers");
                 writer.StartArray();
-                for (const auto &[publicKey, amount] : transfers)
-                {
+                for (const auto &[publicKey, amount] : transfers) {
                     writer.StartObject();
 
                     writer.Key("publicKey");
@@ -421,11 +501,12 @@ namespace WalletTypes
                 writer.EndObject();
             }
 
-            /* Initializes the class from a json string */
+            /*!
+                Initializes the class from a json string
+            */
             void fromJSON(const JSONValue &j)
             {
-                for (const auto &x : getArrayFromJSON(j, "transfers"))
-                {
+                for (const auto &x : getArrayFromJSON(j, "transfers")) {
                     Crypto::PublicKey publicKey;
                     publicKey.fromString(getStringFromJSON(x, "publicKey"));
 
@@ -444,37 +525,57 @@ namespace WalletTypes
 
     struct WalletStatus
     {
-        /* The amount of blocks the wallet has synced */
+        /*!
+            The amount of blocks the wallet has synced 
+        */
         uint64_t walletBlockCount;
 
-        /* The amount of blocks the daemon we are connected to has synced */
+        /*!
+            The amount of blocks the daemon we are connected to has synced 
+        */
         uint64_t localDaemonBlockCount;
 
-        /* The amount of blocks the daemons on the network have */
+        /*!
+            The amount of blocks the daemons on the network have 
+        */
         uint64_t networkBlockCount;
 
-        /* The amount of peers the node is connected to */
+        /*!
+            The amount of peers the node is connected to 
+        */
         uint32_t peerCount;
 
-        /* The hashrate (based on the last block the daemon has synced) */
+        /*!
+            The hashrate (based on the last block the daemon has synced) 
+        */
         uint64_t lastKnownHashrate;
     };
 
-    /* A structure just used to display locked balance, due to change from
-       sent transactions. We just need the amount and a unique identifier
-       (hash+key), since we can't spend it, we don't need all the other stuff */
+    /*!
+        A structure just used to display locked balance, due to change from
+        sent transactions. We just need the amount and a unique identifier
+        (hash+key), since we can't spend it, we don't need all the other stuff
+    */
     struct UnconfirmedInput
     {
-        /* The amount of the input */
+        /*!
+            The amount of the input
+        */
         uint64_t amount;
 
-        /* The transaction key we took from the key outputs */
+        /*!
+            The transaction key we took from the key outputs
+        */
         Crypto::PublicKey key;
 
-        /* The transaction hash of the transaction that contains this input */
+        /*!
+            The transaction hash of the transaction that contains this input
+        */
         Crypto::Hash parentTransactionHash;
 
-        /* Converts the class to a json object */
+        /*!
+            Converts the class to a json object 
+        */
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.StartObject();
@@ -491,7 +592,9 @@ namespace WalletTypes
             writer.EndObject();
         }
 
-        /* Initializes the class from a json string */
+        /*!
+            Initializes the class from a json string 
+        */
         void fromJSON(const JSONValue &j)
         {
             amount = getUint64FromJSON(j, "amount");
@@ -564,16 +667,15 @@ namespace WalletTypes
         r.hash                  = j.at("hash").get<Crypto::Hash>();
         r.transactionPublicKey  = j.at("txPublicKey").get<Crypto::PublicKey>();
 
-        /* We need to try to get the unlockTime from an integer in the json
-           however, if that fails because we're talking to a blockchain
-           cache API that encodes unlockTime as a string (due to json
-           integer encoding limits), we need to attempt this as a string */
-        try
-        {
+        /*!
+            We need to try to get the unlockTime from an integer in the json
+            however, if that fails because we're talking to a blockchain
+            cache API that encodes unlockTime as a string (due to json
+            integer encoding limits), we need to attempt this as a string
+        */
+        try {
             r.unlockTime = j.at("unlockTime").get<uint64_t>();
-        }
-        catch (const nlohmann::json::exception &e)
-        {
+        } catch (const nlohmann::json::exception &e) {
             r.unlockTime = std::stoull(j.at("unlockTime").get<std::string>());
         }
     }
@@ -596,18 +698,18 @@ namespace WalletTypes
         r.hash = j.at("hash").get<Crypto::Hash>();
         r.transactionPublicKey = j.at("txPublicKey").get<Crypto::PublicKey>();
 
-        /* We need to try to get the unlockTime from an integer in the json
-           however, if that fails because we're talking to a blockchain
-           cache API that encodes unlockTime as a string (due to json
-           integer encoding limits), we need to attempt this as a string */
-        try
-        {
+        /*!
+            We need to try to get the unlockTime from an integer in the json
+            however, if that fails because we're talking to a blockchain
+            cache API that encodes unlockTime as a string (due to json
+            integer encoding limits), we need to attempt this as a string
+        */
+        try {
             r.unlockTime = j.at("unlockTime").get<uint64_t>();
-        }
-        catch (const nlohmann::json::exception &e)
-        {
+        } catch (const nlohmann::json::exception &e) {
             r.unlockTime = std::stoull(j.at("unlockTime").get<std::string>());
         }
+
         r.paymentID = j.at("paymentID").get<std::string>();
         r.keyInputs = j.at("inputs").get<std::vector<CryptoNote::KeyInput>>();
     }
@@ -625,12 +727,13 @@ namespace WalletTypes
         k.key = j.at("key").get<Crypto::PublicKey>();
         k.amount = j.at("amount").get<uint64_t>();
 
-        /* If we're talking to a daemon or blockchain cache
-           that returns the globalIndex as part of the structure
-           of a key output, then we need to load that into the
-           data structure. */
-        if (j.find("globalIndex") != j.end())
-        {
+        /*!
+            If we're talking to a daemon or blockchain cache
+            that returns the globalIndex as part of the structure
+            of a key output, then we need to load that into the
+            data structure. 
+        */
+        if (j.find("globalIndex") != j.end()) {
             k.globalOutputIndex = j.at("globalIndex").get<uint64_t>();
         }
     }
@@ -650,4 +753,4 @@ namespace WalletTypes
         u.key = j.at("key").get<Crypto::PublicKey>();
         u.parentTransactionHash = j.at("parentTransactionHash").get<Crypto::Hash>();
     }
-}
+} // namespace WalletTypes

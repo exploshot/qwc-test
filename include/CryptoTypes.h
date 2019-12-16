@@ -32,8 +32,10 @@ namespace Crypto
 {
     struct Hash
     {
-        /* Can't have constructors here, because it violates std::is_pod<>
-           which is used somewhere */
+        /*!
+            Can't have constructors here, because it violates std::is_pod<>
+            which is used somewhere
+        */
         bool operator==(const Hash &other) const
         {
             return std::equal(std::begin(data), std::end(data), std::begin(other.data));
@@ -46,13 +48,17 @@ namespace Crypto
         
         uint8_t data[32];
 
-        /* Converts the class to a json object */
+        /*!
+            Converts the class to a json object
+        */
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.String(Common::podToHex(data));
         }
 
-        /* Initializes the class from a json string */
+        /*!
+            Initializes the class from a json string
+        */
         void fromString(const std::string &s)
         {
             if (!Common::podFromHex(s, data))
@@ -86,13 +92,17 @@ namespace Crypto
             return !(*this == other);
         }
 
-        /* Converts the class to a json object */
+        /*!
+            Converts the class to a json object
+        */
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.String(Common::podToHex(data));
         }
 
-        /* Initializes the class from a json string */
+        /*!
+            Initializes the class from a json string 
+        */
         void fromString(const std::string &s)
         {
             if (!Common::podFromHex(s, data))
@@ -128,13 +138,17 @@ namespace Crypto
             return !(*this == other);
         }
 
-        /* Converts the class to a json object */
+        /*!
+            Converts the class to a json object
+        */
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.String(Common::podToHex(data));
         }
 
-        /* Initializes the class from a json string */
+        /*!
+            Initializes the class from a json string 
+        */
         void fromString(const std::string &s)
         {
             if (!Common::podFromHex(s, data))
@@ -170,13 +184,17 @@ namespace Crypto
             return !(*this == other);
         }
 
-        /* Converts the class to a json object */
+        /*!
+            Converts the class to a json object 
+        */
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.String(Common::podToHex(data));
         }
 
-        /* Initializes the class from a json string */
+        /*!
+            Initializes the class from a json string
+        */
         void fromString(const std::string &s)
         {
             if (!Common::podFromHex(s, data))
@@ -213,13 +231,17 @@ namespace Crypto
             return !(*this == other);
         }
 
-        /* Converts the class to a json object */
+        /*!
+            Converts the class to a json object 
+        */
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.String(Common::podToHex(data));
         }
 
-        /* Initializes the class from a json string */
+        /*!
+            Initializes the class from a json string
+        */
         void fromString(const std::string &s)
         {
             if (!Common::podFromHex(s, data))
@@ -258,7 +280,9 @@ namespace Crypto
         uint8_t data[64];
     };
 
-    /* For boost hash_value */
+    /*!
+        For boost hash_value
+    */
     inline size_t hash_value(const Hash &hash)
     {
         return reinterpret_cast<const size_t &>(hash);
@@ -373,7 +397,9 @@ namespace Crypto
 
 namespace std
 {
-    /* For using in std::unordered_* containers */
+    /*!
+        For using in std::unordered_* containers
+    */
     template<> struct hash<Crypto::Hash>
     {
         size_t operator()(const Crypto::Hash &hash) const
@@ -422,7 +448,9 @@ namespace std
         }
     };
 
-    /* Overloading the << operator */
+    /*!
+        Overloading the << operator 
+    */
     inline ostream &operator<<(ostream &os, const Crypto::Hash &hash)
     {
         os << Common::podToHex(hash);
@@ -458,4 +486,4 @@ namespace std
         os << Common::podToHex(signature);
         return os;
     }
-}
+} // namespace std

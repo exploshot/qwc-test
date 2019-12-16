@@ -6,7 +6,6 @@
 
 #include <rapidjson/document.h>
 
-/* Yikes! */
 typedef rapidjson::GenericObject<
     true, 
     rapidjson::GenericValue<rapidjson::UTF8<char>, 
@@ -18,11 +17,17 @@ typedef rapidjson::GenericValue<
 
 static const std::string kTypeNames[] =
 { 
-    "Null", "False", "True", "Object", "Array", "String", "Number"
+    "Null", 
+    "False", 
+    "True", 
+    "Object", 
+    "Array", 
+    "String", 
+    "Number"
 };
 
 template<typename T>
-const rapidjson::Value & getJsonValue(const T &j, const std::string &key)
+const rapidjson::Value &getJsonValue(const T &j, const std::string &key)
 {
     auto val = j.FindMember(key);
 
@@ -66,9 +71,9 @@ uint64_t getInt64FromJSON(const T &j, const std::string &key)
     return val.GetInt64();
 }
 
-/**
- * Gets a string from the JSON, with a given keyname
- */
+/*!
+    Gets a string from the JSON, with a given keyname
+*/
 template<typename T>
 std::string getStringFromJSON(const T &j, const std::string &key)
 {
@@ -85,10 +90,10 @@ std::string getStringFromJSON(const T &j, const std::string &key)
     return val.GetString();
 }
 
-/**
- * Gets a string from the JSON, without a key. For example, we might have an
- * array of strings.
- */
+/*!
+    Gets a string from the JSON, without a key. For example, we might have an
+    array of strings.
+*/
 template<typename T>
 std::string getStringFromJSONString(const T &j)
 {
