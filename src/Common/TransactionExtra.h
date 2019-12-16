@@ -94,7 +94,7 @@ namespace CryptoNote {
     bool writeTransactionExtra(std::vector<uint8_t> &txExtra, const std::vector<TransactionExtraField> &txExtraFields);
 
     Crypto::PublicKey getTransactionPublicKeyFromExtra(const std::vector<uint8_t> &txExtra);
-    bool addTransactionPublicKeyToExtra(std::vector<uint8_t> &txExtra, const Crypto::PublicKey &tx_pub_key);
+    bool addTransactionPublicKeyToExtra(std::vector<uint8_t> &txExtra, const Crypto::PublicKey &txPubKey);
     bool addExtraNonceToTransactionExtra(std::vector<uint8_t> &txExtra, const BinaryArray &extra_nonce);
     void setPaymentIdToTransactionExtraNonce(BinaryArray &extra_nonce, const Crypto::Hash &payment_id);
     bool getPaymentIdFromTransactionExtraNonce(const BinaryArray &extra_nonce, Crypto::Hash &payment_id);

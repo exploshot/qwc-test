@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <stdexcept>
 
-#include <Crypto/random.h>
+#include <Crypto/Random.h>
 
 
 class SequenceEnded: public std::runtime_error

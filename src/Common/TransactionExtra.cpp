@@ -195,11 +195,11 @@ namespace CryptoNote {
     }
 
     bool addTransactionPublicKeyToExtra(std::vector<uint8_t> &txExtra, 
-                                        const PublicKey &tx_pub_key) 
+                                        const PublicKey &txPubKey) 
     {
         txExtra.resize(txExtra.size() + 1 + sizeof(PublicKey));
         txExtra[txExtra.size() - 1 - sizeof(PublicKey)] = TX_EXTRA_TAG_PUBKEY;
-        *reinterpret_cast<PublicKey *>(&txExtra[txExtra.size() - sizeof(PublicKey)]) = tx_pub_key;
+        *reinterpret_cast<PublicKey *>(&txExtra[txExtra.size() - sizeof(PublicKey)]) = txPubKey;
         
         return true;
     }

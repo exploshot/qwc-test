@@ -5,7 +5,7 @@
 
 #include <Common/CheckDifficulty.h>
 #include <Common/IIntUtil.h>
-#include <Crypto/hash.h>
+#include <Crypto/Hash.h>
 
 namespace CryptoNote
 {
