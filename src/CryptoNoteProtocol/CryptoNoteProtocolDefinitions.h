@@ -62,8 +62,8 @@ namespace CryptoNote {
 
         void serialize(ISerializer &s)
         {
-            serializeAsBinary(txs, "txs", s);
-            serializeAsBinary(blocks, "blocks", s);
+            serializeAsBinary (txs, "txs", s);
+            serializeAsBinary (blocks, "blocks", s);
         }
     };
 
@@ -101,7 +101,7 @@ namespace CryptoNote {
 
             void serialize(ISerializer &s)
             {
-                serializeAsBinary(block_ids, "block_ids", s);
+                serializeAsBinary (block_ids, "block_ids", s);
             }
         };
     };
@@ -116,7 +116,7 @@ namespace CryptoNote {
         {
             KV_MEMBER(start_height)
             KV_MEMBER(total_height)
-            serializeAsBinary(m_block_ids, "m_block_ids", s);
+            serializeAsBinary (m_block_ids, "m_block_ids", s);
         }
     };
 
@@ -132,7 +132,7 @@ namespace CryptoNote {
 
         void serialize(ISerializer &s)
         {
-            serializeAsBinary(txs, "txs", s);
+            serializeAsBinary (txs, "txs", s);
         }
     };
 
