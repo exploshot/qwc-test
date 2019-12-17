@@ -33,7 +33,7 @@
 
 namespace Common {
 
-    class AsyncConsoleReader 
+    class AsyncConsoleReader
     {
     public:
 
@@ -57,8 +57,7 @@ namespace Common {
         BlockingQueue<std::string> m_queue;
     };
 
-
-    class ConsoleHandler 
+    class ConsoleHandler
     {
         typedef std::function<bool(const std::vector<std::string> &)> ConsoleCommandHandler;
         typedef std::map<std::string, std::pair<ConsoleCommandHandler, std::string>> CommandHandlersMap;
@@ -67,23 +66,22 @@ namespace Common {
         ~ConsoleHandler();
 
         std::string getUsage() const;
-        void setHandler(const std::string &command, 
-                        const ConsoleCommandHandler &handler, 
+        void setHandler(const std::string &command,
+                        const ConsoleCommandHandler &handler,
                         const std::string &usage = "");
         void requestStop();
         bool runCommand(const std::vector<std::string> &cmdAndArgs);
 
-        void start(bool startThread = true, 
-                   const std::string &prompt = "", 
+        void start(bool startThread = true,
+                   const std::string &prompt = "",
                    Console::Color promptColor = Console::Color::Default);
         void stop();
-        void wait(); 
+        void wait();
         void pause();
         void unpause();
 
     private:
 
-        
 
         virtual void handleCommand(const std::string &cmd);
 

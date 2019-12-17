@@ -59,27 +59,30 @@ namespace Common {
     void write(IOutputStream &out, const std::string &data);
     void writeVarint(IOutputStream &out, uint64_t value);
 
-    template<typename T> T read(IInputStream &in)
+    template<typename T>
+    T read(IInputStream &in)
     {
         T value;
-        read(in, value);
-        
+        read (in, value);
+
         return value;
     }
 
-    template<typename T> T read(IInputStream &in, uint64_t size) 
+    template<typename T>
+    T read(IInputStream &in, uint64_t size)
     {
         T value;
-        read(in, value, size);
-        
+        read (in, value, size);
+
         return value;
     }
 
-    template<typename T> T readVarint(IInputStream &in)
+    template<typename T>
+    T readVarint(IInputStream &in)
     {
         T value;
-        readVarint(in, value);
-        
+        readVarint (in, value);
+
         return value;
     }
 
@@ -88,23 +91,28 @@ namespace Common {
     {
     public:
         explicit ContainerFormatter(const T &container)
-            : m_container(container)
+            : m_container (container)
         {
         }
 
         friend std::ostream &operator<<(std::ostream &os, const ContainerFormatter<T> &formatter)
         {
-            os << '{';
+            os
+                << '{';
 
-            if (!formatter.m_container.empty()) {
-                os << formatter.m_container.front();
+            if (!formatter.m_container.empty ()) {
+                os
+                    << formatter.m_container.front ();
 
-                for (auto it = std::next(formatter.m_container.begin()); it != formatter.m_container.end(); ++it) {
-                    os << ", " << *it;
+                for (auto it = std::next (formatter.m_container.begin ()); it != formatter.m_container.end (); ++it) {
+                    os
+                        << ", "
+                        << *it;
                 }
             }
 
-            os << '}';
+            os
+                << '}';
 
             return os;
         }
@@ -116,7 +124,7 @@ namespace Common {
     template<typename T>
     ContainerFormatter<T> makeContainerFormatter(const T &container)
     {
-        return ContainerFormatter<T>(container);
+        return ContainerFormatter<T> (container);
     }
 
 } // namespace Common

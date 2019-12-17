@@ -7,8 +7,7 @@
 #include <Common/IIntUtil.h>
 #include <Crypto/Hash.h>
 
-namespace CryptoNote
-{
+namespace CryptoNote {
     #if defined(__SIZEOF_INT128__)
 
     static inline void mul(uint64_t a, uint64_t b, uint64_t &low, uint64_t &high)
@@ -16,7 +15,10 @@ namespace CryptoNote
         typedef unsigned __int128 uint128_t;
         uint128_t res = (uint128_t) a * (uint128_t) b;
         low = (uint64_t) res;
-        high = (uint64_t) (res >> 64);
+        high = (uint64_t) (
+            res
+                >> 64
+        );
     }
 
     #else
@@ -42,24 +44,23 @@ namespace CryptoNote
     {
         uint64_t low, high, top, cur;
         // First check the highest word, this will most likely fail for a random hash.
-        mul(swap64le(((const uint64_t *) &hash)[3]), difficulty, top, high);
+        mul (swap64le (((const uint64_t *) &hash)[3]), difficulty, top, high);
 
-        if (high != 0)
-        {
+        if (high != 0) {
             return false;
         }
 
-        mul(swap64le(((const uint64_t *) &hash)[0]), difficulty, low, cur);
-        mul(swap64le(((const uint64_t *) &hash)[1]), difficulty, low, high);
+        mul (swap64le (((const uint64_t *) &hash)[0]), difficulty, low, cur);
+        mul (swap64le (((const uint64_t *) &hash)[1]), difficulty, low, high);
 
-        bool carry = cadd(cur, low);
+        bool carry = cadd (cur, low);
 
         cur = high;
 
-        mul(swap64le(((const uint64_t *) &hash)[2]), difficulty, low, high);
+        mul (swap64le (((const uint64_t *) &hash)[2]), difficulty, low, high);
 
-        carry = cadc(cur, low, carry);
-        carry = cadc(high, top, carry);
+        carry = cadc (cur, low, carry);
+        carry = cadc (high, top, carry);
 
         return !carry;
     }

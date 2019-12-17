@@ -27,7 +27,8 @@ namespace Tools {
 
     template<typename OutputIt, typename T>
     typename std::enable_if<std::is_integral<T>::value && std::is_unsigned<T>::value, void>::type
-    writeVarint(OutputIt &&dest, T i) {
+    writeVarint(OutputIt &&dest, T i)
+    {
         while (i >= 0x80) {
             *dest++ = (static_cast<char>(i) & 0x7f) | 0x80;
             i >>= 7;
@@ -39,17 +40,17 @@ namespace Tools {
     std::string getVarintData(const t_type &v)
     {
         std::stringstream ss;
-        writeVarint(std::ostreambuf_iterator<char>(ss), v);
+        writeVarint (std::ostreambuf_iterator<char> (ss), v);
 
-        return ss.str();
+        return ss.str ();
     }
 
     template<int bits, typename InputIt, typename T>
-    typename std::enable_if<std::is_integral<T>::value 
-        && std::is_unsigned<T>::value 
-        && 0 <= bits 
-        && bits <= std::numeric_limits<T>::digits, int>::type
-    readVarint(InputIt &&first, InputIt &&last, T &i) 
+    typename std::enable_if<std::is_integral<T>::value
+                            && std::is_unsigned<T>::value
+                            && 0 <= bits
+                            && bits <= std::numeric_limits<T>::digits, int>::type
+    readVarint(InputIt &&first, InputIt &&last, T &i)
     {
         int read = 0;
         i = 0;
@@ -59,13 +60,17 @@ namespace Tools {
             }
             unsigned char byte = *first++;
             ++read;
-            if (shift + 7 >= bits && byte >= 1 << (bits - shift)) {
+            if (shift + 7 >= bits
+                && byte
+                   >= 1
+                       << (bits - shift)) {
                 return -1; // Overflow.
             }
             if (byte == 0 && shift != 0) {
                 return -2; // Non-canonical representation.
             }
-            i |= static_cast<T>(byte & 0x7f) << shift;
+            i |= static_cast<T>(byte & 0x7f)
+                << shift;
             if ((byte & 0x80) == 0) {
                 break;
             }
@@ -75,8 +80,8 @@ namespace Tools {
     }
 
     template<typename InputIt, typename T>
-    int readVarint(InputIt &&first, InputIt &&last, T &i) 
+    int readVarint(InputIt &&first, InputIt &&last, T &i)
     {
-        return readVarint<std::numeric_limits<T>::digits, InputIt, T>(std::move(first), std::move(last), i);
+        return readVarint<std::numeric_limits<T>::digits, InputIt, T> (std::move (first), std::move (last), i);
     }
 } // namespace Tools

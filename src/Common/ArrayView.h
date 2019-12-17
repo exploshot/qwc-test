@@ -38,8 +38,8 @@ namespace Common {
 
         \note It is recommended to pass 'ArrayView' to procedures by value.
     */
-    template<class Object = uint8_t, class Size = uint64_t> 
-    class ArrayView 
+    template<class Object = uint8_t, class Size = uint64_t>
+    class ArrayView
     {
     public:
         typedef Object ObjectType;
@@ -54,10 +54,10 @@ namespace Common {
             Leaves object uninitialized. Any usage before initializing it is undefined.
         */
         ArrayView()
-    #ifndef NDEBUG // In debug mode, fill in object with invalid state (undefined).
-            : m_data(nullptr), 
-              m_size(INVALID) 
-    #endif
+        #ifndef NDEBUG // In debug mode, fill in object with invalid state (undefined).
+            : m_data (nullptr),
+              m_size (INVALID)
+        #endif
         {
         }
 
@@ -65,9 +65,9 @@ namespace Common {
             Direct constructor.
             The behavior is undefined unless 'arrayData' != 'nullptr' || 'arraySize' == 0
         */
-        ArrayView(const Object *arrayData, Size arraySize) 
-            : m_data(arrayData), 
-              m_size(arraySize)
+        ArrayView(const Object *arrayData, Size arraySize)
+            : m_data (arrayData),
+              m_size (arraySize)
         {
             assert(m_data != nullptr || m_size == 0);
         }
@@ -77,10 +77,10 @@ namespace Common {
             The behavior is undefined unless 'arrayData' != 'nullptr' || 'arraySize' == 0.
             Input state can be malformed using poiner conversions.
         */
-        template<Size arraySize> 
-        ArrayView(const Object(&arrayData)[arraySize]) 
-            : m_data(arrayData), 
-              m_size(arraySize) 
+        template<Size arraySize>
+        ArrayView(const Object(&arrayData)[arraySize])
+            : m_data (arrayData),
+              m_size (arraySize)
         {
             assert(m_data != nullptr || m_size == 0);
         }
@@ -91,9 +91,9 @@ namespace Common {
             The behavior is undefined unless 'other' 'ArrayView' is in defined state, 
             that is 'm_data' != 'nullptr' || 'm_size' == 0
         */
-        ArrayView(const ArrayView &other) 
-            : m_data(other.m_data), 
-              m_size(other.m_size) 
+        ArrayView(const ArrayView &other)
+            : m_data (other.m_data),
+              m_size (other.m_size)
         {
             assert(m_data != nullptr || m_size == 0);
         }
@@ -109,7 +109,7 @@ namespace Common {
             The behavior is undefined unless 'other' 'ArrayView' is in defined state, 
             that is 'm_data' != 'nullptr' || 'm_size' == 0
         */
-        ArrayView &operator=(const ArrayView &other) 
+        ArrayView &operator=(const ArrayView &other)
         {
             assert(other.m_data != nullptr || other.m_size == 0);
 
@@ -119,14 +119,14 @@ namespace Common {
             return *this;
         }
 
-        const Object *getData() const 
+        const Object *getData() const
         {
             assert(m_data != nullptr || m_size == 0);
 
             return m_data;
         }
 
-        Size getSize() const 
+        Size getSize() const
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -137,7 +137,7 @@ namespace Common {
             Return false if 'ArrayView' is not EMPTY.
             The behavior is undefined unless 'ArrayView' was initialized.
         */
-        bool isEmpty() const 
+        bool isEmpty() const
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -159,7 +159,7 @@ namespace Common {
             Get 'ArrayView' element by index.
             The behavior is undefined unless 'ArrayView' was initialized and 'index' < 'm_size'.
         */
-        const Object &operator[](Size index) const 
+        const Object &operator[](Size index) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(index < m_size);
@@ -171,7 +171,7 @@ namespace Common {
             Get first element.
             The behavior is undefined unless 'ArrayView' was initialized and 'm_size' > 0
         */
-        const Object &first() const 
+        const Object &first() const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(m_size > 0);
@@ -183,7 +183,7 @@ namespace Common {
             Get last element.
             The behavior is undefined unless 'ArrayView' was initialized and 'm_size' > 0
         */
-        const Object &last() const 
+        const Object &last() const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(m_size > 0);
@@ -195,7 +195,7 @@ namespace Common {
             Return a pointer to the first element.
             The behavior is undefined unless 'ArrayView' was initialized.
         */
-        const Object *begin() const 
+        const Object *begin() const
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -206,7 +206,7 @@ namespace Common {
             Return a pointer after the last element.
             The behavior is undefined unless 'ArrayView' was initialized.
         */
-        const Object *end() const 
+        const Object *end() const
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -218,7 +218,7 @@ namespace Common {
             EMPTY and NIL arrays are considered equal.
             The behavior is undefined unless both arrays were initialized.
         */
-        bool operator==(ArrayView other) const 
+        bool operator==(ArrayView other) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(other.m_data != nullptr || other.m_size == 0);
@@ -243,7 +243,7 @@ namespace Common {
             EMPTY and NIL arrays are considered equal.
             The behavior is undefined unless both arrays were initialized.
         */
-        bool operator!=(ArrayView other) const 
+        bool operator!=(ArrayView other) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(other.m_data != nullptr || other.m_size == 0);
@@ -267,7 +267,7 @@ namespace Common {
             Return false if 'ArrayView' does not contain 'object' at the beginning.
             The behavior is undefined unless 'ArrayView' was initialized.
         */
-        bool beginsWith(const Object &object) const 
+        bool beginsWith(const Object &object) const
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -282,11 +282,11 @@ namespace Common {
             Return false if 'ArrayView' does not contain 'other' at the beginning.
             The behavior is undefined unless both arrays were initialized.
         */
-        bool beginsWith(ArrayView other) const 
+        bool beginsWith(ArrayView other) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(other.m_data != nullptr || other.m_size == 0);
-            
+
             if (m_size >= other.m_size) {
                 for (Size i = 0;; ++i) {
                     if (i == other.m_size) {
@@ -306,7 +306,7 @@ namespace Common {
             Return false if 'ArrayView' does not contain 'object'.
             The behavior is undefined unless 'ArrayView' was initialized.
         */
-        bool contains(const Object &object) const 
+        bool contains(const Object &object) const
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -323,7 +323,7 @@ namespace Common {
             Return false if 'ArrayView' does not contain 'other'.
             The behavior is undefined unless both arrays were initialized.
         */
-        bool contains(ArrayView other) const 
+        bool contains(ArrayView other) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(other.m_data != nullptr || other.m_size == 0);
@@ -351,7 +351,7 @@ namespace Common {
             Return false if 'ArrayView' does not contain 'object' at the end.
             The behavior is undefined unless 'ArrayView' was initialized.
         */
-        bool endsWith(const Object &object) const 
+        bool endsWith(const Object &object) const
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -366,11 +366,11 @@ namespace Common {
             Return false if 'ArrayView' does not contain 'other' at the end.
             The behavior is undefined unless both arrays were initialized.
         */
-        bool endsWith(ArrayView other) const 
+        bool endsWith(ArrayView other) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(other.m_data != nullptr || other.m_size == 0);
-            
+
             if (m_size >= other.m_size) {
                 Size i = m_size - other.m_size;
                 for (Size j = 0;; ++j) {
@@ -392,7 +392,7 @@ namespace Common {
             returns index or INVALID if there are no occurences.
             The behavior is undefined unless 'ArrayView' was initialized.
         */
-        Size find(const Object &object) const 
+        Size find(const Object &object) const
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -410,7 +410,7 @@ namespace Common {
             returns index or INVALID if there are no occurences.
             The behavior is undefined unless both arrays were initialized.
         */
-        Size find(ArrayView other) const 
+        Size find(ArrayView other) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(other.m_data != nullptr || other.m_size == 0);
@@ -438,7 +438,7 @@ namespace Common {
             returns index or INVALID if there are no occurences.
             The behavior is undefined unless 'ArrayView' was initialized.
         */
-        Size findLast(const Object &object) const 
+        Size findLast(const Object &object) const
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -456,7 +456,7 @@ namespace Common {
             returns index or INVALID if there are no occurences.
             The behavior is undefined unless both arrays were initialized.
         */
-        Size findLast(ArrayView other) const 
+        Size findLast(ArrayView other) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(other.m_data != nullptr || other.m_size == 0);
@@ -483,48 +483,48 @@ namespace Common {
             Returns subarray of 'headSize' first elements.
             The behavior is undefined unless 'ArrayView' was initialized and 'headSize' <= 'm_size'.
         */
-        ArrayView head(Size headSize) const 
+        ArrayView head(Size headSize) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(headSize <= m_size);
 
-            return ArrayView(m_data, headSize);
+            return ArrayView (m_data, headSize);
         }
 
         /*!
             Returns subarray of 'tailSize' last elements.
             The behavior is undefined unless 'ArrayView' was initialized and 'tailSize' <= 'm_size'.
         */
-        ArrayView tail(Size tailSize) const 
+        ArrayView tail(Size tailSize) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(tailSize <= m_size);
-            
-            return ArrayView(m_data + (m_size - tailSize), tailSize);
+
+            return ArrayView (m_data + (m_size - tailSize), tailSize);
         }
 
         /*!
             Returns 'ArrayView' without 'headSize' first elements.
             The behavior is undefined unless 'ArrayView' was initialized and 'headSize' <= 'm_size'.
         */
-        ArrayView unhead(Size headSize) const 
+        ArrayView unhead(Size headSize) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(headSize <= m_size);
 
-            return ArrayView(m_data + headSize, m_size - headSize);
+            return ArrayView (m_data + headSize, m_size - headSize);
         }
 
         /*!
             Returns 'ArrayView' without 'tailSize' last elements.
             The behavior is undefined unless 'ArrayView' was initialized and 'tailSize' <= 'm_size'.
         */
-        ArrayView untail(Size tailSize) const 
+        ArrayView untail(Size tailSize) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(tailSize <= m_size);
 
-            return ArrayView(m_data, m_size - tailSize);
+            return ArrayView (m_data, m_size - tailSize);
         }
 
         /*!
@@ -532,24 +532,24 @@ namespace Common {
             The behavior is undefined unless 'ArrayView' was initialized 
             and 'startIndex' <= 'endIndex' and 'endIndex' <= 'm_size'.
         */
-        ArrayView range(Size startIndex, Size endIndex) const 
+        ArrayView range(Size startIndex, Size endIndex) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(startIndex <= endIndex && endIndex <= m_size);
-            
-            return ArrayView(m_data + startIndex, endIndex - startIndex);
+
+            return ArrayView (m_data + startIndex, endIndex - startIndex);
         }
 
         /*!
             Returns subarray starting at 'startIndex' and contaning 'sliceSize' elements.
             The behavior is undefined unless 'ArrayView' was initialized and 'startIndex' <= 'm_size' and 'startIndex' + 'sliceSize' <= 'm_size'.
         */
-        ArrayView slice(Size startIndex, Size sliceSize) const 
+        ArrayView slice(Size startIndex, Size sliceSize) const
         {
             assert(m_data != nullptr || m_size == 0);
             assert(startIndex <= m_size && startIndex + sliceSize <= m_size);
 
-            return ArrayView(m_data + startIndex, sliceSize);
+            return ArrayView (m_data + startIndex, sliceSize);
         }
 
     protected:
@@ -557,13 +557,13 @@ namespace Common {
         Size m_size;
     };
 
-    template<class Object, class Size> 
-    const Size ArrayView<Object, Size>::INVALID = std::numeric_limits<Size>::max();
+    template<class Object, class Size>
+    const Size ArrayView<Object, Size>::INVALID = std::numeric_limits<Size>::max ();
 
-    template<class Object, class Size> 
-    const ArrayView<Object, Size> ArrayView<Object, Size>::EMPTY(reinterpret_cast<Object *>(1), 0);
+    template<class Object, class Size>
+    const ArrayView<Object, Size> ArrayView<Object, Size>::EMPTY (reinterpret_cast<Object *>(1), 0);
 
-    template<class Object, class Size> 
-    const ArrayView<Object, Size> ArrayView<Object, Size>::NIL(nullptr, 0);
-    
+    template<class Object, class Size>
+    const ArrayView<Object, Size> ArrayView<Object, Size>::NIL (nullptr, 0);
+
 } // namespace Common

@@ -21,12 +21,12 @@
 
 namespace Common {
 
-    class MemoryInputStream : public IInputStream 
+    class MemoryInputStream: public IInputStream
     {
     public:
         MemoryInputStream(const void *buffer, uint64_t bufferSize);
         bool endOfStream() const;
-        
+
         // IInputStream
         virtual uint64_t readSome(void *data, uint64_t size) override;
 

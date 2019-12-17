@@ -31,13 +31,12 @@
 #include <windows.h>
 #include <shlobj.h>
 #include <strsafe.h>
-#else 
+#else
 #include <sys/utsname.h>
 #endif
 
 
-namespace Tools
-{
+namespace Tools {
 #ifdef WIN32
     std::string getWindowsVersionDisplayString()
     {
@@ -264,14 +263,13 @@ namespace Tools
     {
         utsname un;
 
-        if(uname(&un) < 0) {
-            return std::string("*nix: failed to get os version");
+        if (uname (&un) < 0) {
+            return std::string ("*nix: failed to get os version");
         }
-          
-        return std::string() + un.sysname + " " + un.version + " " + un.release;
+
+        return std::string () + un.sysname + " " + un.version + " " + un.release;
     }
 #endif
-
 
 
     std::string getOsVersionString()
@@ -279,10 +277,9 @@ namespace Tools
 #ifdef WIN32
         return getWindowsVersionDisplayString();
 #else
-        return getNixVersionDisplayString();
+        return getNixVersionDisplayString ();
 #endif
     }
-
 
 
 #ifdef WIN32
@@ -300,20 +297,20 @@ namespace Tools
 
     std::string getDefaultDataDirectory()
     {
-    /*!
-        Windows < Vista: C:\Documents and Settings\Username\Application Data\CRYPTONOTE_NAME
-        Windows >= Vista: C:\Users\Username\AppData\Roaming\CRYPTONOTE_NAME
-        Mac: ~/Library/Application Support/CRYPTONOTE_NAME
-        Unix: ~/.CRYPTONOTE_NAME
-    */
+        /*!
+            Windows < Vista: C:\Documents and Settings\Username\Application Data\CRYPTONOTE_NAME
+            Windows >= Vista: C:\Users\Username\AppData\Roaming\CRYPTONOTE_NAME
+            Mac: ~/Library/Application Support/CRYPTONOTE_NAME
+            Unix: ~/.CRYPTONOTE_NAME
+        */
         std::string configFolder;
 #ifdef WIN32
         // Windows
         configFolder = getSpecialFolderPath(CSIDL_APPDATA, true) + "\\" + CryptoNote::CRYPTONOTE_NAME;
 #else
         std::string pathRet;
-        char* pszHome = getenv("HOME");
-        if (pszHome == NULL || std::strlen(pszHome) == 0) {
+        char *pszHome = getenv ("HOME");
+        if (pszHome == NULL || std::strlen (pszHome) == 0) {
             pathRet = "/";
         } else {
             pathRet = pszHome;
@@ -333,15 +330,15 @@ namespace Tools
     bool createDirectoriesIfNecessary(const std::string &path)
     {
         std::error_code e;
-        fs::create_directories(path, e);
+        fs::create_directories (path, e);
 
-        return e.value() == 0;
+        return e.value () == 0;
     }
 
     bool directoryExists(const std::string &path)
     {
         std::error_code e;
 
-        return fs::is_directory(path, e);
+        return fs::is_directory (path, e);
     }
 } // namespace Tools

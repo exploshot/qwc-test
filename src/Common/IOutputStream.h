@@ -22,7 +22,8 @@
 
 namespace Common {
 
-    class IOutputStream {
+    class IOutputStream
+    {
     public:
         virtual ~IOutputStream() = default;
 

@@ -19,14 +19,14 @@
 
 using namespace CryptoNote;
 
-void CryptoNote::getBinaryArrayHash(const BinaryArray &binaryArray, Crypto::Hash &hash) 
+void CryptoNote::getBinaryArrayHash(const BinaryArray &binaryArray, Crypto::Hash &hash)
 {
-    CnFastHash(binaryArray.data(), binaryArray.size(), hash);
+    CnFastHash (binaryArray.data (), binaryArray.size (), hash);
 }
 
-Crypto::Hash CryptoNote::getBinaryArrayHash(const BinaryArray &binaryArray) 
+Crypto::Hash CryptoNote::getBinaryArrayHash(const BinaryArray &binaryArray)
 {
     Crypto::Hash hash;
-    getBinaryArrayHash(binaryArray, hash);
+    getBinaryArrayHash (binaryArray, hash);
     return hash;
 }

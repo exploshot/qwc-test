@@ -38,22 +38,22 @@
 
 namespace CryptoNote {
 
-    struct TransactionExtraPadding 
+    struct TransactionExtraPadding
     {
         size_t size;
     };
 
-    struct TransactionExtraPublicKey 
+    struct TransactionExtraPublicKey
     {
         Crypto::PublicKey publicKey;
     };
 
-    struct TransactionExtraNonce 
+    struct TransactionExtraNonce
     {
         std::vector<uint8_t> nonce;
     };
 
-    struct TransactionExtraMergeMiningTag 
+    struct TransactionExtraMergeMiningTag
     {
         size_t depth;
         Crypto::Hash merkleRoot;
@@ -66,27 +66,26 @@ namespace CryptoNote {
         varint data[];
     */
     typedef boost::variant<
-        TransactionExtraPadding, 
-        TransactionExtraPublicKey, 
-        TransactionExtraNonce, 
+        TransactionExtraPadding,
+        TransactionExtraPublicKey,
+        TransactionExtraNonce,
         TransactionExtraMergeMiningTag> TransactionExtraField;
 
-
-
     template<typename T>
-    bool findTransactionExtraFieldByType(const std::vector<TransactionExtraField> &txExtraFields, T &field) 
+    bool findTransactionExtraFieldByType(const std::vector<TransactionExtraField> &txExtraFields, T &field)
     {
-        auto it = std::find_if(txExtraFields.begin(), txExtraFields.end(),
-                  [](const TransactionExtraField &f) { 
-                      return typeid(T) == f.type(); 
-                  });
+        auto it = std::find_if (txExtraFields.begin (), txExtraFields.end (),
+                                [](const TransactionExtraField &f)
+                                {
+                                    return typeid (T) == f.type ();
+                                });
 
-        if (txExtraFields.end() == it) {
+        if (txExtraFields.end () == it) {
             return false;
         }
-          
-        field = boost::get<T>(*it);
-        
+
+        field = boost::get<T> (*it);
+
         return true;
     }
 

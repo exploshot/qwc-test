@@ -21,46 +21,48 @@
 
 namespace Common {
 
-    const StringView::Size StringView::INVALID = std::numeric_limits<StringView::Size>::max();
-    const StringView StringView::EMPTY(reinterpret_cast<Object*>(1), 0);
-    const StringView StringView::NIL(nullptr, 0);
+    const StringView::Size StringView::INVALID = std::numeric_limits<StringView::Size>::max ();
+
+    const StringView StringView::EMPTY (reinterpret_cast<Object *>(1), 0);
+
+    const StringView StringView::NIL (nullptr, 0);
 
     /*!
         In debug mode, fill in object with invalid state (undefined).
     */
     StringView::StringView()
     #ifndef NDEBUG
-        : data(nullptr), 
-          size(INVALID)
+        : data (nullptr),
+          size (INVALID)
     #endif
     {
     }
 
-    StringView::StringView(const Object *stringData, Size stringSize) 
-        : data(stringData), 
-          size(stringSize) 
+    StringView::StringView(const Object *stringData, Size stringSize)
+        : data (stringData),
+          size (stringSize)
     {
         assert(data != nullptr || size == 0);
     }
 
-    StringView::StringView(const std::string &string) 
-        : data(string.data()), 
-          size(string.size()) 
+    StringView::StringView(const std::string &string)
+        : data (string.data ()),
+          size (string.size ())
     {
     }
 
-    StringView::StringView(const StringView &other) 
-        : data(other.data), 
-          size(other.size) 
+    StringView::StringView(const StringView &other)
+        : data (other.data),
+          size (other.size)
     {
         assert(data != nullptr || size == 0);
     }
 
-    StringView::~StringView() 
+    StringView::~StringView()
     {
     }
 
-    StringView &StringView::operator=(const StringView &other) 
+    StringView &StringView::operator=(const StringView &other)
     {
         assert(other.data != nullptr || other.size == 0);
         data = other.data;
@@ -69,82 +71,82 @@ namespace Common {
         return *this;
     }
 
-    StringView::operator std::string() const 
+    StringView::operator std::string() const
     {
-        return std::string(data, size);
+        return std::string (data, size);
     }
 
-    const StringView::Object *StringView::getData() const 
+    const StringView::Object *StringView::getData() const
     {
         assert(data != nullptr || size == 0);
-        
+
         return data;
     }
 
-    StringView::Size StringView::getSize() const 
+    StringView::Size StringView::getSize() const
     {
         assert(data != nullptr || size == 0);
-        
+
         return size;
     }
 
-    bool StringView::isEmpty() const 
+    bool StringView::isEmpty() const
     {
         assert(data != nullptr || size == 0);
-        
+
         return size == 0;
     }
 
-    const StringView::Object &StringView::operator[](Size index) const 
+    const StringView::Object &StringView::operator[](Size index) const
     {
         assert(data != nullptr || size == 0);
         assert(index < size);
-        
+
         return *(data + index);
     }
 
-    const StringView::Object &StringView::first() const 
+    const StringView::Object &StringView::first() const
     {
         assert(data != nullptr || size == 0);
         assert(size > 0);
-        
+
         return *data;
     }
 
-    const StringView::Object &StringView::last() const 
+    const StringView::Object &StringView::last() const
     {
         assert(data != nullptr || size == 0);
         assert(size > 0);
-        
+
         return *(data + (size - 1));
     }
 
-    const StringView::Object *StringView::begin() const 
+    const StringView::Object *StringView::begin() const
     {
         assert(data != nullptr || size == 0);
-        
+
         return data;
     }
 
-    const StringView::Object *StringView::end() const 
+    const StringView::Object *StringView::end() const
     {
         assert(data != nullptr || size == 0);
-        
+
         return data + size;
     }
 
-    bool StringView::operator==(StringView other) const 
+    bool StringView::operator==(StringView other) const
     {
         assert(data != nullptr || size == 0);
         assert(other.data != nullptr || other.size == 0);
         if (size == other.size) {
             for (Size i = 0;; ++i) {
                 if (i == size) {
-                  return true;
+                    return true;
                 }
 
                 if (!(*(data + i) == *(other.data + i))) {
-                  break;
+                    break;
                 }
             }
         }
@@ -152,12 +154,12 @@ namespace Common {
         return false;
     }
 
-    bool StringView::operator!=(StringView other) const 
+    bool StringView::operator!=(StringView other) const
     {
         return !(*this == other);
     }
 
-    bool StringView::operator<(StringView other) const 
+    bool StringView::operator<(StringView other) const
     {
         assert(data != nullptr || size == 0);
         assert(other.data != nullptr || other.size == 0);
@@ -177,22 +179,22 @@ namespace Common {
         return size < other.size;
     }
 
-    bool StringView::operator<=(StringView other) const 
+    bool StringView::operator<=(StringView other) const
     {
         return !(other < *this);
     }
 
-    bool StringView::operator>(StringView other) const 
+    bool StringView::operator>(StringView other) const
     {
         return other < *this;
     }
 
-    bool StringView::operator>=(StringView other) const 
+    bool StringView::operator>=(StringView other) const
     {
         return !(*this < other);
     }
 
-    bool StringView::contains(const Object &object) const 
+    bool StringView::contains(const Object &object) const
     {
         assert(data != nullptr || size == 0);
         for (Size i = 0; i < size; ++i) {
@@ -204,7 +206,7 @@ namespace Common {
         return false;
     }
 
-    bool StringView::contains(StringView other) const 
+    bool StringView::contains(StringView other) const
     {
         assert(data != nullptr || size == 0);
         assert(other.data != nullptr || other.size == 0);
@@ -227,7 +229,7 @@ namespace Common {
         return false;
     }
 
-    StringView::Size StringView::find(const Object &object) const 
+    StringView::Size StringView::find(const Object &object) const
     {
         assert(data != nullptr || size == 0);
         for (Size i = 0; i < size; ++i) {
@@ -239,7 +241,7 @@ namespace Common {
         return INVALID;
     }
 
-    StringView::Size StringView::find(StringView other) const 
+    StringView::Size StringView::find(StringView other) const
     {
         assert(data != nullptr || size == 0);
         assert(other.data != nullptr || other.size == 0);
@@ -262,52 +264,52 @@ namespace Common {
         return INVALID;
     }
 
-    StringView StringView::head(Size headSize) const 
-    {
-        assert(data != nullptr || size == 0);
-        assert(headSize <= size);
-        
-        return StringView(data, headSize);
-    }
-
-    StringView StringView::tail(Size tailSize) const 
-    {
-        assert(data != nullptr || size == 0);
-        assert(tailSize <= size);
-        
-        return StringView(data + (size - tailSize), tailSize);
-    }
-
-    StringView StringView::unhead(Size headSize) const 
+    StringView StringView::head(Size headSize) const
     {
         assert(data != nullptr || size == 0);
         assert(headSize <= size);
 
-        return StringView(data + headSize, size - headSize);
+        return StringView (data, headSize);
     }
 
-    StringView StringView::untail(Size tailSize) const 
+    StringView StringView::tail(Size tailSize) const
     {
         assert(data != nullptr || size == 0);
         assert(tailSize <= size);
 
-        return StringView(data, size - tailSize);
+        return StringView (data + (size - tailSize), tailSize);
     }
 
-    StringView StringView::range(Size startIndex, Size endIndex) const 
+    StringView StringView::unhead(Size headSize) const
+    {
+        assert(data != nullptr || size == 0);
+        assert(headSize <= size);
+
+        return StringView (data + headSize, size - headSize);
+    }
+
+    StringView StringView::untail(Size tailSize) const
+    {
+        assert(data != nullptr || size == 0);
+        assert(tailSize <= size);
+
+        return StringView (data, size - tailSize);
+    }
+
+    StringView StringView::range(Size startIndex, Size endIndex) const
     {
         assert(data != nullptr || size == 0);
         assert(startIndex <= endIndex && endIndex <= size);
 
-        return StringView(data + startIndex, endIndex - startIndex);
+        return StringView (data + startIndex, endIndex - startIndex);
     }
 
-    StringView StringView::slice(Size startIndex, Size sliceSize) const 
+    StringView StringView::slice(Size startIndex, Size sliceSize) const
     {
         assert(data != nullptr || size == 0);
         assert(startIndex <= size && startIndex + sliceSize <= size);
 
-        return StringView(data + startIndex, sliceSize);
+        return StringView (data + startIndex, sliceSize);
     }
 
 } // namespace Common

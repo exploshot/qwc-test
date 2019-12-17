@@ -25,7 +25,7 @@
 
 namespace Common {
 
-    class JsonValue 
+    class JsonValue
     {
     public:
         typedef std::string Key;
@@ -38,7 +38,7 @@ namespace Common {
         typedef double Real;
         typedef std::string String;
 
-        enum Type 
+        enum Type
         {
             ARRAY,
             BOOL,
@@ -64,10 +64,10 @@ namespace Common {
         JsonValue(const String &value);
         JsonValue(String &&value);
 
-        template<uint64_t size> 
-        JsonValue(const char(&value)[size]) 
+        template<uint64_t size>
+        JsonValue(const char(&value)[size])
         {
-            new(valueString)String(value, size - 1);
+            new (valueString)String (value, size - 1);
             type = STRING;
         }
 
@@ -85,16 +85,16 @@ namespace Common {
         JsonValue &operator=(const String &value);
         JsonValue &operator=(String &&value);
 
-        template<uint64_t size> 
-        JsonValue &operator=(const char(&value)[size]) 
+        template<uint64_t size>
+        JsonValue &operator=(const char(&value)[size])
         {
             if (type != STRING) {
-                destructValue();
+                destructValue ();
                 type = NIL;
-                new(valueString)String(value, size - 1);
+                new (valueString)String (value, size - 1);
                 type = STRING;
             } else {
-                reinterpret_cast<String *>(valueString)->assign(value, size - 1);
+                reinterpret_cast<String *>(valueString)->assign (value, size - 1);
             }
 
             return *this;
@@ -140,13 +140,14 @@ namespace Common {
 
     private:
         Type type;
-        union {
-            uint8_t valueArray[sizeof(Array)];
+        union
+        {
+            uint8_t valueArray[sizeof (Array)];
             Bool valueBool;
             Integer valueInteger;
-            uint8_t valueObject[sizeof(Object)];
+            uint8_t valueObject[sizeof (Object)];
             Real valueReal;
-            uint8_t valueString[sizeof(std::string)];
+            uint8_t valueString[sizeof (std::string)];
         };
 
         void destructValue();

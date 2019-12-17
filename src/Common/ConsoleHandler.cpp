@@ -34,28 +34,28 @@ using Common::Console::Color;
 
 namespace Common {
 
-    AsyncConsoleReader::AsyncConsoleReader() 
-        : m_stop(true) 
+    AsyncConsoleReader::AsyncConsoleReader()
+        : m_stop (true)
     {
     }
 
-    AsyncConsoleReader::~AsyncConsoleReader() 
+    AsyncConsoleReader::~AsyncConsoleReader()
     {
-        stop();
+        stop ();
     }
 
-    void AsyncConsoleReader::start() 
+    void AsyncConsoleReader::start()
     {
         m_stop = false;
-        m_thread = std::thread(std::bind(&AsyncConsoleReader::consoleThread, this));
+        m_thread = std::thread (std::bind (&AsyncConsoleReader::consoleThread, this));
     }
 
-    bool AsyncConsoleReader::getline(std::string &line) 
+    bool AsyncConsoleReader::getline(std::string &line)
     {
-        return m_queue.pop(line);
+        return m_queue.pop (line);
     }
 
-    void AsyncConsoleReader::pause() 
+    void AsyncConsoleReader::pause()
     {
         if (m_stop) {
             return;
@@ -63,224 +63,237 @@ namespace Common {
 
         m_stop = true;
 
-        if (m_thread.joinable()) {
-            m_thread.join();
+        if (m_thread.joinable ()) {
+            m_thread.join ();
         }
 
-        m_thread = std::thread();
+        m_thread = std::thread ();
     }
 
-    void AsyncConsoleReader::unpause() 
+    void AsyncConsoleReader::unpause()
     {
-        start();
+        start ();
     }
 
-    void AsyncConsoleReader::stop() 
+    void AsyncConsoleReader::stop()
     {
         if (m_stop) {
             return; // already stopping/stopped
         }
 
         m_stop = true;
-        m_queue.close();
-    #ifdef _WIN32
+        m_queue.close ();
+        #ifdef _WIN32
         ::CloseHandle(::GetStdHandle(STD_INPUT_HANDLE));
-    #endif
+        #endif
 
-        if (m_thread.joinable()) {
-            m_thread.join();
+        if (m_thread.joinable ()) {
+            m_thread.join ();
         }
 
-        m_thread = std::thread();
+        m_thread = std::thread ();
     }
 
-    bool AsyncConsoleReader::stopped() const 
+    bool AsyncConsoleReader::stopped() const
     {
         return m_stop;
     }
 
-    void AsyncConsoleReader::consoleThread() 
+    void AsyncConsoleReader::consoleThread()
     {
-      while (waitInput()) {
-        std::string line;
+        while (waitInput ()) {
+            std::string line;
 
-        if (!std::getline(std::cin, line)) {
-            break;
-        }
+            if (!std::getline (std::cin, line)) {
+                break;
+            }
 
-        if (!m_queue.push(line)) {
-            break;
+            if (!m_queue.push (line)) {
+                break;
+            }
         }
-      }
     }
 
-    bool AsyncConsoleReader::waitInput() 
+    bool AsyncConsoleReader::waitInput()
     {
-    #ifndef _WIN32
-        int stdin_fileno = ::fileno(stdin);
+        #ifndef _WIN32
+        int stdin_fileno = ::fileno (stdin);
 
         while (!m_stop) {
-          fd_set read_set;
-          FD_ZERO(&read_set);
-          FD_SET(stdin_fileno, &read_set);
+            fd_set read_set;
+            FD_ZERO(&read_set);
+            FD_SET(stdin_fileno, &read_set);
 
-          struct timeval tv;
-          tv.tv_sec = 0;
-          tv.tv_usec = 100 * 1000;
-      
-          int retval = ::select(stdin_fileno + 1, &read_set, NULL, NULL, &tv);
+            struct timeval tv;
+            tv.tv_sec = 0;
+            tv.tv_usec = 100 * 1000;
 
-          if (retval == -1 && errno == EINTR) {
-            continue;
-          }
+            int retval = ::select (stdin_fileno + 1, &read_set, NULL, NULL, &tv);
 
-          if (retval < 0) {
-            return false;
-          }
+            if (retval == -1 && errno == EINTR) {
+                continue;
+            }
 
-          if (retval > 0) {
-            return true;
-          }
+            if (retval < 0) {
+                return false;
+            }
+
+            if (retval > 0) {
+                return true;
+            }
         }
-    #endif
+        #endif
 
         return !m_stop;
     }
 
-    ConsoleHandler::~ConsoleHandler() 
+    ConsoleHandler::~ConsoleHandler()
     {
-        stop();
+        stop ();
     }
 
-    void ConsoleHandler::start(bool startThread, const std::string &prompt, Console::Color promptColor) 
+    void ConsoleHandler::start(bool startThread, const std::string &prompt, Console::Color promptColor)
     {
         m_prompt = prompt;
         m_promptColor = promptColor;
-        m_consoleReader.start();
+        m_consoleReader.start ();
 
         if (startThread) {
-          m_thread = std::thread(std::bind(&ConsoleHandler::handlerThread, this));
+            m_thread = std::thread (std::bind (&ConsoleHandler::handlerThread, this));
         } else {
-          handlerThread();
+            handlerThread ();
         }
     }
 
-    void ConsoleHandler::stop() 
+    void ConsoleHandler::stop()
     {
-        requestStop();
-        wait();
+        requestStop ();
+        wait ();
     }
 
-    void ConsoleHandler::pause() 
+    void ConsoleHandler::pause()
     {
-        m_consoleReader.pause();
+        m_consoleReader.pause ();
     }
 
-    void ConsoleHandler::unpause() 
+    void ConsoleHandler::unpause()
     {
-        m_consoleReader.unpause();
+        m_consoleReader.unpause ();
     }
 
-    void ConsoleHandler::wait() 
+    void ConsoleHandler::wait()
     {
         try {
-            if (m_thread.joinable()) {
-              m_thread.join();
+            if (m_thread.joinable ()) {
+                m_thread.join ();
             }
         } catch (std::exception &e) {
-            std::cerr << "Exception in ConsoleHandler::wait - " << e.what() << std::endl;
+            std::cerr
+                << "Exception in ConsoleHandler::wait - "
+                << e.what ()
+                << std::endl;
         }
     }
 
-    void ConsoleHandler::requestStop() 
+    void ConsoleHandler::requestStop()
     {
-        m_consoleReader.stop();
+        m_consoleReader.stop ();
     }
 
-    std::string ConsoleHandler::getUsage() const 
+    std::string ConsoleHandler::getUsage() const
     {
-        if (m_handlers.empty()) {
-            return std::string();
+        if (m_handlers.empty ()) {
+            return std::string ();
         }
-        
+
         std::stringstream ss;
 
-        uint64_t maxlen = std::max_element(
-              m_handlers.begin(), m_handlers.end(), 
-              [](CommandHandlersMap::const_reference &a, CommandHandlersMap::const_reference &b) { 
-              return a.first.size() < b.first.size(); 
-        })->first.size();
+        uint64_t maxlen = std::max_element (
+            m_handlers.begin (), m_handlers.end (),
+            [](CommandHandlersMap::const_reference &a, CommandHandlersMap::const_reference &b)
+            {
+                return a.first.size () < b.first.size ();
+            })->first.size ();
 
         for (auto &x : m_handlers) {
-            ss << std::left << std::setw(maxlen + 3) << x.first << x.second.second << std::endl;
+            ss
+                << std::left
+                << std::setw (maxlen + 3)
+                << x.first
+                << x.second.second
+                << std::endl;
         }
 
-        return ss.str();
+        return ss.str ();
     }
 
-    void ConsoleHandler::setHandler(const std::string &command, 
-                                    const ConsoleCommandHandler &handler, 
-                                    const std::string &usage) 
+    void ConsoleHandler::setHandler(const std::string &command,
+                                    const ConsoleCommandHandler &handler,
+                                    const std::string &usage)
     {
-        m_handlers[command] = std::make_pair(handler, usage);
+        m_handlers[command] = std::make_pair (handler, usage);
     }
 
-    bool ConsoleHandler::runCommand(const std::vector<std::string> &cmdAndArgs) 
+    bool ConsoleHandler::runCommand(const std::vector<std::string> &cmdAndArgs)
     {
-        if (cmdAndArgs.size() == 0) {
+        if (cmdAndArgs.size () == 0) {
             return false;
         }
 
-        const auto &cmd = cmdAndArgs.front();
-        auto hIter = m_handlers.find(cmd);
+        const auto &cmd = cmdAndArgs.front ();
+        auto hIter = m_handlers.find (cmd);
 
-        if (hIter == m_handlers.end()) {
-            std::cout << "Unknown command: " << cmd << std::endl;
+        if (hIter == m_handlers.end ()) {
+            std::cout
+                << "Unknown command: "
+                << cmd
+                << std::endl;
             return false;
         }
 
-        std::vector<std::string> args(cmdAndArgs.begin() + 1, cmdAndArgs.end());
-        hIter->second.first(args);
+        std::vector<std::string> args (cmdAndArgs.begin () + 1, cmdAndArgs.end ());
+        hIter->second.first (args);
 
         return true;
     }
 
-    void ConsoleHandler::handleCommand(const std::string &cmd) 
+    void ConsoleHandler::handleCommand(const std::string &cmd)
     {
         std::vector<std::string> args;
-        boost::split(args, cmd, boost::is_any_of(" "), boost::token_compress_on);
-        runCommand(args);
+        boost::split (args, cmd, boost::is_any_of (" "), boost::token_compress_on);
+        runCommand (args);
     }
 
-    void ConsoleHandler::handlerThread() 
+    void ConsoleHandler::handlerThread()
     {
         std::string line;
 
-        while(!m_consoleReader.stopped()) {
+        while (!m_consoleReader.stopped ()) {
             try {
-                if (!m_prompt.empty()) {
+                if (!m_prompt.empty ()) {
                     if (m_promptColor != Color::Default) {
-                        Console::setTextColor(m_promptColor);
+                        Console::setTextColor (m_promptColor);
                     }
 
-                    std::cout << m_prompt;
-                    std::cout.flush();
+                    std::cout
+                        << m_prompt;
+                    std::cout.flush ();
 
                     if (m_promptColor != Color::Default) {
-                        Console::setTextColor(Color::Default);
+                        Console::setTextColor (Color::Default);
                     }
                 }
 
-                if (!m_consoleReader.getline(line)) {
+                if (!m_consoleReader.getline (line)) {
                     break;
                 }
 
-                boost::algorithm::trim(line);
-                if (!line.empty()) {
-                    handleCommand(line);
+                boost::algorithm::trim (line);
+                if (!line.empty ()) {
+                    handleCommand (line);
                 }
-            } catch (std::exception&) {
-              // ignore errors
+            } catch (std::exception &) {
+                // ignore errors
             }
         }
     }

@@ -31,29 +31,28 @@
 #include <functional>
 #include <stdexcept>
 
-namespace
-{
+namespace {
     /*
      *  Exception thrown on attempt to access an uninitialized Lazy
      */
-    struct uninitialized_lazy_exception : public std::runtime_error 
+    struct uninitialized_lazy_exception: public std::runtime_error
     {
         uninitialized_lazy_exception()
-            : std::runtime_error("Uninitialized lazy value.")
+            : std::runtime_error ("Uninitialized lazy value.")
         {
         }
     };
 
     template<typename T>
-    struct Lazy 
+    struct Lazy
     {
         /*!
             Default constructor
         */
         Lazy()
-            : m_bInitialized(false),
-              m_initializer(DefaultInitializer),
-              m_deinitializer(DefaultDeinitializer)
+            : m_bInitialized (false),
+              m_initializer (DefaultInitializer),
+              m_deinitializer (DefaultDeinitializer)
         {
         }
 
@@ -62,9 +61,9 @@ namespace
         */
         Lazy(std::function<T(void)> initializer,
              std::function<void(T &)> deinitializer = DefaultDeinitializer)
-            : m_bInitialized(false),
-              m_initializer(initializer),
-              m_deinitializer(deinitializer)
+            : m_bInitialized (false),
+              m_initializer (initializer),
+              m_deinitializer (deinitializer)
         {
         }
 
@@ -72,12 +71,12 @@ namespace
             Copy constructor.
         */
         explicit Lazy(const Lazy &o)
-            : m_bInitialized(false),
-              m_initializer(o.m_initializer),
-              m_deinitializer(o.m_deinitializer)
+            : m_bInitialized (false),
+              m_initializer (o.m_initializer),
+              m_deinitializer (o.m_deinitializer)
         {
             if (o.m_bInitialized) {
-                construct(*o.valuePtr());
+                construct (*o.valuePtr ());
             }
         }
 
@@ -86,13 +85,13 @@ namespace
         */
         Lazy &operator=(const Lazy<T> &o)
         {
-            destroy();
+            destroy ();
 
-            m_initializer   = o.m_initializer;
+            m_initializer = o.m_initializer;
             m_deinitializer = o.m_deinitializer;
 
             if (o.m_bInitialized) {
-                construct(*o.valuePtr());
+                construct (*o.valuePtr ());
             }
 
             return *this;
@@ -102,11 +101,11 @@ namespace
             Construct from T
         */
         Lazy(const T &v)
-            : m_bInitialized(false),
-              m_initializer(DefaultInitializer),
-              m_deinitializer(DefaultDeinitializer)
+            : m_bInitialized (false),
+              m_initializer (DefaultInitializer),
+              m_deinitializer (DefaultDeinitializer)
         {
-            construct(v);
+            construct (v);
         }
 
         /*!
@@ -114,8 +113,8 @@ namespace
         */
         T &operator=(const T &value)
         {
-            construct(value);
-            return *valuePtr();
+            construct (value);
+            return *valuePtr ();
         }
 
         /*!
@@ -123,7 +122,7 @@ namespace
         */
         ~Lazy()
         {
-            destroy();
+            destroy ();
         }
 
         /*!
@@ -141,10 +140,10 @@ namespace
         T &force() const
         {
             if (!m_bInitialized) {
-                construct(m_initializer());
+                construct (m_initializer ());
             }
-                
-            return *valuePtr();
+
+            return *valuePtr ();
         }
 
         /*!
@@ -152,15 +151,15 @@ namespace
         */
         operator T &() const // FIXME: This overload is dangerous!
         {
-            return force();
+            return force ();
         }
 
         /*!
             Get pointer to storage of T, regardless of initialized state
         */
-        T *operator &() const // FIXME: This overload is dangerous!
+        T *operator&() const // FIXME: This overload is dangerous!
         {
-            return valuePtr();
+            return valuePtr ();
         }
 
         /*!
@@ -186,15 +185,15 @@ namespace
         */
         void construct(const T &value) const
         {
-            destroy();
-            new (valuePtr()) T(value);
+            destroy ();
+            new (valuePtr ()) T (value);
             m_bInitialized = true;
         }
 
         void construct(T &&value) const
         {
-            destroy();
-            new (valuePtr()) T(std::move(value));
+            destroy ();
+            new (valuePtr ()) T (std::move (value));
             m_bInitialized = true;
         }
 
@@ -204,8 +203,8 @@ namespace
         void destroy() const
         {
             if (m_bInitialized) {
-                m_deinitializer(*valuePtr());
-                valuePtr()->~T();
+                m_deinitializer (*valuePtr ());
+                valuePtr ()->~T ();
                 m_bInitialized = false;
             }
         }
@@ -215,7 +214,7 @@ namespace
         */
         static T DefaultInitializer()
         {
-            throw uninitialized_lazy_exception();
+            throw uninitialized_lazy_exception ();
         }
 
         /*!
@@ -226,7 +225,7 @@ namespace
         }
 
     private:
-        mutable char m_value[sizeof(T)];
+        mutable char m_value[sizeof (T)];
         mutable bool m_bInitialized;
         std::function<T(void)> m_initializer;
         std::function<void(T &)> m_deinitializer;

@@ -32,46 +32,50 @@ namespace Common {
     std::string extract(std::string &text, char delimiter);
     std::string extract(const std::string &text, char delimiter, uint64_t &offset);
 
-    template<typename T> bool fromString(const std::string &text, T &value) 
+    template<typename T>
+    bool fromString(const std::string &text, T &value)
     {
-        std::istringstream stream(text);
-        stream >> value;
+        std::istringstream stream (text);
+        stream
+            >> value;
 
-        return !stream.fail();
+        return !stream.fail ();
     }
 
-    template<typename T> 
-    bool fromDelimitedString(const std::string &source, 
-                             char delimiter, 
+    template<typename T>
+    bool fromDelimitedString(const std::string &source,
+                             char delimiter,
                              std::vector<T> &data)
     {
-        for (uint64_t offset = 0; offset != source.size();) {
+        for (uint64_t offset = 0; offset != source.size ();) {
             T value;
-            if (!fromString<T>(extract(source, delimiter, offset), value)) {
+            if (!fromString<T> (extract (source, delimiter, offset), value)) {
                 return false;
             }
 
-            data.emplace_back(value);
+            data.emplace_back (value);
         }
 
         return true;
     }
 
-    template<typename T> 
-    std::string toString(const T &value) 
+    template<typename T>
+    std::string toString(const T &value)
     {
         std::ostringstream stream;
-        stream << value;
+        stream
+            << value;
 
-        return stream.str();
+        return stream.str ();
     }
 
-    template<typename T> 
-    void toString(const T &value, std::string &text) 
+    template<typename T>
+    void toString(const T &value, std::string &text)
     {
         std::ostringstream stream;
-        stream << value;
-        text += stream.str();
+        stream
+            << value;
+        text += stream.str ();
     }
 
     std::vector<uint8_t> asBinaryArray(const std::string &data);
@@ -91,8 +95,8 @@ namespace Common {
         Assigns values of hex 'text' to buffer 'data' up to 'bufferSize', 
         returns actual data size, throws on error
     */
-    uint64_t fromHex(const std::string &text, 
-                     void *data, 
+    uint64_t fromHex(const std::string &text,
+                     void *data,
                      uint64_t bufferSize);
 
     /*!
@@ -100,9 +104,9 @@ namespace Common {
         assigns actual data size to 'size', 
         returns false on error, does not throw
     */
-    bool fromHex(const std::string &text, 
-                 void *data, 
-                 uint64_t bufferSize, 
+    bool fromHex(const std::string &text,
+                 void *data,
+                 uint64_t bufferSize,
                  uint64_t &size);
 
     /*!
@@ -116,13 +120,13 @@ namespace Common {
     */
     bool fromHex(const std::string &text, std::vector<uint8_t> &data);
 
-    template <typename T>
+    template<typename T>
     bool podFromHex(const std::string &text, T &val)
     {
         uint64_t outSize;
-        
-        return fromHex(text, &val, sizeof(val), outSize) 
-            && outSize == sizeof(val);
+
+        return fromHex (text, &val, sizeof (val), outSize)
+               && outSize == sizeof (val);
     }
 
     /*!
@@ -148,21 +152,23 @@ namespace Common {
     template<class T>
     std::string podToHex(const T &s)
     {
-        return toHex(&s, sizeof(s));
+        return toHex (&s, sizeof (s));
     }
 
     /*!
         Throws on error
     */
-    template<typename T> T 
-    fromString(const std::string &text) 
+    template<typename T>
+    T
+    fromString(const std::string &text)
     {
         T value;
-        std::istringstream stream(text);
-        stream >> value;
+        std::istringstream stream (text);
+        stream
+            >> value;
 
-        if (stream.fail()) {
-            throw std::runtime_error("fromString: unable to parse value");
+        if (stream.fail ()) {
+            throw std::runtime_error ("fromString: unable to parse value");
         }
 
         return value;
@@ -171,19 +177,18 @@ namespace Common {
     /*!
         Throws on error
     */
-    template<typename T> 
-    std::vector<T> fromDelimitedString(const std::string &source, char delimiter) 
+    template<typename T>
+    std::vector<T> fromDelimitedString(const std::string &source, char delimiter)
     {
         std::vector<T> data;
-        for (uint64_t offset = 0; offset != source.size();) {
-            data.emplace_back(fromString<T>(extract(source, delimiter, offset)));
+        for (uint64_t offset = 0; offset != source.size ();) {
+            data.emplace_back (fromString<T> (extract (source, delimiter, offset)));
         }
 
         return data;
     }
 
     bool saveStringToFile(const std::string &filepath, const std::string &buf);
-
 
     std::string ipAddressToString(uint32_t ip);
     bool parseIpAddress(uint32_t &ip, const std::string &addr);

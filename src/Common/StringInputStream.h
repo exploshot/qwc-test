@@ -23,7 +23,7 @@
 
 namespace Common {
 
-    class StringInputStream : public IInputStream 
+    class StringInputStream: public IInputStream
     {
     public:
         StringInputStream(const std::string &in);

@@ -23,7 +23,7 @@
 
 namespace Common {
 
-    class StringOutputStream : public IOutputStream 
+    class StringOutputStream: public IOutputStream
     {
     public:
         StringOutputStream(std::string &out);

@@ -27,22 +27,22 @@
 #include <unistd.h>
 #endif
 
-namespace Common { 
-    namespace Console { 
+namespace Common {
+    namespace Console {
 
-        bool isConsoleTty() 
+        bool isConsoleTty()
         {
-        #if defined(WIN32)
+            #if defined(WIN32)
             static bool istty = 0 != _isatty(_fileno(stdout));
-        #else
-            static bool istty = 0 != isatty(fileno(stdout));
-        #endif
+            #else
+            static bool istty = 0 != isatty (fileno (stdout));
+            #endif
             return istty;
         }
 
-        void setTextColor(Color color) 
+        void setTextColor(Color color)
         {
-            if (!isConsoleTty()) {
+            if (!isConsoleTty ()) {
                 return;
             }
 
@@ -50,7 +50,7 @@ namespace Common {
                 color = Color::Default;
             }
 
-        #ifdef _WIN32
+            #ifdef _WIN32
 
             static WORD winColors[] = {
                 // default
@@ -75,32 +75,33 @@ namespace Common {
 
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), winColors[static_cast<uint64_t>(color)]);
 
-        #else
+            #else
 
-          static const char* ansiColors[] = {
-              // default
-              "\033[0m",
-              // main
-              "\033[0;34m",
-              "\033[0;32m",
-              "\033[0;31m",
-              "\033[0;33m",
-              "\033[0;37m",
-              "\033[0;36m",
-              "\033[0;35m",
-              // bright
-              "\033[1;34m",
-              "\033[1;32m",
-              "\033[1;31m",
-              "\033[1;33m",
-              "\033[1;37m",
-              "\033[1;36m",
-              "\033[1;35m"
-          };
+            static const char *ansiColors[] = {
+                // default
+                "\033[0m",
+                // main
+                "\033[0;34m",
+                "\033[0;32m",
+                "\033[0;31m",
+                "\033[0;33m",
+                "\033[0;37m",
+                "\033[0;36m",
+                "\033[0;35m",
+                // bright
+                "\033[1;34m",
+                "\033[1;32m",
+                "\033[1;31m",
+                "\033[1;33m",
+                "\033[1;37m",
+                "\033[1;36m",
+                "\033[1;35m"
+            };
 
-          std::cout << ansiColors[static_cast<uint64_t>(color)];
+            std::cout
+                << ansiColors[static_cast<uint64_t>(color)];
 
-        #endif
+            #endif
         }
     } // namespace Console
 } // namespace Common

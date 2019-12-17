@@ -19,13 +19,14 @@
 
 #include <cstdint>
 
-namespace Common { 
+namespace Common {
     namespace Console {
-        enum class Color : uint8_t {
+        enum class Color: uint8_t
+        {
             // default
-            Default,
+                Default,
             // main
-            Blue,
+                Blue,
             Green,
             Red,
             Yellow,
@@ -33,7 +34,7 @@ namespace Common {
             Cyan,
             Magenta,
             // bright
-            BrightBlue,
+                BrightBlue,
             BrightGreen,
             BrightRed,
             BrightYellow,

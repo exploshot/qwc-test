@@ -15,7 +15,8 @@
 class SequenceEnded: public std::runtime_error
 {
 public:
-    SequenceEnded() : std::runtime_error("shuffle sequence ended")
+    SequenceEnded()
+        : std::runtime_error ("shuffle sequence ended")
     {
     }
 
@@ -24,31 +25,31 @@ public:
     }
 };
 
-template <typename T>
-class ShuffleGenerator 
+template<typename T>
+class ShuffleGenerator
 {
 public:
 
-    ShuffleGenerator(T n) 
-        : N(n), 
-          count(n) 
+    ShuffleGenerator(T n)
+        : N (n),
+          count (n)
     {
     }
 
-    T operator()() 
+    T operator()()
     {
         if (count == 0) {
-            throw SequenceEnded();
+            throw SequenceEnded ();
         }
 
-        T value = Random::randomValue<T>(0, --count);
+        T value = Random::randomValue<T> (0, --count);
 
-        auto rvalIt = selected.find(count);
-        auto rval = rvalIt != selected.end() ? rvalIt->second : count;
+        auto rvalIt = selected.find (count);
+        auto rval = rvalIt != selected.end () ? rvalIt->second : count;
 
-        auto lvalIt = selected.find(value);
+        auto lvalIt = selected.find (value);
 
-        if (lvalIt != selected.end()) {
+        if (lvalIt != selected.end ()) {
             value = lvalIt->second;
             lvalIt->second = rval;
         } else {
@@ -58,7 +59,7 @@ public:
         return value;
     }
 
-    bool empty() const 
+    bool empty() const
     {
         return count == 0;
     }
@@ -66,7 +67,7 @@ public:
     void reset()
     {
         count = N;
-        selected.clear();
+        selected.clear ();
     }
 
 private:
