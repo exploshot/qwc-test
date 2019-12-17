@@ -22,11 +22,10 @@ namespace CryptoNote {
 
         AddBlockErrorConditionCategory AddBlockErrorConditionCategory::INSTANCE;
 
-
-        std::error_condition make_error_condition(AddBlockErrorCondition e) 
+        std::error_condition make_error_condition(AddBlockErrorCondition e)
         {
-            return std::error_condition(static_cast<int>(e),
-                                        AddBlockErrorConditionCategory::INSTANCE);
+            return std::error_condition (static_cast<int>(e),
+                                         AddBlockErrorConditionCategory::INSTANCE);
         }
 
     } // namespace error

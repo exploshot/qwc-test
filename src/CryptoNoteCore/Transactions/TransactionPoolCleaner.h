@@ -23,20 +23,20 @@
 
 namespace CryptoNote {
 
-    class TransactionPoolCleanWrapper: public ITransactionPoolCleanWrapper 
+    class TransactionPoolCleanWrapper: public ITransactionPoolCleanWrapper
     {
     public:
         TransactionPoolCleanWrapper(
-          std::unique_ptr<ITransactionPool> &&transactionPool,
-          std::unique_ptr<ITimeProvider> &&timeProvider,
-          std::shared_ptr<Logging::ILogger> logger,
-          uint64_t timeout);
+            std::unique_ptr<ITransactionPool> &&transactionPool,
+            std::unique_ptr<ITimeProvider> &&timeProvider,
+            std::shared_ptr<Logging::ILogger> logger,
+            uint64_t timeout);
 
-        TransactionPoolCleanWrapper(const TransactionPoolCleanWrapper&) = delete;
+        TransactionPoolCleanWrapper(const TransactionPoolCleanWrapper &) = delete;
         TransactionPoolCleanWrapper(TransactionPoolCleanWrapper &&other) = delete;
 
-        TransactionPoolCleanWrapper &operator=(const TransactionPoolCleanWrapper&) = delete;
-        TransactionPoolCleanWrapper &operator=(TransactionPoolCleanWrapper&&) = delete;
+        TransactionPoolCleanWrapper &operator=(const TransactionPoolCleanWrapper &) = delete;
+        TransactionPoolCleanWrapper &operator=(TransactionPoolCleanWrapper &&) = delete;
 
         virtual ~TransactionPoolCleanWrapper();
 
@@ -50,7 +50,8 @@ namespace CryptoNote {
 
         virtual const TransactionValidatorState &getPoolTransactionValidationState() const override;
         virtual std::vector<CachedTransaction> getPoolTransactions() const override;
-        virtual std::tuple<std::vector<CachedTransaction>, std::vector<CachedTransaction>> getPoolTransactionsForBlockTemplate() const override;
+        virtual std::tuple<std::vector<CachedTransaction>, std::vector<CachedTransaction>>
+        getPoolTransactionsForBlockTemplate() const override;
 
         virtual uint64_t getTransactionReceiveTime(const Crypto::Hash &hash) const override;
         virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash &paymentId) const override;

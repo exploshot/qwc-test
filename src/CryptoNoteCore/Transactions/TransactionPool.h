@@ -23,12 +23,13 @@
 
 namespace CryptoNote {
 
-    class TransactionPool : public ITransactionPool 
+    class TransactionPool: public ITransactionPool
     {
     public:
         TransactionPool(std::shared_ptr<Logging::ILogger> logger);
 
-        virtual bool pushTransaction(CachedTransaction &&transaction, TransactionValidatorState &&transactionState) override;
+        virtual bool
+        pushTransaction(CachedTransaction &&transaction, TransactionValidatorState &&transactionState) override;
         virtual const CachedTransaction &getTransaction(const Crypto::Hash &hash) const override;
         virtual bool removeTransaction(const Crypto::Hash &hash) override;
 
@@ -38,14 +39,15 @@ namespace CryptoNote {
 
         virtual const TransactionValidatorState &getPoolTransactionValidationState() const override;
         virtual std::vector<CachedTransaction> getPoolTransactions() const override;
-        virtual std::tuple<std::vector<CachedTransaction>, std::vector<CachedTransaction>> getPoolTransactionsForBlockTemplate() const override;
+        virtual std::tuple<std::vector<CachedTransaction>, std::vector<CachedTransaction>>
+        getPoolTransactionsForBlockTemplate() const override;
 
         virtual uint64_t getTransactionReceiveTime(const Crypto::Hash &hash) const override;
         virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash &paymentId) const override;
     private:
         TransactionValidatorState poolState;
 
-        struct PendingTransactionInfo 
+        struct PendingTransactionInfo
         {
             uint64_t receiveTime;
             CachedTransaction cachedTransaction;
@@ -54,18 +56,24 @@ namespace CryptoNote {
             const Crypto::Hash &getTransactionHash() const;
         };
 
-        struct TransactionPriorityComparator 
+        struct TransactionPriorityComparator
         {
-          /*!
-              lhs > hrs
-          */
-          bool operator()(const PendingTransactionInfo &lhs, 
-                          const PendingTransactionInfo &rhs) const;
+            /*!
+                lhs > hrs
+            */
+            bool operator()(const PendingTransactionInfo &lhs,
+                            const PendingTransactionInfo &rhs) const;
         };
 
-        struct TransactionHashTag {};
-        struct TransactionCostTag {};
-        struct PaymentIdTag {};
+        struct TransactionHashTag
+        {
+        };
+        struct TransactionCostTag
+        {
+        };
+        struct PaymentIdTag
+        {
+        };
 
         typedef boost::multi_index::ordered_non_unique<
             boost::multi_index::tag<TransactionCostTag>,
@@ -77,20 +85,20 @@ namespace CryptoNote {
             boost::multi_index::tag<TransactionHashTag>,
             boost::multi_index::const_mem_fun<
                 PendingTransactionInfo,
-                const Crypto::Hash&,
+                const Crypto::Hash &,
                 &PendingTransactionInfo::getTransactionHash
             >
         > TransactionHashIndex;
 
-        struct PaymentIdHasher 
+        struct PaymentIdHasher
         {
-            size_t operator() (const boost::optional<Crypto::Hash> &paymentId) const;
+            size_t operator()(const boost::optional<Crypto::Hash> &paymentId) const;
         };
 
         typedef boost::multi_index::hashed_non_unique<
             boost::multi_index::tag<PaymentIdTag>,
-            BOOST_MULTI_INDEX_MEMBER(PendingTransactionInfo, 
-                                     boost::optional<Crypto::Hash>, 
+            BOOST_MULTI_INDEX_MEMBER(PendingTransactionInfo,
+                                     boost::optional<Crypto::Hash>,
                                      paymentId),
             PaymentIdHasher
         > PaymentIdIndex;
@@ -108,7 +116,7 @@ namespace CryptoNote {
         TransactionsContainer::index<TransactionHashTag>::type &transactionHashIndex;
         TransactionsContainer::index<TransactionCostTag>::type &transactionCostIndex;
         TransactionsContainer::index<PaymentIdTag>::type &paymentIdIndex;
-        
+
         Logging::LoggerRef logger;
     };
 } // namespace CryptoNote

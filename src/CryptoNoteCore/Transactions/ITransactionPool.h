@@ -11,10 +11,12 @@ namespace CryptoNote {
 
     struct TransactionValidatorState;
 
-    class ITransactionPool 
+    class ITransactionPool
     {
     public:
-        virtual ~ITransactionPool() {};
+        virtual ~ITransactionPool()
+        {
+        };
 
         virtual bool pushTransaction(CachedTransaction &&tx, TransactionValidatorState &&transactionState) = 0;
         virtual const CachedTransaction &getTransaction(const Crypto::Hash &hash) const = 0;
@@ -26,7 +28,8 @@ namespace CryptoNote {
 
         virtual const TransactionValidatorState &getPoolTransactionValidationState() const = 0;
         virtual std::vector<CachedTransaction> getPoolTransactions() const = 0;
-        virtual std::tuple<std::vector<CachedTransaction>, std::vector<CachedTransaction>> getPoolTransactionsForBlockTemplate() const = 0;
+        virtual std::tuple<std::vector<CachedTransaction>, std::vector<CachedTransaction>>
+        getPoolTransactionsForBlockTemplate() const = 0;
 
         virtual uint64_t getTransactionReceiveTime(const Crypto::Hash &hash) const = 0;
         virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash &paymentId) const = 0;

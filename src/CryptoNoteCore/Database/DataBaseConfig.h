@@ -12,14 +12,14 @@
 
 namespace CryptoNote {
 
-    class DataBaseConfig 
+    class DataBaseConfig
     {
     public:
         DataBaseConfig();
-        bool init(const std::string dataDirectory, 
-                  const int backgroundThreads, 
-                  const int maxOpenFiles, 
-                  const int writeBufferSizeMB, 
+        bool init(const std::string dataDirectory,
+                  const int backgroundThreads,
+                  const int maxOpenFiles,
+                  const int writeBufferSizeMB,
                   const int readCacheSizeMB
         );
 

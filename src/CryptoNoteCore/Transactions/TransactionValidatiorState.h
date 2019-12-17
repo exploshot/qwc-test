@@ -18,7 +18,7 @@
 
 namespace CryptoNote {
 
-    struct TransactionValidatorState 
+    struct TransactionValidatorState
     {
         std::unordered_set<Crypto::KeyImage> spentKeyImages;
     };

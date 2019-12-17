@@ -15,16 +15,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once 
+#pragma once
 
 #include <CryptoNote.h>
 
 namespace CryptoNote {
 
-    class IMainChainStorage 
+    class IMainChainStorage
     {
     public:
-        virtual ~IMainChainStorage() { }
+        virtual ~IMainChainStorage()
+        {
+        }
 
         virtual void pushBlock(const RawBlock &rawBlock) = 0;
         virtual void popBlock() = 0;

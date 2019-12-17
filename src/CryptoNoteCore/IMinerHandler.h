@@ -20,16 +20,18 @@
 #include <CryptoNoteCore/CryptoNoteBasic.h>
 
 namespace CryptoNote {
-    struct IMinerHandler 
+    struct IMinerHandler
     {
         virtual bool handleBlockFound(BlockTemplate &b) = 0;
-        virtual bool getBlockTemplate(BlockTemplate &b, 
-                                      const AccountPublicAddress &adr, 
-                                      uint64_t &diffic, 
-                                      uint32_t &height, 
+        virtual bool getBlockTemplate(BlockTemplate &b,
+                                      const AccountPublicAddress &adr,
+                                      uint64_t &diffic,
+                                      uint32_t &height,
                                       const BinaryArray &ex_nonce) = 0;
 
     protected:
-        ~IMinerHandler(){};
+        ~IMinerHandler()
+        {
+        };
     };
 } // namespace CryptoNote

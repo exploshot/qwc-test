@@ -10,7 +10,7 @@
 namespace CryptoNote {
     namespace error {
 
-        enum class BlockValidationError 
+        enum class BlockValidationError
         {
             VALIDATION_SUCCESS = 0,
             WRONG_VERSION,
@@ -31,68 +31,68 @@ namespace CryptoNote {
         /*!
             custom category:
         */
-        class BlockValidationErrorCategory : public std::error_category 
+        class BlockValidationErrorCategory: public std::error_category
         {
         public:
             static BlockValidationErrorCategory INSTANCE;
 
-            virtual const char *name() const throw() 
+            virtual const char *name() const throw ()
             {
                 return "BlockValidationErrorCategory";
             }
 
-            virtual std::error_condition default_error_condition(int ev) const throw() 
+            virtual std::error_condition default_error_condition(int ev) const throw ()
             {
-                return std::error_condition(ev, *this);
+                return std::error_condition (ev, *this);
             }
 
-            virtual std::string message(int ev) const 
+            virtual std::string message(int ev) const
             {
                 BlockValidationError code = static_cast<BlockValidationError>(ev);
 
                 switch (code) {
-                    case BlockValidationError::VALIDATION_SUCCESS: 
+                    case BlockValidationError::VALIDATION_SUCCESS:
                         return "Block validated successfully";
-                    case BlockValidationError::WRONG_VERSION: 
+                    case BlockValidationError::WRONG_VERSION:
                         return "Wrong block version";
-                    case BlockValidationError::PARENT_BLOCK_SIZE_TOO_BIG: 
+                    case BlockValidationError::PARENT_BLOCK_SIZE_TOO_BIG:
                         return "Parent block size is too big";
-                    case BlockValidationError::PARENT_BLOCK_WRONG_VERSION: 
+                    case BlockValidationError::PARENT_BLOCK_WRONG_VERSION:
                         return "Parent block has wrong version";
-                    case BlockValidationError::TIMESTAMP_TOO_FAR_IN_FUTURE: 
+                    case BlockValidationError::TIMESTAMP_TOO_FAR_IN_FUTURE:
                         return "Timestamp is too far in future";
-                    case BlockValidationError::TIMESTAMP_TOO_FAR_IN_PAST: 
+                    case BlockValidationError::TIMESTAMP_TOO_FAR_IN_PAST:
                         return "Timestamp is too far in past";
-                    case BlockValidationError::CUMULATIVE_BLOCK_SIZE_TOO_BIG: 
+                    case BlockValidationError::CUMULATIVE_BLOCK_SIZE_TOO_BIG:
                         return "Cumulative block size is too big";
-                    case BlockValidationError::DIFFICULTY_OVERHEAD: 
+                    case BlockValidationError::DIFFICULTY_OVERHEAD:
                         return "Block difficulty overhead occurred";
-                    case BlockValidationError::BLOCK_REWARD_MISMATCH: 
+                    case BlockValidationError::BLOCK_REWARD_MISMATCH:
                         return "Block reward doesn't match expected reward";
-                    case BlockValidationError::CHECKPOINT_BLOCK_HASH_MISMATCH: 
+                    case BlockValidationError::CHECKPOINT_BLOCK_HASH_MISMATCH:
                         return "Checkpoint block hash mismatch";
-                    case BlockValidationError::PROOF_OF_WORK_TOO_WEAK: 
+                    case BlockValidationError::PROOF_OF_WORK_TOO_WEAK:
                         return "Proof of work is too weak";
-                    case BlockValidationError::TRANSACTION_ABSENT_IN_POOL: 
+                    case BlockValidationError::TRANSACTION_ABSENT_IN_POOL:
                         return "Block's transaction is absent in transaction pool";
-                    case BlockValidationError::TRANSACTION_DUPLICATES: 
+                    case BlockValidationError::TRANSACTION_DUPLICATES:
                         return "Block contains duplicate transaction hashes";
-                    case BlockValidationError::TRANSACTION_INCONSISTENCY: 
+                    case BlockValidationError::TRANSACTION_INCONSISTENCY:
                         return "Block contains inconsistent transaction hashes";
-                    default: 
+                    default:
                         return "Unknown error";
                 }
             }
 
         private:
-            BlockValidationErrorCategory() 
+            BlockValidationErrorCategory()
             {
             }
         };
 
-        inline std::error_code make_error_code(CryptoNote::error::BlockValidationError e) 
+        inline std::error_code make_error_code(CryptoNote::error::BlockValidationError e)
         {
-            return std::error_code(static_cast<int>(e), CryptoNote::error::BlockValidationErrorCategory::INSTANCE);
+            return std::error_code (static_cast<int>(e), CryptoNote::error::BlockValidationErrorCategory::INSTANCE);
         }
 
     } // namespace error
@@ -100,8 +100,8 @@ namespace CryptoNote {
 
 namespace std {
 
-    template <>
-    struct is_error_code_enum<CryptoNote::error::BlockValidationError>: public true_type 
+    template<>
+    struct is_error_code_enum<CryptoNote::error::BlockValidationError>: public true_type
     {
     };
 } // namespace std

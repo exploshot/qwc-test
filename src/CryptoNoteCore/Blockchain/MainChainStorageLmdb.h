@@ -14,12 +14,11 @@
 #include <CryptoNoteCore/Blockchain/IMainChainStorage.h>
 #include <CryptoNoteCore/Currency.h>
 
-namespace CryptoNote
-{
-    class MainChainStorageLmdb : public IMainChainStorage
+namespace CryptoNote {
+    class MainChainStorageLmdb: public IMainChainStorage
     {
     public:
-        MainChainStorageLmdb(const std::string &blocksFilename, 
+        MainChainStorageLmdb(const std::string &blocksFilename,
                              const std::string &indexesFilename);
 
         virtual ~MainChainStorageLmdb();
@@ -38,7 +37,7 @@ namespace CryptoNote
         void renewRoTxn();
         void renewRwTxn(bool sync);
 
-        lmdb::env m_db = lmdb::env::create();
+        lmdb::env m_db = lmdb::env::create ();
         mutable MDB_txn *rtxn;
         mutable MDB_txn *wtxn;
         mutable std::atomic_int m_blockcount;
@@ -46,6 +45,6 @@ namespace CryptoNote
         fs::path m_dbpath;
     };
 
-    std::unique_ptr<IMainChainStorage> createSwappedMainChainStorageLmdb(const std::string &dataDir, 
+    std::unique_ptr<IMainChainStorage> createSwappedMainChainStorageLmdb(const std::string &dataDir,
                                                                          const Currency &currency);
 } // namespace CryptoNote

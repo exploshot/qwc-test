@@ -27,7 +27,7 @@ namespace CryptoNote {
     /*!
         Simple upgrade manager version. It doesn't support voting for now.
     */
-    class UpgradeManager: public IUpgradeManager 
+    class UpgradeManager: public IUpgradeManager
     {
     public:
         UpgradeManager();

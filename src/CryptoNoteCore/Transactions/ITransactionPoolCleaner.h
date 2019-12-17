@@ -16,10 +16,12 @@ namespace Crypto {
 
 namespace CryptoNote {
 
-    class ITransactionPoolCleanWrapper: public ITransactionPool 
+    class ITransactionPoolCleanWrapper: public ITransactionPool
     {
     public:
-        virtual ~ITransactionPoolCleanWrapper() {}
+        virtual ~ITransactionPoolCleanWrapper()
+        {
+        }
 
         virtual std::vector<Crypto::Hash> clean(const uint32_t height) = 0;
     };

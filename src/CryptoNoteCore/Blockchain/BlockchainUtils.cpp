@@ -21,17 +21,17 @@ namespace CryptoNote {
     namespace Utils {
 
         bool restoreCachedTransactions(const std::vector<BinaryArray> &binaryTransactions,
-                                       std::vector<CachedTransaction> &transactions) 
+                                       std::vector<CachedTransaction> &transactions)
         {
-            transactions.reserve(binaryTransactions.size());
+            transactions.reserve (binaryTransactions.size ());
 
             for (auto binaryTransaction : binaryTransactions) {
                 Transaction transaction;
-                if (!fromBinaryArray(transaction, binaryTransaction)) {
+                if (!fromBinaryArray (transaction, binaryTransaction)) {
                     return false;
                 }
 
-                transactions.emplace_back(std::move(transaction));
+                transactions.emplace_back (std::move (transaction));
             }
 
             return true;

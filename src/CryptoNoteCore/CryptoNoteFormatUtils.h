@@ -31,25 +31,25 @@ namespace Logging {
 
 namespace CryptoNote {
 
-    bool isOutToAcc(const AccountKeys &acc, 
-                    const KeyOutput &outKey, 
-                    const Crypto::KeyDerivation &derivation, 
+    bool isOutToAcc(const AccountKeys &acc,
+                    const KeyOutput &outKey,
+                    const Crypto::KeyDerivation &derivation,
                     size_t keyIndex);
-    bool lookupAccOuts(const AccountKeys &acc, 
-                       const Transaction &tx, 
-                       const Crypto::PublicKey &txPubKey, 
-                       std::vector<size_t> &outs, 
+    bool lookupAccOuts(const AccountKeys &acc,
+                       const Transaction &tx,
+                       const Crypto::PublicKey &txPubKey,
+                       std::vector<size_t> &outs,
                        uint64_t &moneyTransfered);
-    bool lookupAccOuts(const AccountKeys &acc, 
-                       const Transaction &tx, 
-                       std::vector<size_t> &outs, 
+    bool lookupAccOuts(const AccountKeys &acc,
+                       const Transaction &tx,
+                       std::vector<size_t> &outs,
                        uint64_t &moneyTransfered);
-    bool getTxFee(const Transaction &tx, uint64_t  &fee);
+    bool getTxFee(const Transaction &tx, uint64_t &fee);
     uint64_t getTxFee(const Transaction &tx);
-    bool generateKeyImageHelper(const AccountKeys &ack, 
-                                const Crypto::PublicKey &txPublicKey, 
-                                size_t realOutputIndex, 
-                                KeyPair &inEphemeral, 
+    bool generateKeyImageHelper(const AccountKeys &ack,
+                                const Crypto::PublicKey &txPublicKey,
+                                size_t realOutputIndex,
+                                KeyPair &inEphemeral,
                                 Crypto::KeyImage &ki);
     bool checkInputTypesSupported(const TransactionPrefix &tx);
     bool checkOutsValid(const TransactionPrefix &tx, std::string *error = nullptr);
@@ -69,10 +69,10 @@ namespace CryptoNote {
         where 455827 <= dustThreshold
     */
     template<typename chunkHandlerT, typename dustHandlerT>
-    void decomposeAmountIntoDigits(uint64_t amount, 
-                                   uint64_t dustThreshold, 
-                                   const chunkHandlerT &chunkHandler, 
-                                   const dustHandlerT &dustHandler) 
+    void decomposeAmountIntoDigits(uint64_t amount,
+                                   uint64_t dustThreshold,
+                                   const chunkHandlerT &chunkHandler,
+                                   const dustHandlerT &dustHandler)
     {
         if (0 == amount) {
             return;
@@ -90,18 +90,18 @@ namespace CryptoNote {
                 dust += chunk;
             } else {
                 if (!isDustHandled && 0 != dust) {
-                    dustHandler(dust);
+                    dustHandler (dust);
                     isDustHandled = true;
                 }
 
                 if (0 != chunk) {
-                    chunkHandler(chunk);
+                    chunkHandler (chunk);
                 }
             }
         }
 
         if (!isDustHandled && 0 != dust) {
-            dustHandler(dust);
+            dustHandler (dust);
         }
     }
 

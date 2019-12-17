@@ -23,10 +23,10 @@
 
 namespace CryptoNote {
 
-    class MainChainStorage: public IMainChainStorage 
+    class MainChainStorage: public IMainChainStorage
     {
     public:
-        MainChainStorage(const std::string &blocksFilame, 
+        MainChainStorage(const std::string &blocksFilame,
                          const std::string &indexesFilename);
         virtual ~MainChainStorage();
 
@@ -42,7 +42,7 @@ namespace CryptoNote {
         mutable SwappedVector<RawBlock> storage;
     };
 
-    std::unique_ptr<IMainChainStorage> createSwappedMainChainStorage(const std::string &dataDir, 
+    std::unique_ptr<IMainChainStorage> createSwappedMainChainStorage(const std::string &dataDir,
                                                                      const Currency &currency);
 } // namespace CryptoNote
 

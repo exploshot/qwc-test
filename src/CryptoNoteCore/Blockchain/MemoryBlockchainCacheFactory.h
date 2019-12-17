@@ -22,16 +22,16 @@
 
 namespace CryptoNote {
 
-    class MemoryBlockchainCacheFactory: public IBlockchainCacheFactory 
+    class MemoryBlockchainCacheFactory: public IBlockchainCacheFactory
     {
     public:
-        MemoryBlockchainCacheFactory(const std::string &filename, 
+        MemoryBlockchainCacheFactory(const std::string &filename,
                                      std::shared_ptr<Logging::ILogger> logger);
         virtual ~MemoryBlockchainCacheFactory() override;
 
         std::unique_ptr<IBlockchainCache> createRootBlockchainCache(const Currency &currency) override;
-        std::unique_ptr<IBlockchainCache> createBlockchainCache(const Currency &currency, 
-                                                                IBlockchainCache *parent, 
+        std::unique_ptr<IBlockchainCache> createBlockchainCache(const Currency &currency,
+                                                                IBlockchainCache *parent,
                                                                 uint32_t startIndex = 0) override;
 
     private:

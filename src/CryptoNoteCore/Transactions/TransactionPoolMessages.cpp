@@ -20,29 +20,29 @@
 namespace CryptoNote {
 
     TransactionPoolMessage::TransactionPoolMessage(const AddTransaction &at)
-        : type(TransactionMessageType::AddTransactionType), 
-          addTransaction(at) 
+        : type (TransactionMessageType::AddTransactionType),
+          addTransaction (at)
     {
     }
 
     TransactionPoolMessage::TransactionPoolMessage(const DeleteTransaction &dt)
-        : type(TransactionMessageType::DeleteTransactionType), 
-          deleteTransaction(dt) 
+        : type (TransactionMessageType::DeleteTransactionType),
+          deleteTransaction (dt)
     {
     }
 
     /*!
         pattern match
     */
-    void TransactionPoolMessage::match(std::function<void(const AddTransaction&)> &&addTxVisitor,
-                                       std::function<void(const DeleteTransaction&)> &&delTxVisitor) 
+    void TransactionPoolMessage::match(std::function<void(const AddTransaction &)> &&addTxVisitor,
+                                       std::function<void(const DeleteTransaction &)> &&delTxVisitor)
     {
-        switch (getType()) {
+        switch (getType ()) {
             case TransactionMessageType::AddTransactionType:
-                addTxVisitor(addTransaction);
+                addTxVisitor (addTransaction);
                 break;
             case TransactionMessageType::DeleteTransactionType:
-                delTxVisitor(deleteTransaction);
+                delTxVisitor (deleteTransaction);
                 break;
         }
     }
@@ -50,20 +50,20 @@ namespace CryptoNote {
     /*!
         API with explicit type handling
     */
-    TransactionMessageType TransactionPoolMessage::getType() const 
+    TransactionMessageType TransactionPoolMessage::getType() const
     {
         return type;
     }
 
-    AddTransaction TransactionPoolMessage::getAddTransaction() const 
+    AddTransaction TransactionPoolMessage::getAddTransaction() const
     {
-        assert(getType() == TransactionMessageType::AddTransactionType);
+        assert(getType () == TransactionMessageType::AddTransactionType);
         return addTransaction;
     }
 
-    DeleteTransaction TransactionPoolMessage::getDeleteTransaction() const 
+    DeleteTransaction TransactionPoolMessage::getDeleteTransaction() const
     {
-        assert(getType() == TransactionMessageType::DeleteTransactionType);
+        assert(getType () == TransactionMessageType::DeleteTransactionType);
         return deleteTransaction;
     }
 } // namespace CryptoNote

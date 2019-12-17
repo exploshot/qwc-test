@@ -21,17 +21,17 @@
 
 namespace CryptoNote {
 
-    struct ITimeProvider 
+    struct ITimeProvider
     {
         virtual ~ITimeProvider() = default;
         virtual time_t now() = 0;
     };
 
-    struct RealTimeProvider : public ITimeProvider 
+    struct RealTimeProvider: public ITimeProvider
     {
-        virtual time_t now() override 
+        virtual time_t now() override
         {
-            return time(nullptr);
+            return time (nullptr);
         }
     };
 } // namespace CryptoNote

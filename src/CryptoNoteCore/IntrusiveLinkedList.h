@@ -22,10 +22,11 @@ namespace CryptoNote {
     /*!
         Value must have public method IntrusiveLinkedList<Value>::hook &getHook()
     */
-    template<class Value> class IntrusiveLinkedList 
+    template<class Value>
+    class IntrusiveLinkedList
     {
     public:
-        class hook 
+        class hook
         {
         public:
             friend class IntrusiveLinkedList<Value>;
@@ -37,7 +38,7 @@ namespace CryptoNote {
             bool used;
         };
 
-        class iterator : public std::iterator<std::bidirectional_iterator_tag, Value> 
+        class iterator: public std::iterator<std::bidirectional_iterator_tag, Value>
         {
         public:
             iterator(Value *value);
@@ -71,29 +72,29 @@ namespace CryptoNote {
     };
 
     template<class Value>
-    IntrusiveLinkedList<Value>::IntrusiveLinkedList() 
-        : head(nullptr), 
-          tail(nullptr) 
+    IntrusiveLinkedList<Value>::IntrusiveLinkedList()
+        : head (nullptr),
+          tail (nullptr)
     {
     }
 
     template<class Value>
-    bool IntrusiveLinkedList<Value>::insert(Value &value) 
+    bool IntrusiveLinkedList<Value>::insert(Value &value)
     {
-        if (!value.getHook().used) {
+        if (!value.getHook ().used) {
             if (head == nullptr) {
                 head = &value;
                 tail = head;
-                value.getHook().prev = nullptr;
+                value.getHook ().prev = nullptr;
             } else {
-                tail->getHook().next = &value;
-                value.getHook().prev = tail;
+                tail->getHook ().next = &value;
+                value.getHook ().prev = tail;
                 tail = &value;
             }
 
-            value.getHook().next = nullptr;
-            value.getHook().used = true;
-            
+            value.getHook ().next = nullptr;
+            value.getHook ().used = true;
+
             return true;
         } else {
             return false;
@@ -101,42 +102,42 @@ namespace CryptoNote {
     }
 
     template<class Value>
-    bool IntrusiveLinkedList<Value>::remove(Value &value) 
+    bool IntrusiveLinkedList<Value>::remove(Value &value)
     {
-        if (value.getHook().used && head != nullptr) {
+        if (value.getHook ().used && head != nullptr) {
             Value *toRemove = &value;
             Value *current = head;
-            while (current->getHook().next != nullptr) {
+            while (current->getHook ().next != nullptr) {
                 if (toRemove == current) {
                     break;
                 }
 
-                current = current->getHook().next;
+                current = current->getHook ().next;
             }
 
             if (toRemove == current) {
-                if (current->getHook().prev == nullptr) {
+                if (current->getHook ().prev == nullptr) {
                     assert(current == head);
-                    head = current->getHook().next;
+                    head = current->getHook ().next;
 
                     if (head != nullptr) {
-                        head->getHook().prev = nullptr;
+                        head->getHook ().prev = nullptr;
                     } else {
                         tail = nullptr;
                     }
                 } else {
-                    current->getHook().prev->getHook().next = current->getHook().next;
+                    current->getHook ().prev->getHook ().next = current->getHook ().next;
 
-                    if (current->getHook().next != nullptr) {
-                        current->getHook().next->getHook().prev = current->getHook().prev;
+                    if (current->getHook ().next != nullptr) {
+                        current->getHook ().next->getHook ().prev = current->getHook ().prev;
                     } else {
-                        tail = current->getHook().prev;
+                        tail = current->getHook ().prev;
                     }
                 }
 
-                current->getHook().prev = nullptr;
-                current->getHook().next = nullptr;
-                current->getHook().used = false;
+                current->getHook ().prev = nullptr;
+                current->getHook ().next = nullptr;
+                current->getHook ().used = false;
 
                 return true;
             } else {
@@ -148,101 +149,103 @@ namespace CryptoNote {
     }
 
     template<class Value>
-    bool IntrusiveLinkedList<Value>::empty() const 
+    bool IntrusiveLinkedList<Value>::empty() const
     {
         return head == nullptr;
     }
 
     template<class Value>
-    typename IntrusiveLinkedList<Value>::iterator IntrusiveLinkedList<Value>::begin() 
+    typename IntrusiveLinkedList<Value>::iterator IntrusiveLinkedList<Value>::begin()
     {
-        return iterator(head);
+        return iterator (head);
     }
 
     template<class Value>
-    typename IntrusiveLinkedList<Value>::iterator IntrusiveLinkedList<Value>::end() 
+    typename IntrusiveLinkedList<Value>::iterator IntrusiveLinkedList<Value>::end()
     {
-        return iterator(nullptr);
+        return iterator (nullptr);
     }
 
     template<class Value>
-    IntrusiveLinkedList<Value>::hook::hook() 
-        : prev(nullptr), 
-          next(nullptr), 
-          used(false) 
-    {
-    }
-
-    template<class Value>
-    IntrusiveLinkedList<Value>::iterator::iterator(Value *value) 
-        : currentElement(value) 
+    IntrusiveLinkedList<Value>::hook::hook()
+        : prev (nullptr),
+          next (nullptr),
+          used (false)
     {
     }
 
     template<class Value>
-    bool IntrusiveLinkedList<Value>::iterator::operator!=(const typename IntrusiveLinkedList<Value>::iterator &other) const 
+    IntrusiveLinkedList<Value>::iterator::iterator(Value *value)
+        : currentElement (value)
+    {
+    }
+
+    template<class Value>
+    bool
+    IntrusiveLinkedList<Value>::iterator::operator!=(const typename IntrusiveLinkedList<Value>::iterator &other) const
     {
         return currentElement != other.currentElement;
     }
 
     template<class Value>
-    bool IntrusiveLinkedList<Value>::iterator::operator==(const typename IntrusiveLinkedList<Value>::iterator &other) const 
+    bool
+    IntrusiveLinkedList<Value>::iterator::operator==(const typename IntrusiveLinkedList<Value>::iterator &other) const
     {
         return currentElement == other.currentElement;
     }
 
     template<class Value>
-    typename IntrusiveLinkedList<Value>::iterator &IntrusiveLinkedList<Value>::iterator::operator++() 
+    typename IntrusiveLinkedList<Value>::iterator &IntrusiveLinkedList<Value>::iterator::operator++()
     {
         assert(currentElement != nullptr);
-        currentElement = currentElement->getHook().next;
+        currentElement = currentElement->getHook ().next;
 
         return *this;
     }
 
     template<class Value>
-    typename IntrusiveLinkedList<Value>::iterator IntrusiveLinkedList<Value>::iterator::operator++(int) 
+    typename IntrusiveLinkedList<Value>::iterator IntrusiveLinkedList<Value>::iterator::operator++(int)
     {
         IntrusiveLinkedList<Value>::iterator copy = *this;
 
         assert(currentElement != nullptr);
-        currentElement = currentElement->getHook().next;
+        currentElement = currentElement->getHook ().next;
 
         return copy;
     }
 
     template<class Value>
-    typename IntrusiveLinkedList<Value>::iterator &IntrusiveLinkedList<Value>::iterator::operator--() 
+    typename IntrusiveLinkedList<Value>::iterator &IntrusiveLinkedList<Value>::iterator::operator--()
     {
         assert(currentElement != nullptr);
-        currentElement = currentElement->getHook().prev;
+        currentElement = currentElement->getHook ().prev;
 
         return *this;
     }
 
     template<class Value>
-    typename IntrusiveLinkedList<Value>::iterator IntrusiveLinkedList<Value>::iterator::operator--(int) 
+    typename IntrusiveLinkedList<Value>::iterator IntrusiveLinkedList<Value>::iterator::operator--(int)
     {
         IntrusiveLinkedList<Value>::iterator copy = *this;
 
         assert(currentElement != nullptr);
-        currentElement = currentElement->getHook().prev;
+        currentElement = currentElement->getHook ().prev;
 
         return copy;
     }
 
     template<class Value>
-    Value &IntrusiveLinkedList<Value>::iterator::operator*() const 
+    Value &IntrusiveLinkedList<Value>::iterator::operator*() const
     {
         assert(currentElement != nullptr);
 
-        return *currentElement; 
+        return *currentElement;
     }
 
     template<class Value>
-    Value *IntrusiveLinkedList<Value>::iterator::operator->() const 
+    Value *IntrusiveLinkedList<Value>::iterator::operator->() const
     {
-        return currentElement; 
+        return currentElement;
     }
 
 } // namespace CryptoNote

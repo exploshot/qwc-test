@@ -31,12 +31,12 @@ using namespace Common;
 
 namespace CryptoNote {
 
-    uint64_t getPenalizedAmount(uint64_t amount, size_t medianSize, size_t currentBlockSize) 
+    uint64_t getPenalizedAmount(uint64_t amount, size_t medianSize, size_t currentBlockSize)
     {
-        static_assert(sizeof(size_t) >= sizeof(uint32_t), "size_t is too small");
+        static_assert (sizeof (size_t) >= sizeof (uint32_t), "size_t is too small");
         assert(currentBlockSize <= 2 * medianSize);
-        assert(medianSize <= std::numeric_limits<uint32_t>::max());
-        assert(currentBlockSize <= std::numeric_limits<uint32_t>::max());
+        assert(medianSize <= std::numeric_limits<uint32_t>::max ());
+        assert(currentBlockSize <= std::numeric_limits<uint32_t>::max ());
 
         if (amount == 0) {
             return 0;
@@ -53,20 +53,20 @@ namespace CryptoNote {
         */
         uint64_t multiplicand = UINT64_C(2) * medianSize - currentBlockSize;
         multiplicand *= currentBlockSize;
-        uint64_t productLo = mul128(amount, multiplicand, &productHi);
+        uint64_t productLo = mul128 (amount, multiplicand, &productHi);
 
         uint64_t penalizedAmountHi;
         uint64_t penalizedAmountLo;
-        div128_32(productHi, 
-                  productLo, 
-                  static_cast<uint32_t>(medianSize), 
-                  &penalizedAmountHi, 
-                  &penalizedAmountLo);
-        div128_32(penalizedAmountHi, 
-                  penalizedAmountLo, 
-                  static_cast<uint32_t>(medianSize), 
-                  &penalizedAmountHi, 
-                  &penalizedAmountLo);
+        div128_32 (productHi,
+                   productLo,
+                   static_cast<uint32_t>(medianSize),
+                   &penalizedAmountHi,
+                   &penalizedAmountLo);
+        div128_32 (penalizedAmountHi,
+                   penalizedAmountLo,
+                   static_cast<uint32_t>(medianSize),
+                   &penalizedAmountHi,
+                   &penalizedAmountLo);
 
         assert(0 == penalizedAmountHi);
         assert(penalizedAmountLo < amount);
@@ -75,7 +75,7 @@ namespace CryptoNote {
     }
 } // namespace CryptoNote
 
-bool parseHash256(const std::string &str_hash, Crypto::Hash &hash) 
+bool parseHash256(const std::string &str_hash, Crypto::Hash &hash)
 {
-    return Common::podFromHex(str_hash, hash);
+    return Common::podFromHex (str_hash, hash);
 }

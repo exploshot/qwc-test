@@ -9,12 +9,11 @@
 
 #include <sqlite3.h>
 
-namespace CryptoNote
-{
-    class MainChainStorageSqlite : public IMainChainStorage
+namespace CryptoNote {
+    class MainChainStorageSqlite: public IMainChainStorage
     {
     public:
-        MainChainStorageSqlite(const std::string &blocksFilename, 
+        MainChainStorageSqlite(const std::string &blocksFilename,
                                const std::string &indexesFilename);
 
         virtual ~MainChainStorageSqlite();
@@ -31,5 +30,6 @@ namespace CryptoNote
         sqlite3 *m_db;
     };
 
-    std::unique_ptr<IMainChainStorage> createSwappedMainChainStorageSqlite(const std::string &dataDir, const Currency &currency);
+    std::unique_ptr<IMainChainStorage>
+    createSwappedMainChainStorageSqlite(const std::string &dataDir, const Currency &currency);
 } // namespace CyptoNote

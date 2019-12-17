@@ -21,10 +21,12 @@
 
 namespace CryptoNote {
 
-    class ICoreInformation 
+    class ICoreInformation
     {
     public:
-        virtual ~ICoreInformation() {}
+        virtual ~ICoreInformation()
+        {
+        }
 
         virtual size_t getPoolTransactionCount() const = 0;
         virtual size_t getBlockchainTransactionCount() const = 0;

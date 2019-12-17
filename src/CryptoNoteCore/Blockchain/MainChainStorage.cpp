@@ -25,67 +25,67 @@ namespace CryptoNote {
 
     const size_t STORAGE_CACHE_SIZE = 100;
 
-    MainChainStorage::MainChainStorage(const std::string &blocksFilename, 
-                                      const std::string &indexesFilename) 
+    MainChainStorage::MainChainStorage(const std::string &blocksFilename,
+                                       const std::string &indexesFilename)
     {
-        if (!storage.open(blocksFilename, indexesFilename, STORAGE_CACHE_SIZE)) {
-            throw std::runtime_error("Failed to load main chain storage: " + blocksFilename);
+        if (!storage.open (blocksFilename, indexesFilename, STORAGE_CACHE_SIZE)) {
+            throw std::runtime_error ("Failed to load main chain storage: " + blocksFilename);
         }
     }
 
-    MainChainStorage::~MainChainStorage() 
+    MainChainStorage::~MainChainStorage()
     {
-        storage.close();
+        storage.close ();
     }
 
-    void MainChainStorage::pushBlock(const RawBlock &rawBlock) 
+    void MainChainStorage::pushBlock(const RawBlock &rawBlock)
     {
-        storage.push_back(rawBlock);
+        storage.push_back (rawBlock);
     }
 
-    void MainChainStorage::popBlock() 
+    void MainChainStorage::popBlock()
     {
-      storage.pop_back();
+        storage.pop_back ();
     }
 
-    RawBlock MainChainStorage::getBlockByIndex(const uint32_t index) 
+    RawBlock MainChainStorage::getBlockByIndex(const uint32_t index)
     {
-        if (index >= storage.size()) {
-            throw std::out_of_range(
-                "Block index " + 
-                std::to_string(index) + 
-                " is out of range. Blocks count: " + 
-                std::to_string(storage.size())
+        if (index >= storage.size ()) {
+            throw std::out_of_range (
+                "Block index " +
+                std::to_string (index) +
+                " is out of range. Blocks count: " +
+                std::to_string (storage.size ())
             );
         }
 
         return storage[index];
     }
 
-    uint32_t MainChainStorage::getBlockCount() const 
+    uint32_t MainChainStorage::getBlockCount() const
     {
-        return static_cast<uint32_t>(storage.size());
+        return static_cast<uint32_t>(storage.size ());
     }
 
-    void MainChainStorage::clear() 
+    void MainChainStorage::clear()
     {
-        storage.clear();
+        storage.clear ();
     }
 
-    std::unique_ptr<IMainChainStorage> createSwappedMainChainStorage(const std::string &dataDir, 
-                                                                    const Currency &currency) 
+    std::unique_ptr<IMainChainStorage> createSwappedMainChainStorage(const std::string &dataDir,
+                                                                     const Currency &currency)
     {
-        boost::filesystem::path blocksFilename = boost::filesystem::path(dataDir) / 
-                                                currency.blocksFileName();
-        boost::filesystem::path indexesFilename = boost::filesystem::path(dataDir) / 
-                                                  currency.blockIndexesFileName();
+        boost::filesystem::path blocksFilename = boost::filesystem::path (dataDir) /
+                                                 currency.blocksFileName ();
+        boost::filesystem::path indexesFilename = boost::filesystem::path (dataDir) /
+                                                  currency.blockIndexesFileName ();
 
-        std::unique_ptr<IMainChainStorage> storage(new MainChainStorage(blocksFilename.string(), 
-                                                                        indexesFilename.string()));
-        if (storage->getBlockCount() == 0) {
+        std::unique_ptr<IMainChainStorage> storage (new MainChainStorage (blocksFilename.string (),
+                                                                          indexesFilename.string ()));
+        if (storage->getBlockCount () == 0) {
             RawBlock genesis;
-            genesis.block = toBinaryArray(currency.genesisBlock());
-            storage->pushBlock(genesis);
+            genesis.block = toBinaryArray (currency.genesisBlock ());
+            storage->pushBlock (genesis);
         }
 
         return storage;

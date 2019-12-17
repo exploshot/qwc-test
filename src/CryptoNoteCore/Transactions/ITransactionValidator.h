@@ -22,34 +22,38 @@
 
 namespace CryptoNote {
 
-    struct BlockInfo 
+    struct BlockInfo
     {
         uint32_t height;
         Crypto::Hash id;
 
-        BlockInfo() 
+        BlockInfo()
         {
-            clear();
+            clear ();
         }
 
-        void clear() 
+        void clear()
         {
             height = 0;
             id = Constants::NULL_HASH;
         }
 
-        bool empty() const 
+        bool empty() const
         {
             return id == Constants::NULL_HASH;
         }
     };
 
-    class ITransactionValidator {
+    class ITransactionValidator
+    {
     public:
-        virtual ~ITransactionValidator() {}
-        
+        virtual ~ITransactionValidator()
+        {
+        }
+
         virtual bool checkTransactionInputs(const CryptoNote::Transaction &tx, BlockInfo &maxUsedBlock) = 0;
-        virtual bool checkTransactionInputs(const CryptoNote::Transaction &tx, BlockInfo &maxUsedBlock, BlockInfo &lastFailed) = 0;
+        virtual bool
+        checkTransactionInputs(const CryptoNote::Transaction &tx, BlockInfo &maxUsedBlock, BlockInfo &lastFailed) = 0;
         virtual bool haveSpentKeyImages(const CryptoNote::Transaction &tx) = 0;
         virtual bool checkTransactionSize(size_t blobSize) = 0;
     };

@@ -38,16 +38,16 @@ using namespace Common;
 
 namespace CryptoNote {
 
-    bool generateKeyImageHelper(const AccountKeys &ack, 
-                                const PublicKey &txPublicKey, 
-                                size_t realOutputIndex, 
-                                KeyPair &inEphemeral, 
-                                KeyImage &ki) 
+    bool generateKeyImageHelper(const AccountKeys &ack,
+                                const PublicKey &txPublicKey,
+                                size_t realOutputIndex,
+                                KeyPair &inEphemeral,
+                                KeyImage &ki)
     {
         KeyDerivation recv_derivation;
-        bool r = generateKeyDerivation(txPublicKey, 
-                                       ack.viewSecretKey, 
-                                       recv_derivation);
+        bool r = generateKeyDerivation (txPublicKey,
+                                        ack.viewSecretKey,
+                                        recv_derivation);
 
         assert(r && "key image helper: failed to generateKeyDerivation");
 
@@ -55,10 +55,10 @@ namespace CryptoNote {
             return false;
         }
 
-        r = derivePublicKey(recv_derivation, 
-                            realOutputIndex, 
-                            ack.address.spendPublicKey, 
-                            inEphemeral.publicKey);
+        r = derivePublicKey (recv_derivation,
+                             realOutputIndex,
+                             ack.address.spendPublicKey,
+                             inEphemeral.publicKey);
 
         assert(r && "key image helper: failed to derivePublicKey");
 
@@ -66,23 +66,23 @@ namespace CryptoNote {
             return false;
         }
 
-        deriveSecretKey(recv_derivation, 
-                        realOutputIndex, 
-                        ack.spendSecretKey, 
-                        inEphemeral.secretKey);
-        generateKeyImage(inEphemeral.publicKey, inEphemeral.secretKey, ki);
+        deriveSecretKey (recv_derivation,
+                         realOutputIndex,
+                         ack.spendSecretKey,
+                         inEphemeral.secretKey);
+        generateKeyImage (inEphemeral.publicKey, inEphemeral.secretKey, ki);
 
         return true;
     }
 
-    bool getTxFee(const Transaction &tx, uint64_t  &fee) 
+    bool getTxFee(const Transaction &tx, uint64_t &fee)
     {
         uint64_t amount_in = 0;
         uint64_t amount_out = 0;
 
         for (const auto &in : tx.inputs) {
-            if (in.type() == typeid(KeyInput)) {
-                amount_in += boost::get<KeyInput>(in).amount;
+            if (in.type () == typeid (KeyInput)) {
+                amount_in += boost::get<KeyInput> (in).amount;
             }
         }
 
@@ -99,45 +99,45 @@ namespace CryptoNote {
         return true;
     }
 
-    uint64_t getTxFee(const Transaction &tx) 
+    uint64_t getTxFee(const Transaction &tx)
     {
         uint64_t r = 0;
-        if (!getTxFee(tx, r)) {
+        if (!getTxFee (tx, r)) {
             return 0;
         }
-          
+
         return r;
     }
 
-    std::vector<uint32_t> relativeOutputOffsetsToAbsolute(const std::vector<uint32_t> &off) 
+    std::vector<uint32_t> relativeOutputOffsetsToAbsolute(const std::vector<uint32_t> &off)
     {
         std::vector<uint32_t> res = off;
-        for (size_t i = 1; i < res.size(); i++) {
+        for (size_t i = 1; i < res.size (); i++) {
             res[i] += res[i - 1];
         }
-          
+
         return res;
     }
 
-    std::vector<uint32_t> absoluteOutputOffsetsToRelative(const std::vector<uint32_t> &off) 
+    std::vector<uint32_t> absoluteOutputOffsetsToRelative(const std::vector<uint32_t> &off)
     {
-        if (off.empty()) {
+        if (off.empty ()) {
             return {};
         }
 
         auto copy = off;
-  
-        for (size_t i = 1; i < copy.size(); ++i) {
-            copy[i] = off[i] - off[i-1];
+
+        for (size_t i = 1; i < copy.size (); ++i) {
+            copy[i] = off[i] - off[i - 1];
         }
-  
+
         return copy;
     }
 
-    bool checkInputTypesSupported(const TransactionPrefix &tx) 
+    bool checkInputTypesSupported(const TransactionPrefix &tx)
     {
         for (const auto &in : tx.inputs) {
-            if (in.type() != typeid(KeyInput)) {
+            if (in.type () != typeid (KeyInput)) {
                 return false;
             }
         }
@@ -145,10 +145,10 @@ namespace CryptoNote {
         return true;
     }
 
-    bool checkOutsValid(const TransactionPrefix &tx, std::string *error) 
+    bool checkOutsValid(const TransactionPrefix &tx, std::string *error)
     {
         for (const TransactionOutput &out : tx.outputs) {
-            if (out.target.type() == typeid(KeyOutput)) {
+            if (out.target.type () == typeid (KeyOutput)) {
                 if (out.amount == 0) {
                     if (error) {
                         *error = "Zero amount ouput";
@@ -157,7 +157,7 @@ namespace CryptoNote {
                     return false;
                 }
 
-                if (!checkKey(boost::get<KeyOutput>(out.target).key)) {
+                if (!checkKey (boost::get<KeyOutput> (out.target).key)) {
                     if (error) {
                         *error = "Output with invalid key";
                     }
@@ -165,26 +165,26 @@ namespace CryptoNote {
                     return false;
                 }
             } else {
-              if (error) {
-                  *error = "Output with invalid type";
-              }
-  
-              return false;
+                if (error) {
+                    *error = "Output with invalid type";
+                }
+
+                return false;
             }
         }
 
         return true;
     }
 
-    bool checkInputsOverflow(const TransactionPrefix &tx) 
+    bool checkInputsOverflow(const TransactionPrefix &tx)
     {
         uint64_t money = 0;
 
         for (const auto &in : tx.inputs) {
             uint64_t amount = 0;
 
-            if (in.type() == typeid(KeyInput)) {
-                amount = boost::get<KeyInput>(in).amount;
+            if (in.type () == typeid (KeyInput)) {
+                amount = boost::get<KeyInput> (in).amount;
             }
 
             if (money > amount + money) {
@@ -193,11 +193,11 @@ namespace CryptoNote {
 
             money += amount;
         }
-        
+
         return true;
     }
 
-    bool checkOutsOverflow(const TransactionPrefix &tx) 
+    bool checkOutsOverflow(const TransactionPrefix &tx)
     {
         uint64_t money = 0;
         for (const auto &o : tx.outputs) {
@@ -210,55 +210,55 @@ namespace CryptoNote {
         return true;
     }
 
-    bool isOutToAcc(const AccountKeys &acc, 
-                    const KeyOutput &outKey, 
-                    const KeyDerivation &derivation, 
-                    size_t keyIndex) 
+    bool isOutToAcc(const AccountKeys &acc,
+                    const KeyOutput &outKey,
+                    const KeyDerivation &derivation,
+                    size_t keyIndex)
     {
         PublicKey pk;
-        derivePublicKey(derivation, keyIndex, acc.address.spendPublicKey, pk);
+        derivePublicKey (derivation, keyIndex, acc.address.spendPublicKey, pk);
 
         return pk == outKey.key;
     }
 
-    bool isOutToAcc(const AccountKeys &acc, 
-                    const KeyOutput &outKey, 
-                    const PublicKey &txPubKey, 
-                    size_t keyIndex) 
+    bool isOutToAcc(const AccountKeys &acc,
+                    const KeyOutput &outKey,
+                    const PublicKey &txPubKey,
+                    size_t keyIndex)
     {
         KeyDerivation derivation;
-        generateKeyDerivation(txPubKey, acc.viewSecretKey, derivation);
+        generateKeyDerivation (txPubKey, acc.viewSecretKey, derivation);
 
-        return isOutToAcc(acc, outKey, derivation, keyIndex);
+        return isOutToAcc (acc, outKey, derivation, keyIndex);
     }
 
-    uint64_t getInputAmount(const Transaction &transaction) 
+    uint64_t getInputAmount(const Transaction &transaction)
     {
         uint64_t amount = 0;
         for (auto &input : transaction.inputs) {
-            if (input.type() == typeid(KeyInput)) {
-                amount += boost::get<KeyInput>(input).amount;
+            if (input.type () == typeid (KeyInput)) {
+                amount += boost::get<KeyInput> (input).amount;
             }
         }
 
         return amount;
     }
 
-    std::vector<uint64_t> getInputsAmounts(const Transaction &transaction) 
+    std::vector<uint64_t> getInputsAmounts(const Transaction &transaction)
     {
         std::vector<uint64_t> inputsAmounts;
-        inputsAmounts.reserve(transaction.inputs.size());
+        inputsAmounts.reserve (transaction.inputs.size ());
 
         for (auto &input: transaction.inputs) {
-            if (input.type() == typeid(KeyInput)) {
-                inputsAmounts.push_back(boost::get<KeyInput>(input).amount);
+            if (input.type () == typeid (KeyInput)) {
+                inputsAmounts.push_back (boost::get<KeyInput> (input).amount);
             }
         }
 
         return inputsAmounts;
     }
 
-    uint64_t getOutputAmount(const Transaction &transaction) 
+    uint64_t getOutputAmount(const Transaction &transaction)
     {
         uint64_t amount = 0;
         for (auto &output : transaction.outputs) {
@@ -268,17 +268,19 @@ namespace CryptoNote {
         return amount;
     }
 
-    void decomposeAmount(uint64_t amount, 
-                         uint64_t dustThreshold, 
-                         std::vector<uint64_t> &decomposedAmounts) 
+    void decomposeAmount(uint64_t amount,
+                         uint64_t dustThreshold,
+                         std::vector<uint64_t> &decomposedAmounts)
     {
-        decomposeAmountIntoDigits(amount, 
-                                  dustThreshold,
-                                  [&](uint64_t amount) {
-            decomposedAmounts.push_back(amount);
-        }, [&](uint64_t dust) {
-            decomposedAmounts.push_back(dust);
-        });
+        decomposeAmountIntoDigits (amount,
+                                   dustThreshold,
+                                   [&](uint64_t amount)
+                                   {
+                                       decomposedAmounts.push_back (amount);
+                                   }, [&](uint64_t dust)
+                                   {
+                                       decomposedAmounts.push_back (dust);
+                                   });
     }
 
 } // namespace CryptoNote

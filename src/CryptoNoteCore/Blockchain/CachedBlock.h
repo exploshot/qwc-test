@@ -13,7 +13,7 @@
 
 namespace CryptoNote {
 
-    class CachedBlock 
+    class CachedBlock
     {
     public:
         explicit CachedBlock(const BlockTemplate &block);

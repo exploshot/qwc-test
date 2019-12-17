@@ -26,15 +26,15 @@
 
 namespace CryptoNote {
 
-    enum class CoreEvent 
-    { 
-        POOL_UPDATED, BLOCKHAIN_UPDATED 
+    enum class CoreEvent
+    {
+        POOL_UPDATED, BLOCKHAIN_UPDATED
     };
 
-    class ICore 
+    class ICore
     {
     public:
-        virtual ~ICore() 
+        virtual ~ICore()
         {
         }
 
@@ -56,27 +56,27 @@ namespace CryptoNote {
                                                                    uint32_t &startBlockIndex) const = 0;
 
         virtual std::vector<RawBlock> getBlocks(uint32_t startIndex, uint32_t count) const = 0;
-        virtual void getBlocks(const std::vector<Crypto::Hash> &blockHashes, 
+        virtual void getBlocks(const std::vector<Crypto::Hash> &blockHashes,
                                std::vector<RawBlock> &blocks,
                                std::vector<Crypto::Hash> &missedHashes) const = 0;
-        virtual bool queryBlocks(const std::vector<Crypto::Hash> &blockHashes, 
-                                 uint64_t timestamp, 
+        virtual bool queryBlocks(const std::vector<Crypto::Hash> &blockHashes,
+                                 uint64_t timestamp,
                                  uint32_t &startIndex,
-                                 uint32_t &currentIndex, 
-                                 uint32_t &fullOffset, 
+                                 uint32_t &currentIndex,
+                                 uint32_t &fullOffset,
                                  std::vector<BlockFullInfo> &entries) const = 0;
-        virtual bool queryBlocksLite(const std::vector<Crypto::Hash> &knownBlockHashes, 
+        virtual bool queryBlocksLite(const std::vector<Crypto::Hash> &knownBlockHashes,
                                      uint64_t timestamp,
-                                     uint32_t &startIndex, 
-                                     uint32_t &currentIndex, 
+                                     uint32_t &startIndex,
+                                     uint32_t &currentIndex,
                                      uint32_t &fullOffset,
                                      std::vector<BlockShortInfo> &entries) const = 0;
-        virtual bool queryBlocksDetailed(const std::vector<Crypto::Hash> &knownBlockHashes, 
+        virtual bool queryBlocksDetailed(const std::vector<Crypto::Hash> &knownBlockHashes,
                                          uint64_t timestamp,
-                                         uint64_t &startIndex, 
-                                         uint64_t &currentIndex, 
+                                         uint64_t &startIndex,
+                                         uint64_t &currentIndex,
                                          uint64_t &fullOffset,
-                                         std::vector<BlockDetails> &entries, 
+                                         std::vector<BlockDetails> &entries,
                                          uint32_t blockCount) const = 0;
 
         virtual bool getWalletSyncData(const std::vector<Crypto::Hash> &knownBlockHashes,
@@ -93,7 +93,7 @@ namespace CryptoNote {
                                            std::unordered_set<Crypto::Hash> &transactionsUnknown) const = 0;
 
         virtual bool hasTransaction(const Crypto::Hash &transactionHash) const = 0;
-        
+
         /*!
             getTransaction Queries a single transaction details blob from the chain or transaction pool
             param hash The hash of the transaction
@@ -114,33 +114,34 @@ namespace CryptoNote {
 
         virtual bool getTransactionGlobalIndexes(const Crypto::Hash &transactionHash,
                                                  std::vector<uint32_t> &globalIndexes) const = 0;
-        virtual bool getRandomOutputs(uint64_t amount, 
-                                      uint16_t count, 
+        virtual bool getRandomOutputs(uint64_t amount,
+                                      uint16_t count,
                                       std::vector<uint32_t> &globalIndexes,
                                       std::vector<Crypto::PublicKey> &publicKeys) const = 0;
 
         virtual bool getGlobalIndexesForRange(const uint64_t startHeight,
                                               const uint64_t endHeight,
-                                              std::unordered_map<Crypto::Hash, 
+                                              std::unordered_map<Crypto::Hash,
                                                                  std::vector<uint64_t>> &indexes) const = 0;
 
         virtual bool addTransactionToPool(const BinaryArray &transactionBinaryArray) = 0;
 
         virtual std::vector<Crypto::Hash> getPoolTransactionHashes() const = 0;
-        virtual std::tuple<bool, CryptoNote::BinaryArray> getPoolTransaction(const Crypto::Hash &transactionHash) const = 0;
-        virtual bool getPoolChanges(const Crypto::Hash &lastBlockHash, 
+        virtual std::tuple<bool, CryptoNote::BinaryArray>
+        getPoolTransaction(const Crypto::Hash &transactionHash) const = 0;
+        virtual bool getPoolChanges(const Crypto::Hash &lastBlockHash,
                                     const std::vector<Crypto::Hash> &knownHashes,
                                     std::vector<BinaryArray> &addedTransactions,
                                     std::vector<Crypto::Hash> &deletedTransactions) const = 0;
-        virtual bool getPoolChangesLite(const Crypto::Hash &lastBlockHash, 
+        virtual bool getPoolChangesLite(const Crypto::Hash &lastBlockHash,
                                         const std::vector<Crypto::Hash> &knownHashes,
                                         std::vector<TransactionPrefixInfo> &addedTransactions,
                                         std::vector<Crypto::Hash> &deletedTransactions) const = 0;
 
-        virtual bool getBlockTemplate(BlockTemplate &b, 
-                                      const AccountPublicAddress &adr, 
+        virtual bool getBlockTemplate(BlockTemplate &b,
+                                      const AccountPublicAddress &adr,
                                       const BinaryArray &extraNonce,
-                                      uint64_t &difficulty, 
+                                      uint64_t &difficulty,
                                       uint32_t &height) const = 0;
 
         virtual CoreStatistics getCoreStatistics() const = 0;
@@ -150,7 +151,8 @@ namespace CryptoNote {
 
         virtual BlockDetails getBlockDetails(const Crypto::Hash &blockHash) const = 0;
         virtual TransactionDetails getTransactionDetails(const Crypto::Hash &transactionHash) const = 0;
-        virtual std::vector<Crypto::Hash> getBlockHashesByTimestamps(uint64_t timestampBegin, size_t secondsCount) const = 0;
+        virtual std::vector<Crypto::Hash>
+        getBlockHashesByTimestamps(uint64_t timestampBegin, size_t secondsCount) const = 0;
         virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash &paymentId) const = 0;
     };
 } // namespace CryptoNote

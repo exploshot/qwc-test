@@ -23,8 +23,7 @@
 
 #include <Logging/LoggerRef.h>
 
-namespace CryptoNote
-{
+namespace CryptoNote {
     class Checkpoints
     {
     public:

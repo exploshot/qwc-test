@@ -27,27 +27,27 @@
 
 namespace CryptoNote {
 
-    struct BlockFullInfo : public RawBlock 
+    struct BlockFullInfo: public RawBlock
     {
         Crypto::Hash block_id;
     };
 
-    struct TransactionPrefixInfo 
+    struct TransactionPrefixInfo
     {
         Crypto::Hash txHash;
         TransactionPrefix txPrefix;
     };
 
-    struct BlockShortInfo 
+    struct BlockShortInfo
     {
         Crypto::Hash blockId;
         BinaryArray block;
         std::vector<TransactionPrefixInfo> txPrefixes;
     };
 
-    void serialize(BlockFullInfo&, ISerializer&);
-    void serialize(TransactionPrefixInfo&, ISerializer&);
-    void serialize(BlockShortInfo&, ISerializer&);
+    void serialize(BlockFullInfo &, ISerializer &);
+    void serialize(TransactionPrefixInfo &, ISerializer &);
+    void serialize(BlockShortInfo &, ISerializer &);
 
     void serialize(WalletTypes::WalletBlockInfo &walletBlockInfo, ISerializer &s);
     void serialize(WalletTypes::RawTransaction &rawTransaction, ISerializer &s);

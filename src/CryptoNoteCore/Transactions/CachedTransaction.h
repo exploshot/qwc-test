@@ -23,7 +23,7 @@
 
 namespace CryptoNote {
 
-    class CachedTransaction 
+    class CachedTransaction
     {
     public:
         explicit CachedTransaction(Transaction &&transaction);

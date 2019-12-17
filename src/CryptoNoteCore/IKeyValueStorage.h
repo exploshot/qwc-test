@@ -24,10 +24,10 @@ namespace CryptoNote {
     class WriteBatch;
     class ReadBatch;
 
-    class IKeyValueStorage 
+    class IKeyValueStorage
     {
     public:
-        virtual ~IKeyValueStorage() 
+        virtual ~IKeyValueStorage()
         {
         }
 

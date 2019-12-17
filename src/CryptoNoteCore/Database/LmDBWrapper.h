@@ -18,17 +18,17 @@
 #include <Logging/LoggerRef.h>
 
 namespace CryptoNote {
-    class LmDBWrapper : public IDataBase
+    class LmDBWrapper: public IDataBase
     {
     public:
         LmDBWrapper(std::shared_ptr<Logging::ILogger> logger);
         virtual ~LmDBWrapper();
 
-        LmDBWrapper(const LmDBWrapper&) = delete;
-        LmDBWrapper(LmDBWrapper&&) = delete;
+        LmDBWrapper(const LmDBWrapper &) = delete;
+        LmDBWrapper(LmDBWrapper &&) = delete;
 
-        LmDBWrapper &operator=(const LmDBWrapper&) = delete;
-        LmDBWrapper &operator=(LmDBWrapper&&) = delete;
+        LmDBWrapper &operator=(const LmDBWrapper &) = delete;
+        LmDBWrapper &operator=(LmDBWrapper &&) = delete;
 
         void init(const DataBaseConfig &config);
         void shutdown();
@@ -53,7 +53,7 @@ namespace CryptoNote {
         std::atomic<State> state;
         fs::path m_dbDir;
         fs::path m_dbFile;
-        lmdb::env m_db  = lmdb::env::create();
-        std::atomic_uint m_dirty; 
+        lmdb::env m_db = lmdb::env::create ();
+        std::atomic_uint m_dirty;
     };
 } // namespace CryptoNote

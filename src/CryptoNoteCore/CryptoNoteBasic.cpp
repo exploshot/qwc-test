@@ -21,10 +21,10 @@
 
 namespace CryptoNote {
 
-    KeyPair generateKeyPair() 
+    KeyPair generateKeyPair()
     {
         KeyPair k;
-        Crypto::generateKeys(k.publicKey, k.secretKey);
+        Crypto::generateKeys (k.publicKey, k.secretKey);
         return k;
     }
 } // namespace CryptoNote
