@@ -22,9 +22,8 @@
 namespace Crypto {
 
     extern "C" {
-    #include <Crypto/Keccak.h>
-
-    #include <Crypto/CryptoOps.h>
+        #include <Crypto/Keccak.h>
+        #include <Crypto/CryptoOps.h>
     }
 
     static inline void randomScalar(EllipticCurveScalar &res)
