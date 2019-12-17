@@ -22,19 +22,19 @@
 #include <Crypto/HashOps.h>
 #include <Crypto/Keccak.h>
 
-void hashPermutation(union hashState *state) 
+void hashPermutation(union hashState *state)
 {
-    keccakf((uint64_t*)state, 24);
+    keccakf ((uint64_t *) state, 24);
 }
 
-void hashProcess(union hashState *state, const uint8_t *buf, size_t count) 
+void hashProcess(union hashState *state, const uint8_t *buf, size_t count)
 {
-    keccak1600(buf, (int)count, (uint8_t*)state);
+    keccak1600 (buf, (int) count, (uint8_t *) state);
 }
 
-void CnFastHash(const void *data, size_t length, char *hash) 
+void CnFastHash(const void *data, size_t length, char *hash)
 {
     union hashState state;
-    hashProcess(&state, data, length);
-    memcpy(hash, &state, HASH_SIZE);
+    hashProcess (&state, data, length);
+    memcpy (hash, &state, HASH_SIZE);
 }

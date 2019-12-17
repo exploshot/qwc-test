@@ -8,8 +8,8 @@
 /* This file contains the portable version of the slow-hash routines
    for the CryptoNight hashing algorithm */
 
-#if !(!defined NO_AES && (defined(__arm__) || defined(__aarch64__))) &&         \
-    !(!defined NO_AES && (defined(__x86_64__) ||                                \
+#if !(!defined NO_AES && (defined(__arm__) || defined(__aarch64__))) && \
+    !(!defined NO_AES && (defined(__x86_64__) || \
     (defined(_MSC_VER) && defined(_WIN64))))
 #pragma message ("info: Using SlowHashPortable.c")
 
@@ -27,17 +27,17 @@ void slowHashFreeState(void)
     return;
 }
 
-  #if defined(__GNUC__)
-    #define RDATA_ALIGN16 __attribute__ ((aligned(16)))
-    #define STATIC static
-    #define INLINE inline
-  #else /* defined(__GNUC__) */
-    #define RDATA_ALIGN16
-    #define STATIC static
-    #define INLINE
-  #endif /* defined(__GNUC__) */
+    #if defined(__GNUC__)
+        #define RDATA_ALIGN16 __attribute__ ((aligned(16)))
+        #define STATIC static
+        #define INLINE inline
+    #else /* defined(__GNUC__) */
+        #define RDATA_ALIGN16
+        #define STATIC static
+        #define INLINE
+    #endif /* defined(__GNUC__) */
 
-  #define U64(x) ((uint64_t *) (x))
+    #define U64(x) ((uint64_t *) (x))
 
 static void (*const extraHashes[4])(const void *, size_t, char *) =
 {
@@ -107,14 +107,14 @@ static void xor64(uint8_t* left, const uint8_t* right)
     }
 }
 
-void CnSlowHash(const void *data, 
-                size_t length, 
-                char *hash, 
-                int light, 
-                int variant, 
-                int prehashed, 
-                uint32_t pageSize, 
-                uint32_t scratchpad, 
+void CnSlowHash(const void *data,
+                size_t length,
+                char *hash,
+                int light,
+                int variant,
+                int prehashed,
+                uint32_t pageSize,
+                uint32_t scratchpad,
                 uint32_t iterations)
 {
     uint32_t initRounds = (scratchpad / INIT_SIZE_BYTE);
@@ -140,12 +140,12 @@ void CnSlowHash(const void *data,
         hashExtraBlake, hashExtraGroestl, hashExtraJh, hashExtraSkein
     };
 
-  #ifndef FORCE_USE_HEAP
+    #ifndef FORCE_USE_HEAP
     uint8_t long_state[pageSize];
-  #else /* FORCE_USE_HEAP */
-    #pragma message ("warning: ACTIVATING FORCE_USE_HEAP IN SlowHashPortable.c")
+    #else /* FORCE_USE_HEAP */
+        #pragma message ("warning: ACTIVATING FORCE_USE_HEAP IN SlowHashPortable.c")
     uint8_t *long_state = (uint8_t *)malloc(pageSize);
-  #endif /* FORCE_USE_HEAP */
+    #endif /* FORCE_USE_HEAP */
 
     if (prehashed) {
         memcpy(&state.hs, data, length);

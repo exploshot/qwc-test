@@ -23,9 +23,10 @@
 #include <Crypto/Jh.h>
 #include <Crypto/HashOps.h>
 
-void hashExtraJh(const void *data, size_t length, char *hash) 
+void hashExtraJh(const void *data, size_t length, char *hash)
 {
-    int r = jhHash(HASH_SIZE * 8, data, 8 * length, (uint8_t*)hash);
-    if (r) {}
+    int r = jhHash (HASH_SIZE * 8, data, 8 * length, (uint8_t *) hash);
+    if (r) {
+    }
     assert(SUCCESS == r);
 }

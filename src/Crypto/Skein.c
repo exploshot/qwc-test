@@ -50,46 +50,46 @@
 
 typedef struct
 {
-    size_t  hashBitLen;                      /* size of hash result, in bits */
-    size_t  bCnt;                            /* current byte count in buffer b[] */
-    u64bT  T[SKEIN_MODIFIER_WORDS];          /* tweak words: T[0]=byte cnt, T[1]=flags */
+    size_t hashBitLen;                      /* size of hash result, in bits */
+    size_t bCnt;                            /* current byte count in buffer b[] */
+    u64bT T[SKEIN_MODIFIER_WORDS];          /* tweak words: T[0]=byte cnt, T[1]=flags */
 } SkeinCtxtHdrT;
 
 typedef struct                               /*  256-bit Skein hash context structure */
 {
     SkeinCtxtHdrT h;                         /* common header context variables */
-    u64bT  X[SKEIN_256_STATE_WORDS];         /* chaining variables */
-    u08bT  b[SKEIN_256_BLOCK_BYTES];         /* partial block buffer (8-byte aligned) */
+    u64bT X[SKEIN_256_STATE_WORDS];         /* chaining variables */
+    u08bT b[SKEIN_256_BLOCK_BYTES];         /* partial block buffer (8-byte aligned) */
 } Skein256CtxtT;
 
 typedef struct                               /*  512-bit Skein hash context structure */
 {
     SkeinCtxtHdrT h;                         /* common header context variables */
-    u64bT  X[SKEIN_512_STATE_WORDS];         /* chaining variables */
-    u08bT  b[SKEIN_512_BLOCK_BYTES];         /* partial block buffer (8-byte aligned) */
+    u64bT X[SKEIN_512_STATE_WORDS];         /* chaining variables */
+    u08bT b[SKEIN_512_BLOCK_BYTES];         /* partial block buffer (8-byte aligned) */
 } Skein512CtxtT;
 
 typedef struct                               /* 1024-bit Skein hash context structure */
 {
     SkeinCtxtHdrT h;                         /* common header context variables */
-    u64bT  X[SKEIN1024_STATE_WORDS];         /* chaining variables */
-    u08bT  b[SKEIN1024_BLOCK_BYTES];         /* partial block buffer (8-byte aligned) */
+    u64bT X[SKEIN1024_STATE_WORDS];         /* chaining variables */
+    u08bT b[SKEIN1024_BLOCK_BYTES];         /* partial block buffer (8-byte aligned) */
 } Skein1024CtxtT;
 
 /*   Skein APIs for (incremental) "straight hashing" */
 #if SKEIN_256_NIST_MAX_HASHBITS
 static int  Skein256Init  (Skein256CtxtT *ctx, size_t hashBitLen);
 #endif
-static int  Skein512Init  (Skein512CtxtT *ctx, size_t hashBitLen);
-static int  Skein1024Init  (Skein1024CtxtT *ctx, size_t hashBitLen);
+static int Skein512Init(Skein512CtxtT *ctx, size_t hashBitLen);
+static int Skein1024Init(Skein1024CtxtT *ctx, size_t hashBitLen);
 
-static int  Skein256Update(Skein256CtxtT *ctx, const u08bT *msg, size_t msgByteCnt);
-static int  Skein512Update(Skein512CtxtT *ctx, const u08bT *msg, size_t msgByteCnt);
-static int  Skein1024Update(Skein1024CtxtT *ctx, const u08bT *msg, size_t msgByteCnt);
+static int Skein256Update(Skein256CtxtT *ctx, const u08bT *msg, size_t msgByteCnt);
+static int Skein512Update(Skein512CtxtT *ctx, const u08bT *msg, size_t msgByteCnt);
+static int Skein1024Update(Skein1024CtxtT *ctx, const u08bT *msg, size_t msgByteCnt);
 
-static int  Skein256Final (Skein256CtxtT *ctx, u08bT * hashVal);
-static int  Skein512Final (Skein512CtxtT *ctx, u08bT * hashVal);
-static int  Skein1024Final (Skein1024CtxtT *ctx, u08bT * hashVal);
+static int Skein256Final(Skein256CtxtT *ctx, u08bT *hashVal);
+static int Skein512Final(Skein512CtxtT *ctx, u08bT *hashVal);
+static int Skein1024Final(Skein1024CtxtT *ctx, u08bT *hashVal);
 
 /*
 **   Skein APIs for "extended" initialization: MAC keys, tree hashing.
@@ -190,7 +190,7 @@ static int  Skein1024Output   (Skein1024CtxtT *ctx, u08bT * hashVal);
 #define SKEIN_ID_STRING_LE      (0x33414853)            /* "SHA3" (little-endian)*/
 #endif
 
-#define SKEIN_MK_64(hi32,lo32)  ((lo32) + (((u64bT) (hi32)) << 32))
+#define SKEIN_MK_64(hi32, lo32)  ((lo32) + (((u64bT) (hi32)) << 32))
 #define SKEIN_SCHEMA_VER        SKEIN_MK_64(SKEIN_VERSION,SKEIN_ID_STRING_LE)
 #define SKEIN_KS_PARITY         SKEIN_MK_64(0x1BD11BDA,0xA9FC1A22)
 
@@ -205,7 +205,7 @@ static int  Skein1024Output   (Skein1024CtxtT *ctx, u08bT * hashVal);
 #define SKEIN_CFG_TREE_NODE_SIZE_MSK  (((u64bT) 0xFF) << SKEIN_CFG_TREE_NODE_SIZE_POS)
 #define SKEIN_CFG_TREE_MAX_LEVEL_MSK  (((u64bT) 0xFF) << SKEIN_CFG_TREE_MAX_LEVEL_POS)
 
-#define SKEIN_CFG_TREE_INFO(leaf,node,maxLvl)                   \
+#define SKEIN_CFG_TREE_INFO(leaf, node, maxLvl)                   \
     ( (((u64bT)(leaf  )) << SKEIN_CFG_TREE_LEAF_SIZE_POS) |     \
     (((u64bT)(node  )) << SKEIN_CFG_TREE_NODE_SIZE_POS) |       \
     (((u64bT)(maxLvl)) << SKEIN_CFG_TREE_MAX_LEVEL_POS) )
@@ -216,26 +216,26 @@ static int  Skein1024Output   (Skein1024CtxtT *ctx, u08bT * hashVal);
 **   Skein macros for getting/setting tweak words, etc.
 **   These are useful for partial input bytes, hash tree init/update, etc.
 **/
-#define SkeinGetTweak(ctxPtr,TWK_NUM)         ((ctxPtr)->h.T[TWK_NUM])
-#define SkeinSetTweak(ctxPtr,TWK_NUM,tVal)    {(ctxPtr)->h.T[TWK_NUM] = (tVal);}
+#define SkeinGetTweak(ctxPtr, TWK_NUM)         ((ctxPtr)->h.T[TWK_NUM])
+#define SkeinSetTweak(ctxPtr, TWK_NUM, tVal)    {(ctxPtr)->h.T[TWK_NUM] = (tVal);}
 
 #define Skein_Get_T0(ctxPtr)    SkeinGetTweak(ctxPtr,0)
 #define Skein_Get_T1(ctxPtr)    SkeinGetTweak(ctxPtr,1)
-#define Skein_Set_T0(ctxPtr,T0) SkeinSetTweak(ctxPtr,0,T0)
-#define Skein_Set_T1(ctxPtr,T1) SkeinSetTweak(ctxPtr,1,T1)
+#define Skein_Set_T0(ctxPtr, T0) SkeinSetTweak(ctxPtr,0,T0)
+#define Skein_Set_T1(ctxPtr, T1) SkeinSetTweak(ctxPtr,1,T1)
 
 /* set both tweak words at once */
-#define Skein_Set_T0_T1(ctxPtr,T0,T1)           \
+#define Skein_Set_T0_T1(ctxPtr, T0, T1)           \
 {                                               \
     Skein_Set_T0(ctxPtr,(T0));                    \
     Skein_Set_T1(ctxPtr,(T1));                    \
 }
 
-#define Skein_Set_Type(ctxPtr,BLK_TYPE)         \
+#define Skein_Set_Type(ctxPtr, BLK_TYPE)         \
     Skein_Set_T1(ctxPtr,SKEIN_T1_BLK_TYPE_##BLK_TYPE)
 
 /* set up for starting with a new type: h.T[0]=0; h.T[1] = NEW_TYPE; h.bCnt=0; */
-#define Skein_Start_New_Type(ctxPtr,BLK_TYPE)           \
+#define Skein_Start_New_Type(ctxPtr, BLK_TYPE)           \
 {                                                       \
     Skein_Set_T0_T1(ctxPtr,0,SKEIN_T1_FLAG_FIRST |      \
     SKEIN_T1_BLK_TYPE_##BLK_TYPE); (ctxPtr)->h.bCnt=0;  \
@@ -244,23 +244,23 @@ static int  Skein1024Output   (Skein1024CtxtT *ctx, u08bT * hashVal);
 #define Skein_Clear_First_Flag(hdr)      { (hdr).T[1] &= ~SKEIN_T1_FLAG_FIRST;       }
 #define Skein_Set_Bit_Pad_Flag(hdr)      { (hdr).T[1] |=  SKEIN_T1_FLAG_BIT_PAD;     }
 
-#define Skein_Set_Tree_Level(hdr,height) { (hdr).T[1] |= SKEIN_T1_TREE_LEVEL(height);}
+#define Skein_Set_Tree_Level(hdr, height) { (hdr).T[1] |= SKEIN_T1_TREE_LEVEL(height);}
 
 /*****************************************************************
 ** "Internal" Skein definitions for debugging and error checking
 ******************************************************************/
-#define SkeinShowBlock(bits,ctx,X,blkPtr,wPtr,ksEvenPtr,ksOddPtr)
-#define SkeinShowRound(bits,ctx,r,X)
-#define SkeinShowRPtr(bits,ctx,r,X_ptr)
-#define Skein_Show_Final(bits,ctx,cnt,outPtr)
-#define Skein_Show_Key(bits,ctx,key,keyBytes)
+#define SkeinShowBlock(bits, ctx, X, blkPtr, wPtr, ksEvenPtr, ksOddPtr)
+#define SkeinShowRound(bits, ctx, r, X)
+#define SkeinShowRPtr(bits, ctx, r, X_ptr)
+#define Skein_Show_Final(bits, ctx, cnt, outPtr)
+#define Skein_Show_Key(bits, ctx, key, keyBytes)
 
 
 #ifndef SKEIN_ERR_CHECK        /* run-time checks (e.g., bad params, uninitialized context)? */
-#define Skein_Assert(x,retCode)/* default: ignore all Asserts, for performance */
+#define Skein_Assert(x, retCode)/* default: ignore all Asserts, for performance */
 #define Skein_assert(x)
 #elif   defined(SKEIN_ASSERT)
-#include <assert.h>     
+#include <assert.h>
 #define Skein_Assert(x,retCode) assert(x) 
 #define Skein_assert(x)         assert(x) 
 #else
@@ -272,51 +272,51 @@ static int  Skein1024Output   (Skein1024CtxtT *ctx, u08bT * hashVal);
 /*****************************************************************
 ** Skein block function constants (shared across Ref and Opt code)
 ******************************************************************/
-enum    
-{   
+enum
+{
     /*!
         Skein_256 round rotation constants 
     */
-    R_256_0_0=14, R_256_0_1=16,
-    R_256_1_0=52, R_256_1_1=57,
-    R_256_2_0=23, R_256_2_1=40,
-    R_256_3_0= 5, R_256_3_1=37,
-    R_256_4_0=25, R_256_4_1=33,
-    R_256_5_0=46, R_256_5_1=12,
-    R_256_6_0=58, R_256_6_1=22,
-    R_256_7_0=32, R_256_7_1=32,
+        R_256_0_0 = 14, R_256_0_1 = 16,
+    R_256_1_0 = 52, R_256_1_1 = 57,
+    R_256_2_0 = 23, R_256_2_1 = 40,
+    R_256_3_0 = 5, R_256_3_1 = 37,
+    R_256_4_0 = 25, R_256_4_1 = 33,
+    R_256_5_0 = 46, R_256_5_1 = 12,
+    R_256_6_0 = 58, R_256_6_1 = 22,
+    R_256_7_0 = 32, R_256_7_1 = 32,
 
     /*!
         Skein_512 round rotation constants 
     */
-    R_512_0_0=46, R_512_0_1=36, R_512_0_2=19, R_512_0_3=37,
-    R_512_1_0=33, R_512_1_1=27, R_512_1_2=14, R_512_1_3=42,
-    R_512_2_0=17, R_512_2_1=49, R_512_2_2=36, R_512_2_3=39,
-    R_512_3_0=44, R_512_3_1= 9, R_512_3_2=54, R_512_3_3=56,
-    R_512_4_0=39, R_512_4_1=30, R_512_4_2=34, R_512_4_3=24,
-    R_512_5_0=13, R_512_5_1=50, R_512_5_2=10, R_512_5_3=17,
-    R_512_6_0=25, R_512_6_1=29, R_512_6_2=39, R_512_6_3=43,
-    R_512_7_0= 8, R_512_7_1=35, R_512_7_2=56, R_512_7_3=22,
+        R_512_0_0 = 46, R_512_0_1 = 36, R_512_0_2 = 19, R_512_0_3 = 37,
+    R_512_1_0 = 33, R_512_1_1 = 27, R_512_1_2 = 14, R_512_1_3 = 42,
+    R_512_2_0 = 17, R_512_2_1 = 49, R_512_2_2 = 36, R_512_2_3 = 39,
+    R_512_3_0 = 44, R_512_3_1 = 9, R_512_3_2 = 54, R_512_3_3 = 56,
+    R_512_4_0 = 39, R_512_4_1 = 30, R_512_4_2 = 34, R_512_4_3 = 24,
+    R_512_5_0 = 13, R_512_5_1 = 50, R_512_5_2 = 10, R_512_5_3 = 17,
+    R_512_6_0 = 25, R_512_6_1 = 29, R_512_6_2 = 39, R_512_6_3 = 43,
+    R_512_7_0 = 8, R_512_7_1 = 35, R_512_7_2 = 56, R_512_7_3 = 22,
 
     /*!
         Skein1024 round rotation constants 
     */
-    R1024_0_0=24, R1024_0_1=13, R1024_0_2= 8, R1024_0_3=47, 
-    R1024_0_4= 8, R1024_0_5=17, R1024_0_6=22, R1024_0_7=37,
-    R1024_1_0=38, R1024_1_1=19, R1024_1_2=10, R1024_1_3=55, 
-    R1024_1_4=49, R1024_1_5=18, R1024_1_6=23, R1024_1_7=52,
-    R1024_2_0=33, R1024_2_1= 4, R1024_2_2=51, R1024_2_3=13, 
-    R1024_2_4=34, R1024_2_5=41, R1024_2_6=59, R1024_2_7=17,
-    R1024_3_0= 5, R1024_3_1=20, R1024_3_2=48, R1024_3_3=41, 
-    R1024_3_4=47, R1024_3_5=28, R1024_3_6=16, R1024_3_7=25,
-    R1024_4_0=41, R1024_4_1= 9, R1024_4_2=37, R1024_4_3=31, 
-    R1024_4_4=12, R1024_4_5=47, R1024_4_6=44, R1024_4_7=30,
-    R1024_5_0=16, R1024_5_1=34, R1024_5_2=56, R1024_5_3=51, 
-    R1024_5_4= 4, R1024_5_5=53, R1024_5_6=42, R1024_5_7=41,
-    R1024_6_0=31, R1024_6_1=44, R1024_6_2=47, R1024_6_3=46, 
-    R1024_6_4=19, R1024_6_5=42, R1024_6_6=44, R1024_6_7=25,
-    R1024_7_0= 9, R1024_7_1=48, R1024_7_2=35, R1024_7_3=52, 
-    R1024_7_4=23, R1024_7_5=31, R1024_7_6=37, R1024_7_7=20
+        R1024_0_0 = 24, R1024_0_1 = 13, R1024_0_2 = 8, R1024_0_3 = 47,
+    R1024_0_4 = 8, R1024_0_5 = 17, R1024_0_6 = 22, R1024_0_7 = 37,
+    R1024_1_0 = 38, R1024_1_1 = 19, R1024_1_2 = 10, R1024_1_3 = 55,
+    R1024_1_4 = 49, R1024_1_5 = 18, R1024_1_6 = 23, R1024_1_7 = 52,
+    R1024_2_0 = 33, R1024_2_1 = 4, R1024_2_2 = 51, R1024_2_3 = 13,
+    R1024_2_4 = 34, R1024_2_5 = 41, R1024_2_6 = 59, R1024_2_7 = 17,
+    R1024_3_0 = 5, R1024_3_1 = 20, R1024_3_2 = 48, R1024_3_3 = 41,
+    R1024_3_4 = 47, R1024_3_5 = 28, R1024_3_6 = 16, R1024_3_7 = 25,
+    R1024_4_0 = 41, R1024_4_1 = 9, R1024_4_2 = 37, R1024_4_3 = 31,
+    R1024_4_4 = 12, R1024_4_5 = 47, R1024_4_6 = 44, R1024_4_7 = 30,
+    R1024_5_0 = 16, R1024_5_1 = 34, R1024_5_2 = 56, R1024_5_3 = 51,
+    R1024_5_4 = 4, R1024_5_5 = 53, R1024_5_6 = 42, R1024_5_7 = 41,
+    R1024_6_0 = 31, R1024_6_1 = 44, R1024_6_2 = 47, R1024_6_3 = 46,
+    R1024_6_4 = 19, R1024_6_5 = 42, R1024_6_6 = 44, R1024_6_7 = 25,
+    R1024_7_0 = 9, R1024_7_1 = 48, R1024_7_2 = 35, R1024_7_3 = 52,
+    R1024_7_4 = 23, R1024_7_5 = 31, R1024_7_6 = 37, R1024_7_7 = 20
 };
 
 #ifndef SKEIN_ROUNDS
@@ -350,204 +350,204 @@ enum
     blkSize =  256 bits. hashSize =  128 bits 
 */
 const u64bT SKEIN256IV128[] =
-{
-    MK_64(0xE1111906,0x964D7260),
-    MK_64(0x883DAAA7,0x7C8D811C),
-    MK_64(0x10080DF4,0x91960F7A),
-    MK_64(0xCCF7DDE5,0xB45BC1C2)
-};
+    {
+            MK_64(0xE1111906, 0x964D7260),
+            MK_64(0x883DAAA7, 0x7C8D811C),
+            MK_64(0x10080DF4, 0x91960F7A),
+            MK_64(0xCCF7DDE5, 0xB45BC1C2)
+    };
 
 /*!
     blkSize =  256 bits. hashSize =  160 bits 
 */
 const u64bT SKEIN256IV160[] =
-{
-    MK_64(0x14202314,0x72825E98),
-    MK_64(0x2AC4E9A2,0x5A77E590),
-    MK_64(0xD47A5856,0x8838D63E),
-    MK_64(0x2DD2E496,0x8586AB7D)
-};
+    {
+            MK_64(0x14202314, 0x72825E98),
+            MK_64(0x2AC4E9A2, 0x5A77E590),
+            MK_64(0xD47A5856, 0x8838D63E),
+            MK_64(0x2DD2E496, 0x8586AB7D)
+    };
 
 /*!
     blkSize =  256 bits. hashSize =  224 bits 
 */
 const u64bT SKEIN256IV224[] =
-{
-    MK_64(0xC6098A8C,0x9AE5EA0B),
-    MK_64(0x876D5686,0x08C5191C),
-    MK_64(0x99CB88D7,0xD7F53884),
-    MK_64(0x384BDDB1,0xAEDDB5DE)
-};
+    {
+            MK_64(0xC6098A8C, 0x9AE5EA0B),
+            MK_64(0x876D5686, 0x08C5191C),
+            MK_64(0x99CB88D7, 0xD7F53884),
+            MK_64(0x384BDDB1, 0xAEDDB5DE)
+    };
 
 /*!
     blkSize =  256 bits. hashSize =  256 bits 
 */
 const u64bT SKEIN256IV256[] =
-{
-    MK_64(0xFC9DA860,0xD048B449),
-    MK_64(0x2FCA6647,0x9FA7D833),
-    MK_64(0xB33BC389,0x6656840F),
-    MK_64(0x6A54E920,0xFDE8DA69)
-};
+    {
+            MK_64(0xFC9DA860, 0xD048B449),
+            MK_64(0x2FCA6647, 0x9FA7D833),
+            MK_64(0xB33BC389, 0x6656840F),
+            MK_64(0x6A54E920, 0xFDE8DA69)
+    };
 
 /*!
     blkSize =  512 bits. hashSize =  128 bits 
 */
 const u64bT SKEIN512IV128[] =
-{
-    MK_64(0xA8BC7BF3,0x6FBF9F52),
-    MK_64(0x1E9872CE,0xBD1AF0AA),
-    MK_64(0x309B1790,0xB32190D3),
-    MK_64(0xBCFBB854,0x3F94805C),
-    MK_64(0x0DA61BCD,0x6E31B11B),
-    MK_64(0x1A18EBEA,0xD46A32E3),
-    MK_64(0xA2CC5B18,0xCE84AA82),
-    MK_64(0x6982AB28,0x9D46982D)
-};
+    {
+            MK_64(0xA8BC7BF3, 0x6FBF9F52),
+            MK_64(0x1E9872CE, 0xBD1AF0AA),
+            MK_64(0x309B1790, 0xB32190D3),
+            MK_64(0xBCFBB854, 0x3F94805C),
+            MK_64(0x0DA61BCD, 0x6E31B11B),
+            MK_64(0x1A18EBEA, 0xD46A32E3),
+            MK_64(0xA2CC5B18, 0xCE84AA82),
+            MK_64(0x6982AB28, 0x9D46982D)
+    };
 
 /*!
     blkSize =  512 bits. hashSize =  160 bits 
 */
 const u64bT SKEIN512IV160[] =
-{
-    MK_64(0x28B81A2A,0xE013BD91),
-    MK_64(0xC2F11668,0xB5BDF78F),
-    MK_64(0x1760D8F3,0xF6A56F12),
-    MK_64(0x4FB74758,0x8239904F),
-    MK_64(0x21EDE07F,0x7EAF5056),
-    MK_64(0xD908922E,0x63ED70B8),
-    MK_64(0xB8EC76FF,0xECCB52FA),
-    MK_64(0x01A47BB8,0xA3F27A6E)
-};
+    {
+            MK_64(0x28B81A2A, 0xE013BD91),
+            MK_64(0xC2F11668, 0xB5BDF78F),
+            MK_64(0x1760D8F3, 0xF6A56F12),
+            MK_64(0x4FB74758, 0x8239904F),
+            MK_64(0x21EDE07F, 0x7EAF5056),
+            MK_64(0xD908922E, 0x63ED70B8),
+            MK_64(0xB8EC76FF, 0xECCB52FA),
+            MK_64(0x01A47BB8, 0xA3F27A6E)
+    };
 
 /*!
     blkSize =  512 bits. hashSize =  224 bits
 */
 const u64bT SKEIN512IV224[] =
-{
-    MK_64(0xCCD06162,0x48677224),
-    MK_64(0xCBA65CF3,0xA92339EF),
-    MK_64(0x8CCD69D6,0x52FF4B64),
-    MK_64(0x398AED7B,0x3AB890B4),
-    MK_64(0x0F59D1B1,0x457D2BD0),
-    MK_64(0x6776FE65,0x75D4EB3D),
-    MK_64(0x99FBC70E,0x997413E9),
-    MK_64(0x9E2CFCCF,0xE1C41EF7)
-};
+    {
+            MK_64(0xCCD06162, 0x48677224),
+            MK_64(0xCBA65CF3, 0xA92339EF),
+            MK_64(0x8CCD69D6, 0x52FF4B64),
+            MK_64(0x398AED7B, 0x3AB890B4),
+            MK_64(0x0F59D1B1, 0x457D2BD0),
+            MK_64(0x6776FE65, 0x75D4EB3D),
+            MK_64(0x99FBC70E, 0x997413E9),
+            MK_64(0x9E2CFCCF, 0xE1C41EF7)
+    };
 
 /*!
     blkSize =  512 bits. hashSize =  256 bits 
 */
 const u64bT SKEIN512IV256[] =
-{
-    MK_64(0xCCD044A1,0x2FDB3E13),
-    MK_64(0xE8359030,0x1A79A9EB),
-    MK_64(0x55AEA061,0x4F816E6F),
-    MK_64(0x2A2767A4,0xAE9B94DB),
-    MK_64(0xEC06025E,0x74DD7683),
-    MK_64(0xE7A436CD,0xC4746251),
-    MK_64(0xC36FBAF9,0x393AD185),
-    MK_64(0x3EEDBA18,0x33EDFC13)
-};
+    {
+            MK_64(0xCCD044A1, 0x2FDB3E13),
+            MK_64(0xE8359030, 0x1A79A9EB),
+            MK_64(0x55AEA061, 0x4F816E6F),
+            MK_64(0x2A2767A4, 0xAE9B94DB),
+            MK_64(0xEC06025E, 0x74DD7683),
+            MK_64(0xE7A436CD, 0xC4746251),
+            MK_64(0xC36FBAF9, 0x393AD185),
+            MK_64(0x3EEDBA18, 0x33EDFC13)
+    };
 
 /*!
     blkSize =  512 bits. hashSize =  384 bits 
 */
 const u64bT SKEIN512IV384[] =
-{
-    MK_64(0xA3F6C6BF,0x3A75EF5F),
-    MK_64(0xB0FEF9CC,0xFD84FAA4),
-    MK_64(0x9D77DD66,0x3D770CFE),
-    MK_64(0xD798CBF3,0xB468FDDA),
-    MK_64(0x1BC4A666,0x8A0E4465),
-    MK_64(0x7ED7D434,0xE5807407),
-    MK_64(0x548FC1AC,0xD4EC44D6),
-    MK_64(0x266E1754,0x6AA18FF8)
-};
+    {
+            MK_64(0xA3F6C6BF, 0x3A75EF5F),
+            MK_64(0xB0FEF9CC, 0xFD84FAA4),
+            MK_64(0x9D77DD66, 0x3D770CFE),
+            MK_64(0xD798CBF3, 0xB468FDDA),
+            MK_64(0x1BC4A666, 0x8A0E4465),
+            MK_64(0x7ED7D434, 0xE5807407),
+            MK_64(0x548FC1AC, 0xD4EC44D6),
+            MK_64(0x266E1754, 0x6AA18FF8)
+    };
 
 /*!
     blkSize =  512 bits. hashSize =  512 bits 
 */
 const u64bT SKEIN512IV512[] =
-{
-    MK_64(0x4903ADFF,0x749C51CE),
-    MK_64(0x0D95DE39,0x9746DF03),
-    MK_64(0x8FD19341,0x27C79BCE),
-    MK_64(0x9A255629,0xFF352CB1),
-    MK_64(0x5DB62599,0xDF6CA7B0),
-    MK_64(0xEABE394C,0xA9D5C3F4),
-    MK_64(0x991112C7,0x1A75B523),
-    MK_64(0xAE18A40B,0x660FCC33)
-};
+    {
+            MK_64(0x4903ADFF, 0x749C51CE),
+            MK_64(0x0D95DE39, 0x9746DF03),
+            MK_64(0x8FD19341, 0x27C79BCE),
+            MK_64(0x9A255629, 0xFF352CB1),
+            MK_64(0x5DB62599, 0xDF6CA7B0),
+            MK_64(0xEABE394C, 0xA9D5C3F4),
+            MK_64(0x991112C7, 0x1A75B523),
+            MK_64(0xAE18A40B, 0x660FCC33)
+    };
 
 /*!
     blkSize = 1024 bits. hashSize =  384 bits 
 */
 const u64bT SKEIN1024IV384[] =
-{
-    MK_64(0x5102B6B8,0xC1894A35),
-    MK_64(0xFEEBC9E3,0xFE8AF11A),
-    MK_64(0x0C807F06,0xE32BED71),
-    MK_64(0x60C13A52,0xB41A91F6),
-    MK_64(0x9716D35D,0xD4917C38),
-    MK_64(0xE780DF12,0x6FD31D3A),
-    MK_64(0x797846B6,0xC898303A),
-    MK_64(0xB172C2A8,0xB3572A3B),
-    MK_64(0xC9BC8203,0xA6104A6C),
-    MK_64(0x65909338,0xD75624F4),
-    MK_64(0x94BCC568,0x4B3F81A0),
-    MK_64(0x3EBBF51E,0x10ECFD46),
-    MK_64(0x2DF50F0B,0xEEB08542),
-    MK_64(0x3B5A6530,0x0DBC6516),
-    MK_64(0x484B9CD2,0x167BBCE1),
-    MK_64(0x2D136947,0xD4CBAFEA)
-};
+    {
+            MK_64(0x5102B6B8, 0xC1894A35),
+            MK_64(0xFEEBC9E3, 0xFE8AF11A),
+            MK_64(0x0C807F06, 0xE32BED71),
+            MK_64(0x60C13A52, 0xB41A91F6),
+            MK_64(0x9716D35D, 0xD4917C38),
+            MK_64(0xE780DF12, 0x6FD31D3A),
+            MK_64(0x797846B6, 0xC898303A),
+            MK_64(0xB172C2A8, 0xB3572A3B),
+            MK_64(0xC9BC8203, 0xA6104A6C),
+            MK_64(0x65909338, 0xD75624F4),
+            MK_64(0x94BCC568, 0x4B3F81A0),
+            MK_64(0x3EBBF51E, 0x10ECFD46),
+            MK_64(0x2DF50F0B, 0xEEB08542),
+            MK_64(0x3B5A6530, 0x0DBC6516),
+            MK_64(0x484B9CD2, 0x167BBCE1),
+            MK_64(0x2D136947, 0xD4CBAFEA)
+    };
 
 /*!
     blkSize = 1024 bits. hashSize =  512 bits 
 */
 const u64bT SKEIN1024IV512[] =
-{
-    MK_64(0xCAEC0E5D,0x7C1B1B18),
-    MK_64(0xA01B0E04,0x5F03E802),
-    MK_64(0x33840451,0xED912885),
-    MK_64(0x374AFB04,0xEAEC2E1C),
-    MK_64(0xDF25A0E2,0x813581F7),
-    MK_64(0xE4004093,0x8B12F9D2),
-    MK_64(0xA662D539,0xC2ED39B6),
-    MK_64(0xFA8B85CF,0x45D8C75A),
-    MK_64(0x8316ED8E,0x29EDE796),
-    MK_64(0x053289C0,0x2E9F91B8),
-    MK_64(0xC3F8EF1D,0x6D518B73),
-    MK_64(0xBDCEC3C4,0xD5EF332E),
-    MK_64(0x549A7E52,0x22974487),
-    MK_64(0x67070872,0x5B749816),
-    MK_64(0xB9CD28FB,0xF0581BD1),
-    MK_64(0x0E2940B8,0x15804974)
-};
+    {
+            MK_64(0xCAEC0E5D, 0x7C1B1B18),
+            MK_64(0xA01B0E04, 0x5F03E802),
+            MK_64(0x33840451, 0xED912885),
+            MK_64(0x374AFB04, 0xEAEC2E1C),
+            MK_64(0xDF25A0E2, 0x813581F7),
+            MK_64(0xE4004093, 0x8B12F9D2),
+            MK_64(0xA662D539, 0xC2ED39B6),
+            MK_64(0xFA8B85CF, 0x45D8C75A),
+            MK_64(0x8316ED8E, 0x29EDE796),
+            MK_64(0x053289C0, 0x2E9F91B8),
+            MK_64(0xC3F8EF1D, 0x6D518B73),
+            MK_64(0xBDCEC3C4, 0xD5EF332E),
+            MK_64(0x549A7E52, 0x22974487),
+            MK_64(0x67070872, 0x5B749816),
+            MK_64(0xB9CD28FB, 0xF0581BD1),
+            MK_64(0x0E2940B8, 0x15804974)
+    };
 
 /*!
     blkSize = 1024 bits. hashSize = 1024 bits 
 */
 const u64bT SKEIN1024IV1024[] =
-{
-    MK_64(0xD593DA07,0x41E72355),
-    MK_64(0x15B5E511,0xAC73E00C),
-    MK_64(0x5180E5AE,0xBAF2C4F0),
-    MK_64(0x03BD41D3,0xFCBCAFAF),
-    MK_64(0x1CAEC6FD,0x1983A898),
-    MK_64(0x6E510B8B,0xCDD0589F),
-    MK_64(0x77E2BDFD,0xC6394ADA),
-    MK_64(0xC11E1DB5,0x24DCB0A3),
-    MK_64(0xD6D14AF9,0xC6329AB5),
-    MK_64(0x6A9B0BFC,0x6EB67E0D),
-    MK_64(0x9243C60D,0xCCFF1332),
-    MK_64(0x1A1F1DDE,0x743F02D4),
-    MK_64(0x0996753C,0x10ED0BB8),
-    MK_64(0x6572DD22,0xF2B4969A),
-    MK_64(0x61FD3062,0xD00A579A),
-    MK_64(0x1DE0536E,0x8682E539)
-};
+    {
+            MK_64(0xD593DA07, 0x41E72355),
+            MK_64(0x15B5E511, 0xAC73E00C),
+            MK_64(0x5180E5AE, 0xBAF2C4F0),
+            MK_64(0x03BD41D3, 0xFCBCAFAF),
+            MK_64(0x1CAEC6FD, 0x1983A898),
+            MK_64(0x6E510B8B, 0xCDD0589F),
+            MK_64(0x77E2BDFD, 0xC6394ADA),
+            MK_64(0xC11E1DB5, 0x24DCB0A3),
+            MK_64(0xD6D14AF9, 0xC6329AB5),
+            MK_64(0x6A9B0BFC, 0x6EB67E0D),
+            MK_64(0x9243C60D, 0xCCFF1332),
+            MK_64(0x1A1F1DDE, 0x743F02D4),
+            MK_64(0x0996753C, 0x10ED0BB8),
+            MK_64(0x6572DD22, 0xF2B4969A),
+            MK_64(0x61FD3062, 0xD00A579A),
+            MK_64(0x1DE0536E, 0x8682E539)
+    };
 
 
 #ifndef SKEIN_USE_ASM
@@ -561,7 +561,7 @@ const u64bT SKEIN1024IV1024[] =
 #define BLK_BITS        (WCNT*64)               /* some useful definitions for code here */
 #define KW_TWK_BASE     (0)
 #define KW_KEY_BASE     (3)
-#define ks              (kw + KW_KEY_BASE)                
+#define ks              (kw + KW_KEY_BASE)
 #define ts              (kw + KW_TWK_BASE)
 
 #ifdef SKEIN_DEBUG
@@ -576,7 +576,7 @@ static void Skein256ProcessBlock(Skein256CtxtT *ctx,
                                  const u08bT *blkPtr,
                                  size_t blkCnt,
                                  size_t byteCntAdd)
-    { /* do it in C */
+{ /* do it in C */
     enum
     {
         WCNT = SKEIN_256_STATE_WORDS
@@ -597,10 +597,10 @@ static void Skein256ProcessBlock(Skein256CtxtT *ctx,
     size_t  r;
     u64bT  kw[WCNT+4+RCNT*2];                  /* key schedule words : chaining vars + tweak + "rotation"*/
 #else
-    u64bT  kw[WCNT+4];                         /* key schedule words : chaining vars + tweak */
+    u64bT kw[WCNT + 4];                         /* key schedule words : chaining vars + tweak */
 #endif
-    u64bT  X0,X1,X2,X3;                        /* local copy of context vars, for speed */
-    u64bT  w [WCNT];                           /* local copy of input block */
+    u64bT X0, X1, X2, X3;                        /* local copy of context vars, for speed */
+    u64bT w[WCNT];                           /* local copy of input block */
 #ifdef SKEIN_DEBUG
     const u64bT *Xptr[4];                      /* use for debugging (help compiler put Xn in registers) */
     Xptr[0] = &X0;  Xptr[1] = &X1;  Xptr[2] = &X2;  Xptr[3] = &X3;
@@ -608,12 +608,12 @@ static void Skein256ProcessBlock(Skein256CtxtT *ctx,
     Skein_assert(blkCnt != 0);                  /* never call with blkCnt == 0! */
     ts[0] = ctx->h.T[0];
     ts[1] = ctx->h.T[1];
-    do  {
+    do {
         /* this implementation only supports 2**64 input bytes (no carry out here) */
         ts[0] += byteCntAdd;                    /* update processed length */
 
         /* precompute the key schedule for this block */
-        ks[0] = ctx->X[0];     
+        ks[0] = ctx->X[0];
         ks[1] = ctx->X[1];
         ks[2] = ctx->X[2];
         ks[3] = ctx->X[3];
@@ -621,27 +621,27 @@ static void Skein256ProcessBlock(Skein256CtxtT *ctx,
 
         ts[2] = ts[0] ^ ts[1];
 
-        SkeinGet64LSBFirst(w,blkPtr,WCNT);   /* get input block in little-endian format */
+        SkeinGet64LSBFirst(w, blkPtr, WCNT);   /* get input block in little-endian format */
         DebugSaveTweak(ctx);
-        SkeinShowBlock(BLK_BITS,&ctx->h,ctx->X,blkPtr,w,ks,ts);
+        SkeinShowBlock(BLK_BITS, &ctx->h, ctx->X, blkPtr, w, ks, ts);
 
         X0 = w[0] + ks[0];                      /* do the first full key injection */
         X1 = w[1] + ks[1] + ts[0];
         X2 = w[2] + ks[2] + ts[1];
         X3 = w[3] + ks[3];
 
-        SkeinShowRPtr(BLK_BITS,&ctx->h,SKEIN_RND_KEY_INITIAL,Xptr);    /* show starting state values */
+        SkeinShowRPtr(BLK_BITS, &ctx->h, SKEIN_RND_KEY_INITIAL, Xptr);    /* show starting state values */
 
         blkPtr += SKEIN_256_BLOCK_BYTES;
 
         /* run the rounds */
 
-#define Round256(p0,p1,p2,p3,ROT,rNum)                              \
+#define Round256(p0, p1, p2, p3, ROT, rNum)                              \
     X##p0 += X##p1; X##p1 = RotL_64(X##p1,ROT##_0); X##p1 ^= X##p0; \
     X##p2 += X##p3; X##p3 = RotL_64(X##p3,ROT##_1); X##p3 ^= X##p2; \
 
-#if SKEIN_UNROLL_256 == 0                       
-#define R256(p0,p1,p2,p3,ROT,rNum)           /* fully unrolled */   \
+#if SKEIN_UNROLL_256 == 0
+#define R256(p0, p1, p2, p3, ROT, rNum)           /* fully unrolled */   \
     Round256(p0,p1,p2,p3,ROT,rNum)                                  \
     SkeinShowRPtr(BLK_BITS,&ctx->h,rNum,Xptr);
 
@@ -665,9 +665,9 @@ static void Skein256ProcessBlock(Skein256CtxtT *ctx,
     ts[r + (R)+2    ]   = ts[r+(R)-1];                              \
     SkeinShowRPtr(BLK_BITS,&ctx->h,SKEIN_RND_KEY_INJECT,Xptr);
 
-    for (r=1;r < 2*RCNT;r+=2*SKEIN_UNROLL_256)  /* loop thru it */
-#endif  
-        {    
+        for (r=1;r < 2*RCNT;r+=2*SKEIN_UNROLL_256)  /* loop thru it */
+#endif
+        {
 #define R256_8_rounds(R)                  \
         R256(0,1,2,3,R_256_0,8*(R) + 1);  \
         R256(0,3,2,1,R_256_1,8*(R) + 2);  \
@@ -680,55 +680,55 @@ static void Skein256ProcessBlock(Skein256CtxtT *ctx,
         R256(0,3,2,1,R_256_7,8*(R) + 8);  \
         I256(2*(R)+1);
 
-        R256_8_rounds( 0);
+            R256_8_rounds(0);
 
 #define R256_Unroll_R(NN) ((SKEIN_UNROLL_256 == 0 && SKEIN_256_ROUNDS_TOTAL/8 > (NN)) || (SKEIN_UNROLL_256 > (NN)))
 
-  #if   R256_Unroll_R( 1)
-        R256_8_rounds( 1);
-  #endif
-  #if   R256_Unroll_R( 2)
-        R256_8_rounds( 2);
-  #endif
-  #if   R256_Unroll_R( 3)
-        R256_8_rounds( 3);
-  #endif
-  #if   R256_Unroll_R( 4)
-        R256_8_rounds( 4);
-  #endif
-  #if   R256_Unroll_R( 5)
-        R256_8_rounds( 5);
-  #endif
-  #if   R256_Unroll_R( 6)
-        R256_8_rounds( 6);
-  #endif
-  #if   R256_Unroll_R( 7)
-        R256_8_rounds( 7);
-  #endif
-  #if   R256_Unroll_R( 8)
-        R256_8_rounds( 8);
-  #endif
-  #if   R256_Unroll_R( 9)
-        R256_8_rounds( 9);
-  #endif
-  #if   R256_Unroll_R(10)
-        R256_8_rounds(10);
-  #endif
-  #if   R256_Unroll_R(11)
-        R256_8_rounds(11);
-  #endif
-  #if   R256_Unroll_R(12)
-        R256_8_rounds(12);
-  #endif
-  #if   R256_Unroll_R(13)
-        R256_8_rounds(13);
-  #endif
-  #if   R256_Unroll_R(14)
-        R256_8_rounds(14);
-  #endif
-  #if  (SKEIN_UNROLL_256 > 14)
+            #if   R256_Unroll_R(1)
+            R256_8_rounds(1);
+            #endif
+            #if   R256_Unroll_R(2)
+            R256_8_rounds(2);
+            #endif
+            #if   R256_Unroll_R(3)
+            R256_8_rounds(3);
+            #endif
+            #if   R256_Unroll_R(4)
+            R256_8_rounds(4);
+            #endif
+            #if   R256_Unroll_R(5)
+            R256_8_rounds(5);
+            #endif
+            #if   R256_Unroll_R(6)
+            R256_8_rounds(6);
+            #endif
+            #if   R256_Unroll_R(7)
+            R256_8_rounds(7);
+            #endif
+            #if   R256_Unroll_R(8)
+            R256_8_rounds(8);
+            #endif
+            #if   R256_Unroll_R(9)
+            R256_8_rounds( 9);
+            #endif
+            #if   R256_Unroll_R(10)
+            R256_8_rounds(10);
+            #endif
+            #if   R256_Unroll_R(11)
+            R256_8_rounds(11);
+            #endif
+            #if   R256_Unroll_R(12)
+            R256_8_rounds(12);
+            #endif
+            #if   R256_Unroll_R(13)
+            R256_8_rounds(13);
+            #endif
+            #if   R256_Unroll_R(14)
+            R256_8_rounds(14);
+            #endif
+            #if  (SKEIN_UNROLL_256 > 14)
 #error  "need more unrolling in Skein256ProcessBlock"
-  #endif
+            #endif
         }
         /* do the final "feedforward" xor, update context chaining vars */
         ctx->X[0] = X0 ^ w[0];
@@ -736,14 +736,14 @@ static void Skein256ProcessBlock(Skein256CtxtT *ctx,
         ctx->X[2] = X2 ^ w[2];
         ctx->X[3] = X3 ^ w[3];
 
-        SkeinShowRound(BLK_BITS,&ctx->h,SKEIN_RND_FEED_FWD,ctx->X);
+        SkeinShowRound(BLK_BITS, &ctx->h, SKEIN_RND_FEED_FWD, ctx->X);
 
         ts[1] &= ~SKEIN_T1_FLAG_FIRST;
-        }
+    }
     while (--blkCnt);
     ctx->h.T[0] = ts[0];
     ctx->h.T[1] = ts[1];
-    }
+}
 
 #if defined(SKEIN_CODE_SIZE) || defined(SKEIN_PERF)
 static size_t Skein256ProcessBlockCodeSize(void)
@@ -760,12 +760,12 @@ static uintT Skein256UnrollCnt(void)
 
 /*****************************  Skein_512 ******************************/
 #if !(SKEIN_USE_ASM & 512)
-static void Skein512ProcessBlock(Skein512CtxtT *ctx,const u08bT *blkPtr,size_t blkCnt,size_t byteCntAdd)
+static void Skein512ProcessBlock(Skein512CtxtT *ctx, const u08bT *blkPtr, size_t blkCnt, size_t byteCntAdd)
 { /* do it in C */
-enum
-{
-    WCNT = SKEIN_512_STATE_WORDS
-};
+    enum
+    {
+        WCNT = SKEIN_512_STATE_WORDS
+    };
 #undef  RCNT
 #define RCNT  (SKEIN_512_ROUNDS_TOTAL/8)
 
@@ -782,10 +782,10 @@ enum
     size_t  r;
     u64bT  kw[WCNT+4+RCNT*2];                  /* key schedule words : chaining vars + tweak + "rotation"*/
 #else
-    u64bT  kw[WCNT+4];                         /* key schedule words : chaining vars + tweak */
+    u64bT kw[WCNT + 4];                         /* key schedule words : chaining vars + tweak */
 #endif
-    u64bT  X0,X1,X2,X3,X4,X5,X6,X7;            /* local copy of vars, for speed */
-    u64bT  w [WCNT];                           /* local copy of input block */
+    u64bT X0, X1, X2, X3, X4, X5, X6, X7;            /* local copy of vars, for speed */
+    u64bT w[WCNT];                           /* local copy of input block */
 #ifdef SKEIN_DEBUG
     const u64bT *Xptr[8];                      /* use for debugging (help compiler put Xn in registers) */
     Xptr[0] = &X0;  Xptr[1] = &X1;  Xptr[2] = &X2;  Xptr[3] = &X3;
@@ -795,7 +795,7 @@ enum
     Skein_assert(blkCnt != 0);                  /* never call with blkCnt == 0! */
     ts[0] = ctx->h.T[0];
     ts[1] = ctx->h.T[1];
-    do  {
+    do {
         /*!
             this implementation only supports 2**64 input bytes (no carry out here)
         */
@@ -810,36 +810,36 @@ enum
         ks[5] = ctx->X[5];
         ks[6] = ctx->X[6];
         ks[7] = ctx->X[7];
-        ks[8] = ks[0] ^ ks[1] ^ ks[2] ^ ks[3] ^ 
+        ks[8] = ks[0] ^ ks[1] ^ ks[2] ^ ks[3] ^
                 ks[4] ^ ks[5] ^ ks[6] ^ ks[7] ^ SKEIN_KS_PARITY;
 
         ts[2] = ts[0] ^ ts[1];
 
-        SkeinGet64LSBFirst(w,blkPtr,WCNT); /* get input block in little-endian format */
+        SkeinGet64LSBFirst(w, blkPtr, WCNT); /* get input block in little-endian format */
         DebugSaveTweak(ctx);
-        SkeinShowBlock(BLK_BITS,&ctx->h,ctx->X,blkPtr,w,ks,ts);
+        SkeinShowBlock(BLK_BITS, &ctx->h, ctx->X, blkPtr, w, ks, ts);
 
-        X0   = w[0] + ks[0];                    /* do the first full key injection */
-        X1   = w[1] + ks[1];
-        X2   = w[2] + ks[2];
-        X3   = w[3] + ks[3];
-        X4   = w[4] + ks[4];
-        X5   = w[5] + ks[5] + ts[0];
-        X6   = w[6] + ks[6] + ts[1];
-        X7   = w[7] + ks[7];
+        X0 = w[0] + ks[0];                    /* do the first full key injection */
+        X1 = w[1] + ks[1];
+        X2 = w[2] + ks[2];
+        X3 = w[3] + ks[3];
+        X4 = w[4] + ks[4];
+        X5 = w[5] + ks[5] + ts[0];
+        X6 = w[6] + ks[6] + ts[1];
+        X7 = w[7] + ks[7];
 
         blkPtr += SKEIN_512_BLOCK_BYTES;
 
-        SkeinShowRPtr(BLK_BITS,&ctx->h,SKEIN_RND_KEY_INITIAL,Xptr);
+        SkeinShowRPtr(BLK_BITS, &ctx->h, SKEIN_RND_KEY_INITIAL, Xptr);
         /* run the rounds */
-#define Round512(p0,p1,p2,p3,p4,p5,p6,p7,ROT,rNum)                  \
+#define Round512(p0, p1, p2, p3, p4, p5, p6, p7, ROT, rNum)                  \
     X##p0 += X##p1; X##p1 = RotL_64(X##p1,ROT##_0); X##p1 ^= X##p0; \
     X##p2 += X##p3; X##p3 = RotL_64(X##p3,ROT##_1); X##p3 ^= X##p2; \
     X##p4 += X##p5; X##p5 = RotL_64(X##p5,ROT##_2); X##p5 ^= X##p4; \
     X##p6 += X##p7; X##p7 = RotL_64(X##p7,ROT##_3); X##p7 ^= X##p6; \
 
-#if SKEIN_UNROLL_512 == 0                       
-#define R512(p0,p1,p2,p3,p4,p5,p6,p7,ROT,rNum)      /* unrolled */  \
+#if SKEIN_UNROLL_512 == 0
+#define R512(p0, p1, p2, p3, p4, p5, p6, p7, ROT, rNum)      /* unrolled */  \
     Round512(p0,p1,p2,p3,p4,p5,p6,p7,ROT,rNum)                      \
     SkeinShowRPtr(BLK_BITS,&ctx->h,rNum,Xptr);
 
@@ -871,7 +871,7 @@ enum
     ts[r +       (R)+2] = ts[r+(R)-1];                              \
     SkeinShowRPtr(BLK_BITS,&ctx->h,SKEIN_RND_KEY_INJECT,Xptr);
 
-    for (r=1;r < 2*RCNT;r+=2*SKEIN_UNROLL_512)   /* loop thru it */
+        for (r=1;r < 2*RCNT;r+=2*SKEIN_UNROLL_512)   /* loop thru it */
 #endif                         /* end of looped code definitions */
         {
 #define R512_8_rounds(R)  /* do 8 full rounds */  \
@@ -886,55 +886,55 @@ enum
         R512(6,1,0,7,2,5,4,3,R_512_7,8*(R)+ 8);   \
         I512(2*(R)+1);        /* and key injection */
 
-        R512_8_rounds( 0);
+            R512_8_rounds(0);
 
 #define R512_Unroll_R(NN) ((SKEIN_UNROLL_512 == 0 && SKEIN_512_ROUNDS_TOTAL/8 > (NN)) || (SKEIN_UNROLL_512 > (NN)))
 
-  #if   R512_Unroll_R( 1)
-        R512_8_rounds( 1);
-  #endif
-  #if   R512_Unroll_R( 2)
-        R512_8_rounds( 2);
-  #endif
-  #if   R512_Unroll_R( 3)
-        R512_8_rounds( 3);
-  #endif
-  #if   R512_Unroll_R( 4)
-        R512_8_rounds( 4);
-  #endif
-  #if   R512_Unroll_R( 5)
-        R512_8_rounds( 5);
-  #endif
-  #if   R512_Unroll_R( 6)
-        R512_8_rounds( 6);
-  #endif
-  #if   R512_Unroll_R( 7)
-        R512_8_rounds( 7);
-  #endif
-  #if   R512_Unroll_R( 8)
-        R512_8_rounds( 8);
-  #endif
-  #if   R512_Unroll_R( 9)
-        R512_8_rounds( 9);
-  #endif
-  #if   R512_Unroll_R(10)
-        R512_8_rounds(10);
-  #endif
-  #if   R512_Unroll_R(11)
-        R512_8_rounds(11);
-  #endif
-  #if   R512_Unroll_R(12)
-        R512_8_rounds(12);
-  #endif
-  #if   R512_Unroll_R(13)
-        R512_8_rounds(13);
-  #endif
-  #if   R512_Unroll_R(14)
-        R512_8_rounds(14);
-  #endif
-  #if  (SKEIN_UNROLL_512 > 14)
+            #if   R512_Unroll_R(1)
+            R512_8_rounds(1);
+            #endif
+            #if   R512_Unroll_R(2)
+            R512_8_rounds(2);
+            #endif
+            #if   R512_Unroll_R(3)
+            R512_8_rounds(3);
+            #endif
+            #if   R512_Unroll_R(4)
+            R512_8_rounds(4);
+            #endif
+            #if   R512_Unroll_R(5)
+            R512_8_rounds(5);
+            #endif
+            #if   R512_Unroll_R(6)
+            R512_8_rounds(6);
+            #endif
+            #if   R512_Unroll_R(7)
+            R512_8_rounds(7);
+            #endif
+            #if   R512_Unroll_R(8)
+            R512_8_rounds(8);
+            #endif
+            #if   R512_Unroll_R(9)
+            R512_8_rounds( 9);
+            #endif
+            #if   R512_Unroll_R(10)
+            R512_8_rounds(10);
+            #endif
+            #if   R512_Unroll_R(11)
+            R512_8_rounds(11);
+            #endif
+            #if   R512_Unroll_R(12)
+            R512_8_rounds(12);
+            #endif
+            #if   R512_Unroll_R(13)
+            R512_8_rounds(13);
+            #endif
+            #if   R512_Unroll_R(14)
+            R512_8_rounds(14);
+            #endif
+            #if  (SKEIN_UNROLL_512 > 14)
 #error  "need more unrolling in Skein512ProcessBlock"
-  #endif
+            #endif
         }
 
         /* do the final "feedforward" xor, update context chaining vars */
@@ -946,14 +946,14 @@ enum
         ctx->X[5] = X5 ^ w[5];
         ctx->X[6] = X6 ^ w[6];
         ctx->X[7] = X7 ^ w[7];
-        SkeinShowRound(BLK_BITS,&ctx->h,SKEIN_RND_FEED_FWD,ctx->X);
+        SkeinShowRound(BLK_BITS, &ctx->h, SKEIN_RND_FEED_FWD, ctx->X);
 
         ts[1] &= ~SKEIN_T1_FLAG_FIRST;
-        }
+    }
     while (--blkCnt);
     ctx->h.T[0] = ts[0];
     ctx->h.T[1] = ts[1];
-    }
+}
 
 #if defined(SKEIN_CODE_SIZE) || defined(SKEIN_PERF)
 static size_t Skein512ProcessBlockCodeSize(void)
@@ -976,10 +976,10 @@ static void Skein1024ProcessBlock(Skein1024CtxtT *ctx,
                                   size_t blkCnt,
                                   size_t byteCntAdd)
 { /* do it in C, always looping (unrolled is bigger AND slower!) */
-enum
-{
-    WCNT = SKEIN1024_STATE_WORDS
-};
+    enum
+    {
+        WCNT = SKEIN1024_STATE_WORDS
+    };
 #undef  RCNT
 #define RCNT  (SKEIN1024_ROUNDS_TOTAL/8)
 
@@ -993,15 +993,15 @@ enum
 #if (RCNT % SKEIN_UNROLL_1024)
 #error "Invalid SKEIN_UNROLL_1024"              /* sanity check on unroll count */
 #endif
-    size_t  r;
-    u64bT  kw[WCNT+4+RCNT*2];                  /* key schedule words : chaining vars + tweak + "rotation"*/
+    size_t r;
+    u64bT kw[WCNT + 4 + RCNT * 2];                  /* key schedule words : chaining vars + tweak + "rotation"*/
 #else
     u64bT  kw[WCNT+4];                         /* key schedule words : chaining vars + tweak */
 #endif
 
-    u64bT  X00,X01,X02,X03,X04,X05,X06,X07,    /* local copy of vars, for speed */
-            X08,X09,X10,X11,X12,X13,X14,X15;
-    u64bT  w [WCNT];                           /* local copy of input block */
+    u64bT X00, X01, X02, X03, X04, X05, X06, X07,    /* local copy of vars, for speed */
+        X08, X09, X10, X11, X12, X13, X14, X15;
+    u64bT w[WCNT];                           /* local copy of input block */
 #ifdef SKEIN_DEBUG
     const u64bT *Xptr[16];                     /* use for debugging (help compiler put Xn in registers) */
     Xptr[ 0] = &X00;  Xptr[ 1] = &X01;  Xptr[ 2] = &X02;  Xptr[ 3] = &X03;
@@ -1013,58 +1013,58 @@ enum
     Skein_assert(blkCnt != 0);                  /* never call with blkCnt == 0! */
     ts[0] = ctx->h.T[0];
     ts[1] = ctx->h.T[1];
-    do  {
+    do {
         /* this implementation only supports 2**64 input bytes (no carry out here) */
         ts[0] += byteCntAdd;                    /* update processed length */
 
         /* precompute the key schedule for this block */
-        ks[ 0] = ctx->X[ 0];
-        ks[ 1] = ctx->X[ 1];
-        ks[ 2] = ctx->X[ 2];
-        ks[ 3] = ctx->X[ 3];
-        ks[ 4] = ctx->X[ 4];
-        ks[ 5] = ctx->X[ 5];
-        ks[ 6] = ctx->X[ 6];
-        ks[ 7] = ctx->X[ 7];
-        ks[ 8] = ctx->X[ 8];
-        ks[ 9] = ctx->X[ 9];
+        ks[0] = ctx->X[0];
+        ks[1] = ctx->X[1];
+        ks[2] = ctx->X[2];
+        ks[3] = ctx->X[3];
+        ks[4] = ctx->X[4];
+        ks[5] = ctx->X[5];
+        ks[6] = ctx->X[6];
+        ks[7] = ctx->X[7];
+        ks[8] = ctx->X[8];
+        ks[9] = ctx->X[9];
         ks[10] = ctx->X[10];
         ks[11] = ctx->X[11];
         ks[12] = ctx->X[12];
         ks[13] = ctx->X[13];
         ks[14] = ctx->X[14];
         ks[15] = ctx->X[15];
-        ks[16] = ks[ 0] ^ ks[ 1] ^ ks[ 2] ^ ks[ 3] ^
-                 ks[ 4] ^ ks[ 5] ^ ks[ 6] ^ ks[ 7] ^
-                 ks[ 8] ^ ks[ 9] ^ ks[10] ^ ks[11] ^
+        ks[16] = ks[0] ^ ks[1] ^ ks[2] ^ ks[3] ^
+                 ks[4] ^ ks[5] ^ ks[6] ^ ks[7] ^
+                 ks[8] ^ ks[9] ^ ks[10] ^ ks[11] ^
                  ks[12] ^ ks[13] ^ ks[14] ^ ks[15] ^ SKEIN_KS_PARITY;
 
-        ts[2]  = ts[0] ^ ts[1];
+        ts[2] = ts[0] ^ ts[1];
 
-        SkeinGet64LSBFirst(w,blkPtr,WCNT); /* get input block in little-endian format */
+        SkeinGet64LSBFirst(w, blkPtr, WCNT); /* get input block in little-endian format */
         DebugSaveTweak(ctx);
-        SkeinShowBlock(BLK_BITS,&ctx->h,ctx->X,blkPtr,w,ks,ts);
+        SkeinShowBlock(BLK_BITS, &ctx->h, ctx->X, blkPtr, w, ks, ts);
 
-        X00    = w[ 0] + ks[ 0];                 /* do the first full key injection */
-        X01    = w[ 1] + ks[ 1];
-        X02    = w[ 2] + ks[ 2];
-        X03    = w[ 3] + ks[ 3];
-        X04    = w[ 4] + ks[ 4];
-        X05    = w[ 5] + ks[ 5];
-        X06    = w[ 6] + ks[ 6];
-        X07    = w[ 7] + ks[ 7];
-        X08    = w[ 8] + ks[ 8];
-        X09    = w[ 9] + ks[ 9];
-        X10    = w[10] + ks[10];
-        X11    = w[11] + ks[11];
-        X12    = w[12] + ks[12];
-        X13    = w[13] + ks[13] + ts[0];
-        X14    = w[14] + ks[14] + ts[1];
-        X15    = w[15] + ks[15];
+        X00 = w[0] + ks[0];                 /* do the first full key injection */
+        X01 = w[1] + ks[1];
+        X02 = w[2] + ks[2];
+        X03 = w[3] + ks[3];
+        X04 = w[4] + ks[4];
+        X05 = w[5] + ks[5];
+        X06 = w[6] + ks[6];
+        X07 = w[7] + ks[7];
+        X08 = w[8] + ks[8];
+        X09 = w[9] + ks[9];
+        X10 = w[10] + ks[10];
+        X11 = w[11] + ks[11];
+        X12 = w[12] + ks[12];
+        X13 = w[13] + ks[13] + ts[0];
+        X14 = w[14] + ks[14] + ts[1];
+        X15 = w[15] + ks[15];
 
-        SkeinShowRPtr(BLK_BITS,&ctx->h,SKEIN_RND_KEY_INITIAL,Xptr);
+        SkeinShowRPtr(BLK_BITS, &ctx->h, SKEIN_RND_KEY_INITIAL, Xptr);
 
-#define Round1024(p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,pA,pB,pC,pD,pE,pF,ROT,rNum) \
+#define Round1024(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, pA, pB, pC, pD, pE, pF, ROT, rNum) \
     X##p0 += X##p1; X##p1 = RotL_64(X##p1,ROT##_0); X##p1 ^= X##p0;   \
     X##p2 += X##p3; X##p3 = RotL_64(X##p3,ROT##_1); X##p3 ^= X##p2;   \
     X##p4 += X##p5; X##p5 = RotL_64(X##p5,ROT##_2); X##p5 ^= X##p4;   \
@@ -1074,7 +1074,7 @@ enum
     X##pC += X##pD; X##pD = RotL_64(X##pD,ROT##_6); X##pD ^= X##pC;   \
     X##pE += X##pF; X##pF = RotL_64(X##pF,ROT##_7); X##pF ^= X##pE;   \
 
-#if SKEIN_UNROLL_1024 == 0                      
+#if SKEIN_UNROLL_1024 == 0
 #define R1024(p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,pA,pB,pC,pD,pE,pF,ROT,rn) \
     Round1024(p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,pA,pB,pC,pD,pE,pF,ROT,rn) \
     SkeinShowRPtr(BLK_BITS,&ctx->h,rn,Xptr);
@@ -1098,7 +1098,7 @@ enum
     X15   += ks[((R)+16) % 17] +     (R)+1;                           \
     SkeinShowRPtr(BLK_BITS,&ctx->h,SKEIN_RND_KEY_INJECT,Xptr); 
 #else                                       /* looping version */
-#define R1024(p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,pA,pB,pC,pD,pE,pF,ROT,rn) \
+#define R1024(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, pA, pB, pC, pD, pE, pF, ROT, rn) \
     Round1024(p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,pA,pB,pC,pD,pE,pF,ROT,rn) \
     SkeinShowRPtr(BLK_BITS,&ctx->h,4*(r-1)+rn,Xptr);
 
@@ -1123,8 +1123,8 @@ enum
     ts[r  +       (R)+ 2] = ts[r+(R)-1];                              \
     SkeinShowRPtr(BLK_BITS,&ctx->h,SKEIN_RND_KEY_INJECT,Xptr);
 
-    for (r=1;r <= 2*RCNT;r+=2*SKEIN_UNROLL_1024)    /* loop thru it */
-#endif  
+        for (r = 1; r <= 2 * RCNT; r += 2 * SKEIN_UNROLL_1024)    /* loop thru it */
+#endif
         {
 #define R1024_8_rounds(R)    /* do 8 full rounds */                               \
         R1024(00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,R1024_0,8*(R) + 1); \
@@ -1138,68 +1138,68 @@ enum
         R1024(00,15,02,11,06,13,04,09,14,01,08,05,10,03,12,07,R1024_7,8*(R) + 8); \
         I1024(2*(R)+1);
 
-        R1024_8_rounds( 0);
+            R1024_8_rounds(0);
 
 #define R1024_Unroll_R(NN) ((SKEIN_UNROLL_1024 == 0 && SKEIN1024_ROUNDS_TOTAL/8 > (NN)) || (SKEIN_UNROLL_1024 > (NN)))
 
-  #if   R1024_Unroll_R( 1)
-        R1024_8_rounds( 1);
-  #endif
-  #if   R1024_Unroll_R( 2)
-        R1024_8_rounds( 2);
-  #endif
-  #if   R1024_Unroll_R( 3)
-        R1024_8_rounds( 3);
-  #endif
-  #if   R1024_Unroll_R( 4)
-        R1024_8_rounds( 4);
-  #endif
-  #if   R1024_Unroll_R( 5)
-        R1024_8_rounds( 5);
-  #endif
-  #if   R1024_Unroll_R( 6)
-        R1024_8_rounds( 6);
-  #endif
-  #if   R1024_Unroll_R( 7)
-        R1024_8_rounds( 7);
-  #endif
-  #if   R1024_Unroll_R( 8)
-        R1024_8_rounds( 8);
-  #endif
-  #if   R1024_Unroll_R( 9)
-        R1024_8_rounds( 9);
-  #endif
-  #if   R1024_Unroll_R(10)
-        R1024_8_rounds(10);
-  #endif
-  #if   R1024_Unroll_R(11)
-        R1024_8_rounds(11);
-  #endif
-  #if   R1024_Unroll_R(12)
-        R1024_8_rounds(12);
-  #endif
-  #if   R1024_Unroll_R(13)
-        R1024_8_rounds(13);
-  #endif
-  #if   R1024_Unroll_R(14)
-        R1024_8_rounds(14);
-  #endif
-  #if  (SKEIN_UNROLL_1024 > 14)
+            #if   R1024_Unroll_R(1)
+            R1024_8_rounds( 1);
+            #endif
+            #if   R1024_Unroll_R(2)
+            R1024_8_rounds( 2);
+            #endif
+            #if   R1024_Unroll_R(3)
+            R1024_8_rounds( 3);
+            #endif
+            #if   R1024_Unroll_R(4)
+            R1024_8_rounds( 4);
+            #endif
+            #if   R1024_Unroll_R(5)
+            R1024_8_rounds( 5);
+            #endif
+            #if   R1024_Unroll_R(6)
+            R1024_8_rounds( 6);
+            #endif
+            #if   R1024_Unroll_R(7)
+            R1024_8_rounds( 7);
+            #endif
+            #if   R1024_Unroll_R(8)
+            R1024_8_rounds( 8);
+            #endif
+            #if   R1024_Unroll_R(9)
+            R1024_8_rounds( 9);
+            #endif
+            #if   R1024_Unroll_R(10)
+            R1024_8_rounds(10);
+            #endif
+            #if   R1024_Unroll_R(11)
+            R1024_8_rounds(11);
+            #endif
+            #if   R1024_Unroll_R(12)
+            R1024_8_rounds(12);
+            #endif
+            #if   R1024_Unroll_R(13)
+            R1024_8_rounds(13);
+            #endif
+            #if   R1024_Unroll_R(14)
+            R1024_8_rounds(14);
+            #endif
+            #if  (SKEIN_UNROLL_1024 > 14)
 #error  "need more unrolling in Skein_1024_Process_Block"
-  #endif
+            #endif
         }
         /* do the final "feedforward" xor, update context chaining vars */
 
-        ctx->X[ 0] = X00 ^ w[ 0];
-        ctx->X[ 1] = X01 ^ w[ 1];
-        ctx->X[ 2] = X02 ^ w[ 2];
-        ctx->X[ 3] = X03 ^ w[ 3];
-        ctx->X[ 4] = X04 ^ w[ 4];
-        ctx->X[ 5] = X05 ^ w[ 5];
-        ctx->X[ 6] = X06 ^ w[ 6];
-        ctx->X[ 7] = X07 ^ w[ 7];
-        ctx->X[ 8] = X08 ^ w[ 8];
-        ctx->X[ 9] = X09 ^ w[ 9];
+        ctx->X[0] = X00 ^ w[0];
+        ctx->X[1] = X01 ^ w[1];
+        ctx->X[2] = X02 ^ w[2];
+        ctx->X[3] = X03 ^ w[3];
+        ctx->X[4] = X04 ^ w[4];
+        ctx->X[5] = X05 ^ w[5];
+        ctx->X[6] = X06 ^ w[6];
+        ctx->X[7] = X07 ^ w[7];
+        ctx->X[8] = X08 ^ w[8];
+        ctx->X[9] = X09 ^ w[9];
         ctx->X[10] = X10 ^ w[10];
         ctx->X[11] = X11 ^ w[11];
         ctx->X[12] = X12 ^ w[12];
@@ -1207,15 +1207,15 @@ enum
         ctx->X[14] = X14 ^ w[14];
         ctx->X[15] = X15 ^ w[15];
 
-        SkeinShowRound(BLK_BITS,&ctx->h,SKEIN_RND_FEED_FWD,ctx->X);
-        
+        SkeinShowRound(BLK_BITS, &ctx->h, SKEIN_RND_FEED_FWD, ctx->X);
+
         ts[1] &= ~SKEIN_T1_FLAG_FIRST;
         blkPtr += SKEIN1024_BLOCK_BYTES;
-        }
+    }
     while (--blkCnt);
     ctx->h.T[0] = ts[0];
     ctx->h.T[1] = ts[1];
-    }
+}
 
 #if defined(SKEIN_CODE_SIZE) || defined(SKEIN_PERF)
 static size_t Skein1024ProcessBlockCodeSize(void)
@@ -1342,13 +1342,13 @@ static int Skein256InitExt(Skein256CtxtT *ctx,size_t hashBitLen,u64bT treeInfo, 
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* process the input bytes */
-static int Skein256Update(Skein256CtxtT *ctx, 
-                          const u08bT *msg, 
+static int Skein256Update(Skein256CtxtT *ctx,
+                          const u08bT *msg,
                           size_t msgByteCnt)
 {
     size_t n;
 
-    Skein_Assert(ctx->h.bCnt <= SKEIN_256_BLOCK_BYTES,SKEIN_FAIL);    /* catch uninitialized context */
+    Skein_Assert(ctx->h.bCnt <= SKEIN_256_BLOCK_BYTES, SKEIN_FAIL);    /* catch uninitialized context */
 
     /* process full blocks, if any */
     if (msgByteCnt + ctx->h.bCnt > SKEIN_256_BLOCK_BYTES) {
@@ -1356,21 +1356,21 @@ static int Skein256Update(Skein256CtxtT *ctx,
             n = SKEIN_256_BLOCK_BYTES - ctx->h.bCnt;  /* # bytes free in buffer b[] */
             if (n) {
                 Skein_assert(n < msgByteCnt);         /* check on our logic here */
-                memcpy(&ctx->b[ctx->h.bCnt],msg,n);
-                msgByteCnt  -= n;
-                msg         += n;
+                memcpy (&ctx->b[ctx->h.bCnt], msg, n);
+                msgByteCnt -= n;
+                msg += n;
                 ctx->h.bCnt += n;
             }
             Skein_assert(ctx->h.bCnt == SKEIN_256_BLOCK_BYTES);
-            Skein256ProcessBlock(ctx,ctx->b,1,SKEIN_256_BLOCK_BYTES);
+            Skein256ProcessBlock (ctx, ctx->b, 1, SKEIN_256_BLOCK_BYTES);
             ctx->h.bCnt = 0;
         }
         /* now process any remaining full blocks, directly from input message data */
         if (msgByteCnt > SKEIN_256_BLOCK_BYTES) {
-            n = (msgByteCnt-1) / SKEIN_256_BLOCK_BYTES;   /* number of full blocks to process */
-            Skein256ProcessBlock(ctx,msg,n,SKEIN_256_BLOCK_BYTES);
+            n = (msgByteCnt - 1) / SKEIN_256_BLOCK_BYTES;   /* number of full blocks to process */
+            Skein256ProcessBlock (ctx, msg, n, SKEIN_256_BLOCK_BYTES);
             msgByteCnt -= n * SKEIN_256_BLOCK_BYTES;
-            msg        += n * SKEIN_256_BLOCK_BYTES;
+            msg += n * SKEIN_256_BLOCK_BYTES;
         }
         Skein_assert(ctx->h.bCnt == 0);
     }
@@ -1378,48 +1378,49 @@ static int Skein256Update(Skein256CtxtT *ctx,
     /* copy any remaining source message data bytes into b[] */
     if (msgByteCnt) {
         Skein_assert(msgByteCnt + ctx->h.bCnt <= SKEIN_256_BLOCK_BYTES);
-        memcpy(&ctx->b[ctx->h.bCnt],msg,msgByteCnt);
+        memcpy (&ctx->b[ctx->h.bCnt], msg, msgByteCnt);
         ctx->h.bCnt += msgByteCnt;
     }
 
     return SKEIN_SUCCESS;
 }
-   
+
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* finalize the hash computation and output the result */
 static int Skein256Final(Skein256CtxtT *ctx, u08bT *hashVal)
 {
-    size_t i,n,byteCnt;
+    size_t i, n, byteCnt;
     u64bT X[SKEIN_256_STATE_WORDS];
-    Skein_Assert(ctx->h.bCnt <= SKEIN_256_BLOCK_BYTES,SKEIN_FAIL);    /* catch uninitialized context */
+    Skein_Assert(ctx->h.bCnt <= SKEIN_256_BLOCK_BYTES, SKEIN_FAIL);    /* catch uninitialized context */
 
     ctx->h.T[1] |= SKEIN_T1_FLAG_FINAL;                 /* tag as the final block */
     /*!
         zero pad b[] if necessary 
     */
     if (ctx->h.bCnt < SKEIN_256_BLOCK_BYTES) {
-        memset(&ctx->b[ctx->h.bCnt],0,SKEIN_256_BLOCK_BYTES - ctx->h.bCnt);
-    }            
+        memset (&ctx->b[ctx->h.bCnt], 0, SKEIN_256_BLOCK_BYTES - ctx->h.bCnt);
+    }
 
-    Skein256ProcessBlock(ctx,ctx->b,1,ctx->h.bCnt);  /* process the final block */
-    
+    Skein256ProcessBlock (ctx, ctx->b, 1, ctx->h.bCnt);  /* process the final block */
+
     /* now output the result */
-    byteCnt = (ctx->h.hashBitLen + 7) >> 3;             /* total number of output bytes */
+    byteCnt = (ctx->h.hashBitLen + 7)
+        >> 3;             /* total number of output bytes */
 
     /* run Threefish in "counter mode" to generate output */
-    memset(ctx->b,0,sizeof(ctx->b));  /* zero out b[], so it can hold the counter */
-    memcpy(X,ctx->X,sizeof(X));       /* keep a local copy of counter mode "key" */
-    for (i=0;i*SKEIN_256_BLOCK_BYTES < byteCnt;i++) {
-        ((u64bT *)ctx->b)[0]= Skein_Swap64((u64bT) i); /* build the counter block */
-        Skein_Start_New_Type(ctx,OUT_FINAL);
-        Skein256ProcessBlock(ctx,ctx->b,1,sizeof(u64bT)); /* run "counter mode" */
-        n = byteCnt - i*SKEIN_256_BLOCK_BYTES;   /* number of output bytes left to go */
+    memset (ctx->b, 0, sizeof (ctx->b));  /* zero out b[], so it can hold the counter */
+    memcpy (X, ctx->X, sizeof (X));       /* keep a local copy of counter mode "key" */
+    for (i = 0; i * SKEIN_256_BLOCK_BYTES < byteCnt; i++) {
+        ((u64bT *) ctx->b)[0] = Skein_Swap64((u64bT) i); /* build the counter block */
+        Skein_Start_New_Type(ctx, OUT_FINAL);
+        Skein256ProcessBlock (ctx, ctx->b, 1, sizeof (u64bT)); /* run "counter mode" */
+        n = byteCnt - i * SKEIN_256_BLOCK_BYTES;   /* number of output bytes left to go */
         if (n >= SKEIN_256_BLOCK_BYTES) {
-            n  = SKEIN_256_BLOCK_BYTES;
+            n = SKEIN_256_BLOCK_BYTES;
         }
-        SkeinPut64LSBFirst(hashVal+i*SKEIN_256_BLOCK_BYTES,ctx->X,n);   /* "output" the ctr mode bytes */
-        Skein_Show_Final(256,&ctx->h,n,hashVal+i*SKEIN_256_BLOCK_BYTES);
-        memcpy(ctx->X,X,sizeof(X));   /* restore the counter mode key for next time */
+        SkeinPut64LSBFirst(hashVal + i * SKEIN_256_BLOCK_BYTES, ctx->X, n);   /* "output" the ctr mode bytes */
+        Skein_Show_Final(256, &ctx->h, n, hashVal + i * SKEIN_256_BLOCK_BYTES);
+        memcpy (ctx->X, X, sizeof (X));   /* restore the counter mode key for next time */
     }
 
     return SKEIN_SUCCESS;
@@ -1441,41 +1442,49 @@ static size_t Skein256APICodeSize(void)
 /* init the context for a straight hashing operation  */
 static int Skein512Init(Skein512CtxtT *ctx, size_t hashBitLen)
 {
-union
-{
-    u08bT  b[SKEIN_512_STATE_BYTES];
-    u64bT  w[SKEIN_512_STATE_WORDS];
-} cfg;                              /* config block */
-        
-    Skein_Assert(hashBitLen > 0,SKEIN_BAD_HASHLEN);
+    union
+    {
+        u08bT b[SKEIN_512_STATE_BYTES];
+        u64bT w[SKEIN_512_STATE_WORDS];
+    } cfg;                              /* config block */
+
+    Skein_Assert(hashBitLen > 0, SKEIN_BAD_HASHLEN);
     ctx->h.hashBitLen = hashBitLen;         /* output hash bit count */
 
     switch (hashBitLen) {             /* use pre-computed values, where available */
 #ifndef SKEIN_NO_PRECOMP
-        case  512: memcpy(ctx->X,SKEIN512IV512,sizeof(ctx->X));  break;
-        case  384: memcpy(ctx->X,SKEIN512IV384,sizeof(ctx->X));  break;
-        case  256: memcpy(ctx->X,SKEIN512IV256,sizeof(ctx->X));  break;
-        case  224: memcpy(ctx->X,SKEIN512IV224,sizeof(ctx->X));  break;
+        case 512:
+            memcpy (ctx->X, SKEIN512IV512, sizeof (ctx->X));
+            break;
+        case 384:
+            memcpy (ctx->X, SKEIN512IV384, sizeof (ctx->X));
+            break;
+        case 256:
+            memcpy (ctx->X, SKEIN512IV256, sizeof (ctx->X));
+            break;
+        case 224:
+            memcpy (ctx->X, SKEIN512IV224, sizeof (ctx->X));
+            break;
 #endif
         default:
             /* here if there is no precomputed IV value available */
             /* build/process the config block, type == CONFIG (could be precomputed) */
-            Skein_Start_New_Type(ctx,CFG_FINAL);        /* set tweaks: T0=0; T1=CFG | FINAL */
+        Skein_Start_New_Type(ctx, CFG_FINAL);        /* set tweaks: T0=0; T1=CFG | FINAL */
 
             cfg.w[0] = Skein_Swap64(SKEIN_SCHEMA_VER);  /* set the schema, version */
             cfg.w[1] = Skein_Swap64(hashBitLen);        /* hash result length in bits */
             cfg.w[2] = Skein_Swap64(SKEIN_CFG_TREE_INFO_SEQUENTIAL);
-            memset(&cfg.w[3],0,sizeof(cfg) - 3*sizeof(cfg.w[0])); /* zero pad config block */
+            memset (&cfg.w[3], 0, sizeof (cfg) - 3 * sizeof (cfg.w[0])); /* zero pad config block */
 
             /* compute the initial chaining values from config block */
-            memset(ctx->X,0,sizeof(ctx->X));            /* zero the chaining variables */
-            Skein512ProcessBlock(ctx,cfg.b,1,SKEIN_CFG_STR_LEN);
+            memset (ctx->X, 0, sizeof (ctx->X));            /* zero the chaining variables */
+            Skein512ProcessBlock (ctx, cfg.b, 1, SKEIN_CFG_STR_LEN);
             break;
-        }
+    }
 
     /* The chaining vars ctx->X are now initialized for the given hashBitLen. */
     /* Set up to process the data message portion of the hash (default) */
-    Skein_Start_New_Type(ctx,MSG);              /* T0=0, T1= MSG type */
+    Skein_Start_New_Type(ctx, MSG);              /* T0=0, T1= MSG type */
 
     return SKEIN_SUCCESS;
 }
@@ -1543,13 +1552,13 @@ static int Skein512InitExt(Skein512CtxtT *ctx,size_t hashBitLen,u64bT treeInfo, 
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* process the input bytes */
-static int Skein512Update(Skein512CtxtT *ctx, 
-                          const u08bT *msg, 
+static int Skein512Update(Skein512CtxtT *ctx,
+                          const u08bT *msg,
                           size_t msgByteCnt)
 {
     size_t n;
 
-    Skein_Assert(ctx->h.bCnt <= SKEIN_512_BLOCK_BYTES,SKEIN_FAIL);    /* catch uninitialized context */
+    Skein_Assert(ctx->h.bCnt <= SKEIN_512_BLOCK_BYTES, SKEIN_FAIL);    /* catch uninitialized context */
 
     /* process full blocks, if any */
     if (msgByteCnt + ctx->h.bCnt > SKEIN_512_BLOCK_BYTES) {
@@ -1557,22 +1566,22 @@ static int Skein512Update(Skein512CtxtT *ctx,
             n = SKEIN_512_BLOCK_BYTES - ctx->h.bCnt;  /* # bytes free in buffer b[] */
             if (n) {
                 Skein_assert(n < msgByteCnt);         /* check on our logic here */
-                memcpy(&ctx->b[ctx->h.bCnt],msg,n);
-                msgByteCnt  -= n;
-                msg         += n;
+                memcpy (&ctx->b[ctx->h.bCnt], msg, n);
+                msgByteCnt -= n;
+                msg += n;
                 ctx->h.bCnt += n;
             }
             Skein_assert(ctx->h.bCnt == SKEIN_512_BLOCK_BYTES);
-            Skein512ProcessBlock(ctx,ctx->b,1,SKEIN_512_BLOCK_BYTES);
+            Skein512ProcessBlock (ctx, ctx->b, 1, SKEIN_512_BLOCK_BYTES);
             ctx->h.bCnt = 0;
         }
 
         /* now process any remaining full blocks, directly from input message data */
         if (msgByteCnt > SKEIN_512_BLOCK_BYTES) {
-            n = (msgByteCnt-1) / SKEIN_512_BLOCK_BYTES;   /* number of full blocks to process */
-            Skein512ProcessBlock(ctx,msg,n,SKEIN_512_BLOCK_BYTES);
+            n = (msgByteCnt - 1) / SKEIN_512_BLOCK_BYTES;   /* number of full blocks to process */
+            Skein512ProcessBlock (ctx, msg, n, SKEIN_512_BLOCK_BYTES);
             msgByteCnt -= n * SKEIN_512_BLOCK_BYTES;
-            msg        += n * SKEIN_512_BLOCK_BYTES;
+            msg += n * SKEIN_512_BLOCK_BYTES;
         }
         Skein_assert(ctx->h.bCnt == 0);
     }
@@ -1580,45 +1589,46 @@ static int Skein512Update(Skein512CtxtT *ctx,
     /* copy any remaining source message data bytes into b[] */
     if (msgByteCnt) {
         Skein_assert(msgByteCnt + ctx->h.bCnt <= SKEIN_512_BLOCK_BYTES);
-        memcpy(&ctx->b[ctx->h.bCnt],msg,msgByteCnt);
+        memcpy (&ctx->b[ctx->h.bCnt], msg, msgByteCnt);
         ctx->h.bCnt += msgByteCnt;
     }
 
     return SKEIN_SUCCESS;
 }
-   
+
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* finalize the hash computation and output the result */
 static int Skein512Final(Skein512CtxtT *ctx, u08bT *hashVal)
 {
-    size_t i,n,byteCnt;
+    size_t i, n, byteCnt;
     u64bT X[SKEIN_512_STATE_WORDS];
-    Skein_Assert(ctx->h.bCnt <= SKEIN_512_BLOCK_BYTES,SKEIN_FAIL);    /* catch uninitialized context */
+    Skein_Assert(ctx->h.bCnt <= SKEIN_512_BLOCK_BYTES, SKEIN_FAIL);    /* catch uninitialized context */
 
     ctx->h.T[1] |= SKEIN_T1_FLAG_FINAL;                 /* tag as the final block */
     if (ctx->h.bCnt < SKEIN_512_BLOCK_BYTES) {  /* zero pad b[] if necessary */
-        memset(&ctx->b[ctx->h.bCnt],0,SKEIN_512_BLOCK_BYTES - ctx->h.bCnt);
-    }   
+        memset (&ctx->b[ctx->h.bCnt], 0, SKEIN_512_BLOCK_BYTES - ctx->h.bCnt);
+    }
 
-    Skein512ProcessBlock(ctx,ctx->b,1,ctx->h.bCnt);  /* process the final block */
-    
+    Skein512ProcessBlock (ctx, ctx->b, 1, ctx->h.bCnt);  /* process the final block */
+
     /* now output the result */
-    byteCnt = (ctx->h.hashBitLen + 7) >> 3;             /* total number of output bytes */
+    byteCnt = (ctx->h.hashBitLen + 7)
+        >> 3;             /* total number of output bytes */
 
     /* run Threefish in "counter mode" to generate output */
-    memset(ctx->b,0,sizeof(ctx->b));  /* zero out b[], so it can hold the counter */
-    memcpy(X,ctx->X,sizeof(X));       /* keep a local copy of counter mode "key" */
-    for (i=0;i*SKEIN_512_BLOCK_BYTES < byteCnt;i++) {
-        ((u64bT *)ctx->b)[0]= Skein_Swap64((u64bT) i); /* build the counter block */
-        Skein_Start_New_Type(ctx,OUT_FINAL);
-        Skein512ProcessBlock(ctx,ctx->b,1,sizeof(u64bT)); /* run "counter mode" */
-        n = byteCnt - i*SKEIN_512_BLOCK_BYTES;   /* number of output bytes left to go */
+    memset (ctx->b, 0, sizeof (ctx->b));  /* zero out b[], so it can hold the counter */
+    memcpy (X, ctx->X, sizeof (X));       /* keep a local copy of counter mode "key" */
+    for (i = 0; i * SKEIN_512_BLOCK_BYTES < byteCnt; i++) {
+        ((u64bT *) ctx->b)[0] = Skein_Swap64((u64bT) i); /* build the counter block */
+        Skein_Start_New_Type(ctx, OUT_FINAL);
+        Skein512ProcessBlock (ctx, ctx->b, 1, sizeof (u64bT)); /* run "counter mode" */
+        n = byteCnt - i * SKEIN_512_BLOCK_BYTES;   /* number of output bytes left to go */
         if (n >= SKEIN_512_BLOCK_BYTES) {
-            n  = SKEIN_512_BLOCK_BYTES;
+            n = SKEIN_512_BLOCK_BYTES;
         }
-        SkeinPut64LSBFirst(hashVal+i*SKEIN_512_BLOCK_BYTES,ctx->X,n);   /* "output" the ctr mode bytes */
-        Skein_Show_Final(512,&ctx->h,n,hashVal+i*SKEIN_512_BLOCK_BYTES);
-        memcpy(ctx->X,X,sizeof(X));   /* restore the counter mode key for next time */
+        SkeinPut64LSBFirst(hashVal + i * SKEIN_512_BLOCK_BYTES, ctx->X, n);   /* "output" the ctr mode bytes */
+        Skein_Show_Final(512, &ctx->h, n, hashVal + i * SKEIN_512_BLOCK_BYTES);
+        memcpy (ctx->X, X, sizeof (X));   /* restore the counter mode key for next time */
     }
     return SKEIN_SUCCESS;
 }
@@ -1638,40 +1648,46 @@ static size_t Skein512APICodeSize(void)
 /* init the context for a straight hashing operation  */
 static int Skein1024Init(Skein1024CtxtT *ctx, size_t hashBitLen)
 {
-union
-{
-    u08bT  b[SKEIN1024_STATE_BYTES];
-    u64bT  w[SKEIN1024_STATE_WORDS];
-} cfg;                              /* config block */
-        
-    Skein_Assert(hashBitLen > 0,SKEIN_BAD_HASHLEN);
+    union
+    {
+        u08bT b[SKEIN1024_STATE_BYTES];
+        u64bT w[SKEIN1024_STATE_WORDS];
+    } cfg;                              /* config block */
+
+    Skein_Assert(hashBitLen > 0, SKEIN_BAD_HASHLEN);
     ctx->h.hashBitLen = hashBitLen;         /* output hash bit count */
 
     switch (hashBitLen) {              /* use pre-computed values, where available */
 #ifndef SKEIN_NO_PRECOMP
-        case  512: memcpy(ctx->X,SKEIN1024IV512 ,sizeof(ctx->X)); break;
-        case  384: memcpy(ctx->X,SKEIN1024IV384 ,sizeof(ctx->X)); break;
-        case 1024: memcpy(ctx->X,SKEIN1024IV1024,sizeof(ctx->X)); break;
+        case 512:
+            memcpy (ctx->X, SKEIN1024IV512, sizeof (ctx->X));
+            break;
+        case 384:
+            memcpy (ctx->X, SKEIN1024IV384, sizeof (ctx->X));
+            break;
+        case 1024:
+            memcpy (ctx->X, SKEIN1024IV1024, sizeof (ctx->X));
+            break;
 #endif
         default:
             /* here if there is no precomputed IV value available */
             /* build/process the config block, type == CONFIG (could be precomputed) */
-            Skein_Start_New_Type(ctx,CFG_FINAL);        /* set tweaks: T0=0; T1=CFG | FINAL */
+        Skein_Start_New_Type(ctx, CFG_FINAL);        /* set tweaks: T0=0; T1=CFG | FINAL */
 
             cfg.w[0] = Skein_Swap64(SKEIN_SCHEMA_VER);  /* set the schema, version */
             cfg.w[1] = Skein_Swap64(hashBitLen);        /* hash result length in bits */
             cfg.w[2] = Skein_Swap64(SKEIN_CFG_TREE_INFO_SEQUENTIAL);
-            memset(&cfg.w[3],0,sizeof(cfg) - 3*sizeof(cfg.w[0])); /* zero pad config block */
+            memset (&cfg.w[3], 0, sizeof (cfg) - 3 * sizeof (cfg.w[0])); /* zero pad config block */
 
             /* compute the initial chaining values from config block */
-            memset(ctx->X,0,sizeof(ctx->X));            /* zero the chaining variables */
-            Skein1024ProcessBlock(ctx,cfg.b,1,SKEIN_CFG_STR_LEN);
+            memset (ctx->X, 0, sizeof (ctx->X));            /* zero the chaining variables */
+            Skein1024ProcessBlock (ctx, cfg.b, 1, SKEIN_CFG_STR_LEN);
             break;
     }
 
     /* The chaining vars ctx->X are now initialized for the given hashBitLen. */
     /* Set up to process the data message portion of the hash (default) */
-    Skein_Start_New_Type(ctx,MSG);              /* T0=0, T1= MSG type */
+    Skein_Start_New_Type(ctx, MSG);              /* T0=0, T1= MSG type */
 
     return SKEIN_SUCCESS;
 }
@@ -1739,13 +1755,13 @@ static int Skein1024InitExt(Skein1024CtxtT *ctx,size_t hashBitLen,u64bT treeInfo
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* process the input bytes */
-static int Skein1024Update(Skein1024CtxtT *ctx, 
-                           const u08bT *msg, 
+static int Skein1024Update(Skein1024CtxtT *ctx,
+                           const u08bT *msg,
                            size_t msgByteCnt)
 {
     size_t n;
 
-    Skein_Assert(ctx->h.bCnt <= SKEIN1024_BLOCK_BYTES,SKEIN_FAIL);    /* catch uninitialized context */
+    Skein_Assert(ctx->h.bCnt <= SKEIN1024_BLOCK_BYTES, SKEIN_FAIL);    /* catch uninitialized context */
 
     /* process full blocks, if any */
     if (msgByteCnt + ctx->h.bCnt > SKEIN1024_BLOCK_BYTES) {
@@ -1753,22 +1769,22 @@ static int Skein1024Update(Skein1024CtxtT *ctx,
             n = SKEIN1024_BLOCK_BYTES - ctx->h.bCnt;  /* # bytes free in buffer b[] */
             if (n) {
                 Skein_assert(n < msgByteCnt);         /* check on our logic here */
-                memcpy(&ctx->b[ctx->h.bCnt],msg,n);
-                msgByteCnt  -= n;
-                msg         += n;
+                memcpy (&ctx->b[ctx->h.bCnt], msg, n);
+                msgByteCnt -= n;
+                msg += n;
                 ctx->h.bCnt += n;
             }
             Skein_assert(ctx->h.bCnt == SKEIN1024_BLOCK_BYTES);
-            Skein1024ProcessBlock(ctx,ctx->b,1,SKEIN1024_BLOCK_BYTES);
+            Skein1024ProcessBlock (ctx, ctx->b, 1, SKEIN1024_BLOCK_BYTES);
             ctx->h.bCnt = 0;
         }
 
         /* now process any remaining full blocks, directly from input message data */
         if (msgByteCnt > SKEIN1024_BLOCK_BYTES) {
-            n = (msgByteCnt-1) / SKEIN1024_BLOCK_BYTES;   /* number of full blocks to process */
-            Skein1024ProcessBlock(ctx,msg,n,SKEIN1024_BLOCK_BYTES);
+            n = (msgByteCnt - 1) / SKEIN1024_BLOCK_BYTES;   /* number of full blocks to process */
+            Skein1024ProcessBlock (ctx, msg, n, SKEIN1024_BLOCK_BYTES);
             msgByteCnt -= n * SKEIN1024_BLOCK_BYTES;
-            msg        += n * SKEIN1024_BLOCK_BYTES;
+            msg += n * SKEIN1024_BLOCK_BYTES;
         }
         Skein_assert(ctx->h.bCnt == 0);
     }
@@ -1776,45 +1792,46 @@ static int Skein1024Update(Skein1024CtxtT *ctx,
     /* copy any remaining source message data bytes into b[] */
     if (msgByteCnt) {
         Skein_assert(msgByteCnt + ctx->h.bCnt <= SKEIN1024_BLOCK_BYTES);
-        memcpy(&ctx->b[ctx->h.bCnt],msg,msgByteCnt);
+        memcpy (&ctx->b[ctx->h.bCnt], msg, msgByteCnt);
         ctx->h.bCnt += msgByteCnt;
     }
 
     return SKEIN_SUCCESS;
 }
-   
+
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* finalize the hash computation and output the result */
 static int Skein1024Final(Skein1024CtxtT *ctx, u08bT *hashVal)
 {
-    size_t i,n,byteCnt;
+    size_t i, n, byteCnt;
     u64bT X[SKEIN1024_STATE_WORDS];
-    Skein_Assert(ctx->h.bCnt <= SKEIN1024_BLOCK_BYTES,SKEIN_FAIL);    /* catch uninitialized context */
+    Skein_Assert(ctx->h.bCnt <= SKEIN1024_BLOCK_BYTES, SKEIN_FAIL);    /* catch uninitialized context */
 
     ctx->h.T[1] |= SKEIN_T1_FLAG_FINAL;                 /* tag as the final block */
     if (ctx->h.bCnt < SKEIN1024_BLOCK_BYTES) {      /* zero pad b[] if necessary */
-        memset(&ctx->b[ctx->h.bCnt],0,SKEIN1024_BLOCK_BYTES - ctx->h.bCnt);
-    }            
+        memset (&ctx->b[ctx->h.bCnt], 0, SKEIN1024_BLOCK_BYTES - ctx->h.bCnt);
+    }
 
-    Skein1024ProcessBlock(ctx,ctx->b,1,ctx->h.bCnt);  /* process the final block */
-    
+    Skein1024ProcessBlock (ctx, ctx->b, 1, ctx->h.bCnt);  /* process the final block */
+
     /* now output the result */
-    byteCnt = (ctx->h.hashBitLen + 7) >> 3;             /* total number of output bytes */
+    byteCnt = (ctx->h.hashBitLen + 7)
+        >> 3;             /* total number of output bytes */
 
     /* run Threefish in "counter mode" to generate output */
-    memset(ctx->b,0,sizeof(ctx->b));  /* zero out b[], so it can hold the counter */
-    memcpy(X,ctx->X,sizeof(X));       /* keep a local copy of counter mode "key" */
-    for (i=0;i*SKEIN1024_BLOCK_BYTES < byteCnt;i++) {
-        ((u64bT *)ctx->b)[0]= Skein_Swap64((u64bT) i); /* build the counter block */
-        Skein_Start_New_Type(ctx,OUT_FINAL);
-        Skein1024ProcessBlock(ctx,ctx->b,1,sizeof(u64bT)); /* run "counter mode" */
-        n = byteCnt - i*SKEIN1024_BLOCK_BYTES;   /* number of output bytes left to go */
+    memset (ctx->b, 0, sizeof (ctx->b));  /* zero out b[], so it can hold the counter */
+    memcpy (X, ctx->X, sizeof (X));       /* keep a local copy of counter mode "key" */
+    for (i = 0; i * SKEIN1024_BLOCK_BYTES < byteCnt; i++) {
+        ((u64bT *) ctx->b)[0] = Skein_Swap64((u64bT) i); /* build the counter block */
+        Skein_Start_New_Type(ctx, OUT_FINAL);
+        Skein1024ProcessBlock (ctx, ctx->b, 1, sizeof (u64bT)); /* run "counter mode" */
+        n = byteCnt - i * SKEIN1024_BLOCK_BYTES;   /* number of output bytes left to go */
         if (n >= SKEIN1024_BLOCK_BYTES) {
-            n  = SKEIN1024_BLOCK_BYTES;
+            n = SKEIN1024_BLOCK_BYTES;
         }
-        SkeinPut64LSBFirst(hashVal+i*SKEIN1024_BLOCK_BYTES,ctx->X,n);   /* "output" the ctr mode bytes */
-        Skein_Show_Final(1024,&ctx->h,n,hashVal+i*SKEIN1024_BLOCK_BYTES);
-        memcpy(ctx->X,X,sizeof(X));   /* restore the counter mode key for next time */
+        SkeinPut64LSBFirst(hashVal + i * SKEIN1024_BLOCK_BYTES, ctx->X, n);   /* "output" the ctr mode bytes */
+        Skein_Show_Final(1024, &ctx->h, n, hashVal + i * SKEIN1024_BLOCK_BYTES);
+        memcpy (ctx->X, X, sizeof (X));   /* restore the counter mode key for next time */
     }
     return SKEIN_SUCCESS;
 }
@@ -1972,7 +1989,7 @@ static int Skein1024Output(Skein1024CtxtT *ctx, u08bT *hashVal)
 
 typedef struct
 {
-    uintT  statebits;                      /* 256, 512, or 1024 */
+    uintT statebits;                      /* 256, 512, or 1024 */
     union
     {
         SkeinCtxtHdrT h;                 /* common header "overlay" */
@@ -1983,9 +2000,9 @@ typedef struct
 } hashState;
 
 /* "incremental" hashing API */
-static HashReturn Init  (hashState *state, int hashbitlen);
+static HashReturn Init(hashState *state, int hashbitlen);
 static HashReturn Update(hashState *state, const BitSequence *data, DataLength databitlen);
-static HashReturn Final (hashState *state,       BitSequence *hashval);
+static HashReturn Final(hashState *state, BitSequence *hashval);
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* select the context size and init the context */
@@ -1999,57 +2016,76 @@ static HashReturn Init(hashState *state, int hashbitlen)
     }
 #endif
     if (hashbitlen <= SKEIN_512_NIST_MAX_HASHBITS) {
-        state->statebits = 64*SKEIN_512_STATE_WORDS;
-        return Skein512Init(&state->u.ctx_512,(size_t) hashbitlen);
+        state->statebits = 64 * SKEIN_512_STATE_WORDS;
+        return Skein512Init (&state->u.ctx_512, (size_t) hashbitlen);
     } else {
-        state->statebits = 64*SKEIN1024_STATE_WORDS;
-        return Skein1024Init(&state->u.ctx1024,(size_t) hashbitlen);
+        state->statebits = 64 * SKEIN1024_STATE_WORDS;
+        return Skein1024Init (&state->u.ctx1024, (size_t) hashbitlen);
     }
 }
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* process data to be hashed */
-static HashReturn Update(hashState *state, 
-                         const BitSequence *data, 
+static HashReturn Update(hashState *state,
+                         const BitSequence *data,
                          DataLength databitlen)
 {
     /* only the final Update() call is allowed do partial bytes, else assert an error */
     Skein_Assert((state->u.h.T[1] & SKEIN_T1_FLAG_BIT_PAD) == 0 || databitlen == 0, SKEIN_FAIL);
 
-    Skein_Assert(state->statebits % 256 == 0 && (state->statebits-256) < 1024,SKEIN_FAIL);
+    Skein_Assert(state->statebits % 256 == 0 && (state->statebits - 256) < 1024, SKEIN_FAIL);
     if ((databitlen & 7) == 0) {
-        switch ((state->statebits >> 8) & 3) {
-            case 2:  
-                return Skein512Update(&state->u.ctx_512,data,databitlen >> 3);
-            case 1:  
-                return Skein256Update(&state->u.ctx_256,data,databitlen >> 3);
-            case 0:  
-                return Skein1024Update(&state->u.ctx1024,data,databitlen >> 3);
-            default: 
+        switch ((
+                    state->statebits
+                        >> 8
+                ) & 3) {
+            case 2:
+                return Skein512Update (&state->u.ctx_512,
+                                       data,
+                                       databitlen
+                                           >> 3);
+            case 1:
+                return Skein256Update (&state->u.ctx_256,
+                                       data,
+                                       databitlen
+                                           >> 3);
+            case 0:
+                return Skein1024Update (&state->u.ctx1024,
+                                        data,
+                                        databitlen
+                                            >> 3);
+            default:
                 return SKEIN_FAIL;
         }
     } else {   /* handle partial final byte */
-        size_t bCnt = (databitlen >> 3) + 1;                  /* number of bytes to handle (nonzero here!) */
-        u08bT b,mask;
+        size_t bCnt = (
+                          databitlen
+                              >> 3
+                      ) + 1;                  /* number of bytes to handle (nonzero here!) */
+        u08bT b, mask;
 
-        mask = (u08bT) (1u << (7 - (databitlen & 7)));       /* partial byte bit mask */
-        b    = (u08bT) ((data[bCnt-1] & (0-mask)) | mask);   /* apply bit padding on final byte */
+        mask = (u08bT) (
+            1u
+                << (7 - (databitlen & 7)));       /* partial byte bit mask */
+        b = (u08bT) ((data[bCnt - 1] & (0 - mask)) | mask);   /* apply bit padding on final byte */
 
-        switch ((state->statebits >> 8) & 3)
-        {
-            case 2:  
-                Skein512Update(&state->u.ctx_512,data,bCnt-1); /* process all but the final byte    */
-                Skein512Update(&state->u.ctx_512,&b  ,  1   ); /* process the (masked) partial byte */
+        switch ((
+                    state->statebits
+                        >> 8
+                ) & 3) {
+            case 2:
+                Skein512Update (&state->u.ctx_512, data, bCnt - 1); /* process all but the final byte    */
+                Skein512Update (&state->u.ctx_512, &b, 1); /* process the (masked) partial byte */
                 break;
-            case 1:  
-                Skein256Update(&state->u.ctx_256,data,bCnt-1); /* process all but the final byte    */
-                Skein256Update(&state->u.ctx_256,&b  ,  1   ); /* process the (masked) partial byte */
+            case 1:
+                Skein256Update (&state->u.ctx_256, data, bCnt - 1); /* process all but the final byte    */
+                Skein256Update (&state->u.ctx_256, &b, 1); /* process the (masked) partial byte */
                 break;
-            case 0:  
-                Skein1024Update(&state->u.ctx1024,data,bCnt-1); /* process all but the final byte    */
-                Skein1024Update(&state->u.ctx1024,&b  ,  1   ); /* process the (masked) partial byte */
+            case 0:
+                Skein1024Update (&state->u.ctx1024, data, bCnt - 1); /* process all but the final byte    */
+                Skein1024Update (&state->u.ctx1024, &b, 1); /* process the (masked) partial byte */
                 break;
-            default: 
+            default:
                 return SKEIN_FAIL;
         }
 
@@ -2063,33 +2099,35 @@ static HashReturn Update(hashState *state,
 /* finalize hash computation and output the result (hashbitlen bits) */
 static HashReturn Final(hashState *state, BitSequence *hashval)
 {
-    Skein_Assert(state->statebits % 256 == 0 && (state->statebits-256) < 1024,FAIL);
-    switch ((state->statebits >> 8) & 3)
-    {
-        case 2:  
-            return Skein512Final(&state->u.ctx_512,hashval);
-        case 1:  
-            return Skein256Final(&state->u.ctx_256,hashval);
-        case 0:  
-            return Skein1024Final(&state->u.ctx1024,hashval);
-        default: 
+    Skein_Assert(state->statebits % 256 == 0 && (state->statebits - 256) < 1024, FAIL);
+    switch ((
+                state->statebits
+                    >> 8
+            ) & 3) {
+        case 2:
+            return Skein512Final (&state->u.ctx_512, hashval);
+        case 1:
+            return Skein256Final (&state->u.ctx_256, hashval);
+        case 0:
+            return Skein1024Final (&state->u.ctx1024, hashval);
+        default:
             return SKEIN_FAIL;
     }
 }
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* all-in-one hash function */
-HashReturn skeinHash(int hashbitlen, 
+HashReturn skeinHash(int hashbitlen,
                      const BitSequence *data, /* all-in-one call */
                      DataLength databitlen,
                      BitSequence *hashval)
 {
-    hashState  state;
-    HashReturn r = Init(&state,hashbitlen);
+    hashState state;
+    HashReturn r = Init (&state, hashbitlen);
     if (r == SKEIN_SUCCESS) { /* these calls do not fail when called properly */
-        r = Update(&state,data,databitlen);
-        Final(&state,hashval);
+        r = Update (&state, data, databitlen);
+        Final (&state, hashval);
     }
-    
+
     return r;
 }

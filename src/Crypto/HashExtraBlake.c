@@ -20,7 +20,7 @@
 
 #include <Crypto/Blake256.h>
 
-void hashExtraBlake(const void *data, size_t length, char *hash) 
+void hashExtraBlake(const void *data, size_t length, char *hash)
 {
-    blake256Hash((uint8_t*)hash, data, length);
+    blake256Hash ((uint8_t *) hash, data, length);
 }

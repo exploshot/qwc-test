@@ -20,7 +20,7 @@
 
 #include <Crypto/Groestl.h>
 
-void hashExtraGroestl(const void *data, size_t length, char *hash) 
+void hashExtraGroestl(const void *data, size_t length, char *hash)
 {
-    groestl(data, length * 8, (uint8_t*)hash);
+    groestl (data, length * 8, (uint8_t *) hash);
 }

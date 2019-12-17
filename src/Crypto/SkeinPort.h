@@ -53,16 +53,16 @@
 */
 
 #define uiType(size)               uint##size##_t
-#define decUnitType(size,x)       typedef uiType(size) x
-#define decBufrType(size,bsize,x) typedef uiType(size) x[bsize / (size >> 3)]
-#define ptrCast(x,size)            ((uiType(size)*)(x))
+#define decUnitType(size, x)       typedef uiType(size) x
+#define decBufrType(size, bsize, x) typedef uiType(size) x[bsize / (size >> 3)]
+#define ptrCast(x, size)            ((uiType(size)*)(x))
 
-typedef unsigned int    uintT;             /* native unsigned integer */
-typedef uint8_t         u08bT;             /*  8-bit unsigned integer */
-typedef uint64_t        u64bT;             /* 64-bit unsigned integer */
+typedef unsigned int uintT;             /* native unsigned integer */
+typedef uint8_t u08bT;             /*  8-bit unsigned integer */
+typedef uint64_t u64bT;             /* 64-bit unsigned integer */
 
 #ifndef RotL_64
-#define RotL_64(x,N)    (((x) << (N)) | ((x) >> (64-(N))))
+#define RotL_64(x, N)    (((x) << (N)) | ((x) >> (64-(N))))
 #endif
 
 /*
@@ -115,14 +115,14 @@ typedef uint64_t        u64bT;             /* 64-bit unsigned integer */
 
 
 #if   PLATFORM_BYTE_ORDER == IS_BIG_ENDIAN
-    /* here for big-endian CPUs */
+/* here for big-endian CPUs */
 #define SKEIN_NEED_SWAP   (1)
 #elif PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN
-    /* here for x86 and x86-64 CPUs (and other detected little-endian CPUs) */
+/* here for x86 and x86-64 CPUs (and other detected little-endian CPUs) */
 #define SKEIN_NEED_SWAP   (0)
 #if   PLATFORM_MUST_ALIGN == 0              /* ok to use "fast" versions? */
-#define SkeinPut64LSBFirst(dst08,src64,bCnt) memcpy(dst08,src64,bCnt)
-#define SkeinGet64LSBFirst(dst64,src08,wCnt) memcpy(dst64,src08,8*(wCnt))
+#define SkeinPut64LSBFirst(dst08, src64, bCnt) memcpy(dst08,src64,bCnt)
+#define SkeinGet64LSBFirst(dst64, src08, wCnt) memcpy(dst64,src08,8*(wCnt))
 #endif
 #else
 #error "Skein needs endianness setting!"

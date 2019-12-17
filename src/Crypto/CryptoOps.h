@@ -6,14 +6,14 @@ typedef int32_t fe[10];
 
 /* From ge.h */
 
-typedef struct 
+typedef struct
 {
     fe X;
     fe Y;
     fe Z;
 } geP2;
 
-typedef struct 
+typedef struct
 {
     fe X;
     fe Y;
@@ -21,7 +21,7 @@ typedef struct
     fe T;
 } geP3;
 
-typedef struct 
+typedef struct
 {
     fe X;
     fe Y;
@@ -29,14 +29,14 @@ typedef struct
     fe T;
 } geP1P1;
 
-typedef struct 
+typedef struct
 {
     fe yplusx;
     fe yminusx;
     fe xy2d;
 } gePrecomp;
 
-typedef struct 
+typedef struct
 {
     fe YplusX;
     fe YminusX;
@@ -51,17 +51,21 @@ void geAdd(geP1P1 *, const geP3 *, const geCached *);
 /* From ge_double_scalarmult.c, modified */
 
 typedef geCached geDsmp[8];
+
 extern const gePrecomp ge_Bi[8];
+
 void geDsmPrecomp(geDsmp r, const geP3 *s);
-void geDoubleScalarmultBaseVartime(geP2 *, 
-                                   const unsigned char *, 
-                                   const geP3 *, 
+void geDoubleScalarmultBaseVartime(geP2 *,
+                                   const unsigned char *,
+                                   const geP3 *,
                                    const unsigned char *);
 
 /* From ge_frombytes.c, modified */
 
 extern const fe fe_SqrtM1;
+
 extern const fe feD;
+
 int geFromBytesVartime(geP3 *, const unsigned char *);
 
 /* From geP1P1ToP2.c */
@@ -79,6 +83,7 @@ void geP2Dbl(geP1P1 *, const geP2 *);
 /* From geP3ToCached.c */
 
 extern const fe feD2;
+
 void geP3ToCached(geCached *, const geP3 *);
 
 /* From geP3ToP2.c */
@@ -92,6 +97,7 @@ void geP3ToBytes(unsigned char *, const geP3 *);
 /* From geScalarmultBase.c */
 
 extern const gePrecomp geBase[32][8];
+
 void geScalarmultBase(geP3 *, const unsigned char *);
 
 /* From geSub.c */
@@ -112,12 +118,19 @@ void geScalarmult(geP2 *, const unsigned char *, const geP3 *);
 void geDoubleScalarmultPrecompVartime(geP2 *, const unsigned char *, const geP3 *, const unsigned char *, const geDsmp);
 int geCheckSubgroupPrecompVartime(const geDsmp);
 void geMul8(geP1P1 *, const geP2 *);
+
 extern const fe fe_ma2;
+
 extern const fe fe_ma;
+
 extern const fe fe_fffb1;
+
 extern const fe fe_fffb2;
+
 extern const fe fe_fffb3;
+
 extern const fe fe_fffb4;
+
 void geFromFeFromBytesVartime(geP2 *, const unsigned char *);
 void sc0(unsigned char *);
 void scReduce32(unsigned char *);

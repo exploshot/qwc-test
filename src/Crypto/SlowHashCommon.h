@@ -26,7 +26,7 @@
 #define INIT_SIZE_BLK          8
 #define INIT_SIZE_BYTE         (INIT_SIZE_BLK * AES_BLOCK_SIZE)
 
-extern void aesbSingleRound(const uint8_t *in, uint8_t*out, const uint8_t *expandedKey);
+extern void aesbSingleRound(const uint8_t *in, uint8_t *out, const uint8_t *expandedKey);
 extern void aesbPseudoRound(const uint8_t *in, uint8_t *out, const uint8_t *expandedKey);
 
 #pragma pack(push, 1)
@@ -170,8 +170,8 @@ union cnSlowHashState
     } while(0)
 
 #if defined DBL_MANT_DIG && (DBL_MANT_DIG >= 50)
-  // double precision floating point type has enough bits of precision on current platform
-  #define VARIANT2_PORTABLE_INTEGER_MATH(b, ptr) \
+// double precision floating point type has enough bits of precision on current platform
+    #define VARIANT2_PORTABLE_INTEGER_MATH(b, ptr) \
     do if (variant == 2) \
     { \
         VARIANT2_INTEGER_MATH_DIVISION_STEP(b, ptr); \
@@ -179,9 +179,9 @@ union cnSlowHashState
         VARIANT2_INTEGER_MATH_SQRT_FIXUP(sqrtResult); \
     } while (0)
 #else
-  // double precision floating point type is not good enough on current platform
-  // fall back to the reference code (integer only)
-  #define VARIANT2_PORTABLE_INTEGER_MATH(b, ptr) \
+// double precision floating point type is not good enough on current platform
+// fall back to the reference code (integer only)
+    #define VARIANT2_PORTABLE_INTEGER_MATH(b, ptr) \
     do if (variant == 2) \
     { \
         VARIANT2_INTEGER_MATH_DIVISION_STEP(b, ptr); \

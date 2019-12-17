@@ -10,7 +10,7 @@
 #if !defined NO_AES && (defined(__arm__) || defined(__aarch64__))
 #pragma message ("info: Using SlowHashArm.c")
 
- #include <Crypto/SlowHashCommon.h>
+    #include <Crypto/SlowHashCommon.h>
 
 void slowHashAllocateState(void)
 {
@@ -147,9 +147,9 @@ static void aesExpandKey(const uint8_t *key, uint8_t *expandedKey)
  * feeding in a vector of zeros for our first step. Also we have to do our own Xor explicitly
  * at the last step, to provide the AddRoundKey that the ARM instructions omit.
  */
-STATIC INLINE void aesPseudoRound(const uint8_t *in, 
-                                  uint8_t *out, 
-                                  const uint8_t *expandedKey, 
+STATIC INLINE void aesPseudoRound(const uint8_t *in,
+                                  uint8_t *out,
+                                  const uint8_t *expandedKey,
                                   int nblocks)
 {
     const uint8x16_t *k = (const uint8x16_t *)expandedKey, zero = {0};
@@ -183,10 +183,10 @@ STATIC INLINE void aesPseudoRound(const uint8_t *in,
     }
 }
 
-STATIC INLINE void aesPseudoRoundXor(const uint8_t *in, 
-                                     uint8_t *out, 
-                                     const uint8_t *expandedKey, 
-                                     const uint8_t *xor, 
+STATIC INLINE void aesPseudoRoundXor(const uint8_t *in,
+                                     uint8_t *out,
+                                     const uint8_t *expandedKey,
+                                     const uint8_t *xor,
                                      int nblocks)
 {
     const uint8x16_t *k = (const uint8x16_t *)expandedKey;
@@ -246,14 +246,14 @@ STATIC INLINE void alignedFree(void *ptr)
 }
 #endif /* FORCE_USE_HEAP */
 
-void CnSlowHash(const void *data, 
-                size_t length, 
-                char *hash, 
-                int light, 
-                int variant, 
-                int prehashed, 
-                uint32_t pageSize, 
-                uint32_t scratchpad, 
+void CnSlowHash(const void *data,
+                size_t length,
+                char *hash,
+                int light,
+                int variant,
+                int prehashed,
+                uint32_t pageSize,
+                uint32_t scratchpad,
                 uint32_t iterations)
 {
     uint32_t TOTALBLOCKS = (pageSize / AES_BLOCK_SIZE);
@@ -266,7 +266,7 @@ void CnSlowHash(const void *data,
     #ifndef FORCE_USE_HEAP
     RDATA_ALIGN16 uint8_t hpState[pageSize];
     #else /* FORCE_USE_HEAP */
-      #pragma message ("warning: ACTIVATING FORCE_USE_HEAP IN aarch64 + crypto in SlowHashArm.c")
+        #pragma message ("warning: ACTIVATING FORCE_USE_HEAP IN aarch64 + crypto in SlowHashArm.c")
     uint8_t *hpState = (uint8_t *)alignedMalloc(pageSize,16);
     #endif /* FORCE_USE_HEAP */
 

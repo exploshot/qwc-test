@@ -60,7 +60,7 @@ void hashProcess(union hashState *state, const uint8_t *buf, size_t count);
 
 #endif
 
-enum 
+enum
 {
     HASH_SIZE = 32,
     HASH_DATA_AREA = 136,
@@ -68,18 +68,18 @@ enum
     /*!
         Suml: Unused for now but this is the right size for 1MB scratchpads.
     */
-    SLOW_HASH_CONTEXT_LITE_SIZE = 1048976  
+        SLOW_HASH_CONTEXT_LITE_SIZE = 1048976
 };
 
 void CnFastHash(const void *data, size_t length, char *hash);
-void CnSlowHash(const void *data, 
-                size_t length, 
-                char *hash, 
-                int light, 
-                int variant, 
-                int prehashed, 
-                uint32_t pageSize, 
-                uint32_t scratchpad, 
+void CnSlowHash(const void *data,
+                size_t length,
+                char *hash,
+                int light,
+                int variant,
+                int prehashed,
+                uint32_t pageSize,
+                uint32_t scratchpad,
                 uint32_t iterations);
 
 void hashExtraBlake(const void *data, size_t length, char *hash);
@@ -90,8 +90,8 @@ void hashExtraSkein(const void *data, size_t length, char *hash);
 void treeHash(const char (*hashes)[HASH_SIZE], size_t count, char *root_hash);
 size_t treeDepth(size_t count);
 void treeBranch(const char (*hashes)[HASH_SIZE], size_t count, char (*branch)[HASH_SIZE]);
-void treeHashFromBranch(const char (*branch)[HASH_SIZE], 
-                        size_t depth, 
-                        const char *leaf, 
-                        const void *path, 
+void treeHashFromBranch(const char (*branch)[HASH_SIZE],
+                        size_t depth,
+                        const char *leaf,
+                        const void *path,
                         char *root_hash);

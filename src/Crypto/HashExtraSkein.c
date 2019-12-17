@@ -21,9 +21,10 @@
 #include <Crypto/HashOps.h>
 #include <Crypto/Skein.h>
 
-void hashExtraSkein(const void *data, size_t length, char *hash) 
+void hashExtraSkein(const void *data, size_t length, char *hash)
 {
-    int r = skeinHash(8 * HASH_SIZE, data, 8 * length, (uint8_t*)hash);
-    if (r) {}
+    int r = skeinHash (8 * HASH_SIZE, data, 8 * length, (uint8_t *) hash);
+    if (r) {
+    }
     assert(SKEIN_SUCCESS == r);
 }

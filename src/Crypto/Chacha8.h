@@ -12,14 +12,14 @@
 #include <Crypto/Random.h>
 
 constexpr inline int CHACHA8_KEY_SIZE = 32;
+
 constexpr inline int CHACHA8_IV_SIZE = 8;
 
-namespace Crypto
-{
-    void chacha8(const void *data, 
-                 size_t length, 
-                 const uint8_t *key, 
-                 const uint8_t *iv, 
+namespace Crypto {
+    void chacha8(const void *data,
+                 size_t length,
+                 const uint8_t *key,
+                 const uint8_t *iv,
                  char *cipher);
 
     #pragma pack(push, 1)
@@ -34,30 +34,30 @@ namespace Crypto
     };
     #pragma pack(pop)
 
-    static_assert(sizeof(chacha8Key) == CHACHA8_KEY_SIZE && sizeof(chacha8IV) 
-                                      == CHACHA8_IV_SIZE, "Invalid structure size");
+    static_assert (sizeof (chacha8Key) == CHACHA8_KEY_SIZE && sizeof (chacha8IV)
+                                                              == CHACHA8_IV_SIZE, "Invalid structure size");
 
 
-    inline void chacha8(const void *data, 
-                        size_t length, 
-                        const chacha8Key &key, 
-                        const chacha8IV &iv, 
+    inline void chacha8(const void *data,
+                        size_t length,
+                        const chacha8Key &key,
+                        const chacha8IV &iv,
                         char *cipher)
     {
-        chacha8(data, 
-                length, 
-                reinterpret_cast<const uint8_t *>(&key), 
-                reinterpret_cast<const uint8_t *>(&iv), 
-                cipher);
+        chacha8 (data,
+                 length,
+                 reinterpret_cast<const uint8_t *>(&key),
+                 reinterpret_cast<const uint8_t *>(&iv),
+                 cipher);
     }
 
     inline void generateChacha8Key(const std::string &password, chacha8Key &key)
     {
-        static_assert(sizeof(chacha8Key) <= sizeof(Hash), "Size of hash must be at least that of chacha8Key");
+        static_assert (sizeof (chacha8Key) <= sizeof (Hash), "Size of hash must be at least that of chacha8Key");
         Hash pwdHash;
-        CnSlowHashV0(password.data(), password.size(), pwdHash);
-        memcpy(&key, &pwdHash, sizeof(key));
-        memset(&pwdHash, 0, sizeof(pwdHash));
+        CnSlowHashV0 (password.data (), password.size (), pwdHash);
+        memcpy (&key, &pwdHash, sizeof (key));
+        memset (&pwdHash, 0, sizeof (pwdHash));
     }
 
     /**
@@ -66,7 +66,7 @@ namespace Crypto
     inline chacha8IV randomChachaIV()
     {
         chacha8IV result;
-        Random::randomBytes(CHACHA8_IV_SIZE, result.data);
+        Random::randomBytes (CHACHA8_IV_SIZE, result.data);
         return result;
     }
 }

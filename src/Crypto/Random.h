@@ -5,8 +5,7 @@
 #include <limits>
 #include <random>
 
-namespace Random
-{
+namespace Random {
     /*!
         Used to obtain a random seed 
     */
@@ -15,12 +14,12 @@ namespace Random
     /*!
         Generator, seeded with the random device 
     */
-    static thread_local std::mt19937 gen(device());
+    static thread_local std::mt19937 gen (device ());
 
     /*!
         The distribution to get numbers for - in this case, uint8_t 
     */
-    static std::uniform_int_distribution<int> distribution{0, (std::numeric_limits<uint8_t>::max)()};
+    static std::uniform_int_distribution<int> distribution{0, (std::numeric_limits<uint8_t>::max) ()};
 
     /*!
         Generate n random bytes (uint8_t), and place them in *result. Result should be large
@@ -29,7 +28,7 @@ namespace Random
     inline void randomBytes(size_t n, uint8_t *result)
     {
         for (size_t i = 0; i < n; i++) {
-            result[i] = distribution(gen);
+            result[i] = distribution (gen);
         }
     }
 
@@ -40,10 +39,10 @@ namespace Random
     {
         std::vector<uint8_t> result;
 
-        result.reserve(n);
+        result.reserve (n);
 
         for (size_t i = 0; i < n; i++) {
-            result.push_back(distribution(gen));
+            result.push_back (distribution (gen));
         }
 
         return result;
@@ -53,14 +52,14 @@ namespace Random
         Generate a random value of the type specified, in the full range of the
         type
     */
-    template <typename T>
+    template<typename T>
     T randomValue()
     {
-        std::uniform_int_distribution<T> distribution {
-            std::numeric_limits<T>::min(), std::numeric_limits<T>::max()
+        std::uniform_int_distribution<T> distribution{
+            std::numeric_limits<T>::min (), std::numeric_limits<T>::max ()
         };
 
-        return distribution(gen);
+        return distribution (gen);
     }
 
     /*!
@@ -70,11 +69,11 @@ namespace Random
 
         Note that min must be <= max, or undefined behaviour will occur.
     */
-    template <typename T>
+    template<typename T>
     T randomValue(T min, T max)
     {
         std::uniform_int_distribution<T> distribution{min, max};
-        return distribution(gen);
+        return distribution (gen);
     }
 
     /*!
