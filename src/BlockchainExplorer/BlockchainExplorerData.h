@@ -29,7 +29,7 @@
 
 
 namespace CryptoNote {
-    enum class TransactionRemoveReason : uint8_t
+    enum class TransactionRemoveReason: uint8_t
     {
         INCLUDED_IN_BLOCK = 0,
         TIMEOUT = 1
@@ -66,11 +66,10 @@ namespace CryptoNote {
         TransactionOutputReferenceDetails output;
     };
 
-
     typedef boost::variant<
-      BaseInputDetails,
-      KeyInputDetails,
-      MultisignatureInputDetails> TransactionInputDetails;
+        BaseInputDetails,
+        KeyInputDetails,
+        MultisignatureInputDetails> TransactionInputDetails;
 
     struct TransactionExtraDetails
     {

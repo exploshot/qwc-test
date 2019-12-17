@@ -32,12 +32,13 @@
 #include <INode.h>
 
 namespace CryptoNote {
-    enum State {
+    enum State
+    {
         NOT_INITIALIZED,
         INITIALIZED
     };
-    
-    class BlockchainExplorer : public IBlockchainExplorer, public INodeObserver 
+
+    class BlockchainExplorer: public IBlockchainExplorer, public INodeObserver
     {
         class PoolUpdateGuard
         {
@@ -58,7 +59,7 @@ namespace CryptoNote {
             std::atomic<State> m_state;
         };
 
-        
+
     public:
         BlockchainExplorer(INode &node, std::shared_ptr<Logging::ILogger> logger);
         BlockchainExplorer(const BlockchainExplorer &) = delete;
@@ -71,26 +72,26 @@ namespace CryptoNote {
         bool addObserver(IBlockchainObserver *observer) override;
         bool removeObserver(IBlockchainObserver *observer) override;
 
-        bool getBlocks(const std::vector<uint32_t> &blockHeights, 
+        bool getBlocks(const std::vector<uint32_t> &blockHeights,
                        std::vector<std::vector<BlockDetails>> &blocks) override;
         bool getBlocks(const std::vector<Crypto::Hash> &blockHashes,
                        std::vector<BlockDetails> &blocks) override;
-        bool getBlocks(uint64_t timestampBegin, 
+        bool getBlocks(uint64_t timestampBegin,
                        uint64_t timestampEnd,
-                       uint32_t blocksNumberLimit, 
-                       std::vector<BlockDetails> &blocks, 
+                       uint32_t blocksNumberLimit,
+                       std::vector<BlockDetails> &blocks,
                        uint32_t &blocksNumberWithinTimestamps) override;
 
         bool getBlockchainTop(BlockDetails &topBlock) override;
 
-        bool getTransactions(const std::vector<Crypto::Hash> &transactionHashes, 
+        bool getTransactions(const std::vector<Crypto::Hash> &transactionHashes,
                              std::vector<TransactionDetails> &transactions) override;
-        bool getTransactionsByPaymentId(const Crypto::Hash &paymentId, 
+        bool getTransactionsByPaymentId(const Crypto::Hash &paymentId,
                                         std::vector<TransactionDetails> &transactions) override;
-        bool getPoolState(const std::vector<Crypto::Hash> &knownPoolTransactionHashes, 
-                          Crypto::Hash knownBlockchainTop, 
-                          bool &isBlockchainActual, 
-                          std::vector<TransactionDetails> &newTransactions, 
+        bool getPoolState(const std::vector<Crypto::Hash> &knownPoolTransactionHashes,
+                          Crypto::Hash knownBlockchainTop,
+                          bool &isBlockchainActual,
+                          std::vector<TransactionDetails> &newTransactions,
                           std::vector<Crypto::Hash> &removedTransactions) override;
 
         bool isSynchronized() override;
@@ -106,8 +107,8 @@ namespace CryptoNote {
         void poolUpdateEndHandler();
 
         bool getBlockchainTop(BlockDetails &topBlock, bool checkInitialization);
-        bool getBlocks(const std::vector<uint32_t> &blockHeights, 
-                       std::vector<std::vector<BlockDetails>> &blocks, 
+        bool getBlocks(const std::vector<uint32_t> &blockHeights,
+                       std::vector<std::vector<BlockDetails>> &blocks,
                        bool checkInitialization);
 
         void rebuildIndexes();

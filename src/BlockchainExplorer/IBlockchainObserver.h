@@ -21,7 +21,7 @@
 #include <BlockchainExplorer/BlockchainExplorerData.h>
 
 namespace CryptoNote {
-    
+
     class IBlockchainObserver
     {
         typedef std::pair<Crypto::Hash, TransactionRemoveReason> RemovedTransactionDetails;
@@ -29,13 +29,19 @@ namespace CryptoNote {
     public:
         virtual ~IBlockchainObserver() = default;
 
-        virtual void blockchainSynchronized(const BlockDetails &topBlock) {}
+        virtual void blockchainSynchronized(const BlockDetails &topBlock)
+        {
+        }
 
         virtual void blockchainUpdated(const std::vector<BlockDetails> &newBlocks,
-                                       const std::vector<BlockDetails> &orphanedBlocks) {}
+                                       const std::vector<BlockDetails> &orphanedBlocks)
+        {
+        }
 
         virtual void poolUpdated(const std::vector<TransactionDetails> &newTransactions,
-                                 const std::vector<RemovedTransactionDetails> &removedTransactions) {}
+                                 const std::vector<RemovedTransactionDetails> &removedTransactions)
+        {
+        }
     };
 
 } // namespace CryptoNote

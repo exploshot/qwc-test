@@ -26,7 +26,7 @@
 #include <BlockchainExplorer/IBlockchainObserver.h>
 
 namespace CryptoNote {
-    class IBlockchainExplorer 
+    class IBlockchainExplorer
     {
     public:
         virtual ~IBlockchainExplorer() = default;
@@ -45,7 +45,7 @@ namespace CryptoNote {
                                uint64_t timestampEnd,
                                uint32_t blocksNumberLimit,
                                std::vector<BlockDetails> &blocks,
-                               uint32_t& blocksNumberWithinTimestamps) = 0;
+                               uint32_t &blocksNumberWithinTimestamps) = 0;
 
         virtual bool getBlockchainTop(BlockDetails &topBlock) = 0;
 
