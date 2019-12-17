@@ -37,8 +37,8 @@ namespace Common {
 
         \note It is recommended to pass 'ArrayRef' to procedures by value.
     */
-    template<class ObjectType = uint8_t, class SizeType = uint64_t>
-    class ArrayRef
+    template<class ObjectType = uint8_t, class SizeType = uint64_t> 
+    class ArrayRef 
     {
     public:
         typedef ObjectType Object;
@@ -53,9 +53,9 @@ namespace Common {
             Leaves object uninitialized. Any usage before initializing it is undefined.
         */
         ArrayRef()
-        #ifndef NDEBUG // In debug mode, fill in object with invalid state (undefined).
-            : m_data (nullptr), m_size (INVALID)
-        #endif
+    #ifndef NDEBUG // In debug mode, fill in object with invalid state (undefined).
+        : m_data(nullptr), m_size(INVALID) 
+    #endif
         {
         }
 
@@ -63,9 +63,9 @@ namespace Common {
             Direct constructor.
             The behavior is undefined unless 'arrayData' != 'nullptr' || 'arraySize' == 0
         */
-        ArrayRef(Object *arrayData, Size arraySize)
-            : m_data (arrayData),
-              m_size (arraySize)
+        ArrayRef(Object *arrayData, Size arraySize) 
+            : m_data(arrayData), 
+              m_size(arraySize) 
         {
             assert(m_data != nullptr || m_size == 0);
         }
@@ -75,10 +75,10 @@ namespace Common {
             The behavior is undefined unless 'arrayData' != 'nullptr' || 'arraySize' == 0. 
             Input state can be malformed using poiner conversions.
         */
-        template<Size arraySize>
-        ArrayRef(Object(&arrayData)[arraySize])
-            : m_data (arrayData),
-              m_size (arraySize)
+        template<Size arraySize> 
+        ArrayRef(Object(&arrayData)[arraySize]) 
+            : m_data(arrayData), 
+              m_size(arraySize) 
         {
             assert(m_data != nullptr || m_size == 0);
         }
@@ -89,9 +89,9 @@ namespace Common {
             The behavior is undefined unless 'other' 'ArrayRef' is in defined state,
             that is 'm_data' != 'nullptr' || 'm_size' == 0
         */
-        ArrayRef(const ArrayRef &other)
-            : m_data (other.m_data),
-              m_size (other.m_size)
+        ArrayRef(const ArrayRef &other) 
+            : m_data(other.m_data), 
+              m_size(other.m_size) 
         {
             assert(m_data != nullptr || m_size == 0);
         }
@@ -107,7 +107,7 @@ namespace Common {
             The behavior is undefined unless 'other' 'ArrayRef' is in defined state,
             that is 'm_data' != 'nullptr' || 'm_size' == 0
         */
-        ArrayRef &operator=(const ArrayRef &other)
+        ArrayRef &operator=(const ArrayRef &other) 
         {
             assert(other.m_data != nullptr || other.m_size == 0);
             m_data = other.m_data;
@@ -115,19 +115,19 @@ namespace Common {
             return *this;
         }
 
-        operator ArrayView<Object, Size>() const
+        operator ArrayView<Object, Size>() const 
         {
-            return ArrayView<Object, Size> (m_data, m_size);
+            return ArrayView<Object, Size>(m_data, m_size);
         }
 
-        Object *getData() const
+        Object *getData() const 
         {
             assert(m_data != nullptr || m_size == 0);
 
             return m_data;
         }
 
-        Size getSize() const
+        Size getSize() const 
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -138,7 +138,7 @@ namespace Common {
             Return false if 'ArrayRef' is not EMPTY.
             The behavior is undefined unless 'ArrayRef' was initialized.
         */
-        bool isEmpty() const
+        bool isEmpty() const 
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -149,7 +149,7 @@ namespace Common {
             Return false if 'ArrayRef' is not NIL.
             The behavior is undefined unless 'ArrayRef' was initialized.
         */
-        bool isNil() const
+        bool isNil() const 
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -160,7 +160,7 @@ namespace Common {
             Get 'ArrayRef' element by index.
             The behavior is undefined unless 'ArrayRef' was initialized and 'index' < 'm_size'.
         */
-        Object &operator[](Size index) const
+        Object &operator[](Size index) const 
         {
             assert(m_data != nullptr || m_size == 0);
             assert(index < m_size);
@@ -172,7 +172,7 @@ namespace Common {
             Get first element.
             The behavior is undefined unless 'ArrayRef' was initialized and 'm_size' > 0
         */
-        Object &first() const
+        Object &first() const 
         {
             assert(m_data != nullptr || m_size == 0);
             assert(m_size > 0);
@@ -184,7 +184,7 @@ namespace Common {
             Get last element.
             The behavior is undefined unless 'ArrayRef' was initialized and 'm_size' > 0
         */
-        Object &last() const
+        Object &last() const 
         {
             assert(m_data != nullptr || m_size == 0);
             assert(m_size > 0);
@@ -196,7 +196,7 @@ namespace Common {
             Return a pointer to the first element.
             The behavior is undefined unless 'ArrayRef' was initialized.
         */
-        Object *begin() const
+        Object *begin() const 
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -207,7 +207,7 @@ namespace Common {
             Return a pointer after the last element.
             The behavior is undefined unless 'ArrayRef' was initialized.
         */
-        Object *end() const
+        Object *end() const 
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -219,17 +219,17 @@ namespace Common {
             EMPTY and NIL arrays are considered equal.
             The behavior is undefined unless both arrays were initialized.
         */
-        bool operator==(ArrayView<Object, Size> other) const
+        bool operator==(ArrayView<Object, Size> other) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
-            if (m_size == other.getSize ()) {
+            if (m_size == other.getSize()) {
                 for (Size i = 0;; ++i) {
                     if (i == m_size) {
                         return true;
                     }
 
-                    if (!(*(m_data + i) == *(other.getData () + i))) {
+                    if (!(*(m_data + i) == *(other.getData() + i))) {
                         break;
                     }
                 }
@@ -243,17 +243,17 @@ namespace Common {
             EMPTY and NIL arrays are considered equal.
             The behavior is undefined unless both arrays were initialized.
         */
-        bool operator!=(ArrayView<Object, Size> other) const
+        bool operator!=(ArrayView<Object, Size> other) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
-            if (m_size == other.getSize ()) {
+            if (m_size == other.getSize()) {
                 for (Size i = 0;; ++i) {
                     if (i == m_size) {
                         return false;
                     }
 
-                    if (*(m_data + i) != *(other.getData () + i)) {
+                    if (*(m_data + i) != *(other.getData() + i)) {
                         break;
                     }
                 }
@@ -266,7 +266,7 @@ namespace Common {
             Return false if 'ArrayRef' does not contain 'object' at the beginning.
             The behavior is undefined unless 'ArrayRef' was initialized.
         */
-        bool beginsWith(const Object &object) const
+        bool beginsWith(const Object &object) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -281,17 +281,17 @@ namespace Common {
             Return false if 'ArrayRef' does not contain 'other' at the beginning.
             The behavior is undefined unless both arrays were initialized.
         */
-        bool beginsWith(ArrayView<Object, Size> other) const
+        bool beginsWith(ArrayView<Object, Size> other) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
-            if (m_size >= other.getSize ()) {
+            if (m_size >= other.getSize()) {
                 for (Size i = 0;; ++i) {
-                    if (i == other.getSize ()) {
+                    if (i == other.getSize()) {
                         return true;
                     }
 
-                    if (!(*(m_data + i) == *(other.getData () + i))) {
+                    if (!(*(m_data + i) == *(other.getData() + i))) {
                         break;
                     }
                 }
@@ -304,7 +304,7 @@ namespace Common {
             Return false if 'ArrayRef' does not contain 'object'.
             The behavior is undefined unless 'ArrayRef' was initialized.
         */
-        bool contains(const Object &object) const
+        bool contains(const Object &object) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -321,20 +321,20 @@ namespace Common {
             Return false if 'ArrayRef' does not contain 'other'.
             The behavior is undefined unless both arrays were initialized.
         */
-        bool contains(ArrayView<Object, Size> other) const
+        bool contains(ArrayView<Object, Size> other) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
-            if (m_size >= other.getSize ()) {
-                Size i = m_size - other.getSize ();
+            if (m_size >= other.getSize()) {
+                Size i = m_size - other.getSize();
                 for (Size j = 0; !(i < j); ++j) {
                     for (Size k = 0;; ++k) {
-                        if (k == other.getSize ()) {
-                            return true;
+                        if (k == other.getSize()) {
+                          return true;
                         }
 
-                        if (!(*(m_data + j + k) == *(other.getData () + k))) {
-                            break;
+                        if (!(*(m_data + j + k) == *(other.getData() + k))) {
+                          break;
                         }
                     }
                 }
@@ -347,7 +347,7 @@ namespace Common {
             Return false if 'ArrayRef' does not contain 'object' at the end.
             The behavior is undefined unless 'ArrayRef' was initialized.
         */
-        bool endsWith(const Object &object) const
+        bool endsWith(const Object &object) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -362,18 +362,18 @@ namespace Common {
             Return false if 'ArrayRef' does not contain 'other' at the end.
             The behavior is undefined unless both arrays were initialized.
         */
-        bool endsWith(ArrayView<Object, Size> other) const
+        bool endsWith(ArrayView<Object, Size> other) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
-            if (m_size >= other.getSize ()) {
-                Size i = m_size - other.getSize ();
+            if (m_size >= other.getSize()) {
+                Size i = m_size - other.getSize();
                 for (Size j = 0;; ++j) {
-                    if (j == other.getSize ()) {
+                    if (j == other.getSize()) {
                         return true;
                     }
 
-                    if (!(*(m_data + i + j) == *(other.getData () + j))) {
+                    if (!(*(m_data + i + j) == *(other.getData() + j))) {
                         break;
                     }
                 }
@@ -387,7 +387,7 @@ namespace Common {
             returns index or INVALID if there are no occurences.
             The behavior is undefined unless 'ArrayRef' was initialized.
         */
-        Size find(const Object &object) const
+        Size find(const Object &object) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -405,19 +405,19 @@ namespace Common {
             returns index or INVALID if there are no occurences.
             The behavior is undefined unless both arrays were initialized.
         */
-        Size find(ArrayView<Object, Size> other) const
+        Size find(ArrayView<Object, Size> other) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
-            if (m_size >= other.getSize ()) {
-                Size i = m_size - other.getSize ();
+            if (m_size >= other.getSize()) {
+                Size i = m_size - other.getSize();
                 for (Size j = 0; !(i < j); ++j) {
                     for (Size k = 0;; ++k) {
-                        if (k == other.getSize ()) {
+                        if (k == other.getSize()) {
                             return j;
                         }
 
-                        if (!(*(m_data + j + k) == *(other.getData () + k))) {
+                        if (!(*(m_data + j + k) == *(other.getData() + k))) {
                             break;
                         }
                     }
@@ -432,7 +432,7 @@ namespace Common {
             returns index or INVALID if there are no occurences.
             The behavior is undefined unless 'ArrayRef' was initialized.
         */
-        Size findLast(const Object &object) const
+        Size findLast(const Object &object) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -450,19 +450,19 @@ namespace Common {
             returns index or INVALID if there are no occurences.
             The behavior is undefined unless both arrays were initialized.
         */
-        Size findLast(ArrayView<Object, Size> other) const
+        Size findLast(ArrayView<Object, Size> other) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
-            if (m_size >= other.getSize ()) {
-                Size i = m_size - other.getSize ();
+            if (m_size >= other.getSize()) {
+                Size i = m_size - other.getSize();
                 for (Size j = 0; !(i < j); ++j) {
                     for (Size k = 0;; ++k) {
-                        if (k == other.getSize ()) {
+                        if (k == other.getSize()) {
                             return i - j;
                         }
 
-                        if (!(*(m_data + (i - j + k)) == *(other.getData () + k))) {
+                        if (!(*(m_data + (i - j + k)) == *(other.getData() + k))) {
                             break;
                         }
                     }
@@ -476,47 +476,47 @@ namespace Common {
             Returns subarray of 'headSize' first elements.
             The behavior is undefined unless 'ArrayRef' was initialized and 'headSize' <= 'm_size'.
         */
-        ArrayRef head(Size headSize) const
+        ArrayRef head(Size headSize) const 
         {
             assert(m_data != nullptr || m_size == 0);
             assert(headSize <= m_size);
 
-            return ArrayRef (m_data, headSize);
+            return ArrayRef(m_data, headSize);
         }
 
         /*!
             Returns subarray of 'tailSize' last elements.
             The behavior is undefined unless 'ArrayRef' was initialized and 'tailSize' <= 'm_size'.
         */
-        ArrayRef tail(Size tailSize) const
+        ArrayRef tail(Size tailSize) const 
         {
             assert(m_data != nullptr || m_size == 0);
             assert(tailSize <= m_size);
 
-            return ArrayRef (m_data + (m_size - tailSize), tailSize);
+            return ArrayRef(m_data + (m_size - tailSize), tailSize);
         }
 
         /*!
             Returns 'ArrayRef' without 'headSize' first elements.
             The behavior is undefined unless 'ArrayRef' was initialized and 'headSize' <= 'm_size'.
         */
-        ArrayRef unhead(Size headSize) const
+        ArrayRef unhead(Size headSize) const 
         {
             assert(m_data != nullptr || m_size == 0);
             assert(headSize <= m_size);
-            return ArrayRef (m_data + headSize, m_size - headSize);
+            return ArrayRef(m_data + headSize, m_size - headSize);
         }
 
         /*!
             Returns 'ArrayRef' without 'tailSize' last elements.
             The behavior is undefined unless 'ArrayRef' was initialized and 'tailSize' <= 'm_size'.
         */
-        ArrayRef untail(Size tailSize) const
+        ArrayRef untail(Size tailSize) const 
         {
             assert(m_data != nullptr || m_size == 0);
             assert(tailSize <= m_size);
 
-            return ArrayRef (m_data, m_size - tailSize);
+            return ArrayRef(m_data, m_size - tailSize);
         }
 
         /*!
@@ -525,12 +525,12 @@ namespace Common {
             and 'startIndex' <= 'endIndex' 
             and 'endIndex' <= 'm_size'.
         */
-        ArrayRef range(Size startIndex, Size endIndex) const
+        ArrayRef range(Size startIndex, Size endIndex) const 
         {
             assert(m_data != nullptr || m_size == 0);
             assert(startIndex <= endIndex && endIndex <= m_size);
 
-            return ArrayRef (m_data + startIndex, endIndex - startIndex);
+            return ArrayRef(m_data + startIndex, endIndex - startIndex);
         }
 
         /*!
@@ -539,18 +539,18 @@ namespace Common {
             and 'startIndex' <= 'm_size' 
             and 'startIndex' + 'sliceSize' <= 'm_size'.
         */
-        ArrayRef slice(Size startIndex, Size sliceSize) const
+        ArrayRef slice(Size startIndex, Size sliceSize) const 
         {
             assert(m_data != nullptr || m_size == 0);
             assert(startIndex <= m_size && startIndex + sliceSize <= m_size);
-            return ArrayRef (m_data + startIndex, sliceSize);
+            return ArrayRef(m_data + startIndex, sliceSize);
         }
 
         /*!
             Copy 'object' to each element of 'ArrayRef'.
             The behavior is undefined unless 'ArrayRef' was initialized.
         */
-        const ArrayRef &fill(const Object &object) const
+        const ArrayRef &fill(const Object &object) const 
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -565,7 +565,7 @@ namespace Common {
             Reverse 'ArrayRef' elements.
             The behavior is undefined unless 'ArrayRef' was initialized.
         */
-        const ArrayRef &reverse() const
+        const ArrayRef &reverse() const 
         {
             assert(m_data != nullptr || m_size == 0);
 
@@ -583,12 +583,12 @@ namespace Common {
         Size m_size;
     };
 
-    template<class Object, class Size>
-    const Size ArrayRef<Object, Size>::INVALID = std::numeric_limits<Size>::max ();
+    template<class Object, class Size> 
+        const Size ArrayRef<Object, Size>::INVALID = std::numeric_limits<Size>::max();
 
-    template<class Object, class Size>
-    const ArrayRef<Object, Size> ArrayRef<Object, Size>::EMPTY (reinterpret_cast<Object *>(1), 0);
+    template<class Object, class Size> 
+        const ArrayRef<Object, Size> ArrayRef<Object, Size>::EMPTY(reinterpret_cast<Object *>(1), 0);
 
-    template<class Object, class Size>
-    const ArrayRef<Object, Size> ArrayRef<Object, Size>::NIL (nullptr, 0);
+    template<class Object, class Size> 
+        const ArrayRef<Object, Size> ArrayRef<Object, Size>::NIL(nullptr, 0);
 } // namespace Common

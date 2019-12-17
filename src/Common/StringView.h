@@ -31,7 +31,7 @@ namespace Common {
         'data' == 'nullptr' && 'size' > 0 - Undefined
         'data' != 'nullptr' && 'size' > 0 - NOTEMPTY NOTNIL
     */
-    class StringView
+    class StringView 
     {
     public:
         typedef char Object;
@@ -58,10 +58,9 @@ namespace Common {
             The behavior is undefined unless 'stringData' != 'nullptr' || 'stringSize' == 0. 
             Input state can be malformed using poiner conversions.
         */
-        template<Size stringSize>
-        StringView(const Object(&stringData)[stringSize])
-            : data (stringData),
-              size (stringSize - 1)
+        template<Size stringSize> StringView(const Object(&stringData)[stringSize]) 
+            : data(stringData), 
+              size(stringSize - 1) 
         {
             assert(data != nullptr || size == 0);
         }
