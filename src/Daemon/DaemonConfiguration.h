@@ -29,9 +29,9 @@ namespace DaemonConfig {
                 << CryptoNote::CRYPTONOTE_NAME
                 << "d.log";
 
-            dataDirectory = Tools::getDefaultDataDirectory();
+            dataDirectory = Tools::getDefaultDataDirectory ();
             checkPoints = "default";
-            logFile = logfile.str();
+            logFile = logfile.str ();
             logLevel = Logging::WARNING;
             dbMaxOpenFiles = CryptoNote::DATABASE_DEFAULT_MAX_OPEN_FILES;
             dbReadCacheSizeMB = CryptoNote::DATABASE_READ_BUFFER_MB_DEFAULT_SIZE;
