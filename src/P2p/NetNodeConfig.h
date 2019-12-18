@@ -15,20 +15,21 @@
 
 namespace CryptoNote {
 
-    class NetNodeConfig {
+    class NetNodeConfig
+    {
     public:
         NetNodeConfig();
         bool init(
-            const std::string interface, 
-            const int port, 
-            const int external, 
+            const std::string interface,
+            const int port,
+            const int external,
             const bool localIp,
-            const bool hidePort, 
-            const std::string dataDir, 
+            const bool hidePort,
+            const std::string dataDir,
             const std::vector<std::string> addPeers,
-            const std::vector<std::string> addExclusiveNodes, 
+            const std::vector<std::string> addExclusiveNodes,
             const std::vector<std::string> addPriorityNodes,
-            const std::vector<std::string> addSeedNodes, 
+            const std::vector<std::string> addSeedNodes,
             const bool p2pResetPeerState,
             const std::string addExclusiveVersion);
 
@@ -62,4 +63,4 @@ namespace CryptoNote {
         std::vector<NetworkAddress> seedNodes;
     };
 
-} //namespace nodetool
+} //namespace CryptoNote

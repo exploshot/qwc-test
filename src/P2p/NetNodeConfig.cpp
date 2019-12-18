@@ -7,7 +7,7 @@
 #include <Common/Util.h>
 #include <Common/StringTools.h>
 
-#include <Crypto/random.h>
+#include <Crypto/Random.h>
 
 #include <Global/CryptoNoteConfig.h>
 
@@ -16,66 +16,64 @@
 namespace CryptoNote {
     namespace {
 
-        bool parsePeerFromString(NetworkAddress& pe, const std::string& node_addr)
+        bool parsePeerFromString(NetworkAddress &pe, const std::string &node_addr)
         {
-          return Common::parseIpAddressAndPort(pe.ip, pe.port, node_addr);
+            return Common::parseIpAddressAndPort (pe.ip, pe.port, node_addr);
         }
 
-        bool parsePeersAndAddToNetworkContainer(const std::vector<std::string> peerList, std::vector<NetworkAddress>& container)
+        bool parsePeersAndAddToNetworkContainer(const std::vector <std::string> peerList,
+                                                std::vector <NetworkAddress> &container)
         {
-          for (const std::string& peer : peerList)
-          {
-            NetworkAddress networkAddress = NetworkAddress();
-            if (!parsePeerFromString(networkAddress, peer))
-            {
-              return false;
+            for (const std::string &peer : peerList) {
+                NetworkAddress networkAddress = NetworkAddress ();
+                if (!parsePeerFromString (networkAddress, peer)) {
+                    return false;
+                }
+                container.push_back (networkAddress);
             }
-            container.push_back(networkAddress);
-          }
-          return true;
+            return true;
         }
 
-        bool parsePeersAndAddToPeerListContainer(const std::vector<std::string> peerList, std::vector<PeerlistEntry>& container)
+        bool parsePeersAndAddToPeerListContainer(const std::vector <std::string> peerList,
+                                                 std::vector <PeerlistEntry> &container)
         {
-          for (const std::string& peer : peerList)
-          {
-            PeerlistEntry peerListEntry = PeerlistEntry();
-            peerListEntry.id = Random::randomValue<uint64_t>();
-            if (!parsePeerFromString(peerListEntry.adr, peer))
-            {
-              return false;
+            for (const std::string &peer : peerList) {
+                PeerlistEntry peerListEntry = PeerlistEntry ();
+                peerListEntry.id = Random::randomValue<uint64_t> ();
+                if (!parsePeerFromString (peerListEntry.adr, peer)) {
+                    return false;
+                }
+                container.push_back (peerListEntry);
             }
-            container.push_back(peerListEntry);
-          }
-          return true;
+            return true;
         }
 
     } //namespace
 
-    NetNodeConfig::NetNodeConfig() {
+    NetNodeConfig::NetNodeConfig()
+    {
         bindIp = "";
         bindPort = 0;
         externalPort = 0;
         allowLocalIp = false;
         hideMyPort = false;
-        configFolder = Tools::getDefaultDataDirectory();
+        configFolder = Tools::getDefaultDataDirectory ();
         p2pStateReset = false;
         exclusiveVersion = "";
     }
 
-    bool NetNodeConfig::init(
-        const std::string interface, 
-        const int port, 
-        const int external, 
-        const bool localIp,
-        const bool hidePort, 
-        const std::string dataDir, 
-        const std::vector<std::string> addPeers,
-        const std::vector<std::string> addExclusiveNodes, 
-        const std::vector<std::string> addPriorityNodes,
-        const std::vector<std::string> addSeedNodes, 
-        const bool p2pResetPeerState,
-        const std::string addExclusiveVersion)
+    bool NetNodeConfig::init(const std::string interface,
+                             const int port,
+                             const int external,
+                             const bool localIp,
+                             const bool hidePort,
+                             const std::string dataDir,
+                             const std::vector <std::string> addPeers,
+                             const std::vector <std::string> addExclusiveNodes,
+                             const std::vector <std::string> addPriorityNodes,
+                             const std::vector <std::string> addSeedNodes,
+                             const bool p2pResetPeerState,
+                             const std::string addExclusiveVersion)
     {
         bindIp = interface;
         bindPort = port;
@@ -87,82 +85,95 @@ namespace CryptoNote {
         p2pStateReset = p2pResetPeerState;
         exclusiveVersion = addExclusiveVersion;
 
-        if (!addPeers.empty()) {
-          if (!parsePeersAndAddToPeerListContainer(addPeers, peers)) {
-            return false;
-          }
+        if (!addPeers.empty ()) {
+            if (!parsePeersAndAddToPeerListContainer (addPeers, peers)) {
+                return false;
+            }
         }
 
-        if (!addExclusiveNodes.empty()) {
-          if (!parsePeersAndAddToNetworkContainer(addExclusiveNodes, exclusiveNodes)) {
-            return false;
-          }
+        if (!addExclusiveNodes.empty ()) {
+            if (!parsePeersAndAddToNetworkContainer (addExclusiveNodes, exclusiveNodes)) {
+                return false;
+            }
         }
 
-        if (!addPriorityNodes.empty()) {
-          if (!parsePeersAndAddToNetworkContainer(addPriorityNodes, priorityNodes)) {
-            return false;
-          }
+        if (!addPriorityNodes.empty ()) {
+            if (!parsePeersAndAddToNetworkContainer (addPriorityNodes, priorityNodes)) {
+                return false;
+            }
         }
 
-        if (!addSeedNodes.empty()) {
-          if (!parsePeersAndAddToNetworkContainer(addSeedNodes, seedNodes)) {
-            return false;
-          }
+        if (!addSeedNodes.empty ()) {
+            if (!parsePeersAndAddToNetworkContainer (addSeedNodes, seedNodes)) {
+                return false;
+            }
         }
 
         return true;
     }
 
-    bool NetNodeConfig::getAllowLocalIp() const {
+    bool NetNodeConfig::getAllowLocalIp() const
+    {
         return allowLocalIp;
     }
 
-    bool NetNodeConfig::getHideMyPort() const {
+    bool NetNodeConfig::getHideMyPort() const
+    {
         return hideMyPort;
     }
 
-    bool NetNodeConfig::getP2pStateReset() const {
+    bool NetNodeConfig::getP2pStateReset() const
+    {
         return p2pStateReset;
     }
 
-    std::string NetNodeConfig::getBindIp() const {
+    std::string NetNodeConfig::getBindIp() const
+    {
         return bindIp;
     }
 
-    std::string NetNodeConfig::getConfigFolder() const {
+    std::string NetNodeConfig::getConfigFolder() const
+    {
         return configFolder;
     }
 
-    std::string NetNodeConfig::getExclusiveVersion() const {
+    std::string NetNodeConfig::getExclusiveVersion() const
+    {
         return exclusiveVersion;
     }
 
-    std::string NetNodeConfig::getP2pStateFilename() const {
+    std::string NetNodeConfig::getP2pStateFilename() const
+    {
         return p2pStateFilename;
     }
 
-    uint16_t NetNodeConfig::getBindPort() const {
+    uint16_t NetNodeConfig::getBindPort() const
+    {
         return bindPort;
     }
 
-    uint16_t NetNodeConfig::getExternalPort() const {
+    uint16_t NetNodeConfig::getExternalPort() const
+    {
         return externalPort;
     }
 
-    std::vector<NetworkAddress> NetNodeConfig::getExclusiveNodes() const {
+    std::vector <NetworkAddress> NetNodeConfig::getExclusiveNodes() const
+    {
         return exclusiveNodes;
     }
 
-    std::vector<NetworkAddress> NetNodeConfig::getPriorityNodes() const {
+    std::vector <NetworkAddress> NetNodeConfig::getPriorityNodes() const
+    {
         return priorityNodes;
     }
 
-    std::vector<NetworkAddress> NetNodeConfig::getSeedNodes() const {
+    std::vector <NetworkAddress> NetNodeConfig::getSeedNodes() const
+    {
         return seedNodes;
     }
 
-    std::vector<PeerlistEntry> NetNodeConfig::getPeers() const {
+    std::vector <PeerlistEntry> NetNodeConfig::getPeers() const
+    {
         return peers;
     }
 

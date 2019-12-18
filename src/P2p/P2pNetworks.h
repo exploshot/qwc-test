@@ -26,14 +26,14 @@
 
 namespace CryptoNote {
 
-namespace {
+    namespace {
 
-boost::uuids::uuid name;
-boost::uuids::name_generator gen(name);
-boost::uuids::uuid u = gen(GENESIS_COINBASE_TX_FIX);
+        boost::uuids::uuid name;
+        boost::uuids::name_generator gen (name);
+        boost::uuids::uuid u = gen (GENESIS_COINBASE_TX_FIX);
 
-} // namespace
+    } // namespace
 
-const static boost::uuids::uuid QWERTYCOIN_NETWORK = u;
+    const static boost::uuids::uuid QWERTYCOIN_NETWORK = u;
 
 } // namespace CryptoNote
