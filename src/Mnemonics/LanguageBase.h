@@ -33,126 +33,149 @@
 #include <unordered_map>
 #include <vector>
 
-namespace Language
-{
-    inline std::string UTF8Prefix(const std::string& s, size_t count)
+namespace Language {
+    inline std::string UTF8Prefix(const std::string &s, size_t count)
     {
         std::string prefix = "";
-        const char* ptr = s.c_str();
-        while (count -- && *ptr)
-        {
+        const char *ptr = s.c_str ();
+        while (count-- && *ptr) {
             prefix += *ptr++;
-            while (((*ptr) & 0xc0) ==0x80)
-            {
+            while (((*ptr) & 0xc0) == 0x80) {
                 prefix += *ptr++;
             }
-            
+
         }
         return prefix;
     }
-    
+
     class Base
     {
     protected:
         enum
         {
-            ALLOW_SHORT_WORDS = 1 << 0,
-            ALLOW_DUPLICATE_PREFIXES = 1 << 1,
+            ALLOW_SHORT_WORDS = 1
+                << 0,
+            ALLOW_DUPLICATE_PREFIXES = 1
+                << 1,
         };
 
-        // Name of Language
-        const std::string& languageName;
-        
-        // Apointer to the Array of Words
+        /*!
+         * Name of Language
+         */
+        const std::string &languageName;
+
+        /*!
+         * Apointer to the Array of Words
+         */
         const std::vector<std::string> wordList;
 
-        // Hash Table to find word's Index
+        /*!
+         * Hash Table to find word's Index
+         */
         std::unordered_map<std::string, uint32_t> wordMap;
 
-        // Hash Table to find word's trimmed Index
+        /*!
+         * Hash Table to find word's trimmed Index
+         */
         std::unordered_map<std::string, uint32_t> trimmedWordMap;
 
-        // Number of unique starting Characters to trim the Wordlist to when matching
+        /*!
+         * Number of unique starting Characters to trim the Wordlist to when matching
+         */
         uint32_t uniquePrefixLength;
 
-        // Populate the word maps after the list is ready.
+        /*!
+         *          Populate the word maps after the list is ready.
+         *
+         * @param   flags
+         */
         void populateMaps(uint32_t flags = 0)
         {
             int ii;
             std::vector<std::string>::const_iterator it;
 
-            if (wordList.size() != 1626) {
-                throw std::runtime_error("Wrong wordlist length for " + languageName);
+            if (wordList.size () != 1626) {
+                throw std::runtime_error ("Wrong wordlist length for " + languageName);
             }
 
-            for (it = wordList.begin(), ii = 0; it != wordList.end(); it++, ii++) {
+            for (it = wordList.begin (), ii = 0; it != wordList.end (); it++, ii++) {
                 wordMap[*it] = ii;
-                if ((*it).size() < uniquePrefixLength) {
+                if ((*it).size () < uniquePrefixLength) {
                     if (flags & ALLOW_SHORT_WORDS) {
                         //LOG_PRINT_L0(language_name << " word '" << *it
                         // << "' is shorter than its prefix length, " << unique_prefix_length);
                     } else {
-                        throw std::runtime_error("Too short word in "+ languageName +" word list: "+*it);
+                        throw std::runtime_error ("Too short word in " + languageName + " word list: " + *it);
                     }
                 }
                 std::string trimmed;
-                if (it->length() > uniquePrefixLength) {
-                    trimmed = UTF8Prefix(*it, uniquePrefixLength);
+                if (it->length () > uniquePrefixLength) {
+                    trimmed = UTF8Prefix (*it, uniquePrefixLength);
                 } else {
                     trimmed = *it;
                 }
-                if (trimmedWordMap.find(trimmed) != trimmedWordMap.end()) {
+                if (trimmedWordMap.find (trimmed) != trimmedWordMap.end ()) {
                     if (flags & ALLOW_DUPLICATE_PREFIXES) {
                         //LOG_PRINT_L0("Duplicate prefix in " << language_name
                         //<< " word list: " << trimmed);
                     } else {
-                        throw std::runtime_error("Duplicate prefix in "+ languageName
-                                                 + " word list: " + trimmed);
+                        throw std::runtime_error ("Duplicate prefix in " + languageName
+                                                  + " word list: " + trimmed);
                     }
-                } 
+                }
                 trimmedWordMap[trimmed] = ii;
             }
         }
     public:
-        Base(const std::string& languageName,
+        Base(const std::string &languageName,
              const std::vector<std::string> &words,
              uint32_t prefixLength)
-             : wordList(words),
-               uniquePrefixLength(prefixLength),
-               languageName(languageName)
+            : wordList (words),
+              uniquePrefixLength (prefixLength),
+              languageName (languageName)
         {
         }
 
         virtual ~Base() = default;
 
-        // Returns a pointer to the word list
-        const std::vector<std::string>& getWordList() const
+        /*!
+         * Returns a pointer to the word list
+         */
+        const std::vector<std::string> &getWordList() const
         {
             return wordList;
         }
 
-        // Returns a pointer to the word map
-        const std::unordered_map<std::string, uint32_t>& getWordMap() const
+        /*!
+         * Returns a pointer to the word map
+         */
+        const std::unordered_map<std::string, uint32_t> &getWordMap() const
         {
             return wordMap;
         }
 
-        // Returns a pointer to the trimmed word map.
-        const std::unordered_map<std::string, uint32_t>& getTrimmedWordMap() const
+        /*!
+         * Returns a pointer to the trimmed word map.
+         */
+        const std::unordered_map<std::string, uint32_t> &getTrimmedWordMap() const
         {
             return trimmedWordMap;
         }
 
-        // Returns the name of the language.
-        const std::string& getLanguageName() const
+        /*!
+         * Returns the name of the language.
+         */
+        const std::string &getLanguageName() const
         {
             return languageName;
         }
 
-        // Returns the number of unique starting characters to be used for matching.
+        /*!
+         * Returns the number of unique starting characters to be used for matching.
+         */
         uint32_t getUniquePrefixLength() const
         {
             return uniquePrefixLength;
         }
-    };    
+    };
 } // namespace Language

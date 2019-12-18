@@ -39,36 +39,35 @@
 
 #include <Mnemonics/LanguageBase.h>
 
-#include "chineseSimpl.h"
-// #include "dutch.h"
-#include "english.h"
-/*
-#include "french.h"
-#include "german.h"
-#include "italian.h"
-#include "japanese.h"
-#include "polish.h"
-#include "portugese.h"
-#include "russian.h"
-#include "spanish.h"
-#include "ukrainian.h"
-*/
+#include <Mnemonics/chineseSimpl.h>
+#include <Mnemonics/dutch.h>
+#include <Mnemonics/english.h>
+#include <Mnemonics/french.h>
+#include <Mnemonics/german.h>
+#include <Mnemonics/italian.h>
+#include <Mnemonics/japanese.h>
+#include <Mnemonics/polish.h>
+#include <Mnemonics/portugese.h>
+#include <Mnemonics/russian.h>
+#include <Mnemonics/spanish.h>
+#include <Mnemonics/ukrainian.h>
 
 namespace Language {
-    namespace Mnemonics 
-    {
-        namespace WordLists
-        {
-            
-            class ChineseSimplified : public Base {
+    namespace Mnemonics {
+        namespace WordLists {
+
+            class ChineseSimplified: public Base
+            {
             public:
                 const static std::string cName;
 
-                ChineseSimplified() : Base(cName, chineseSimplified, 1) {
-                    populateMaps();
+                ChineseSimplified()
+                    : Base (cName, chineseSimplified, 1)
+                {
+                    populateMaps ();
                 }
             };
-            /*
+
             class Dutch : public Base {
             public:
                 const static std::string cName;
@@ -77,16 +76,19 @@ namespace Language {
                     populateMaps();
                 }
             };
-            */
-            class English : public Base {
+
+            class English: public Base
+            {
             public:
                 const static std::string cName;
 
-                English() : Base(cName, english, 3) {
-                    populateMaps();
+                English()
+                    : Base (cName, english, 3)
+                {
+                    populateMaps ();
                 }
             };
-            /*
+
             class French : public Base
             {
             public:
@@ -176,7 +178,7 @@ namespace Language {
                     populateMaps();
                 }
             };
-            */
+
         }
     }
-}
+} // namespace Language

@@ -11,20 +11,20 @@
 
 #include <Errors/Errors.h>
 
-namespace Mnemonics
-{
+namespace Mnemonics {
     std::tuple<Error, Crypto::SecretKey> MnemonicToPrivateKey(const std::string words, std::string &languageName);
 
-    std::string PrivateKeyToMnemonic(const Crypto::SecretKey privateKey, const std::string& languageName);
+    std::string PrivateKeyToMnemonic(const Crypto::SecretKey privateKey, const std::string &languageName);
 
 } // namespace Mnemonics
 
 namespace Crypto {
     namespace ElectrumWords {
         const int seedLength = 24;
+
         const std::string oldLanguageName = "English";
 
-        /*
+        /*!
          *  Converts seed words to bytes (secret key).
          * 
          *  @param words String containing the words separated by spaces.
@@ -34,10 +34,10 @@ namespace Crypto {
          *  @return false if not a multiple of 3 words, or if word is not in the words list
          */
         bool wordsToBytes(std::string words,
-                          Crypto::SecretKey& dst,
-                          std::string& languageName);
+                          Crypto::SecretKey &dst,
+                          std::string &languageName);
 
-        /*
+        /*!
          *  Converts bytes (secret key) to seed words.
          * 
          *  @param src Secret key.
@@ -46,19 +46,19 @@ namespace Crypto {
          * 
          *  @return true if successful false if not. Unsuccessful if wrong key size.
          */
-        bool bytesToWords(const Crypto::SecretKey& src,
-                          std::string& words,
-                          const std::string& languageName);
+        bool bytesToWords(const Crypto::SecretKey &src,
+                          std::string &words,
+                          const std::string &languageName);
 
-        /*
+        /*!
          *  Gets a list of seed languages that are supported.
          * 
          *  @param languages A vector is set to the list of languages.
          */
 
-        void getLanguageList(std::vector<std::string>& languages);
+        void getLanguageList(std::vector<std::string> &languages);
 
-        /*
+        /*!
          *  Tells if the seed passed is an old style seed or not.
          * 
          *  @param seed The seed to check (a space delimited concatenated word list).
