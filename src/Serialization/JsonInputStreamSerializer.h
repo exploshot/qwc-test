@@ -27,11 +27,14 @@
 
 namespace CryptoNote {
 
-//deserialization
-class JsonInputStreamSerializer : public JsonInputValueSerializer {
-public:
-  JsonInputStreamSerializer(std::istream& stream);
-  virtual ~JsonInputStreamSerializer();
-};
+    /*!
+     * deserialization
+     */
+    class JsonInputStreamSerializer: public JsonInputValueSerializer
+    {
+    public:
+        JsonInputStreamSerializer(std::istream &stream);
+        virtual ~JsonInputStreamSerializer();
+    };
 
-}
+} // namespace CryptoNote
