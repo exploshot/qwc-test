@@ -8,34 +8,27 @@
 #include <iostream>
 #include <sstream>
 
-#include "Logger.h"
+#include <Logging/Logger.h>
 
-namespace Logger
-{
+namespace Logger {
     Logger logger;
 
     std::string logLevelToString(const LogLevel level)
     {
-        switch (level)
-        {
-            case DISABLED:
-            {
+        switch (level) {
+            case DISABLED: {
                 return "Disabled";
             }
-            case DEBUG:
-            {
+            case DEBUG: {
                 return "Debug";
             }
-            case INFO:
-            {
+            case INFO: {
                 return "Info";
             }
-            case WARNING:
-            {
+            case WARNING: {
                 return "Warning";
             }
-            case FATAL:
-            {
+            case FATAL: {
                 return "Fatal";
             }
         }
@@ -43,56 +36,43 @@ namespace Logger
 
     LogLevel stringToLogLevel(std::string level)
     {
-        /* Convert to lower case */
-        std::transform(level.begin(), level.end(), level.begin(),
-                       ::tolower);
+        /*!
+         * Convert to lower case
+         */
+        std::transform (level.begin (), level.end (), level.begin (),
+                        ::tolower);
 
-        if (level == "disabled")
-        {
+        if (level == "disabled") {
             return DISABLED;
-        }
-        else if (level == "debug")
-        {
+        } else if (level == "debug") {
             return DEBUG;
-        }
-        else if (level == "info")
-        {
+        } else if (level == "info") {
             return INFO;
-        }
-        else if (level == "warning")
-        {
+        } else if (level == "warning") {
             return WARNING;
-        }
-        else if (level == "fatal")
-        {
+        } else if (level == "fatal") {
             return FATAL;
         }
 
-        throw std::invalid_argument("Invalid log level given");
+        throw std::invalid_argument ("Invalid log level given");
     }
 
     std::string logCategoryToString(const LogCategory category)
     {
-        switch(category)
-        {
-            case SYNC:
-            {
+        switch (category) {
+            case SYNC: {
                 return "Sync";
             }
-            case TRANSACTIONS:
-            {
+            case TRANSACTIONS: {
                 return "Transactions";
             }
-            case FILESYSTEM:
-            {
+            case FILESYSTEM: {
                 return "Filesystem";
             }
-            case SAVE:
-            {
+            case SAVE: {
                 return "Save";
             }
-            case DAEMON:
-            {
+            case DAEMON: {
                 return "Daemon";
             }
         }
@@ -103,35 +83,43 @@ namespace Logger
         const LogLevel level,
         const std::vector<LogCategory> categories) const
     {
-        if (level == DISABLED)
-        {
+        if (level == DISABLED) {
             return;
         }
 
-        const std::time_t now = std::time(nullptr);
+        const std::time_t now = std::time (nullptr);
 
         std::stringstream output;
 
-        output << "[" << std::put_time(std::localtime(&now), "%H:%M:%S") << "] "
-               << "[" << logLevelToString(level) << "]";
+        output
+            << "["
+            << std::put_time (std::localtime (&now), "%H:%M:%S")
+            << "] "
+            << "["
+            << logLevelToString (level)
+            << "]";
 
-        for (const auto &category : categories)
-        {
-            output << " [" << logCategoryToString(category) << "]";
+        for (const auto &category : categories) {
+            output
+                << " ["
+                << logCategoryToString (category)
+                << "]";
         }
 
-        output << ": " << message;
+        output
+            << ": "
+            << message;
 
-        if (level <= m_logLevel)
-        {
-            /* If the user provides a callback, log to that instead */
-            if (m_callback)
-            {
-                m_callback(output.str(), message, level, categories);
-            }
-            else
-            {
-                std::cout << output.str() << std::endl;
+        if (level <= m_logLevel) {
+            /*!
+             * If the user provides a callback, log to that instead
+             */
+            if (m_callback) {
+                m_callback (output.str (), message, level, categories);
+            } else {
+                std::cout
+                    << output.str ()
+                    << std::endl;
             }
         }
     }
@@ -150,4 +138,4 @@ namespace Logger
     {
         m_callback = callback;
     }
-}
+} // namespace Logging
