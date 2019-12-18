@@ -17,8 +17,6 @@
 
 #include <Crypto/Hash.h>
 
-#include <Global/Constants.h>
-
 namespace CryptoNote {
 	namespace parameters {
 
@@ -295,7 +293,7 @@ namespace CryptoNote {
      */
 	const uint8_t  P2P_UPGRADE_WINDOW 									    = 1;
 
-	const size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE 				    = 64 * Constants::MEGABYTE; // 64 MB
+	const size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE 				    = 64 * 1024 * 1024; // 64 MB
 	const uint32_t P2P_DEFAULT_CONNECTIONS_COUNT 						    = 16;
 	const size_t   P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT 			    = 70;
 	const uint32_t P2P_DEFAULT_HANDSHAKE_INTERVAL 						    = 60;            // seconds
