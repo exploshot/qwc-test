@@ -27,21 +27,26 @@
 
 namespace CryptoNote {
 
-//Blocking HttpParser
-class HttpParser {
-public:
-  HttpParser() {};
+    /*!
+     * Blocking HttpParser
+     */
+    class HttpParser
+    {
+    public:
+        HttpParser()
+        {
+        };
 
-  void receiveRequest(std::istream& stream, HttpRequest& request);
-  void receiveResponse(std::istream& stream, HttpResponse& response);
-  static HttpResponse::HTTP_STATUS parseResponseStatusFromString(const std::string& status);
-private:
-  void readWord(std::istream& stream, std::string& word);
-  void readHeaders(std::istream& stream, HttpRequest::Headers &headers);
-  bool readHeader(std::istream& stream, std::string& name, std::string& value);
-  size_t getBodyLen(const HttpRequest::Headers& headers);
-  void readBody(std::istream& stream, std::string& body, const size_t bodyLen);
-};
+        void receiveRequest(std::istream &stream, HttpRequest &request);
+        void receiveResponse(std::istream &stream, HttpResponse &response);
+        static HttpResponse::HTTP_STATUS parseResponseStatusFromString(const std::string &status);
+    private:
+        void readWord(std::istream &stream, std::string &word);
+        void readHeaders(std::istream &stream, HttpRequest::Headers &headers);
+        bool readHeader(std::istream &stream, std::string &name, std::string &value);
+        size_t getBodyLen(const HttpRequest::Headers &headers);
+        void readBody(std::istream &stream, std::string &body, const size_t bodyLen);
+    };
 
 } //namespace CryptoNote
 

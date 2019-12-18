@@ -18,9 +18,9 @@
 #include <Http/HttpParserErrorCodes.h>
 
 namespace CryptoNote {
-namespace error {
+    namespace error {
 
-HttpParserErrorCategory HttpParserErrorCategory::INSTANCE;
+        HttpParserErrorCategory HttpParserErrorCategory::INSTANCE;
 
-} //namespace error
+    } //namespace error
 } //namespace CryptoNote
