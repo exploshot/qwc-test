@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma  once 
+#pragma  once
 
 #define CORE_RPC_ERROR_CODE_WRONG_PARAM           -1
 #define CORE_RPC_ERROR_CODE_TOO_BIG_HEIGHT        -2

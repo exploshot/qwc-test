@@ -31,220 +31,249 @@
 
 namespace CryptoNote {
 
-class HttpClient;
-  
-namespace JsonRpc {
+    class HttpClient;
 
-const int errParseError = -32700;
-const int errInvalidRequest = -32600;
-const int errMethodNotFound = -32601;
-const int errInvalidParams = -32602;
-const int errInternalError = -32603;
-const int errInvalidPassword = -32604;
+    namespace JsonRpc {
 
-class JsonRpcError: public std::exception {
-public:
-  JsonRpcError();
-  JsonRpcError(int c);
-  JsonRpcError(int c, const std::string& msg);
+        const int errParseError = -32700;
+        const int errInvalidRequest = -32600;
+        const int errMethodNotFound = -32601;
+        const int errInvalidParams = -32602;
+        const int errInternalError = -32603;
+        const int errInvalidPassword = -32604;
+
+        class JsonRpcError: public std::exception
+        {
+        public:
+            JsonRpcError();
+            JsonRpcError(int c);
+            JsonRpcError(int c, const std::string &msg);
 
 #ifdef _MSC_VER
-  virtual const char* what() const override {
+            virtual const char* what() const override {
 #else
-  virtual const char* what() const noexcept override {
+            virtual const char *what() const noexcept override
+            {
 #endif
-    return message.c_str();
-  }
+                return message.c_str ();
+            }
 
-  void serialize(ISerializer& s) {
-    s(code, "code");
-    s(message, "message");
-  }
+            void serialize(ISerializer &s)
+            {
+                s (code, "code");
+                s (message, "message");
+            }
 
-  int code;
-  std::string message;
-};
+            int code;
+            std::string message;
+        };
 
-typedef boost::optional<Common::JsonValue> OptionalId;
-typedef boost::optional<Common::JsonValue> OptionalPassword;
+        typedef boost::optional<Common::JsonValue> OptionalId;
 
-class JsonRpcRequest {
-public:
-  
-  JsonRpcRequest() : psReq(Common::JsonValue::OBJECT) {}
+        typedef boost::optional<Common::JsonValue> OptionalPassword;
 
-  bool parseRequest(const std::string& requestBody) {
-    try {
-      psReq = Common::JsonValue::fromString(requestBody);
-    } catch (std::exception&) {
-      throw JsonRpcError(errParseError);
-    }
+        class JsonRpcRequest
+        {
+        public:
 
-    if (!psReq.contains("method")) {
-      throw JsonRpcError(errInvalidRequest);
-    }
+            JsonRpcRequest()
+                : psReq (Common::JsonValue::OBJECT)
+            {
+            }
 
-    method = psReq("method").getString();
+            bool parseRequest(const std::string &requestBody)
+            {
+                try {
+                    psReq = Common::JsonValue::fromString (requestBody);
+                } catch (std::exception &) {
+                    throw JsonRpcError (errParseError);
+                }
 
-    if (psReq.contains("id")) {
-      id = psReq("id");
-    }
-	
-	if (psReq.contains("password")) {
-		password = psReq("password");
-    }
+                if (!psReq.contains ("method")) {
+                    throw JsonRpcError (errInvalidRequest);
+                }
 
-    return true;
-  }
+                method = psReq ("method").getString ();
 
-  template <typename T>
-  bool loadParams(T& v) const {
-    loadFromJsonValue(v, psReq.contains("params") ? 
-      psReq("params") : Common::JsonValue(Common::JsonValue::NIL));
-    return true;
-  }
+                if (psReq.contains ("id")) {
+                    id = psReq ("id");
+                }
 
-  template <typename T>
-  bool setParams(const T& v) {
-    psReq.set("params", storeToJsonValue(v));
-    return true;
-  }
+                if (psReq.contains ("password")) {
+                    password = psReq ("password");
+                }
 
-  const std::string& getMethod() const {
-    return method;
-  }
+                return true;
+            }
 
-  void setMethod(const std::string& m) {
-    method = m;
-  }
+            template<typename T>
+            bool loadParams(T &v) const
+            {
+                loadFromJsonValue (v, psReq.contains ("params") ?
+                                      psReq ("params") : Common::JsonValue (Common::JsonValue::NIL));
+                return true;
+            }
 
-  const OptionalId& getId() const {
-    return id;
-  }
-  
-  const OptionalPassword& getPassword() const {
-	  return password;
-  }
+            template<typename T>
+            bool setParams(const T &v)
+            {
+                psReq.set ("params", storeToJsonValue (v));
+                return true;
+            }
 
-  std::string getBody() {
-    psReq.set("jsonrpc", std::string("2.0"));
-    psReq.set("method", method);
-    return psReq.toString();
-  }
+            const std::string &getMethod() const
+            {
+                return method;
+            }
 
-private:
+            void setMethod(const std::string &m)
+            {
+                method = m;
+            }
 
-  Common::JsonValue psReq;
-  OptionalId id;
-  OptionalPassword password;
-  std::string method;
-};
+            const OptionalId &getId() const
+            {
+                return id;
+            }
 
+            const OptionalPassword &getPassword() const
+            {
+                return password;
+            }
 
-class JsonRpcResponse {
-public:
+            std::string getBody()
+            {
+                psReq.set ("jsonrpc", std::string ("2.0"));
+                psReq.set ("method", method);
+                return psReq.toString ();
+            }
 
-  JsonRpcResponse() : psResp(Common::JsonValue::OBJECT) {}
+        private:
 
-  void parse(const std::string& responseBody) {
-    try {
-      psResp = Common::JsonValue::fromString(responseBody);
-    } catch (std::exception&) {
-      throw JsonRpcError(errParseError);
-    }
-  }
+            Common::JsonValue psReq;
+            OptionalId id;
+            OptionalPassword password;
+            std::string method;
+        };
 
-  void setId(const OptionalId& id) {
-    if (id.is_initialized()) {
-      psResp.insert("id", id.get());
-    }
-  }
+        class JsonRpcResponse
+        {
+        public:
 
-  void setError(const JsonRpcError& err) {
-    psResp.set("error", storeToJsonValue(err));
-  }
+            JsonRpcResponse()
+                : psResp (Common::JsonValue::OBJECT)
+            {
+            }
 
-  bool getError(JsonRpcError& err) const {
-    if (!psResp.contains("error")) {
-      return false;
-    }
+            void parse(const std::string &responseBody)
+            {
+                try {
+                    psResp = Common::JsonValue::fromString (responseBody);
+                } catch (std::exception &) {
+                    throw JsonRpcError (errParseError);
+                }
+            }
 
-    loadFromJsonValue(err, psResp("error"));
-    return true;
-  }
+            void setId(const OptionalId &id)
+            {
+                if (id.is_initialized ()) {
+                    psResp.insert ("id", id.get ());
+                }
+            }
 
-  std::string getBody() {
-    psResp.set("jsonrpc", std::string("2.0"));
-    return psResp.toString();
-  }
+            void setError(const JsonRpcError &err)
+            {
+                psResp.set ("error", storeToJsonValue (err));
+            }
 
-  template <typename T>
-  bool setResult(const T& v) {
-    psResp.set("result", storeToJsonValue(v));
-    return true;
-  }
+            bool getError(JsonRpcError &err) const
+            {
+                if (!psResp.contains ("error")) {
+                    return false;
+                }
 
-  template <typename T>
-  bool getResult(T& v) const {
-    if (!psResp.contains("result")) {
-      return false;
-    }
+                loadFromJsonValue (err, psResp ("error"));
+                return true;
+            }
 
-    loadFromJsonValue(v, psResp("result"));
-    return true;
-  }
+            std::string getBody()
+            {
+                psResp.set ("jsonrpc", std::string ("2.0"));
+                return psResp.toString ();
+            }
 
-private:
-  Common::JsonValue psResp;
-};
+            template<typename T>
+            bool setResult(const T &v)
+            {
+                psResp.set ("result", storeToJsonValue (v));
+                return true;
+            }
 
+            template<typename T>
+            bool getResult(T &v) const
+            {
+                if (!psResp.contains ("result")) {
+                    return false;
+                }
 
-void invokeJsonRpcCommand(HttpClient& httpClient, JsonRpcRequest& req, JsonRpcResponse& res);
+                loadFromJsonValue (v, psResp ("result"));
+                return true;
+            }
 
-template <typename Request, typename Response>
-void invokeJsonRpcCommand(HttpClient& httpClient, const std::string& method, const Request& req, Response& res) {
-  JsonRpcRequest jsReq;
-  JsonRpcResponse jsRes;
+        private:
+            Common::JsonValue psResp;
+        };
 
-  jsReq.setMethod(method);
-  jsReq.setParams(req);
+        void invokeJsonRpcCommand(HttpClient &httpClient, JsonRpcRequest &req, JsonRpcResponse &res);
 
-  invokeJsonRpcCommand(httpClient, jsReq, jsRes);
+        template<typename Request, typename Response>
+        void invokeJsonRpcCommand(HttpClient &httpClient, const std::string &method, const Request &req, Response &res)
+        {
+            JsonRpcRequest jsReq;
+            JsonRpcResponse jsRes;
 
-  jsRes.getResult(res);
-}
+            jsReq.setMethod (method);
+            jsReq.setParams (req);
 
-template <typename Request, typename Response, typename Handler>
-bool invokeMethod(const JsonRpcRequest& jsReq, JsonRpcResponse& jsRes, Handler handler) {
-  Request req;
-  Response res;
+            invokeJsonRpcCommand (httpClient, jsReq, jsRes);
 
-  if (!std::is_same<Request, CryptoNote::EMPTY_STRUCT>::value && !jsReq.loadParams(req)) {
-    throw JsonRpcError(JsonRpc::errInvalidParams);
-  }
+            jsRes.getResult (res);
+        }
 
-  bool result = handler(req, res);
+        template<typename Request, typename Response, typename Handler>
+        bool invokeMethod(const JsonRpcRequest &jsReq, JsonRpcResponse &jsRes, Handler handler)
+        {
+            Request req;
+            Response res;
 
-  if (result) {
-    if (!jsRes.setResult(res)) {
-      throw JsonRpcError(JsonRpc::errInternalError);
-    }
-  }
-  return result;
-}
+            if (!std::is_same<Request, CryptoNote::EMPTY_STRUCT>::value && !jsReq.loadParams (req)) {
+                throw JsonRpcError (JsonRpc::errInvalidParams);
+            }
 
-typedef std::function<bool(void*, const JsonRpcRequest& req, JsonRpcResponse& res)> JsonMemberMethod;
+            bool result = handler (req, res);
 
-template <typename Class, typename Params, typename Result>
-JsonMemberMethod makeMemberMethod(bool (Class::*handler)(const Params&, Result&)) {
-  return [handler](void* obj, const JsonRpcRequest& req, JsonRpcResponse& res) {
-    return JsonRpc::invokeMethod<Params, Result>(
-      req, res, std::bind(handler, static_cast<Class*>(obj), std::placeholders::_1, std::placeholders::_2));
-  };
-}
+            if (result) {
+                if (!jsRes.setResult (res)) {
+                    throw JsonRpcError (JsonRpc::errInternalError);
+                }
+            }
+            return result;
+        }
 
+        typedef std::function<bool(void *, const JsonRpcRequest &req, JsonRpcResponse &res)> JsonMemberMethod;
 
-}
+        template<typename Class, typename Params, typename Result>
+        JsonMemberMethod makeMemberMethod(bool (Class::*handler)(const Params &, Result &))
+        {
+            return [handler](void *obj, const JsonRpcRequest &req, JsonRpcResponse &res)
+            {
+                return JsonRpc::invokeMethod<Params, Result> (
+                    req,
+                    res,
+                    std::bind (handler, static_cast<Class *>(obj), std::placeholders::_1, std::placeholders::_2));
+            };
+        }
 
+    } // namespace JsonRpc
 
-}
+} // namespace CryptoNote
