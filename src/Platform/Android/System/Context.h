@@ -25,10 +25,21 @@ extern "C" {
 #include <stdlib.h>
 #include <ucontext.h>
 
-int getcontext(ucontext_t *) { return 0; }
-void makecontext(ucontext_t *, void (*)(), int, ...) {}
-int setcontext(const ucontext_t *) { return 0; }
-int swapcontext(ucontext_t * __restrict, const ucontext_t * __restrict) { return 0; }
+int getcontext(ucontext_t *)
+{
+    return 0;
+}
+void makecontext(ucontext_t *, void (*)(), int, ...)
+{
+}
+int setcontext(const ucontext_t *)
+{
+    return 0;
+}
+int swapcontext(ucontext_t *__restrict, const ucontext_t *__restrict)
+{
+    return 0;
+}
 
 #ifdef __cplusplus
 } // extern "C"

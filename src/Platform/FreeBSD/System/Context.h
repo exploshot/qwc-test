@@ -18,8 +18,8 @@
 
 #pragma once
 
-#define	setcontext(u) _setmcontext(&(u)->uc_mcontext)
-#define	getcontext(u) _getmcontext(&(u)->uc_mcontext)
+#define    setcontext(u) _setmcontext(&(u)->uc_mcontext)
+#define    getcontext(u) _getmcontext(&(u)->uc_mcontext)
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,14 +28,15 @@ extern "C" {
 #include <signal.h>
 #include <stdlib.h>
 
-#define	_MC_FPFMT_NODEV 0x10000	// device not present or configured
-#define	_MC_FPFMT_XMM 0x10002
+#define    _MC_FPFMT_NODEV 0x10000    // device not present or configured
+#define    _MC_FPFMT_XMM 0x10002
 
-#define	_MC_FPOWNED_NONE 0x20000 // FP state not used
-#define	_MC_FPOWNED_FPU 0x20001 // FP state came from FPU
-#define	_MC_FPOWNED_PCB 0x20002 // FP state came from PCB
+#define    _MC_FPOWNED_NONE 0x20000 // FP state not used
+#define    _MC_FPOWNED_FPU 0x20001 // FP state came from FPU
+#define    _MC_FPOWNED_PCB 0x20002 // FP state came from PCB
 
 typedef struct mcontext mctx;
+
 typedef struct ucontext uctx;
 
 extern int swapcontext(uctx *, const uctx *);
@@ -100,7 +101,7 @@ struct ucontext
     sigset_t uc_sigmask;
     mctx uc_mcontext;
 
-    struct __ucontext* uc_link;
+    struct __ucontext *uc_link;
     stack_t uc_stack;
     int __spare__[8];
 };

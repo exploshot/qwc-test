@@ -25,32 +25,32 @@
 
 namespace System {
 
-class Ipv4Address;
+    class Ipv4Address;
 
-class TcpConnection
-{
-public:
-    TcpConnection();
-    TcpConnection(const TcpConnection &) = delete;
-    TcpConnection(TcpConnection &&other);
-    ~TcpConnection();
+    class TcpConnection
+    {
+    public:
+        TcpConnection();
+        TcpConnection(const TcpConnection &) = delete;
+        TcpConnection(TcpConnection &&other);
+        ~TcpConnection();
 
-    std::size_t read(uint8_t *data, std::size_t size);
-    std::size_t write(const uint8_t *data, std::size_t size);
-    std::pair<Ipv4Address, uint16_t> getPeerAddressAndPort() const;
+        std::size_t read(uint8_t *data, std::size_t size);
+        std::size_t write(const uint8_t *data, std::size_t size);
+        std::pair<Ipv4Address, uint16_t> getPeerAddressAndPort() const;
 
-    TcpConnection &operator=(const TcpConnection &) = delete;
-    TcpConnection &operator=(TcpConnection &&other);
+        TcpConnection &operator=(const TcpConnection &) = delete;
+        TcpConnection &operator=(TcpConnection &&other);
 
-private:
-    TcpConnection(Dispatcher &dispatcher, int socket);
+    private:
+        TcpConnection(Dispatcher &dispatcher, int socket);
 
-    Dispatcher *dispatcher;
-    int connection;
-    ContextPair contextPair;
+        Dispatcher *dispatcher;
+        int connection;
+        ContextPair contextPair;
 
-    friend class TcpConnector;
-    friend class TcpListener;
-};
+        friend class TcpConnector;
+        friend class TcpListener;
+    };
 
 } // namespace System

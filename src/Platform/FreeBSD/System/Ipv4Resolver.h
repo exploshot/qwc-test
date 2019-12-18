@@ -22,25 +22,25 @@
 
 namespace System {
 
-class Dispatcher;
-class Ipv4Address;
+    class Dispatcher;
+    class Ipv4Address;
 
-class Ipv4Resolver
-{
-public:
-    Ipv4Resolver();
-    explicit Ipv4Resolver(Dispatcher &dispatcher);
-    Ipv4Resolver(const Ipv4Resolver &) = delete;
-    Ipv4Resolver(Ipv4Resolver &&other) noexcept;
-    ~Ipv4Resolver() = default;
+    class Ipv4Resolver
+    {
+    public:
+        Ipv4Resolver();
+        explicit Ipv4Resolver(Dispatcher &dispatcher);
+        Ipv4Resolver(const Ipv4Resolver &) = delete;
+        Ipv4Resolver(Ipv4Resolver &&other) noexcept;
+        ~Ipv4Resolver() = default;
 
-    Ipv4Address resolve(const std::string &host);
+        Ipv4Address resolve(const std::string &host);
 
-    Ipv4Resolver &operator=(const Ipv4Resolver &) = delete;
-    Ipv4Resolver &operator=(Ipv4Resolver &&other) noexcept;
+        Ipv4Resolver &operator=(const Ipv4Resolver &) = delete;
+        Ipv4Resolver &operator=(Ipv4Resolver &&other) noexcept;
 
-private:
-    Dispatcher *dispatcher;
-};
+    private:
+        Dispatcher *dispatcher;
+    };
 
 } // namespace System

@@ -23,27 +23,27 @@
 
 namespace System {
 
-class Dispatcher;
-class Ipv4Address;
-class TcpConnection;
+    class Dispatcher;
+    class Ipv4Address;
+    class TcpConnection;
 
-class TcpConnector
-{
-public:
-    TcpConnector();
-    explicit TcpConnector(Dispatcher &dispatcher);
-    TcpConnector(const TcpConnector &) = delete;
-    TcpConnector(TcpConnector &&other) noexcept;
-    ~TcpConnector();
+    class TcpConnector
+    {
+    public:
+        TcpConnector();
+        explicit TcpConnector(Dispatcher &dispatcher);
+        TcpConnector(const TcpConnector &) = delete;
+        TcpConnector(TcpConnector &&other) noexcept;
+        ~TcpConnector();
 
-    TcpConnection connect(const Ipv4Address &address, uint16_t port);
+        TcpConnection connect(const Ipv4Address &address, uint16_t port);
 
-    TcpConnector &operator=(const TcpConnector &) = delete;
-    TcpConnector &operator=(TcpConnector &&other) noexcept;
+        TcpConnector &operator=(const TcpConnector &) = delete;
+        TcpConnector &operator=(TcpConnector &&other) noexcept;
 
-private:
-    void *context;
-    Dispatcher *dispatcher;
-};
+    private:
+        void *context;
+        Dispatcher *dispatcher;
+    };
 
 } // namespace System

@@ -23,28 +23,28 @@
 
 namespace System {
 
-class Dispatcher;
-class Ipv4Address;
-class TcpConnection;
+    class Dispatcher;
+    class Ipv4Address;
+    class TcpConnection;
 
-class TcpListener
-{
-public:
-    TcpListener();
-    TcpListener(Dispatcher &dispatcher, const Ipv4Address &address, uint16_t port);
-    TcpListener(const TcpListener &) = delete;
-    TcpListener(TcpListener &&other) noexcept;
-    ~TcpListener();
+    class TcpListener
+    {
+    public:
+        TcpListener();
+        TcpListener(Dispatcher &dispatcher, const Ipv4Address &address, uint16_t port);
+        TcpListener(const TcpListener &) = delete;
+        TcpListener(TcpListener &&other) noexcept;
+        ~TcpListener();
 
-    TcpConnection accept();
+        TcpConnection accept();
 
-    TcpListener &operator=(const TcpListener &) = delete;
-    TcpListener &operator=(TcpListener &&other) noexcept(false);
+        TcpListener &operator=(const TcpListener &) = delete;
+        TcpListener &operator=(TcpListener &&other) noexcept (false);
 
-private:
-    Dispatcher *dispatcher;
-    int listener;
-    void *context;
-};
+    private:
+        Dispatcher *dispatcher;
+        int listener;
+        void *context;
+    };
 
 } // namespace System

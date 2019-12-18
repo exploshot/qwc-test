@@ -24,36 +24,36 @@
 
 namespace System {
 
-class Dispatcher;
-class Ipv4Address;
+    class Dispatcher;
+    class Ipv4Address;
 
-class TcpConnection
-{
-public:
-    TcpConnection();
-    TcpConnection(const TcpConnection &) = delete;
-    TcpConnection(TcpConnection &&other) noexcept;
-    ~TcpConnection();
+    class TcpConnection
+    {
+    public:
+        TcpConnection();
+        TcpConnection(const TcpConnection &) = delete;
+        TcpConnection(TcpConnection &&other) noexcept;
+        ~TcpConnection();
 
-    std::size_t read(uint8_t *data, std::size_t size);
-    std::size_t write(const uint8_t *data, std::size_t size);
-    std::pair<Ipv4Address, uint16_t> getPeerAddressAndPort() const;
+        std::size_t read(uint8_t *data, std::size_t size);
+        std::size_t write(const uint8_t *data, std::size_t size);
+        std::pair<Ipv4Address, uint16_t> getPeerAddressAndPort() const;
 
-    TcpConnection &operator=(const TcpConnection &) = delete;
-    TcpConnection &operator=(TcpConnection &&other) noexcept(false);
+        TcpConnection &operator=(const TcpConnection &) = delete;
+        TcpConnection &operator=(TcpConnection &&other) noexcept (false);
 
-private:
-    TcpConnection(Dispatcher &dispatcher, int socket);
+    private:
+        TcpConnection(Dispatcher &dispatcher, int socket);
 
-private:
-    Dispatcher *dispatcher;
-    int connection;
-    void *readContext;
+    private:
+        Dispatcher *dispatcher;
+        int connection;
+        void *readContext;
 
-    void *writeContext;
-    friend class TcpConnector;
+        void *writeContext;
+        friend class TcpConnector;
 
-    friend class TcpListener;
-};
+        friend class TcpListener;
+    };
 
 } // namespace System
