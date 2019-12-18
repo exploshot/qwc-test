@@ -3,31 +3,34 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "BlockchainMonitor.h"
 
-#include "Common/StringTools.h"
+
+#include <Common/StringTools.h>
+
+#include <Miner/BlockchainMonitor.h>
 
 #include <System/EventLock.h>
 #include <System/Timer.h>
 #include <System/InterruptedException.h>
 
-#include "Rpc/CoreRpcServerCommandsDefinitions.h"
-#include "Rpc/JsonRpc.h"
+#include <Rpc/CoreRpcServerCommandsDefinitions.h>
+#include <Rpc/JsonRpc.h>
 
 #include <Utilities/ColouredMsg.h>
 
 using json = nlohmann::json;
 
 BlockchainMonitor::BlockchainMonitor(
-    System::Dispatcher& dispatcher,
+    System::Dispatcher &dispatcher,
     const size_t pollingInterval,
-    const std::shared_ptr<httplib::Client> httpClient):
+    const std::shared_ptr<httplib::Client> httpClient)
+    :
 
-    m_dispatcher(dispatcher),
-    m_pollingInterval(pollingInterval),
-    m_stopped(false),
-    m_sleepingContext(dispatcher),
-    m_httpClient(httpClient)
+    m_dispatcher (dispatcher),
+    m_pollingInterval (pollingInterval),
+    m_stopped (false),
+    m_sleepingContext (dispatcher),
+    m_httpClient (httpClient)
 {
 }
 
@@ -35,39 +38,36 @@ void BlockchainMonitor::waitBlockchainUpdate()
 {
     m_stopped = false;
 
-    auto lastBlockHash = requestLastBlockHash();
+    auto lastBlockHash = requestLastBlockHash ();
 
     while (!lastBlockHash && !m_stopped) {
-        std::this_thread::sleep_for(std::chrono::seconds(m_pollingInterval));
-        lastBlockHash = requestLastBlockHash();
+        std::this_thread::sleep_for (std::chrono::seconds (m_pollingInterval));
+        lastBlockHash = requestLastBlockHash ();
     }
 
-    while(!m_stopped)
-    {
-        m_sleepingContext.spawn([this] ()
-        {
-            System::Timer timer(m_dispatcher);
-            timer.sleep(std::chrono::seconds(m_pollingInterval));
-        });
+    while (!m_stopped) {
+        m_sleepingContext.spawn ([this]()
+                                 {
+                                     System::Timer timer (m_dispatcher);
+                                     timer.sleep (std::chrono::seconds (m_pollingInterval));
+                                 });
 
-        m_sleepingContext.wait();
+        m_sleepingContext.wait ();
 
-        auto nextBlockHash = requestLastBlockHash();
+        auto nextBlockHash = requestLastBlockHash ();
 
         while (!nextBlockHash && !m_stopped) {
-            std::this_thread::sleep_for(std::chrono::seconds(m_pollingInterval));
-            nextBlockHash = requestLastBlockHash();
+            std::this_thread::sleep_for (std::chrono::seconds (m_pollingInterval));
+            nextBlockHash = requestLastBlockHash ();
         }
 
-        if (*lastBlockHash != *nextBlockHash)
-        {
+        if (*lastBlockHash != *nextBlockHash) {
             break;
         }
     }
 
-    if (m_stopped)
-    {
-        throw System::InterruptedException();
+    if (m_stopped) {
+        throw System::InterruptedException ();
     }
 }
 
@@ -75,8 +75,8 @@ void BlockchainMonitor::stop()
 {
     m_stopped = true;
 
-    m_sleepingContext.interrupt();
-    m_sleepingContext.wait();
+    m_sleepingContext.interrupt ();
+    m_sleepingContext.wait ();
 }
 
 std::optional<Crypto::Hash> BlockchainMonitor::requestLastBlockHash()
@@ -87,56 +87,63 @@ std::optional<Crypto::Hash> BlockchainMonitor::requestLastBlockHash()
         {"params", {}}
     };
 
-    auto res = m_httpClient->Post("/json_rpc", j.dump(), "application/json");
+    auto res = m_httpClient->Post ("/json_rpc", j.dump (), "application/json");
 
-    if (!res)
-    {
-        std::cout << WarningMsg("Failed to get block hash - Is your daemon open?\n");
+    if (!res) {
+        std::cout
+            << WarningMsg ("Failed to get block hash - Is your daemon open?\n");
 
         return std::nullopt;
     }
 
-    if (res->status != 200)
-    {
+    if (res->status != 200) {
         std::stringstream stream;
 
-        stream << "Failed to get block hash - received unexpected http "
-               << "code from server: "
-               << res->status << std::endl;
+        stream
+            << "Failed to get block hash - received unexpected http "
+            << "code from server: "
+            << res->status
+            << std::endl;
 
-        std::cout << WarningMsg(stream.str()) << std::endl;
+        std::cout
+            << WarningMsg (stream.str ())
+            << std::endl;
 
         return std::nullopt;
     }
 
-    try
-    {
-        json j = json::parse(res->body);
+    try {
+        json j = json::parse (res->body);
 
-        const std::string status = j.at("result").at("status").get<std::string>();
+        const std::string status = j.at ("result").at ("status").get<std::string> ();
 
-        if (status != "OK")
-        {
+        if (status != "OK") {
             std::stringstream stream;
 
-            stream << "Failed to get block hash from daemon. Response: "
-                   << status << std::endl;
+            stream
+                << "Failed to get block hash from daemon. Response: "
+                << status
+                << std::endl;
 
-            std::cout << WarningMsg(stream.str());
+            std::cout
+                << WarningMsg (stream.str ());
 
             return std::nullopt;
         }
 
-        return j.at("result").at("block_header").at("hash").get<Crypto::Hash>();
-    }
-    catch (const json::exception &e)
-    {
+        return j.at ("result").at ("block_header").at ("hash").get<Crypto::Hash> ();
+    } catch (const json::exception &e) {
         std::stringstream stream;
 
-        stream << "Failed to parse block hash from daemon. Received data:\n"
-               << res->body << "\nParse error: " << e.what() << std::endl;
+        stream
+            << "Failed to parse block hash from daemon. Received data:\n"
+            << res->body
+            << "\nParse error: "
+            << e.what ()
+            << std::endl;
 
-        std::cout << WarningMsg(stream.str());
+        std::cout
+            << WarningMsg (stream.str ());
 
         return std::nullopt;
     }

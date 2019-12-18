@@ -5,8 +5,7 @@
 
 #pragma once
 
-namespace Miner
-{
+namespace Miner {
     enum class MinerEventType: uint8_t
     {
         BLOCK_MINED,
@@ -17,4 +16,4 @@ namespace Miner
     {
         MinerEventType type;
     };
-}
+} // namespace Miner
