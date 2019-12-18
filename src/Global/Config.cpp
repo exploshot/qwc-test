@@ -4,7 +4,6 @@
 
 #include <Global/Config.h>
 
-namespace Config
-{
+namespace Config {
     Config config;
-}
+} // namespace Config
