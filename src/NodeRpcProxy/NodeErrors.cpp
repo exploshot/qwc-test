@@ -18,9 +18,9 @@
 #include <NodeRpcProxy/NodeErrors.h>
 
 namespace CryptoNote {
-namespace NodeError {
+    namespace NodeError {
 
-NodeErrorCategory NodeErrorCategory::INSTANCE;
+        NodeErrorCategory NodeErrorCategory::INSTANCE;
 
-}
-}
+    } // namespace NodeError
+} // namespace CryptoNote
