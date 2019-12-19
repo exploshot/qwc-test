@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once 
+#pragma once
 
 #include <chrono>
 
@@ -24,13 +24,14 @@
 
 namespace System {
 
-class ContextGroupTimeout {
-public: 
-  ContextGroupTimeout(Dispatcher&, ContextGroup&, std::chrono::nanoseconds);
+    class ContextGroupTimeout
+    {
+    public:
+        ContextGroupTimeout(Dispatcher &, ContextGroup &, std::chrono::nanoseconds);
 
-private: 
-  Timer timeoutTimer;
-  ContextGroup workingContextGroup;
-};
+    private:
+        Timer timeoutTimer;
+        ContextGroup workingContextGroup;
+    };
 
-}
+} // namespace System

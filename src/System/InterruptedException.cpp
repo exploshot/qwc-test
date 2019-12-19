@@ -19,6 +19,6 @@
 
 namespace {
 #ifdef MSVC
-char suppressMSVCWarningLNK4221;
+    char suppressMSVCWarningLNK4221;
 #endif
-}
+} // namespace System
