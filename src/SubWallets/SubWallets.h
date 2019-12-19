@@ -7,233 +7,305 @@
 #include <CryptoTypes.h>
 #include <WalletTypes.h>
 
-#include <Crypto/crypto.h>
+#include <Crypto/Crypto.h>
 
 #include <SubWallets/SubWallet.h>
 
 class SubWallets
 {
-    public:
+public:
 
-        //////////////////
-        /* Constructors */
-        //////////////////
+    SubWallets() = default;
 
-        SubWallets() = default;
+    /*!
+     * Creates a new wallet
+     * @param privateSpendKey
+     * @param privateViewKey
+     * @param address
+     * @param scanHeight
+     * @param newWallet
+     */
+    SubWallets(const Crypto::SecretKey privateSpendKey,
+               const Crypto::SecretKey privateViewKey,
+               const std::string address,
+               const uint64_t scanHeight,
+               const bool newWallet);
 
-        /* Creates a new wallet */
-        SubWallets(
-            const Crypto::SecretKey privateSpendKey,
-            const Crypto::SecretKey privateViewKey,
-            const std::string address,
-            const uint64_t scanHeight,
-            const bool newWallet);
+    /*!
+     * Creates a new view only subwallet
+     * @param privateViewKey
+     * @param address
+     * @param scanHeight
+     * @param newWallet
+     */
+    SubWallets(const Crypto::SecretKey privateViewKey,
+               const std::string address,
+               const uint64_t scanHeight,
+               const bool newWallet);
 
-        /* Creates a new view only subwallet */
-        SubWallets(
-            const Crypto::SecretKey privateViewKey,
-            const std::string address,
-            const uint64_t scanHeight,
-            const bool newWallet);
+    /*!
+     * Copy constructor
+     * @param other
+     */
+    SubWallets(const SubWallets &other);
 
-        /* Copy constructor */
-        SubWallets(const SubWallets &other);
+    /*!
+     * Adds a sub wallet with a random spend key
+     */
+    std::tuple <Error, std::string, Crypto::SecretKey> addSubWallet();
 
-        /////////////////////////////
-        /* Public member functions */
-        /////////////////////////////
+    /*!
+     * Imports a sub wallet with the given private spend key
+     * @param privateSpendKey
+     * @param scanHeight
+     * @return
+     */
+    std::tuple <Error, std::string> importSubWallet(const Crypto::SecretKey privateSpendKey,
+                                                    const uint64_t scanHeight);
 
-        /* Adds a sub wallet with a random spend key */
-        std::tuple<Error, std::string, Crypto::SecretKey> addSubWallet();
+    /*!
+     * Imports a sub view only wallet with the given public spend key
+     * @param privateSpendKey
+     * @param scanHeight
+     * @return
+     */
+    std::tuple <Error, std::string> importViewSubWallet(const Crypto::PublicKey privateSpendKey,
+                                                        const uint64_t scanHeight);
 
-        /* Imports a sub wallet with the given private spend key */
-        std::tuple<Error, std::string> importSubWallet(
-            const Crypto::SecretKey privateSpendKey,
-            const uint64_t scanHeight);
+    Error deleteSubWallet(const std::string address);
 
-        /* Imports a sub view only wallet with the given public spend key */
-        std::tuple<Error, std::string> importViewSubWallet(
-            const Crypto::PublicKey privateSpendKey,
-            const uint64_t scanHeight);
+    /*!
+     * Returns (height, timestamp) to begin syncing at. Only one (if any)
+     */
+    std::tuple <uint64_t, uint64_t> getMinInitialSyncStart() const;
 
-        Error deleteSubWallet(const std::string address);
+    /*!
+     * Converts the class to a json object
+     * @param writer
+     */
+    void toJSON(rapidjson::Writer <rapidjson::StringBuffer> &writer) const;
 
-        /* Returns (height, timestamp) to begin syncing at. Only one (if any)
-           of the values will be non zero */
-        std::tuple<uint64_t, uint64_t> getMinInitialSyncStart() const;
+    /*!
+     * Initializes the class from a json string
+     * @param j
+     */
+    void fromJSON(const JSONObject &j);
 
-        /* Converts the class to a json object */
-        void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const;
+    /*!
+     * Store a transaction
+     * @param tx
+     */
+    void addTransaction(const WalletTypes::Transaction tx);
 
-        /* Initializes the class from a json string */
-        void fromJSON(const JSONObject &j);
+    /*!
+     * Store an outgoing tx, not yet in a block
+     * @param tx
+     */
+    void addUnconfirmedTransaction(const WalletTypes::Transaction tx);
 
-        /* Store a transaction */
-        void addTransaction(const WalletTypes::Transaction tx);
+    /*!
+     * Generates a key image using the public+private spend key of the
+     * subwallet. Will return an uninitialized keyimage if a view wallet
+     * (and must exist, but the WalletSynchronizer already checks this)
+     *
+     * @param publicSpendKey
+     * @param derivation
+     * @param outputIndex
+     * @return
+     */
+    Crypto::KeyImage getTxInputKeyImage(const Crypto::PublicKey publicSpendKey,
+                                        const Crypto::KeyDerivation derivation,
+                                        const size_t outputIndex) const;
 
-        /* Store an outgoing tx, not yet in a block */
-        void addUnconfirmedTransaction(const WalletTypes::Transaction tx);
+    void storeTransactionInput(const Crypto::PublicKey publicSpendKey,
+                               const WalletTypes::TransactionInput input);
 
-        /* Generates a key image using the public+private spend key of the
-           subwallet. Will return an uninitialized keyimage if a view wallet
-           (and must exist, but the WalletSynchronizer already checks this) */
-        Crypto::KeyImage getTxInputKeyImage(
-            const Crypto::PublicKey publicSpendKey,
-            const Crypto::KeyDerivation derivation,
-            const size_t outputIndex) const;
+    /*!
+     * Get key images + amounts for the specified transfer amount. We
+     * can either take from all subwallets, or from some subset
+     * (usually just one address, e.g. if we're running a web wallet)
+     *
+     * @param amount
+     * @param takeFromAll
+     * @param subWalletsToTakeFrom
+     * @param height
+     * @return
+     */
+    std::tuple <std::vector<WalletTypes::TxInputAndOwner>, uint64_t>
+    getTransactionInputsForAmount(const uint64_t amount,
+                                  const bool takeFromAll,
+                                  std::vector <Crypto::PublicKey> subWalletsToTakeFrom,
+                                  const uint64_t height) const;
 
-        void storeTransactionInput(
-            const Crypto::PublicKey publicSpendKey,
-            const WalletTypes::TransactionInput input);
+    std::tuple <std::vector<WalletTypes::TxInputAndOwner>, uint64_t, uint64_t>
+    getFusionTransactionInputs(const bool takeFromAll,
+                               std::vector <Crypto::PublicKey> subWalletsToTakeFrom,
+                               const uint64_t mixin,
+                               const uint64_t height) const;
 
-        /* Get key images + amounts for the specified transfer amount. We
-           can either take from all subwallets, or from some subset
-           (usually just one address, e.g. if we're running a web wallet) */
-        std::tuple<std::vector<WalletTypes::TxInputAndOwner>, uint64_t>
-                getTransactionInputsForAmount(
-            const uint64_t amount,
-            const bool takeFromAll,
-            std::vector<Crypto::PublicKey> subWalletsToTakeFrom,
-            const uint64_t height) const;
+    /*!
+     * Get the owner of the key image, if any
+     * @param keyImage
+     * @return
+     */
+    std::tuple<bool, Crypto::PublicKey> getKeyImageOwner(const Crypto::KeyImage keyImage) const;
 
-        std::tuple<std::vector<WalletTypes::TxInputAndOwner>, uint64_t, uint64_t>
-                getFusionTransactionInputs(
-            const bool takeFromAll,
-            std::vector<Crypto::PublicKey> subWalletsToTakeFrom,
-            const uint64_t mixin,
-            const uint64_t height) const;
+    /*!
+     * Gets the primary address (normally first created) address
+     * @return
+     */
+    std::string getPrimaryAddress() const;
 
-        /* Get the owner of the key image, if any */
-        std::tuple<bool, Crypto::PublicKey> getKeyImageOwner(
-            const Crypto::KeyImage keyImage) const;
+    /*!
+     * Gets all the addresses in the subwallets container
+     * @return
+     */
+    std::vector <std::string> getAddresses() const;
 
-        /* Gets the primary address (normally first created) address */
-        std::string getPrimaryAddress() const;
+    /*!
+     * Gets the number of wallets in the container
+     * @return
+     */
+    uint64_t getWalletCount() const;
 
-        /* Gets all the addresses in the subwallets container */
-        std::vector<std::string> getAddresses() const;
+    /*!
+     * Get the sum of the balance of the subwallets pointed to. If
+     * takeFromAll, get the total balance from all subwallets.
+     *
+     * @param subWalletsToTakeFrom
+     * @param takeFromAll
+     * @param currentHeight
+     * @return
+     */
+    std::tuple <uint64_t, uint64_t> getBalance(std::vector <Crypto::PublicKey> subWalletsToTakeFrom,
+                                               const bool takeFromAll,
+                                               const uint64_t currentHeight) const;
 
-        /* Gets the number of wallets in the container */
-        uint64_t getWalletCount() const;
+    /*!
+     * Remove any transactions at this height or above, they were on a
+     * forked chain
+     *
+     * @param forkHeight
+     */
+    void removeForkedTransactions(const uint64_t forkHeight);
 
-        /* Get the sum of the balance of the subwallets pointed to. If
-           takeFromAll, get the total balance from all subwallets. */
-        std::tuple<uint64_t, uint64_t> getBalance(
-            std::vector<Crypto::PublicKey> subWalletsToTakeFrom,
-            const bool takeFromAll,
-            const uint64_t currentHeight) const;
+    Crypto::SecretKey getPrivateViewKey() const;
 
-        /* Remove any transactions at this height or above, they were on a 
-           forked chain */
-        void removeForkedTransactions(const uint64_t forkHeight);
+    /*!
+     * Gets the private spend key for the given public spend, if it exists
+     *
+     * @param publicSpendKey
+     * @return
+     */
+    std::tuple <Error, Crypto::SecretKey> getPrivateSpendKey(const Crypto::PublicKey publicSpendKey) const;
 
-        Crypto::SecretKey getPrivateViewKey() const;
+    std::vector <Crypto::SecretKey> getPrivateSpendKeys() const;
 
-        /* Gets the private spend key for the given public spend, if it exists */
-        std::tuple<Error, Crypto::SecretKey> getPrivateSpendKey(
-            const Crypto::PublicKey publicSpendKey) const;
+    Crypto::SecretKey getPrimaryPrivateSpendKey() const;
 
-        std::vector<Crypto::SecretKey> getPrivateSpendKeys() const;
+    void markInputAsSpent(const Crypto::KeyImage keyImage,
+                          const Crypto::PublicKey publicKey,
+                          const uint64_t spendHeight);
 
-        Crypto::SecretKey getPrimaryPrivateSpendKey() const;
+    void markInputAsLocked(const Crypto::KeyImage keyImage,
+                           const Crypto::PublicKey publicKey);
 
-        void markInputAsSpent(
-            const Crypto::KeyImage keyImage,
-            const Crypto::PublicKey publicKey,
-            const uint64_t spendHeight);
+    std::unordered_set <Crypto::Hash> getLockedTransactionsHashes() const;
 
-        void markInputAsLocked(
-            const Crypto::KeyImage keyImage,
-            const Crypto::PublicKey publicKey);
+    void removeCancelledTransactions(const std::unordered_set <Crypto::Hash> cancelledTransactions);
 
-        std::unordered_set<Crypto::Hash> getLockedTransactionsHashes() const;
+    bool isViewWallet() const;
 
-        void removeCancelledTransactions(
-            const std::unordered_set<Crypto::Hash> cancelledTransactions);
+    void reset(const uint64_t scanHeight);
 
-        bool isViewWallet() const;
+    std::vector <WalletTypes::Transaction> getTransactions() const;
 
-        void reset(const uint64_t scanHeight);
+    /*!
+     * Note that this DOES NOT return incoming transactions in the pool. It only
+     * returns outgoing transactions which we sent but have not encountered in a
+     * block yet.
+     *
+     * @return
+     */
+    std::vector <WalletTypes::Transaction> getUnconfirmedTransactions() const;
 
-        std::vector<WalletTypes::Transaction> getTransactions() const;
+    std::tuple <Error, std::string> getAddress(const Crypto::PublicKey spendKey) const;
 
-        /* Note that this DOES NOT return incoming transactions in the pool. It only
-           returns outgoing transactions which we sent but have not encountered in a
-           block yet. */
-        std::vector<WalletTypes::Transaction> getUnconfirmedTransactions() const;
+    /*!
+     * Store the private key used to create a transaction - can be used
+     * for auditing transactions
+     *
+     * @param txPrivateKey
+     * @param txHash
+     */
+    void storeTxPrivateKey(const Crypto::SecretKey txPrivateKey,
+                           const Crypto::Hash txHash);
 
-        std::tuple<Error, std::string> getAddress(
-            const Crypto::PublicKey spendKey) const;
+    std::tuple<bool, Crypto::SecretKey> getTxPrivateKey(const Crypto::Hash txHash) const;
 
-        /* Store the private key used to create a transaction - can be used
-           for auditing transactions */
-        void storeTxPrivateKey(
-            const Crypto::SecretKey txPrivateKey,
-            const Crypto::Hash txHash);
+    void storeUnconfirmedIncomingInput(const WalletTypes::UnconfirmedInput input,
+                                       const Crypto::PublicKey publicSpendKey);
 
-        std::tuple<bool, Crypto::SecretKey> getTxPrivateKey(
-            const Crypto::Hash txHash) const;
+    void convertSyncTimestampToHeight(const uint64_t timestamp,
+                                      const uint64_t height);
 
-        void storeUnconfirmedIncomingInput(
-            const WalletTypes::UnconfirmedInput input,
-            const Crypto::PublicKey publicSpendKey);
+    std::vector <std::tuple<std::string, uint64_t, uint64_t>> getBalances(const uint64_t currentHeight) const;
 
-        void convertSyncTimestampToHeight(
-            const uint64_t timestamp,
-            const uint64_t height);
+    void pruneSpentInputs(const uint64_t pruneHeight);
 
-        std::vector<std::tuple<std::string, uint64_t, uint64_t>> getBalances(
-            const uint64_t currentHeight) const;
+    /*!
+     * The public spend keys, used for verifying if a transaction is
+     * ours
+     */
+    std::vector <Crypto::PublicKey> m_publicSpendKeys;
 
-        void pruneSpentInputs(const uint64_t pruneHeight);
+private:
 
-        /////////////////////////////
-        /* Public member variables */
-        /////////////////////////////
+    void throwIfViewWallet() const;
 
-        /* The public spend keys, used for verifying if a transaction is
-           ours */
-        std::vector<Crypto::PublicKey> m_publicSpendKeys;
-        
-    private:
+    /*!
+     * Deletes any transactions containing the given spend key, or just
+     * removes from the transfers array if there are multiple transfers
+     * in the tx
+     *
+     * @param txs
+     * @param spendKey
+     */
+    void deleteAddressTransactions(std::vector <WalletTypes::Transaction> &txs,
+                                   const Crypto::PublicKey spendKey);
 
-        //////////////////////////////
-        /* Private member functions */
-        //////////////////////////////
+    /*!
+     * The subwallets, indexed by public spend key
+     */
+    std::unordered_map <Crypto::PublicKey, SubWallet> m_subWallets;
 
-        void throwIfViewWallet() const;
+    /*!
+     *  A vector of transactions
+     */
+    std::vector <WalletTypes::Transaction> m_transactions;
 
-        /* Deletes any transactions containing the given spend key, or just
-           removes from the transfers array if there are multiple transfers
-           in the tx */
-        void deleteAddressTransactions(
-            std::vector<WalletTypes::Transaction> &txs,
-            const Crypto::PublicKey spendKey);
+    /*!
+     * Transactions which we sent, but haven't been added to a block yet
+     */
+    std::vector <WalletTypes::Transaction> m_lockedTransactions;
 
-        //////////////////////////////
-        /* Private member variables */
-        //////////////////////////////
+    Crypto::SecretKey m_privateViewKey;
 
-        /* The subwallets, indexed by public spend key */ 
-        std::unordered_map<Crypto::PublicKey, SubWallet> m_subWallets;
+    bool m_isViewWallet;
 
-        /* A vector of transactions */
-        std::vector<WalletTypes::Transaction> m_transactions;
+    /*!
+     * Transaction private keys of sent transactions, used for auditing
+     */
+    std::unordered_map <Crypto::Hash, Crypto::SecretKey> m_transactionPrivateKeys;
 
-        /* Transactions which we sent, but haven't been added to a block yet */
-        std::vector<WalletTypes::Transaction> m_lockedTransactions;
+    /*!
+     * A mapping of key images to the subwallet public spend key that owns them
+     */
+    std::unordered_map <Crypto::KeyImage, Crypto::PublicKey> m_keyImageOwners;
 
-        Crypto::SecretKey m_privateViewKey;
-
-        bool m_isViewWallet;
-
-        /* Transaction private keys of sent transactions, used for auditing */
-        std::unordered_map<Crypto::Hash, Crypto::SecretKey> m_transactionPrivateKeys;
-
-        /* A mapping of key images to the subwallet public spend key that owns them */
-        std::unordered_map<Crypto::KeyImage, Crypto::PublicKey> m_keyImageOwners;
-
-        /* Need a mutex for accessing inputs, transactions, and locked
-           transactions, etc as these are modified on multiple threads */
-        mutable std::mutex m_mutex;
+    /*!
+     * Need a mutex for accessing inputs, transactions, and locked
+     * transactions, etc as these are modified on multiple threads
+     */
+    mutable std::mutex m_mutex;
 };
