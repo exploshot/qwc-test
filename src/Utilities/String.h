@@ -5,8 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace Utilities
-{
+namespace Utilities {
     void removeCharFromString(std::string &str, const char c);
 
     void trim(std::string &str);
@@ -17,7 +16,7 @@ namespace Utilities
 
     bool startsWith(const std::string &str, const std::string &substring);
 
-    std::vector<std::string> split(const std::string& str, char delim);
+    std::vector<std::string> split(const std::string &str, char delim);
 
     std::string removePrefix(const std::string &str, const std::string &prefix);
-}
+} // namespace Utilities

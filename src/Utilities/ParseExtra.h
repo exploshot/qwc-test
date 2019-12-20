@@ -10,8 +10,7 @@
 #include <CryptoTypes.h>
 
 
-namespace Utilities
-{
+namespace Utilities {
     struct MergedMiningTag
     {
         uint8_t depth;
@@ -32,4 +31,4 @@ namespace Utilities
     MergedMiningTag getMergedMiningTagFromExtra(const std::vector<uint8_t> &extra);
 
     ParsedExtra parseExtra(const std::vector<uint8_t> &extra);
-}
+} // namespace Utilities

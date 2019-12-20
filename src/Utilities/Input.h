@@ -4,9 +4,7 @@
 
 #include <string>
 
-namespace Utilities
-{
+namespace Utilities {
     bool confirm(const std::string &msg);
-
     bool confirm(const std::string &msg, const bool defaultReturn);
-}
+} // namespace Utilities

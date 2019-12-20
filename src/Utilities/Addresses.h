@@ -11,32 +11,26 @@
 
 #include <Errors/Errors.h>
 
-namespace Utilities
-{
-    std::vector<Crypto::PublicKey> addressesToSpendKeys(const std::vector<std::string> addresses);
+namespace Utilities {
+    std::vector <Crypto::PublicKey> addressesToSpendKeys(const std::vector <std::string> addresses);
 
-    std::tuple<Crypto::PublicKey, Crypto::PublicKey> addressToKeys(const std::string address);
+    std::tuple <Crypto::PublicKey, Crypto::PublicKey> addressToKeys(const std::string address);
 
-    std::tuple<std::string, std::string> extractIntegratedAddressData(const std::string address);
+    std::tuple <std::string, std::string> extractIntegratedAddressData(const std::string address);
 
-    std::string publicKeysToAddress(
-        const Crypto::PublicKey publicSpendKey,
-        const Crypto::PublicKey publicViewKey);
+    std::string publicKeysToAddress(const Crypto::PublicKey publicSpendKey,
+                                    const Crypto::PublicKey publicViewKey);
 
-    std::string privateKeysToAddress(
-        const Crypto::SecretKey privateSpendKey,
-        const Crypto::SecretKey privateViewKey);
+    std::string privateKeysToAddress(const Crypto::SecretKey privateSpendKey,
+                                     const Crypto::SecretKey privateViewKey);
 
-    std::tuple<Error, std::string> createIntegratedAddress(
-        const std::string address,
-        const std::string paymentID);
+    std::tuple <Error, std::string> createIntegratedAddress(const std::string address,
+                                                            const std::string paymentID);
 
-    std::string getAccountAddressAsStr(
-        const uint64_t prefix,
-        const CryptoNote::AccountPublicAddress& adr);
+    std::string getAccountAddressAsStr(const uint64_t prefix,
+                                       const CryptoNote::AccountPublicAddress &adr);
 
-    bool parseAccountAddressString(
-        uint64_t& prefix,
-        CryptoNote::AccountPublicAddress& adr,
-        const std::string& str);
-}
+    bool parseAccountAddressString(uint64_t &prefix,
+                                   CryptoNote::AccountPublicAddress &adr,
+                                   const std::string &str);
+} // namespace Utilities
