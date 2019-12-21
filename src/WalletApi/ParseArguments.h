@@ -6,23 +6,33 @@
 
 #include <Global/CryptoNoteConfig.h>
 
-#include <Logger/Logger.h>
+#include <Logging/Logger.h>
 
 struct ApiConfig
 {
-    /* The IP to listen for requests on */
+    /*!
+     * The IP to listen for requests on
+     */
     std::string rpcBindIp;
 
-    /* What port should we listen on */
+    /*!
+     * What port should we listen on
+     */
     uint16_t port;
 
-    /* Password the user must supply with each request */
+    /*!
+     * Password the user must supply with each request
+     */
     std::string rpcPassword;
 
-    /* The value to use with the 'Access-Control-Allow-Origin' header */
+    /*!
+     * The value to use with the 'Access-Control-Allow-Origin' header
+     */
     std::string corsHeader;
 
-    /* Controls what level of messages to log */
+    /*!
+     * Controls what level of messages to log
+     */
     Logger::LogLevel logLevel = Logger::DISABLED;
 
     unsigned int threads;
