@@ -98,7 +98,7 @@ namespace Miner {
 
             std::cout
                 << SuccessMsg ("\nMining at ")
-                << SuccessMsg (Utilities::get_mining_speed (hashes))
+                << SuccessMsg (Utilities::getMiningSpeed (hashes))
                 << "\n\n";
         }
     }
