@@ -166,13 +166,13 @@ bool DaemonCommandsHandler::help(const std::vector<std::string> &args)
 
 bool DaemonCommandsHandler::print_pl(const std::vector<std::string> &args)
 {
-    m_srv.log_peerlist ();
+    m_srv.logPeerlist ();
     return true;
 }
 
 bool DaemonCommandsHandler::print_cn(const std::vector<std::string> &args)
 {
-    m_srv.get_payload_object ().log_connections ();
+    m_srv.getPayloadObject ().logConnections ();
     return true;
 }
 
@@ -241,7 +241,7 @@ bool DaemonCommandsHandler::print_bc(const std::vector<std::string> &args)
     const CryptoNote::Currency &currency = m_core.getCurrency ();
 
     bool first = true;
-    for (CryptoNote::block_header_response &header : res.headers) {
+    for (CryptoNote::BlockHeaderResponse &header : res.headers) {
         if (!first) {
             std::cout
                 << ENDL;
@@ -460,7 +460,7 @@ bool DaemonCommandsHandler::status(const std::vector<std::string> &args)
     }
 
     std::cout
-        << Utilities::get_status_string (iresp)
+        << Utilities::getStatusString (iresp)
         << std::endl;
 
     return true;
@@ -480,7 +480,7 @@ bool DaemonCommandsHandler::ip_ban(const std::vector<std::string> &args)
         }
     }
     for (const auto ip : ips) {
-        m_srv.get_payload_object ().ban (ip);
+        m_srv.getPayloadObject ().ban (ip);
     }
     return true;
 }
@@ -499,13 +499,13 @@ bool DaemonCommandsHandler::ip_unban(const std::vector<std::string> &args)
         }
     }
     for (const auto ip : ips) {
-        m_srv.get_payload_object ().unban (ip);
+        m_srv.getPayloadObject ().unban (ip);
     }
     return true;
 }
 
 bool DaemonCommandsHandler::ip_unban_all(const std::vector<std::string> &args)
 {
-    m_srv.get_payload_object ().unbanAll ();
+    m_srv.getPayloadObject ().unbanAll ();
     return true;
 }
