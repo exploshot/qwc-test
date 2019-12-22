@@ -54,7 +54,7 @@
 #include <Wallet/WalletSerializationV2.h>
 #include <Wallet/WalletUtils.h>
 
-#include <WalletBackend/Constants.h>
+#include <Global/Constants.h>
 #include <WalletBackend/WalletBackend.h>
 
 #undef ERROR
