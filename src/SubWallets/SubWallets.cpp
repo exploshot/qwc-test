@@ -470,7 +470,7 @@ SubWallets::getKeyImageOwner(const Crypto::KeyImage keyImage) const
 }
 
 /*!
- * Remember if the transaction suceeds, we need to remove these key images
+ * Remember if the transaction succeeds, we need to remove these key images
  * so we don't double spend.
  *
  * This may throw if you don't validate the user has enough balance, and
