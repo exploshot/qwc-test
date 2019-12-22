@@ -18,9 +18,9 @@
 #include <WalletService/WalletServiceErrorCategory.h>
 
 namespace CryptoNote {
-namespace error {
+    namespace error {
 
-WalletServiceErrorCategory WalletServiceErrorCategory::INSTANCE;
+        WalletServiceErrorCategory WalletServiceErrorCategory::INSTANCE;
 
-}
-}
+    } // namespace error
+} // namespace CryptoNote
