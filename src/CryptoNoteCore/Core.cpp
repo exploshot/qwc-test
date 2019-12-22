@@ -40,7 +40,6 @@
 
 #include <Utilities/Container.h>
 #include <Utilities/FormatTools.h>
-#include <Utilities/LicenseCanary.h>
 #include <Utilities/ParseExtra.h>
 
 #include <WalletTypes.h>
