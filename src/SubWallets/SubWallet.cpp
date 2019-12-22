@@ -10,7 +10,7 @@
 
 #include <Utilities/Utilities.h>
 
-#include <WalletBackend/Constants.h>
+#include <Global/Constants.h>
 
 /*!
  * Makes a view only subwallet
