@@ -49,7 +49,7 @@ namespace CryptoNote {
         {
             return m_synchronized;
         }
-        void log_connections();
+        void logConnections();
 
         /*!
          * Interface t_payload_net_handler, where t_payload_net_handler is template argument of nodetool::node_server
@@ -147,7 +147,7 @@ namespace CryptoNote {
         ICore &m_core;
         const Currency &m_currency;
 
-        p2p_endpoint_stub m_p2p_stub;
+        P2pEndpointStub m_p2p_stub;
         IP2pEndpoint *m_p2p;
         std::atomic<bool> m_synchronized;
         std::atomic<bool> m_stop;

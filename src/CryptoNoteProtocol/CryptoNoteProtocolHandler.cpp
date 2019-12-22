@@ -40,7 +40,7 @@ namespace CryptoNote {
         bool
         post_notify(IP2pEndpoint &p2p, typename t_parametr::request &arg, const CryptoNoteConnectionContext &context)
         {
-            return p2p.invoke_notify_to_peer (t_parametr::ID, LevinProtocol::encode (arg), context);
+            return p2p.invokeNotifyToPeer (t_parametr::ID, LevinProtocol::encode (arg), context);
         }
 
         template<class t_parametr>
@@ -231,7 +231,7 @@ namespace CryptoNote {
             logger (DEBUGGING)
                 << context
                 << "Banned ip connected, shutting down connection.";
-            context.m_state = CryptoNoteConnectionContext::state_shutdown;
+            context.m_state = CryptoNoteConnectionContext::StateShutdown;
         }
     }
 
@@ -254,7 +254,7 @@ namespace CryptoNote {
             m_observerManager.notify (&ICryptoNoteProtocolObserver::lastKnownBlockHeightUpdated, m_observedHeight);
         }
 
-        if (context.m_state != CryptoNoteConnectionContext::state_befor_handshake) {
+        if (context.m_state != CryptoNoteConnectionContext::StateBeforeHandshake) {
             m_peersCount--;
             m_observerManager.notify (&ICryptoNoteProtocolObserver::peerCountUpdated, m_peersCount.load ());
         }
@@ -271,7 +271,7 @@ namespace CryptoNote {
             << context
             << "Starting synchronization";
 
-        if (context.m_state == CryptoNoteConnectionContext::state_synchronizing) {
+        if (context.m_state == CryptoNoteConnectionContext::StateSynchronizing) {
             assert(context.m_needed_objects.empty ());
             assert(context.m_requested_objects.empty ());
 
@@ -292,7 +292,7 @@ namespace CryptoNote {
         return m_core.getCoreStatistics ();
     }
 
-    void CryptoNoteProtocolHandler::log_connections()
+    void CryptoNoteProtocolHandler::logConnections()
     {
         std::stringstream ss;
 
@@ -310,7 +310,7 @@ namespace CryptoNote {
             << "Lifetime(seconds)"
             << ENDL;
 
-        m_p2p->for_each_connection ([&](const CryptoNoteConnectionContext &cntxt, uint64_t peer_id)
+        m_p2p->forEachConnection ([&](const CryptoNoteConnectionContext &cntxt, uint64_t peer_id)
                                     {
                                         ss
                                             << std::setw (25)
@@ -323,7 +323,7 @@ namespace CryptoNote {
                                             << peer_id
                                             // << std::setw(25) << std::to_string(cntxt.m_recv_cnt) + "(" + std::to_string(time(NULL) - cntxt.m_last_recv) + ")" + "/" + std::to_string(cntxt.m_send_cnt) + "(" + std::to_string(time(NULL) - cntxt.m_last_send) + ")"
                                             << std::setw (25)
-                                            << get_protocol_state_string (cntxt.m_state)
+                                            << getProtocolStateString (cntxt.m_state)
                                             << std::setw (20)
                                             << std::to_string (time (NULL) - cntxt.m_started)
                                             << ENDL;
@@ -344,17 +344,17 @@ namespace CryptoNote {
         CryptoNoteConnectionContext &context,
         bool is_inital)
     {
-        if (context.m_state == CryptoNoteConnectionContext::state_befor_handshake && !is_inital) {
+        if (context.m_state == CryptoNoteConnectionContext::StateBeforeHandshake && !is_inital) {
             return true;
         }
 
-        if (context.m_state == CryptoNoteConnectionContext::state_synchronizing) {
+        if (context.m_state == CryptoNoteConnectionContext::StateSynchronizing) {
         } else if (m_core.hasBlock (hshd.top_id)) {
             if (is_inital) {
                 onConnectionSynchronized ();
-                context.m_state = CryptoNoteConnectionContext::state_pool_sync_required;
+                context.m_state = CryptoNoteConnectionContext::StatePoolSyncRequired;
             } else {
-                context.m_state = CryptoNoteConnectionContext::state_normal;
+                context.m_state = CryptoNoteConnectionContext::StateNormal;
             }
         } else {
             uint64_t currentHeight = getCurrentBlockchainHeight ();
@@ -382,7 +382,7 @@ namespace CryptoNote {
             if (diff >= 0) {
                 ss0
                     << "("
-                    << Utilities::get_sync_percentage (currentHeight, remoteHeight)
+                    << Utilities::getSyncPercentage (currentHeight, remoteHeight)
                     << "% complete) ("
                     << currentHeight
                     << "/"
@@ -442,7 +442,7 @@ namespace CryptoNote {
             logger (Logging::TRACE)
                 << context
                 << "requesting synchronization";
-            context.m_state = CryptoNoteConnectionContext::state_sync_required;
+            context.m_state = CryptoNoteConnectionContext::StateSyncRequired;
         }
 
         updateObservedHeight (hshd.current_height, context);
@@ -508,7 +508,7 @@ namespace CryptoNote {
             logger (DEBUGGING)
                 << ctx
                 << " is trying to invoke a command but is banned, dropping connection...";
-            ctx.m_state = CryptoNoteConnectionContext::state_shutdown;
+            ctx.m_state = CryptoNoteConnectionContext::StateShutdown;
             return 1;
         }
 
@@ -543,7 +543,7 @@ namespace CryptoNote {
             << ")";
         updateObservedHeight (arg.current_blockchain_height, context);
         context.m_remote_blockchain_height = arg.current_blockchain_height;
-        if (context.m_state != CryptoNoteConnectionContext::state_normal) {
+        if (context.m_state != CryptoNoteConnectionContext::StateNormal) {
             return 1;
         }
 
@@ -570,7 +570,7 @@ namespace CryptoNote {
                     << "Block already exists";
             }
         } else if (result == error::AddBlockErrorCondition::BLOCK_REJECTED) {
-            context.m_state = CryptoNoteConnectionContext::state_synchronizing;
+            context.m_state = CryptoNoteConnectionContext::StateSynchronizing;
             NOTIFY_REQUEST_CHAIN::request r = boost::value_initialized<NOTIFY_REQUEST_CHAIN::request> ();
             r.block_ids = m_core.buildSparseChain ();
             logger (Logging::TRACE)
@@ -583,7 +583,7 @@ namespace CryptoNote {
                 << context
                 << "Block verification failed, dropping connection: "
                 << result.message ();
-            context.m_state = CryptoNoteConnectionContext::state_shutdown;
+            context.m_state = CryptoNoteConnectionContext::StateShutdown;
         }
 
         return 1;
@@ -598,7 +598,7 @@ namespace CryptoNote {
             << context
             << "NOTIFY_NEW_TRANSACTIONS";
 
-        if (context.m_state != CryptoNoteConnectionContext::state_normal) {
+        if (context.m_state != CryptoNoteConnectionContext::StateNormal) {
             return 1;
         }
 
@@ -683,7 +683,7 @@ namespace CryptoNote {
                 << " < m_last_response_height="
                 << context.m_last_response_height
                 << ", dropping connection";
-            context.m_state = CryptoNoteConnectionContext::state_shutdown;
+            context.m_state = CryptoNoteConnectionContext::StateShutdown;
             return 1;
         }
 
@@ -703,14 +703,14 @@ namespace CryptoNote {
                     << "sent wrong block: failed to parse and validate block: \r\n"
                     << toHex (rawBlocks[index].block)
                     << "\r\n dropping connection";
-                context.m_state = CryptoNoteConnectionContext::state_shutdown;
+                context.m_state = CryptoNoteConnectionContext::StateShutdown;
                 return 1;
             }
 
             cachedBlocks.emplace_back (blockTemplates[index]);
             if (index == 1) {
                 if (m_core.hasBlock (cachedBlocks.back ().getBlockHash ())) { //TODO
-                    context.m_state = CryptoNoteConnectionContext::state_idle;
+                    context.m_state = CryptoNoteConnectionContext::StateIdle;
                     context.m_needed_objects.clear ();
                     context.m_requested_objects.clear ();
                     logger (Logging::DEBUGGING)
@@ -727,7 +727,7 @@ namespace CryptoNote {
                     << "sent wrong NOTIFY_RESPONSE_GET_OBJECTS: block with id="
                     << Common::podToHex (cachedBlocks.back ().getBlockHash ())
                     << " wasn't requested, dropping connection";
-                context.m_state = CryptoNoteConnectionContext::state_shutdown;
+                context.m_state = CryptoNoteConnectionContext::StateShutdown;
                 return 1;
             }
 
@@ -741,7 +741,7 @@ namespace CryptoNote {
                     << " mismatch with block_complete_entry.m_txs.size()="
                     << rawBlocks[index].transactions.size ()
                     << ", dropping connection";
-                context.m_state = CryptoNoteConnectionContext::state_shutdown;
+                context.m_state = CryptoNoteConnectionContext::StateShutdown;
                 return 1;
             }
 
@@ -755,7 +755,7 @@ namespace CryptoNote {
                 "returned not all requested objects (context.m_requested_objects.size()="
                 << context.m_requested_objects.size ()
                 << "), dropping connection";
-            context.m_state = CryptoNoteConnectionContext::state_shutdown;
+            context.m_state = CryptoNoteConnectionContext::StateShutdown;
             return 1;
         }
 
@@ -769,7 +769,7 @@ namespace CryptoNote {
         logger (DEBUGGING, BRIGHT_GREEN)
             << "Local blockchain updated, new index = "
             << m_core.getTopBlockIndex ();
-        if (!m_stop && context.m_state == CryptoNoteConnectionContext::state_synchronizing) {
+        if (!m_stop && context.m_state == CryptoNoteConnectionContext::StateSynchronizing) {
             requestMissingObjects (context, true);
         }
 
@@ -796,21 +796,21 @@ namespace CryptoNote {
                     << context
                     << "Block verification failed, dropping connection: "
                     << addResult.message ();
-                context.m_state = CryptoNoteConnectionContext::state_shutdown;
+                context.m_state = CryptoNoteConnectionContext::StateShutdown;
                 return 1;
             } else if (addResult == error::AddBlockErrorCondition::BLOCK_REJECTED) {
                 logger (Logging::INFO)
                     << context
                     << "Block received at sync phase was marked as orphaned, dropping connection: "
                     << addResult.message ();
-                context.m_state = CryptoNoteConnectionContext::state_shutdown;
+                context.m_state = CryptoNoteConnectionContext::StateShutdown;
                 return 1;
             } else if (addResult == error::AddBlockErrorCode::ALREADY_EXISTS) {
                 logger (Logging::DEBUGGING)
                     << context
                     << "Block already exists, switching to idle state: "
                     << addResult.message ();
-                context.m_state = CryptoNoteConnectionContext::state_idle;
+                context.m_state = CryptoNoteConnectionContext::StateIdle;
                 context.m_needed_objects.clear ();
                 context.m_requested_objects.clear ();
                 return 1;
@@ -881,7 +881,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
             logger (Logging::WARNING)
                 << context
                 << "Deserialization of Block Template failed, dropping connection";
-            context.m_state = CryptoNoteConnectionContext::state_shutdown;
+            context.m_state = CryptoNoteConnectionContext::StateShutdown;
             return 1;
         }
 
@@ -903,7 +903,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
                         << "Peer didn't provide a missing transaction, previously "
                            "acquired for a lite block, dropping connection.";
                     context.m_pending_lite_block = std::nullopt;
-                    context.m_state = CryptoNoteConnectionContext::state_shutdown;
+                    context.m_state = CryptoNoteConnectionContext::StateShutdown;
                     return 1;
                 }
             }
@@ -962,7 +962,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
                         << "Block already exists";
                 }
             } else if (result == error::AddBlockErrorCondition::BLOCK_REJECTED) {
-                context.m_state = CryptoNoteConnectionContext::state_synchronizing;
+                context.m_state = CryptoNoteConnectionContext::StateSynchronizing;
                 NOTIFY_REQUEST_CHAIN::request r = boost::value_initialized<NOTIFY_REQUEST_CHAIN::request> ();
                 r.block_ids = m_core.buildSparseChain ();
                 logger (Logging::TRACE)
@@ -975,7 +975,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
                     << context
                     << "Block verification failed, dropping connection: "
                     << result.message ();
-                context.m_state = CryptoNoteConnectionContext::state_shutdown;
+                context.m_state = CryptoNoteConnectionContext::StateShutdown;
             }
         } else {
             if (context.m_pending_lite_block.has_value ()) {
@@ -983,7 +983,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
                 logger (Logging::DEBUGGING)
                     << context
                     << " Peer has a pending lite block but didn't provide all necessary transactions, dropping the connection.";
-                context.m_state = CryptoNoteConnectionContext::state_shutdown;
+                context.m_state = CryptoNoteConnectionContext::StateShutdown;
             } else {
                 NOTIFY_MISSING_TXS::request req;
                 req.current_blockchain_height = arg.current_blockchain_height;
@@ -996,7 +996,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
                     logger (Logging::DEBUGGING)
                         << context
                         << "Lite block is missing transactions but the publisher is not reachable, dropping connection.";
-                    context.m_state = CryptoNoteConnectionContext::state_shutdown;
+                    context.m_state = CryptoNoteConnectionContext::StateShutdown;
                 }
             }
         }
@@ -1017,7 +1017,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
             logger (Logging::DEBUGGING, Logging::BRIGHT_RED)
                 << context
                 << "Failed to handle NOTIFY_REQUEST_CHAIN. block_ids is empty";
-            context.m_state = CryptoNoteConnectionContext::state_shutdown;
+            context.m_state = CryptoNoteConnectionContext::StateShutdown;
             return 1;
         }
 
@@ -1025,7 +1025,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
             logger (Logging::DEBUGGING)
                 << context
                 << "Failed to handle NOTIFY_REQUEST_CHAIN. block_ids doesn't end with genesis block ID";
-            context.m_state = CryptoNoteConnectionContext::state_shutdown;
+            context.m_state = CryptoNoteConnectionContext::StateShutdown;
             return 1;
         }
 
@@ -1106,7 +1106,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
 
             requestMissingPoolTransactions (context);
 
-            context.m_state = CryptoNoteConnectionContext::state_normal;
+            context.m_state = CryptoNoteConnectionContext::StateNormal;
             logger (Logging::INFO, Logging::BRIGHT_GREEN)
                 << context
                 << "Successfully synchronized with the "
@@ -1171,7 +1171,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
             logger (Logging::ERROR)
                 << context
                 << "sent empty m_block_ids, dropping connection";
-            context.m_state = CryptoNoteConnectionContext::state_shutdown;
+            context.m_state = CryptoNoteConnectionContext::StateShutdown;
             return 1;
         }
 
@@ -1181,7 +1181,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
                 << "sent m_block_ids starting from unknown id: "
                 << Common::podToHex (arg.m_block_ids.front ())
                 << " , dropping connection";
-            context.m_state = CryptoNoteConnectionContext::state_shutdown;
+            context.m_state = CryptoNoteConnectionContext::StateShutdown;
             return 1;
         }
 
@@ -1197,7 +1197,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
                 << arg.start_height
                 << "\r\nm_block_ids.size()="
                 << arg.m_block_ids.size ();
-            context.m_state = CryptoNoteConnectionContext::state_shutdown;
+            context.m_state = CryptoNoteConnectionContext::StateShutdown;
         }
 
         bool allBlocksKnown = true;
@@ -1248,7 +1248,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
             << ")";
         updateObservedHeight (arg.current_blockchain_height, context);
         context.m_remote_blockchain_height = arg.current_blockchain_height;
-        if (context.m_state != CryptoNoteConnectionContext::state_normal) {
+        if (context.m_state != CryptoNoteConnectionContext::StateNormal) {
             return 1;
         }
 
@@ -1270,7 +1270,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
         if (!missedHashes.empty ()) {
             logger (Logging::DEBUGGING)
                 << "Failed to Handle NOTIFY_MISSING_TXS, Unable to retrieve requested transactions, Dropping Connection";
-            context.m_state = CryptoNoteConnectionContext::state_shutdown;
+            context.m_state = CryptoNoteConnectionContext::StateShutdown;
             return 1;
         } else {
             req.txs = std::move (txs);
@@ -1317,7 +1317,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
 
         // sort the peers into their support categories.
         m_p2p
-            ->for_each_connection ([this,
+            ->forEachConnection ([this,
                                     &liteBlockConnections,
                                     &normalBlockConnections](const CryptoNoteConnectionContext &ctx,
                                                              uint64_t peerId)
@@ -1420,7 +1420,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
     {
         //should be locked outside
         uint32_t peerHeight = 0;
-        m_p2p->for_each_connection ([&peerHeight, &context](const CryptoNoteConnectionContext &ctx, uint64_t peerId)
+        m_p2p->forEachConnection ([&peerHeight, &context](const CryptoNoteConnectionContext &ctx, uint64_t peerId)
                                     {
                                         if (ctx.m_connection_id != context.m_connection_id) {
                                             peerHeight = std::max (peerHeight, ctx.m_remote_blockchain_height);
@@ -1428,7 +1428,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
                                     });
 
         m_observedHeight = std::max (peerHeight, m_core.getTopBlockIndex () + 1);
-        if (context.m_state == CryptoNoteConnectionContext::state_normal) {
+        if (context.m_state == CryptoNoteConnectionContext::StateNormal) {
             m_observedHeight = m_core.getTopBlockIndex ();
         }
     }
