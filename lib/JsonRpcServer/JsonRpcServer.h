@@ -16,7 +16,7 @@
 #include <System/Dispatcher.h>
 #include <System/Event.h>
 
-#include <WalletService/ConfigurationManager.h>
+#include <Wallet/ConfigurationManager.h>
 
 namespace CryptoNote {
     class HttpResponse;

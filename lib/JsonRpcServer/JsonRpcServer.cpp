@@ -33,13 +33,12 @@ namespace CryptoNote {
 
     JsonRpcServer::JsonRpcServer(System::Dispatcher &sys,
                                  System::Event &stopEvent,
-                                 std::shared_ptr<Logging::ILogger> loggerGroup,
+                                 std::shared_ptr <Logging::ILogger> loggerGroup,
                                  PaymentService::ConfigurationManager &config)
-        :
-        HttpServer (sys, loggerGroup),
-        stopEvent (stopEvent),
-        logger (loggerGroup, "JsonRpcServer"),
-        config (config)
+        : HttpServer (sys, loggerGroup),
+          stopEvent (stopEvent),
+          logger (loggerGroup, "JsonRpcServer"),
+          config (config)
     {
     }
 
