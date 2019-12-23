@@ -16,9 +16,10 @@
 
 #include <Global/CliHeader.h>
 #include <Global/CryptoNoteConfig.h>
+
 #include <Logging/ILogger.h>
 
-#include <WalletService/WalletServiceConfiguration.h>
+#include <Wallet/WalletServiceConfiguration.h>
 
 using namespace rapidjson;
 

@@ -10,7 +10,7 @@
 
 #include <P2p/NetNodeConfig.h>
 
-#include <WalletService/WalletServiceConfiguration.h>
+#include <Wallet/WalletServiceConfiguration.h>
 
 namespace PaymentService {
 

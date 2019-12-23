@@ -18,7 +18,7 @@
 #include <Global/CliHeader.h>
 #include <Global/CryptoNoteConfig.h>
 
-#include <WalletService/ConfigurationManager.h>
+#include <Wallet/ConfigurationManager.h>
 
 namespace PaymentService {
 
