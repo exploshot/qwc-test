@@ -23,6 +23,7 @@
 
 #include <System/Dispatcher.h>
 #include <System/Event.h>
+#include <System/Future.h>
 #include <System/InterruptedException.h>
 
 namespace System {
