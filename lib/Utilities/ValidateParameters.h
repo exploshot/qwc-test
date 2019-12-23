@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include <Errors/Errors.h>
+#include <Utilities/Errors.h>
 
 #include <SubWallets/SubWallets.h>
 

@@ -4,7 +4,7 @@
 
 #include <ostream>
 
-#include <Errors/Errors.h>
+#include <Utilities/Errors.h>
 
 std::string Error::getErrorMessage() const
 {

@@ -45,7 +45,6 @@ set(QwertycoinFramework_LIBS
     QwertycoinFramework_Crypto
     QwertycoinFramework_CryptoNoteCore
     QwertycoinFramework_CryptoNoteProtocol
-    QwertycoinFramework_Errors
     QwertycoinFramework_Global
     QwertycoinFramework_Http
     QwertycoinFramework_JsonRpcServer
@@ -80,7 +79,7 @@ set(QwertycoinFramework_BlockchainExplorer_SOURCES
     )
 
 set(QwertycoinFramework_BlockchainExplorer_LIBS
-    rapidjson
+    RapidJSON::rapidjson
     QwertycoinFramework::Global
     )
 
@@ -175,6 +174,8 @@ set(QwertycoinFramework_Common_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Common/StringTools.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/StringView.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Common/StringView.h"
+    "${CMAKE_CURRENT_LIST_DIR}/Common/TransactionExtra.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Common/TransactionExtra.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/Util.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Common/Util.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/Varint.h"
@@ -368,6 +369,7 @@ set(QwertycoinFramework_CryptoNoteCore_LIBS
     Boost::program_options
     lmdb
     sparsehash::sparsehash
+    sqlite3::sqlite3
     QwertycoinFramework::BlockchainExplorer
     QwertycoinFramework::Common
     QwertycoinFramework::Crypto
@@ -401,20 +403,6 @@ add_library(QwertycoinFramework_CryptoNoteProtocol STATIC ${QwertycoinFramework_
 add_library(QwertycoinFramework::CryptoNoteProtocol ALIAS QwertycoinFramework_CryptoNoteProtocol)
 target_include_directories(QwertycoinFramework_CryptoNoteProtocol PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
 target_link_libraries(QwertycoinFramework_CryptoNoteProtocol PRIVATE ${QwertycoinFramework_CryptoNoteProtocol_LIBS})
-
-
-# QwertycoinFramework::Errors
-
-set(QwertycoinFramework_Errors_SOURCES
-    "${CMAKE_CURRENT_LIST_DIR}/Errors/Errors.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/Errors/Errors.h"
-    "${CMAKE_CURRENT_LIST_DIR}/Errors/ValidateParameters.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/Errors/ValidateParameters.h"
-    )
-
-add_library(QwertycoinFramework_Errors STATIC ${QwertycoinFramework_Errors_SOURCES})
-add_library(QwertycoinFramework::Errors ALIAS QwertycoinFramework_Errors)
-target_include_directories(QwertycoinFramework_Errors PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
 
 # QwertycoinFramework::Global
 
@@ -678,9 +666,14 @@ set(QwertycoinFramework_SubWallets_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/SubWallets/SubWallets.h"
     )
 
+set(QwertycoinFramework_SubWallets_LIBS
+    QwertycoinFramework::Logging
+    )
+
 add_library(QwertycoinFramework_SubWallets STATIC ${QwertycoinFramework_SubWallets_SOURCES})
 add_library(QwertycoinFramework::SubWallets ALIAS QwertycoinFramework_SubWallets)
 target_include_directories(QwertycoinFramework_SubWallets PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
+target_link_libraries(QwertycoinFramework_SubWallets PRIVATE ${QwertycoinFramework_SubWallets_LIBS})
 
 # QwertycoinFramework::System
 
@@ -859,6 +852,8 @@ set(QwertycoinFramework_Utilities_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/Addresses.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/ColouredMsg.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/Container.h"
+    "${CMAKE_CURRENT_LIST_DIR}/Utilities/Errors.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Utilities/Errors.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/FormatTools.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/FormatTools.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/Input.cpp"
@@ -874,12 +869,18 @@ set(QwertycoinFramework_Utilities_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/ThreadSafeQueue.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/Utilities.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/Utilities.h"
+    "${CMAKE_CURRENT_LIST_DIR}/Utilities/ValidateParameters.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Utilities/ValidateParameters.h"
+    )
+
+set(QwertycoinFramework_Utilities_LIBS
+    QwertycoinFramework::SubWallets
     )
 
 add_library(QwertycoinFramework_Utilities STATIC ${QwertycoinFramework_Utilities_SOURCES})
 add_library(QwertycoinFramework::Utilities ALIAS QwertycoinFramework_Utilities)
 target_include_directories(QwertycoinFramework_Utilities PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-
+target_link_libraries(QwertycoinFramework_Utilities PRIVATE ${QwertycoinFramework_Utilities_LIBS})
 
 # QwertycoinFramework::Wallet
 
@@ -904,7 +905,7 @@ set(QwertycoinFramework_Wallet_SOURCES
 
 set(QwertycoinFramework_Wallet_LIBS
     Boost::filesystem
-    rapidjson
+    RapidJSON::rapidjson
     QwertycoinFramework::Common
     QwertycoinFramework::Crypto
     QwertycoinFramework::CryptoNoteCore
@@ -942,7 +943,7 @@ set(QwertycoinFramework_WalletBackend_SOURCES
 
 set(QwertycoinFramework_WalletBackend_LIBS
     Boost::filesystem
-    rapidjson
+    RapidJSON::rapidjson
     )
 
 add_library(QwertycoinFramework_WalletBackend STATIC ${QwertycoinFramework_WalletBackend_SOURCES})
@@ -966,7 +967,6 @@ install(TARGETS
     QwertycoinFramework_Crypto
     QwertycoinFramework_CryptoNoteCore
     QwertycoinFramework_CryptoNoteProtocol
-    QwertycoinFramework_Errors
     QwertycoinFramework_Http
     QwertycoinFramework_JsonRpcServer
     QwertycoinFramework_Logging

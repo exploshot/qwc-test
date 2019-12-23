@@ -12,7 +12,7 @@
 
 #include <CryptoNote.h>
 
-#include <Errors/Errors.h>
+#include <Utilities/Errors.h>
 
 namespace Utilities {
     uint64_t getTransactionSum(const std::vector <std::pair<std::string, uint64_t>> destinations);

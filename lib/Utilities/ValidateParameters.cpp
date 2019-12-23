@@ -8,7 +8,7 @@
 #include <Common/TransactionExtra.h>
 #include <Common/CryptoNoteTools.h>
 
-#include <Errors/ValidateParameters.h>
+#include <Utilities/ValidateParameters.h>
 
 #include <Global/CryptoNoteConfig.h>
 

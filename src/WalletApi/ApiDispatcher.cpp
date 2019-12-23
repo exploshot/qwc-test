@@ -15,7 +15,7 @@
 
 #include <Crypto/Random.h>
 
-#include <Errors/ValidateParameters.h>
+#include <Utilities/ValidateParameters.h>
 
 #include <Global/CryptoNoteConfig.h>
 

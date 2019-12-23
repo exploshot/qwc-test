@@ -5,6 +5,7 @@ set(QwertycoinTools_INCLUDE_DIRS
 
 set(QwertycoinTools_INCLUDE_DIRS ${QwertycoinTools_INCLUDE_DIRS} PARENT_SCOPE)
 
+find_package(RapidJSON CONFIG REQUIRED)
 
 # QwertycoinTools
 
@@ -60,7 +61,8 @@ if(WIN32)
 endif()
 
 set(QwertycoinTools_Daemon_LIBS
-    rapidjson
+    RapidJSON::rapidjson
+    sqlite3::sqlite3
     Boost::filesystem
     QwertycoinFramework::Breakpad
     QwertycoinFramework::Common
@@ -71,6 +73,7 @@ set(QwertycoinTools_Daemon_LIBS
     QwertycoinFramework::Rpc
     QwertycoinFramework::Serialization
     QwertycoinFramework::System
+    QwertycoinFramework::Utilities
     )
 
 add_executable(QwertycoinTools_Daemon ${QwertycoinTools_Daemon_SOURCES})

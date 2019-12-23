@@ -7,7 +7,7 @@
 #include <CryptoNote.h>
 #include <WalletTypes.h>
 
-#include <Errors/Errors.h>
+#include <Utilities/Errors.h>
 
 #include <Nigel/Nigel.h>
 

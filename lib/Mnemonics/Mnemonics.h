@@ -9,7 +9,7 @@
 
 #include <CryptoNote.h>
 
-#include <Errors/Errors.h>
+#include <Utilities/Errors.h>
 
 namespace Mnemonics {
     std::tuple<Error, Crypto::SecretKey> MnemonicToPrivateKey(const std::string words, std::string &languageName);

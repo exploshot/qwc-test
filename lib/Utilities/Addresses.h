@@ -9,7 +9,7 @@
 
 #include <CryptoNote.h>
 
-#include <Errors/Errors.h>
+#include <Utilities/Errors.h>
 
 namespace Utilities {
     std::vector <Crypto::PublicKey> addressesToSpendKeys(const std::vector <std::string> addresses);

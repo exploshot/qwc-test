@@ -12,7 +12,7 @@
 
 #include <Crypto/Crypto.h>
 
-#include <Errors/Errors.h>
+#include <Utilities/Errors.h>
 
 #include <rapidjson/document.h>
 

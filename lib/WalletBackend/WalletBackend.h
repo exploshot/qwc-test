@@ -12,7 +12,7 @@
 
 #include <CryptoTypes.h>
 
-#include <Errors/Errors.h>
+#include <Utilities/Errors.h>
 
 #include <Nigel/Nigel.h>
 

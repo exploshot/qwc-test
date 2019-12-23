@@ -2,7 +2,7 @@
 // 
 // Please see the included LICENSE file for more information.
 
-#include <Errors/ValidateParameters.h>
+#include <Utilities/ValidateParameters.h>
 
 #include <Global/Constants.h>
 #include <Global/Constants.h>

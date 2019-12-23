@@ -6,7 +6,7 @@
 
 #include <Global/CryptoNoteConfig.h>
 
-#include <Errors/ValidateParameters.h>
+#include <Utilities/ValidateParameters.h>
 
 #include <Serialization/SerializationTools.h>
 
