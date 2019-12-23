@@ -4,12 +4,17 @@
 
 #pragma once
 
-#include <string_view>
+#include <boost/utility/value_init.hpp>
+
+#include <sstream>
+#include <string>
 #include <vector>
 
 #include <CryptoTypes.h>
+#include <version.h>
 
 #include <Global/CryptoNoteConfig.h>
+
 
 /*!
  * You can change things in this file, but you probably shouldn't. Leastways,
@@ -211,7 +216,7 @@ namespace WalletConfig {
      * The prefix your coins address starts with
      */
     // const uint64_t addressPrefix = 0x14820c;
-    const std::string_view addressPrefix = "QWC";
+    const std::string addressPrefix = "QWC";
 
     /*!
      * Your coins 'Ticker', e.g. Monero = XMR, Bitcoin = BTC
