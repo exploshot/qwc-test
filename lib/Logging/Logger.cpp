@@ -31,6 +31,8 @@ namespace Logger {
             case FATAL: {
                 return "Fatal";
             }
+            default:
+                throw std::invalid_argument ("Invalid log level given");
         }
     }
 
@@ -75,13 +77,14 @@ namespace Logger {
             case DAEMON: {
                 return "Daemon";
             }
+            default:
+                throw std::invalid_argument ("Invalid log category given");
         }
     }
 
-    void Logger::log(
-        const std::string message,
-        const LogLevel level,
-        const std::vector<LogCategory> categories) const
+    void Logger::log(const std::string message,
+                     const LogLevel level,
+                     const std::vector <LogCategory> categories) const
     {
         if (level == DISABLED) {
             return;
@@ -134,7 +137,7 @@ namespace Logger {
             const std::string prettyMessage,
             const std::string message,
             const LogLevel level,
-            const std::vector<LogCategory> categories)> callback)
+            const std::vector <LogCategory> categories)> callback)
     {
         m_callback = callback;
     }
