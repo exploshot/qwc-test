@@ -4,7 +4,7 @@ matrix:
     include:
         - name: "Android, Debug"
           os: linux
-          dist: bionic
+          dist: xenial
           sudo: required
           env:
               - CMAKE_GENERATOR_NAME="Unix Makefiles"
@@ -13,7 +13,7 @@ matrix:
               - CTEST_REGEXP="NONE"
         - name: "Android, Release"
           os: linux
-          dist: bionic
+          dist: xenial
           sudo: required
           env:
               - CMAKE_GENERATOR_NAME="Unix Makefiles"
@@ -22,7 +22,7 @@ matrix:
               - CTEST_REGEXP="NONE"
         - name: "Linux, Debug"
           os: linux
-          dist: bionic
+          dist: xenial
           sudo: required
           env:
               - CMAKE_GENERATOR_NAME="Unix Makefiles"
@@ -31,7 +31,7 @@ matrix:
               - CTEST_REGEXP="Tests$"
         - name: "Linux, Release"
           os: linux
-          dist: bionic
+          dist: xenial
           sudo: required
           env:
               - CMAKE_GENERATOR_NAME="Unix Makefiles"
