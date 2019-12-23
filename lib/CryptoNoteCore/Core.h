@@ -19,7 +19,7 @@
 #include <CryptoNoteCore/Transactions/CachedTransaction.h>
 #include <CryptoNoteCore/Transactions/ITransactionPool.h>
 #include <CryptoNoteCore/Transactions/ITransactionPoolCleaner.h>
-#include <CryptoNoteCore/Transactions/TransactionValidatiorState.h>
+#include <CryptoNoteCore/Transactions/TransactionValidationState.h>
 #include <CryptoNoteCore/Currency.h>
 #include <CryptoNoteCore/Checkpoints.h>
 #include <CryptoNoteCore/ICore.h>

@@ -20,7 +20,7 @@
 
 #include <CryptoNoteCore/Blockchain/BlockchainCache.h>
 #include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
-#include <CryptoNoteCore/Transactions/TransactionValidatiorState.h>
+#include <CryptoNoteCore/Transactions/TransactionValidationState.h>
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 
 #include <Serialization/CryptoNoteSerialization.h>

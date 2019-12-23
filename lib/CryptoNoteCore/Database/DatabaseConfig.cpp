@@ -10,7 +10,7 @@
 
 #include <Crypto/Crypto.h>
 
-#include <CryptoNoteCore/Database/DataBaseConfig.h>
+#include <CryptoNoteCore/Database/DatabaseConfig.h>
 
 #include <Global/CryptoNoteConfig.h>
 #include <Global/Constants.h>

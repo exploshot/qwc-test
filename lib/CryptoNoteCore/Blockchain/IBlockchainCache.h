@@ -27,7 +27,7 @@
 
 #include <CryptoNoteCore/Blockchain/CachedBlock.h>
 #include <CryptoNoteCore/Transactions/CachedTransaction.h>
-#include <CryptoNoteCore/Transactions/TransactionValidatiorState.h>
+#include <CryptoNoteCore/Transactions/TransactionValidationState.h>
 
 namespace CryptoNote {
 

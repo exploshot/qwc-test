@@ -16,7 +16,7 @@
 #include <Crypto/Crypto.h>
 
 #include <CryptoNoteCore/Transactions/ITransactionPool.h>
-#include <CryptoNoteCore/Transactions/TransactionValidatiorState.h>
+#include <CryptoNoteCore/Transactions/TransactionValidationState.h>
 
 #include <Logging/LoggerMessage.h>
 #include <Logging/LoggerRef.h>

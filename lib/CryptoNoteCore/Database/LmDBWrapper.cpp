@@ -3,18 +3,20 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "LmDBWrapper.h"
-
-#include "DataBaseErrors.h"
-#include <Common/FileSystemShim.h>
-#include <Global/Constants.h>
-#include <Global/LMDBConfig.h>
-
-#include <lmdbpp.h>
-
 #include <iostream>
 #include <fstream>
 #include <string_view>
+
+#include <lmdb/lmdbpp.h>
+
+#include <Common/FileSystemShim.h>
+
+#include <CryptoNoteCore/Database/DatabaseConfig.h>
+#include <CryptoNoteCore/Database/DatabaseErrors.h>
+#include <CryptoNoteCore/Database/LmDBWrapper.h>
+
+#include <Global/Constants.h>
+#include <Global/LMDBConfig.h>
 
 using namespace CryptoNote;
 using namespace Logging;

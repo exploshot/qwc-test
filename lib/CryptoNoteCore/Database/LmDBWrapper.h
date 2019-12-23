@@ -9,12 +9,14 @@
 #include <memory>
 #include <string>
 
-#include <lmdbpp.h>
+#include <lmdb/lmdbpp.h>
 
 #include <IDataBase.h>
 
 #include <Common/FileSystemShim.h>
-#include <CryptoNoteCore/Database/DataBaseConfig.h>
+
+#include <CryptoNoteCore/Database/DatabaseConfig.h>
+
 #include <Logging/LoggerRef.h>
 
 namespace CryptoNote {
