@@ -88,6 +88,41 @@ set_target_properties(QwertycoinTools_Daemon PROPERTIES OUTPUT_NAME "QDaemon")
 
 # QwertycoinTools::SimpleWallet
 
+set(QwertycoinTools_SimpleWallet_SOURCES
+    "${CMAKE_CURRENT_LIST_DIR}/SimpleWallet/PasswordContainer.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/SimpleWallet/PasswordContainer.h"
+    "${CMAKE_CURRENT_LIST_DIR}/SimpleWallet/SimpleWallet.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/SimpleWallet/SimpleWallet.h"
+    )
+
+if(WIN32)
+    list(APPEND QwertycoinTools_SimpleWallet_SOURCES
+        "${CMAKE_CURRENT_LIST_DIR}/BinaryInfo/simplewallet.rc"
+        )
+endif()
+
+set(QwertycoinTools_SimpleWallet_LIBS
+    Boost::filesystem
+    Boost::program_options
+    QwertycoinFramework::Breakpad
+    QwertycoinFramework::Common
+    QwertycoinFramework::Global
+    QwertycoinFramework::Logging
+    QwertycoinFramework::NodeRpcProxy
+    QwertycoinFramework::Rpc
+    QwertycoinFramework::Serialization
+    QwertycoinFramework::Wallet
+    )
+
+if(WIN32)
+    list(APPEND QwertycoinTools_SimpleWallet_LIBS ws2_32)
+endif()
+
+add_executable(QwertycoinTools_SimpleWallet ${QwertycoinTools_SimpleWallet_SOURCES})
+add_executable(QwertycoinTools::SimpleWallet ALIAS QwertycoinTools_SimpleWallet)
+target_include_directories(QwertycoinTools_SimpleWallet PRIVATE ${QwertycoinTools_INCLUDE_DIRS})
+target_link_libraries(QwertycoinTools_SimpleWallet ${QwertycoinTools_SimpleWallet_LIBS})
+set_target_properties(QwertycoinTools_SimpleWallet PROPERTIES OUTPUT_NAME "SimpleWallet")
 
 # QwertycoinTools::WalletApi
 

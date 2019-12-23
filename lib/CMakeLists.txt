@@ -132,6 +132,8 @@ set(QwertycoinFramework_Common_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Common/BlockingQueue.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/CheckDifficulty.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Common/CheckDifficulty.h"
+    "${CMAKE_CURRENT_LIST_DIR}/Common/CommandLine.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/Common/CommandLine.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/ConsoleHandler.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Common/ConsoleHandler.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/ConsoleTools.cpp"
