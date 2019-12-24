@@ -5,7 +5,7 @@
 #include <regex>
 
 #include <Common/Base58.h>
-#include <Common/TransactionExtra.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 #include <Common/CryptoNoteTools.h>
 
 #include <Utilities/ValidateParameters.h>

@@ -17,7 +17,7 @@
 
 #include <unordered_set>
 
-#include <Common/TransactionExtra.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 
 #include <Crypto/Crypto.h>
 

@@ -4,7 +4,7 @@
 // Please see the included LICENSE file for more information.
 
 #include <Common/IIntUtil.h>
-#include <Common/TransactionExtra.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 
 #include <CryptoNoteCore/Transactions/TransactionPool.h>
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>

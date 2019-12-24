@@ -15,7 +15,7 @@
 #include <Common/ShuffleGenerator.h>
 #include <Common/Math.h>
 #include <Common/MemoryInputStream.h>
-#include <Common/TransactionExtra.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 
 
 #include <CryptoNoteCore/Blockchain/BlockchainCache.h>

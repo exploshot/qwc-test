@@ -16,7 +16,7 @@
 #include <Common/StdInputStream.h>
 #include <Common/StdOutputStream.h>
 #include <Common/ShuffleGenerator.h>
-#include <Common/TransactionExtra.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 
 #include <CryptoNoteCore/Blockchain/BlockchainCache.h>
 #include <CryptoNoteCore/Blockchain/BlockchainStorage.h>

@@ -18,7 +18,7 @@
 #include <Common/MemoryInputStream.h>
 #include <Common/StreamTools.h>
 #include <Common/StringTools.h>
-#include <Common/TransactionExtra.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 
 #include <Serialization/BinaryOutputStreamSerializer.h>
 #include <Serialization/BinaryInputStreamSerializer.h>

@@ -24,7 +24,7 @@
 
 #include <Common/CryptoNoteTools.h>
 #include <Common/StringOutputStream.h>
-#include <Common/TransactionExtra.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 
 #include <Crypto/Crypto.h>
 

@@ -11,7 +11,7 @@
 
 #include <Common/CryptoNoteTools.h>
 #include <Common/StringTools.h>
-#include <Common/TransactionExtra.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 
 #include <CryptoNoteCore/Core.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>

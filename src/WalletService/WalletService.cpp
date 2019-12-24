@@ -17,7 +17,7 @@
 
 #include <Common/Base58.h>
 #include <Common/CryptoNoteTools.h>
-#include <Common/TransactionExtra.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 #include <Common/Util.h>
 
 #include <Crypto/Crypto.h>

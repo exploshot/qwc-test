@@ -12,7 +12,7 @@
 
 #include <Common/CryptoNoteTools.h>
 #include <Common/ShuffleGenerator.h>
-#include <Common/TransactionExtra.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 
 #include <Crypto/Hash.h>
 
