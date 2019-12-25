@@ -83,6 +83,7 @@ cache:
 
 before_install:
     - sudo apt-get -q update
+    - gcc --version
     - |
         if [ "$CMAKE_TOOLCHAIN_FILE_NAME" = "android-ndk-r18b-api-21-x86-clang-libcxx.cmake" ]; then
             echo "Installing Android NDK..."
