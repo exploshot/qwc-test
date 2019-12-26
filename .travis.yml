@@ -69,6 +69,7 @@ addons:
             - wget
             - lcov
             - rpm
+            - gcc-8
         sources:
             - ubuntu-toolchain-r-test
     homebrew: # macOS
