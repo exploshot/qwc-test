@@ -19,14 +19,8 @@ jobs:
       fail-fast: false
       matrix:
         # Add more compilers here if you need them
-        build_name: ['Ubuntu GCC 7', 'Ubuntu GCC 8', 'Ubuntu Clang 6', 'aarch64']
+        build_name: ['Ubuntu GCC 8', 'Ubuntu Clang 6']
         include:
-          - build_name: 'Ubuntu GCC 7'
-            package_name: 'gcc-7 g++-7'
-            cc: gcc-7
-            cxx: g++-7
-            label: linux-gcc-7
-            deployable: false
           - build_name: 'Ubuntu GCC 8'
             package_name: 'gcc-8 g++-8'
             cc: gcc-8
@@ -38,9 +32,6 @@ jobs:
             cxx: clang++-6.0
             label: linux-clang-6
             deployable: false
-          - build_name: 'aarch64'
-            label: aarch64
-            deployable: true
     env:
       CCACHE_DIR: $GITHUB_WORKSPACE/.ccache
       LABEL: ${{ matrix.label }}
@@ -80,25 +71,6 @@ jobs:
         run: |
           cd build
           make -j2
-
-      # Build for aarch64
-      - name: Prepare and Build (aarch64)
-        if: matrix.build_name == 'aarch64'
-        run: |
-          source scripts/prep-aarch64.sh
-          mkdir build && cd build
-          cmake -DARCH=default -DCMAKE_BUILD_TYPE=Release -DSTATIC=true ..
-          make -j2
-          cd src
-          TARGETS="QDaemon miner wallet-service cryptotest wallet-api wallet-upgrader"
-          ${STRIP} ${TARGETS}
-
-      # Test the crypto
-      - name: Test Crypto
-        if: matrix.build_name != 'aarch64'
-        run: |
-          cd build/src
-          ./cryptotest
 
       # Prepare for deploy
       - name: Prepare for Deploy
@@ -176,13 +148,6 @@ jobs:
           cd build
           make -j2
 
-      # Test the crypto
-      - name: Test Crypto
-        if: matrix.build_name != 'aarch64'
-        run: |
-          cd build/src
-          ./cryptotest
-
       # Prepare for deploy
       - name: Prepare for Deploy
         id: before_deploy
@@ -256,13 +221,6 @@ jobs:
           $env:PATH = "$env:PATH;$env:MSBUILD_PATH"
           cd build
           MSBuild QwertyCoin.sln /p:CLToolExe=clcache.exe /p:CLToolPath=c:\hostedtoolcache\windows\Python\3.6.8\x64\Scripts\ /p:Configuration=Release /m
-
-      # Test the crypto
-      - name: Test Crypto
-        shell: bash
-        run: |
-          cd build/src/Release
-          ./cryptotest.exe
 
       # Prepare for deploy
       - name: Prepare for Deploy
