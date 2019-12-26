@@ -648,9 +648,8 @@ namespace Crypto {
         return scIsNonZero (reinterpret_cast<unsigned char *>(&h)) == 0;
     }
 
-    void CryptoOps::generateViewFromSpend(
-        const Crypto::SecretKey &spend,
-        Crypto::SecretKey &viewSecret)
+    void CryptoOps::generateViewFromSpend(const Crypto::SecretKey &spend,
+                                          Crypto::SecretKey &viewSecret)
     {
 
         /*!
@@ -660,10 +659,9 @@ namespace Crypto {
         generateViewFromSpend (spend, viewSecret, unusedDummyVariable);
     }
 
-    void CryptoOps::generateViewFromSpend(
-        const Crypto::SecretKey &spend,
-        Crypto::SecretKey &viewSecret,
-        Crypto::PublicKey &viewPublic)
+    void CryptoOps::generateViewFromSpend(const Crypto::SecretKey &spend,
+                                          Crypto::SecretKey &viewSecret,
+                                          Crypto::PublicKey &viewPublic)
     {
 
         Crypto::SecretKey viewKeySeed;

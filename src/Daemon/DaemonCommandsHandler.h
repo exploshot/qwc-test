@@ -50,23 +50,23 @@ private:
     std::shared_ptr<Logging::LoggerManager> m_logManager;
     CryptoNote::RpcServer *m_prpc_server;
 
-    std::string get_commands_str();
-    bool print_block_by_height(uint32_t height);
-    bool print_block_by_hash(const std::string &arg);
+    std::string getCommandsStr();
+    bool printBlockByHeight(uint32_t height);
+    bool printBlockByHash(const std::string &arg);
 
     bool help(const std::vector<std::string> &args);
-    bool print_pl(const std::vector<std::string> &args);
+    bool printPl(const std::vector<std::string> &args);
     bool show_hr(const std::vector<std::string> &args);
     bool hide_hr(const std::vector<std::string> &args);
     bool print_bc_outs(const std::vector<std::string> &args);
-    bool print_cn(const std::vector<std::string> &args);
-    bool print_bc(const std::vector<std::string> &args);
+    bool printCn(const std::vector<std::string> &args);
+    bool printBc(const std::vector<std::string> &args);
     bool print_bci(const std::vector<std::string> &args);
-    bool set_log(const std::vector<std::string> &args);
-    bool print_block(const std::vector<std::string> &args);
-    bool print_tx(const std::vector<std::string> &args);
-    bool print_pool(const std::vector<std::string> &args);
-    bool print_pool_sh(const std::vector<std::string> &args);
+    bool setLog(const std::vector<std::string> &args);
+    bool printBlock(const std::vector<std::string> &args);
+    bool printTx(const std::vector<std::string> &args);
+    bool printPool(const std::vector<std::string> &args);
+    bool printPoolSh(const std::vector<std::string> &args);
     bool start_mining(const std::vector<std::string> &args);
     bool stop_mining(const std::vector<std::string> &args);
     bool status(const std::vector<std::string> &args);

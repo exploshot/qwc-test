@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cstdint>
 #include <fstream>
+#include <iostream>
 #include <map>
 #include <sstream>
 #include <stdexcept>
@@ -32,6 +33,7 @@ namespace Language {
     using namespace Mnemonics;
 
     const std::string WordLists::English            ::cName = "English";
+    /*
     const std::string WordLists::French             ::cName = "Français";
     const std::string WordLists::German             ::cName = "Deutsch";
     const std::string WordLists::Italian            ::cName = "Italiano";
@@ -43,18 +45,21 @@ namespace Language {
     const std::string WordLists::Japanese           ::cName = "日本語";
     const std::string WordLists::ChineseSimplified  ::cName = "简体中文 (中国)";
     const std::string WordLists::Russian            ::cName = "русский язык";
-
+    */
     typedef std::unordered_map<std::string, Lazy<std::shared_ptr<Base>>> LanguageMap;
 
     const static LanguageMap cLanguageMap = {
+        /*
         {WordLists::ChineseSimplified::cName, Lazy<std::shared_ptr<Base>> ([]()
                                                                            {
                                                                                return std::make_shared<WordLists::ChineseSimplified> ();
                                                                            })},
+                                                                           */
         {WordLists::English::cName, Lazy<std::shared_ptr<Base>> ([]()
                                                                  {
                                                                      return std::make_shared<WordLists::English> ();
-                                                                 })},
+                                                                 })}
+                                                                 /*,
         {WordLists::French::cName, Lazy<std::shared_ptr<Base>> ([]()
                                                                 {
                                                                     return std::make_shared<WordLists::French> ();
@@ -99,6 +104,7 @@ namespace Language {
                                                                  {
                                                                      return std::make_shared<WordLists::Russian> ();
                                                                  })}
+                                                                  */
     };
 } // namespace Language
 
@@ -118,6 +124,8 @@ namespace Mnemonics {
         }
 
         const size_t len = wordList.size ();
+
+        std::cout << "[L121]Length: " << len << std::endl;
 
         /*!
          * Mnemonics must be 25 words long
@@ -143,14 +151,15 @@ namespace Mnemonics {
         std::string wordls;
         for (const auto &p : words)
             wordls += p;
+
+        std::cout << "[L153]Wordls: " << wordls << std::endl;
         Crypto::ElectrumWords::wordsToBytes (wordls, key, languageName);
 
         return {SUCCESS, key};
     }
 
-    std::string PrivateKeyToMnemonic(
-        const Crypto::SecretKey privateKey,
-        const std::string &languageName
+    std::string PrivateKeyToMnemonic(const Crypto::SecretKey privateKey,
+                                     const std::string &languageName
     )
     {
         std::string words;

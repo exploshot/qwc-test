@@ -23,18 +23,18 @@ namespace Common {
     namespace Console {
         enum class Color: uint8_t
         {
-            // default
-                Default,
-            // main
-                Blue,
+
+            Default,
+
+            Blue,
             Green,
             Red,
             Yellow,
             White,
             Cyan,
             Magenta,
-            // bright
-                BrightBlue,
+
+            BrightBlue,
             BrightGreen,
             BrightRed,
             BrightYellow,

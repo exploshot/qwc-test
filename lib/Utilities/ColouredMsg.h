@@ -14,24 +14,20 @@ template<typename T>
 class ColouredMsg
 {
 public:
-    ColouredMsg(
-        const T msg,
-        const Common::Console::Color colour)
-        :
-        msg (msg),
-        colour (colour)
+    ColouredMsg(const T msg,
+                const Common::Console::Color colour)
+        : msg (msg),
+          colour (colour)
     {
     }
 
-    ColouredMsg(
-        const T msg,
-        const int padding,
-        const Common::Console::Color colour)
-        :
-        msg (msg),
-        colour (colour),
-        padding (padding),
-        pad (true)
+    ColouredMsg(const T msg,
+                const int padding,
+                const Common::Console::Color colour)
+        : msg (msg),
+          colour (colour),
+          padding (padding),
+          pad (true)
     {
     }
 
@@ -115,6 +111,21 @@ public:
 
     explicit InformationMsg(T msg, int padding)
         : ColouredMsg<T> (msg, padding, Common::Console::Color::BrightYellow)
+    {
+    }
+};
+
+template<typename T>
+class SuggestionMsg: public ColouredMsg<T>
+{
+public:
+    explicit SuggestionMsg(T msg)
+        : ColouredMsg<T> (msg, Common::Console::Color::BrightBlue)
+    {
+    }
+
+    explicit SuggestionMsg(T msg, int padding)
+        : ColouredMsg<T> (msg, padding, Common::Console::Color::BrightBlue)
     {
     }
 };

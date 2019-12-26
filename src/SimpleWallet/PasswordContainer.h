@@ -21,32 +21,43 @@
 #include <string>
 
 namespace Tools {
+    class PasswordContainer
+    {
+    public:
+        static const size_t maxPasswordSize = 1024;
 
-class PasswordContainer
-{
-public:
-    PasswordContainer();
-    explicit PasswordContainer(std::string &&password) noexcept;
-    PasswordContainer(PasswordContainer &&rhs) noexcept;
-    ~PasswordContainer();
+        PasswordContainer();
+        PasswordContainer(std::string &&password);
+        PasswordContainer(PasswordContainer &&rhs);
+        ~PasswordContainer();
 
-    void clear();
-    bool empty() const { return m_empty; }
-    const std::string &password() const { return m_password; }
-    void password(std::string &&val) { m_password = std::move(val); m_empty = false; }
-    bool read_password();
-    bool read_password(bool verify);
-    bool read_and_validate();
+        void clear();
+        bool empty() const
+        {
+            return m_empty;
+        }
 
-    static const size_t max_password_size = 1024;
+        const std::string &password() const
+        {
+            return m_password;
+        }
 
-private:
-    bool read_from_file();
-    bool read_from_tty(std::string& password);
+        void password(std::string &&val)
+        {
+            m_password = std::move (val);
+            m_empty = false;
+        }
 
-private:
-    bool m_empty;
-    std::string m_password;
-};
+        bool readAndValidate();
+        bool readPassword();
+        bool readPassword(bool verify);
 
+    private:
+        bool readFromFile();
+        bool readFromTty(std::string &password);
+
+    private:
+        bool m_empty;
+        std::string m_password;
+    };
 } // namespace Tools

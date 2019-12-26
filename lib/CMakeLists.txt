@@ -40,7 +40,7 @@ set(QwertycoinFramework_INCLUDE_DIRS ${QwertycoinFramework_INCLUDE_DIRS} PARENT_
 # QwertycoinFramework
 set(QwertycoinFramework_LIBS
     QwertycoinFramework_BlockchainExplorer
-    QwertycoinFramework_Breakpad
+#    QwertycoinFramework_Breakpad
     QwertycoinFramework_Common
     QwertycoinFramework_Crypto
     QwertycoinFramework_CryptoNoteCore
@@ -88,7 +88,7 @@ add_library(QwertycoinFramework::BlockchainExplorer ALIAS QwertycoinFramework_Bl
 target_include_directories(QwertycoinFramework_BlockchainExplorer PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
 target_link_libraries(QwertycoinFramework_BlockchainExplorer PRIVATE ${QwertycoinFramework_BlockchainExplorer_LIBS})
 
-
+#[[
 # QwertycoinFramework::Breakpad
 
 set(QwertycoinFramework_Breakpad_SOURCES
@@ -121,6 +121,8 @@ if (WIN32)
     # Fix for "cannot convert argument 1 from 'const wchar_t *' to 'LPCSTR'" and similar issues
     target_compile_definitions(QwertycoinFramework_Breakpad PRIVATE -DUNICODE -D_UNICODE)
 endif ()
+
+]]#
 
 # QwertycoinFramework::Common
 
@@ -866,6 +868,7 @@ set(QwertycoinFramework_Utilities_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/ParseExtra.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/String.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/String.h"
+    "${CMAKE_CURRENT_LIST_DIR}/Utilities/ThreadPool.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/ThreadSafeDeque.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/ThreadSafePriorityQueue.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/ThreadSafeQueue.h"
@@ -916,6 +919,7 @@ set(QwertycoinFramework_Wallet_LIBS
     QwertycoinFramework::Mnemonics
     QwertycoinFramework::Rpc
     QwertycoinFramework::Transfers
+    QwertycoinFramework::Utilities
     )
 
 add_library(QwertycoinFramework_Wallet STATIC ${QwertycoinFramework_Wallet_SOURCES})

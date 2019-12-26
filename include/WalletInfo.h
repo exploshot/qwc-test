@@ -48,6 +48,8 @@ struct WalletInfo
 
 struct Config
 {
+    bool exit = false;
+
     /* Was the wallet file specified on CLI */
     bool walletGiven = false;
 

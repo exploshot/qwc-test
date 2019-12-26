@@ -2,6 +2,8 @@
 //
 // Please see the included LICENSE file for more information.
 
+#include <Common/Varint.h>
+
 #include <Global/Constants.h>
 
 #include <Utilities/ParseExtra.h>
@@ -10,6 +12,7 @@ namespace Utilities {
     std::string getPaymentIDFromExtra(const std::vector<uint8_t> &extra)
     {
         const ParsedExtra parsed = parseExtra (extra);
+
         return parsed.paymentID;
     }
 

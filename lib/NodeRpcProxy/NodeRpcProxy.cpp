@@ -32,6 +32,8 @@
 #include <System/EventLock.h>
 #include <System/Timer.h>
 
+#include <Utilities/FormatTools.h>
+
 #ifndef AUTO_VAL_INIT
 #define AUTO_VAL_INIT(n) boost::value_initialized<decltype(n)>()
 #endif
@@ -339,6 +341,20 @@ namespace CryptoNote {
             Hash hash = tx->getTransactionHash ();
             m_knownTxs.emplace (std::move (hash));
         }
+    }
+
+    std::string NodeRpcProxy::getInfo()
+    {
+        CryptoNote::COMMAND_RPC_GET_INFO::request iReq;
+        CryptoNote::COMMAND_RPC_GET_INFO::response iResp;
+
+        std::error_code ec = jsonCommand("/getinfo", iReq, iResp);
+
+        if (ec || iResp.status != CORE_RPC_STATUS_OK) {
+            return std::string("Problem retrieving information from RPC Server.");
+        }
+
+        return Utilities::getStatusString(iResp);
     }
 
     void NodeRpcProxy::getFeeInfo()

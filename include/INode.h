@@ -111,6 +111,8 @@ namespace CryptoNote {
         virtual size_t getPeerCount() const = 0;
         virtual std::string feeAddress() = 0;
         virtual uint32_t feeAmount() = 0;
+
+        virtual std::string getInfo() = 0;
         
         virtual void relayTransaction(const Transaction& transaction, const Callback& callback) = 0;
 
@@ -119,6 +121,7 @@ namespace CryptoNote {
             uint16_t outsCount, 
             std::vector<RandomOuts>& result, 
             const Callback& callback) = 0;
+
         virtual void getTransactionOutsGlobalIndices(
             const Crypto::Hash& transactionHash, 
             std::vector<uint32_t>& outsGlobalIndices, 

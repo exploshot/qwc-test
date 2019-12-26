@@ -81,27 +81,31 @@ namespace Utilities {
 
     enum ForkStatus
     {
-        UpToDate, ForkLater, ForkSoonReady, ForkSoonNotReady, OutOfDate
+        UpToDate,
+        ForkLater,
+        ForkSoonReady,
+        ForkSoonNotReady,
+        OutOfDate
     };
 
-    ForkStatus get_fork_status(const uint64_t height,
-                               const std::vector <uint64_t> upgrade_heights,
-                               const uint64_t supported_height)
+    ForkStatus getForkStatus(const uint64_t height,
+                               const std::vector<uint64_t> upgradeHeights,
+                               const uint64_t supportedHeight)
     {
         /*!
          * Allow fork heights to be empty
          */
-        if (upgrade_heights.empty ()) {
+        if (upgradeHeights.empty ()) {
             return UpToDate;
         }
 
-        uint64_t next_fork = 0;
+        uint64_t nextFork = 0;
 
-        for (auto upgrade : upgrade_heights) {
+        for (auto upgrade : upgradeHeights) {
             /*!
              * We have hit an upgrade already that the user cannot support
              */
-            if (height >= upgrade && supported_height < upgrade) {
+            if (height >= upgrade && supportedHeight < upgrade) {
                 return OutOfDate;
             }
 
@@ -109,12 +113,12 @@ namespace Utilities {
              * Get the next fork height
              */
             if (upgrade > height) {
-                next_fork = upgrade;
+                nextFork = upgrade;
                 break;
             }
         }
 
-        const float days = (next_fork - height) / CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
+        const float days = (nextFork - height) / CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
 
         /*!
          * Next fork in < 30 days away
@@ -123,37 +127,37 @@ namespace Utilities {
             /*!
              * Software doesn't support the next fork yet
              */
-            if (supported_height < next_fork) {
+            if (supportedHeight < nextFork) {
                 return ForkSoonNotReady;
             } else {
                 return ForkSoonReady;
             }
         }
 
-        if (height > next_fork) {
+        if (height > nextFork) {
             return UpToDate;
         }
 
         return ForkLater;
     }
 
-    std::string get_fork_time(const uint64_t height,
-                              const std::vector <uint64_t> upgrade_heights)
+    std::string getForkTime(const uint64_t height,
+                              const std::vector<uint64_t> upgradeHeights)
     {
-        uint64_t next_fork = 0;
+        uint64_t nextFork = 0;
 
-        for (auto upgrade : upgrade_heights) {
+        for (auto upgrade : upgradeHeights) {
             /*!
              * Get the next fork height
              */
             if (upgrade > height) {
-                next_fork = upgrade;
+                nextFork = upgrade;
                 break;
             }
         }
 
         const float days = (
-            static_cast<float>(next_fork - height) /
+            static_cast<float>(nextFork - height) /
             CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY
         );
 
@@ -163,7 +167,7 @@ namespace Utilities {
             << std::setprecision (2)
             << std::fixed;
 
-        if (height == next_fork) {
+        if (height == nextFork) {
             stream
                 << " (forking now),";
         } else if (days < 1) {
@@ -181,9 +185,9 @@ namespace Utilities {
         return stream.str ();
     }
 
-    std::string get_update_status(const ForkStatus forkStatus,
+    std::string getUpdateStatus(const ForkStatus forkStatus,
                                   const uint64_t height,
-                                  const std::vector <uint64_t> upgrade_heights)
+                                  const std::vector<uint64_t> upgradeHeights)
     {
         switch (forkStatus) {
             case UpToDate:
@@ -191,10 +195,10 @@ namespace Utilities {
                 return " up to date";
             }
             case ForkSoonReady: {
-                return get_fork_time (height, upgrade_heights) + " up to date";
+                return getForkTime (height, upgradeHeights) + " up to date";
             }
             case ForkSoonNotReady: {
-                return get_fork_time (height, upgrade_heights) + " update needed";
+                return getForkTime (height, upgradeHeights) + " update needed";
             }
             case OutOfDate: {
                 return " out of date, likely forked";
@@ -205,11 +209,11 @@ namespace Utilities {
         }
     }
 
-    std::string get_upgrade_info(const uint64_t supported_height,
-                                 const std::vector <uint64_t> upgrade_heights)
+    std::string getUpgradeInfo(const uint64_t supportedHeight,
+                                 const std::vector<uint64_t> upgradeHeights)
     {
-        for (auto upgrade : upgrade_heights) {
-            if (upgrade > supported_height) {
+        for (auto upgrade : upgradeHeights) {
+            if (upgrade > supportedHeight) {
                 return "The network forked at height "
                        + std::to_string (upgrade)
                        + ", please update your software: "
@@ -227,7 +231,7 @@ namespace Utilities {
     {
         std::stringstream ss;
         std::time_t uptime = std::time (nullptr) - iresp.start_time;
-        auto forkStatus = get_fork_status (iresp.network_height, iresp.upgrade_heights, iresp.supported_height);
+        auto forkStatus = getForkStatus (iresp.network_height, iresp.upgradeHeights, iresp.supportedHeight);
 
         ss
             << "Height: "
@@ -245,7 +249,7 @@ namespace Utilities {
             << "v"
             << +iresp.major_version
             << ","
-            << get_update_status (forkStatus, iresp.network_height, iresp.upgrade_heights)
+            << getUpdateStatus (forkStatus, iresp.network_height, iresp.upgradeHeights)
             << ", "
             << iresp.outgoing_connections_count
             << "(out)+"
@@ -264,7 +268,7 @@ namespace Utilities {
         if (forkStatus == OutOfDate) {
             ss
                 << std::endl
-                << get_upgrade_info (iresp.supported_height, iresp.upgrade_heights);
+                << getUpgradeInfo (iresp.supportedHeight, iresp.upgradeHeights);
         }
 
         return ss.str ();
@@ -285,7 +289,7 @@ namespace Utilities {
          * We want to format our number with comma separators so it's easier to
          * use. Now, we could use the nice print_money() function to do this.
          * However, whilst this initially looks pretty handy, if we have a locale
-         * such as ja_JP.utf8, 1 TRTL will actually be formatted as 100 TRTL, which
+         * such as ja_JP.utf8, 1 QWC will actually be formatted as 100 QWC, which
          * is terrible, and could really screw over users.
          *
          * So, easy solution right? Just use en_US.utf8! Sure, it's not very
@@ -371,7 +375,7 @@ namespace Utilities {
          */
         double numBytes = static_cast<double>(input);
 
-        std::vector <std::string> suffixes = {"B", "KB", "MB", "GB", "TB"};
+        std::vector<std::string> suffixes = {"B", "KB", "MB", "GB", "TB"};
 
         uint64_t selectedSuffix = 0;
 

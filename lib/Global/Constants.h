@@ -215,7 +215,7 @@ namespace WalletConfig {
     /*!
      * The prefix your coins address starts with
      */
-    // const uint64_t addressPrefix = 0x14820c;
+    const uint64_t uAddressPrefix = 0x14820c;
     const std::string addressPrefix = "QWC";
 
     /*!

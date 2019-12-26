@@ -29,7 +29,7 @@
 
 namespace {
     template<typename T>
-    static bool print_as_json(const T &obj)
+    static bool printAsJson(const T &obj)
     {
         std::cout
             << CryptoNote::storeToJson (obj)
@@ -76,34 +76,37 @@ DaemonCommandsHandler::DaemonCommandsHandler(CryptoNote::Core &core,
                                              CryptoNote::NodeServer &srv,
                                              std::shared_ptr<Logging::LoggerManager> log,
                                              CryptoNote::RpcServer *prpc_server)
-    :
-    m_core (core), m_srv (srv), logger (log, "daemon"), m_logManager (log), m_prpc_server (prpc_server)
+    : m_core (core),
+      m_srv (srv),
+      logger (log, "daemon"),
+      m_logManager (log),
+      m_prpc_server (prpc_server)
 {
     m_consoleHandler.setHandler ("exit", boost::bind (&DaemonCommandsHandler::exit, this, _1), "Shutdown the daemon");
     m_consoleHandler.setHandler ("help", boost::bind (&DaemonCommandsHandler::help, this, _1), "Show this help");
     m_consoleHandler.setHandler ("print_pl",
-                                 boost::bind (&DaemonCommandsHandler::print_pl, this, _1),
+                                 boost::bind (&DaemonCommandsHandler::printPl, this, _1),
                                  "Print peer list");
     m_consoleHandler.setHandler ("print_cn",
-                                 boost::bind (&DaemonCommandsHandler::print_cn, this, _1),
+                                 boost::bind (&DaemonCommandsHandler::printCn, this, _1),
                                  "Print connections");
     m_consoleHandler.setHandler ("print_bc",
-                                 boost::bind (&DaemonCommandsHandler::print_bc, this, _1),
+                                 boost::bind (&DaemonCommandsHandler::printBc, this, _1),
                                  "Print blockchain info in a given blocks range, print_bc <begin_height> [<end_height>]");
     m_consoleHandler.setHandler ("print_block",
-                                 boost::bind (&DaemonCommandsHandler::print_block, this, _1),
+                                 boost::bind (&DaemonCommandsHandler::printBlock, this, _1),
                                  "Print block, print_block <block_hash> | <block_height>");
     m_consoleHandler.setHandler ("print_tx",
-                                 boost::bind (&DaemonCommandsHandler::print_tx, this, _1),
+                                 boost::bind (&DaemonCommandsHandler::printTx, this, _1),
                                  "Print transaction, print_tx <transaction_hash>");
     m_consoleHandler.setHandler ("print_pool",
-                                 boost::bind (&DaemonCommandsHandler::print_pool, this, _1),
+                                 boost::bind (&DaemonCommandsHandler::printPool, this, _1),
                                  "Print transaction pool (long format)");
     m_consoleHandler.setHandler ("print_pool_sh",
-                                 boost::bind (&DaemonCommandsHandler::print_pool_sh, this, _1),
+                                 boost::bind (&DaemonCommandsHandler::printPoolSh, this, _1),
                                  "Print transaction pool (short format)");
     m_consoleHandler.setHandler ("set_log",
-                                 boost::bind (&DaemonCommandsHandler::set_log, this, _1),
+                                 boost::bind (&DaemonCommandsHandler::setLog, this, _1),
                                  "set_log <level> - Change current log level, <level> is a number 0-4");
     m_consoleHandler.setHandler ("status",
                                  boost::bind (&DaemonCommandsHandler::status, this, _1),
@@ -119,7 +122,7 @@ DaemonCommandsHandler::DaemonCommandsHandler(CryptoNote::Core &core,
                                  "Removes all bans from the p2p interface.");
 }
 
-std::string DaemonCommandsHandler::get_commands_str()
+std::string DaemonCommandsHandler::getCommandsStr()
 {
     std::stringstream ss;
     ss
@@ -159,24 +162,24 @@ bool DaemonCommandsHandler::exit(const std::vector<std::string> &args)
 bool DaemonCommandsHandler::help(const std::vector<std::string> &args)
 {
     std::cout
-        << get_commands_str ()
+        << getCommandsStr ()
         << ENDL;
     return true;
 }
 
-bool DaemonCommandsHandler::print_pl(const std::vector<std::string> &args)
+bool DaemonCommandsHandler::printPl(const std::vector<std::string> &args)
 {
     m_srv.logPeerlist ();
     return true;
 }
 
-bool DaemonCommandsHandler::print_cn(const std::vector<std::string> &args)
+bool DaemonCommandsHandler::printCn(const std::vector<std::string> &args)
 {
     m_srv.getPayloadObject ().logConnections ();
     return true;
 }
 
-bool DaemonCommandsHandler::print_bc(const std::vector<std::string> &args)
+bool DaemonCommandsHandler::printBc(const std::vector<std::string> &args)
 {
     if (!args.size ()) {
         std::cout
@@ -230,7 +233,7 @@ bool DaemonCommandsHandler::print_bc(const std::vector<std::string> &args)
     req.end_height = end_index;
 
     // TODO: implement m_is_rpc handling like in monero?
-    if (!m_prpc_server->on_get_block_headers_range (req, res, error_resp) || res.status != CORE_RPC_STATUS_OK) {
+    if (!m_prpc_server->onGetBlockHeadersRange (req, res, error_resp) || res.status != CORE_RPC_STATUS_OK) {
         // TODO res.status handling
         std::cout
             << "Response status not CORE_RPC_STATUS_OK"
@@ -282,7 +285,7 @@ bool DaemonCommandsHandler::print_bc(const std::vector<std::string> &args)
     return true;
 }
 
-bool DaemonCommandsHandler::set_log(const std::vector<std::string> &args)
+bool DaemonCommandsHandler::setLog(const std::vector<std::string> &args)
 {
     if (args.size () != 1) {
         std::cout
@@ -312,7 +315,7 @@ bool DaemonCommandsHandler::set_log(const std::vector<std::string> &args)
     return true;
 }
 
-bool DaemonCommandsHandler::print_block_by_height(uint32_t height)
+bool DaemonCommandsHandler::printBlockByHeight(uint32_t height)
 {
     if (height - 1 > m_core.getTopBlockIndex ()) {
         std::cout
@@ -329,12 +332,12 @@ bool DaemonCommandsHandler::print_block_by_height(uint32_t height)
         << "block_id: "
         << hash
         << ENDL;
-    print_as_json (m_core.getBlockByIndex (height - 1));
+    printAsJson (m_core.getBlockByIndex (height - 1));
 
     return true;
 }
 
-bool DaemonCommandsHandler::print_block_by_hash(const std::string &arg)
+bool DaemonCommandsHandler::printBlockByHash(const std::string &arg)
 {
     Crypto::Hash block_hash;
     if (!parseHash256 (arg, block_hash)) {
@@ -342,7 +345,7 @@ bool DaemonCommandsHandler::print_block_by_hash(const std::string &arg)
     }
 
     if (m_core.hasBlock (block_hash)) {
-        print_as_json (m_core.getBlockByHash (block_hash));
+        printAsJson (m_core.getBlockByHash (block_hash));
     } else {
         std::cout
             << "block wasn't found: "
@@ -354,7 +357,7 @@ bool DaemonCommandsHandler::print_block_by_hash(const std::string &arg)
     return true;
 }
 
-bool DaemonCommandsHandler::print_block(const std::vector<std::string> &args)
+bool DaemonCommandsHandler::printBlock(const std::vector<std::string> &args)
 {
     if (args.empty ()) {
         std::cout
@@ -366,15 +369,15 @@ bool DaemonCommandsHandler::print_block(const std::vector<std::string> &args)
     const std::string &arg = args.front ();
     try {
         uint32_t height = boost::lexical_cast<uint32_t> (arg);
-        print_block_by_height (height);
+        printBlockByHeight (height);
     } catch (boost::bad_lexical_cast &) {
-        print_block_by_hash (arg);
+        printBlockByHash (arg);
     }
 
     return true;
 }
 
-bool DaemonCommandsHandler::print_tx(const std::vector<std::string> &args)
+bool DaemonCommandsHandler::printTx(const std::vector<std::string> &args)
 {
     if (args.empty ()) {
         std::cout
@@ -397,7 +400,7 @@ bool DaemonCommandsHandler::print_tx(const std::vector<std::string> &args)
 
     if (1 == txs.size ()) {
         CryptoNote::CachedTransaction tx (txs.front ());
-        print_as_json (tx.getTransaction ());
+        printAsJson (tx.getTransaction ());
     } else {
         std::cout
             << "transaction wasn't found: <"
@@ -409,7 +412,7 @@ bool DaemonCommandsHandler::print_tx(const std::vector<std::string> &args)
     return true;
 }
 
-bool DaemonCommandsHandler::print_pool(const std::vector<std::string> &args)
+bool DaemonCommandsHandler::printPool(const std::vector<std::string> &args)
 {
     std::cout
         << "Pool state: \n";
@@ -428,7 +431,7 @@ bool DaemonCommandsHandler::print_pool(const std::vector<std::string> &args)
     return true;
 }
 
-bool DaemonCommandsHandler::print_pool_sh(const std::vector<std::string> &args)
+bool DaemonCommandsHandler::printPoolSh(const std::vector<std::string> &args)
 {
     std::cout
         << "Pool short state: \n";
@@ -452,7 +455,7 @@ bool DaemonCommandsHandler::status(const std::vector<std::string> &args)
     CryptoNote::COMMAND_RPC_GET_INFO::request ireq;
     CryptoNote::COMMAND_RPC_GET_INFO::response iresp;
 
-    if (!m_prpc_server->on_get_info (ireq, iresp) || iresp.status != CORE_RPC_STATUS_OK) {
+    if (!m_prpc_server->onGetInfo (ireq, iresp) || iresp.status != CORE_RPC_STATUS_OK) {
         std::cout
             << "Problem retrieving information from RPC server."
             << std::endl;

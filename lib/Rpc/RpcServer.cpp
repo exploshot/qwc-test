@@ -136,13 +136,13 @@ namespace CryptoNote {
 
     } // namespace
 
-    std::unordered_map <std::string, RpcServer::RpcHandler<RpcServer::HandlerFunction>> RpcServer::s_handlers = {
+    std::unordered_map<std::string, RpcServer::RpcHandler<RpcServer::HandlerFunction>> RpcServer::s_handlers = {
         /*!
          * json handlers
          */
         {
             "/getinfo",
-            {jsonMethod<COMMAND_RPC_GET_INFO> (&RpcServer::on_get_info), true}
+            {jsonMethod<COMMAND_RPC_GET_INFO> (&RpcServer::onGetInfo), true}
         },
         {
             "/getheight",
@@ -158,7 +158,7 @@ namespace CryptoNote {
         },
         {
             "/info",
-            {jsonMethod<COMMAND_RPC_GET_INFO> (&RpcServer::on_get_info), true}
+            {jsonMethod<COMMAND_RPC_GET_INFO> (&RpcServer::onGetInfo), true}
         },
         {
             "/height",
@@ -207,7 +207,7 @@ namespace CryptoNote {
         },
         {
             "/getrandom_outs",
-            {jsonMethod<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS> (&RpcServer::on_get_random_outs), false}
+            {jsonMethod<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS> (&RpcServer::onGetRandomOuts), false}
         },
         {
             "/get_pool_changes",
@@ -262,12 +262,15 @@ namespace CryptoNote {
     };
 
     RpcServer::RpcServer(System::Dispatcher &dispatcher,
-                         std::shared_ptr <Logging::ILogger> log,
+                         std::shared_ptr<Logging::ILogger> log,
                          Core &c,
                          NodeServer &p2p,
                          ICryptoNoteProtocolHandler &protocol)
-        :
-        HttpServer (dispatcher, log), logger (log, "RpcServer"), m_core (c), m_p2p (p2p), m_protocol (protocol)
+        : HttpServer (dispatcher, log),
+          logger (log, "RpcServer"),
+          m_core (c),
+          m_p2p (p2p),
+          m_protocol (protocol)
     {
     }
 
@@ -321,7 +324,7 @@ namespace CryptoNote {
             jsonRequest.parseRequest (request.getBody ());
             jsonResponse.setId (jsonRequest.getId ()); // copy id
 
-            static std::unordered_map <std::string, RpcServer::RpcHandler<JsonMemberMethod>> jsonRpcHandlers = {
+            static std::unordered_map<std::string, RpcServer::RpcHandler<JsonMemberMethod>> jsonRpcHandlers = {
                 {"f_blocks_list_json", {makeMemberMethod (&RpcServer::fOnBlocksListJson), false}},
                 {"f_block_json", {makeMemberMethod (&RpcServer::fOnBlockJson), false}},
                 {"f_transaction_json", {makeMemberMethod (&RpcServer::fOnTransactionJson), false}},
@@ -372,13 +375,13 @@ namespace CryptoNote {
         return true;
     }
 
-    bool RpcServer::enableCors(const std::vector <std::string> domains)
+    bool RpcServer::enableCors(const std::vector<std::string> domains)
     {
         m_cors_domains = domains;
         return true;
     }
 
-    std::vector <std::string> RpcServer::getCorsDomains()
+    std::vector<std::string> RpcServer::getCorsDomains()
     {
         return m_cors_domains;
     }
@@ -404,15 +407,15 @@ namespace CryptoNote {
 
         uint32_t totalBlockCount;
         uint32_t startBlockIndex;
-        std::vector <Crypto::Hash> supplement = m_core.findBlockchainSupplement (req.block_ids,
-                                                                                 COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT,
-                                                                                 totalBlockCount,
-                                                                                 startBlockIndex);
+        std::vector<Crypto::Hash> supplement = m_core.findBlockchainSupplement (req.block_ids,
+                                                                                COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT,
+                                                                                totalBlockCount,
+                                                                                startBlockIndex);
 
         res.current_height = totalBlockCount;
         res.start_height = startBlockIndex;
 
-        std::vector <Crypto::Hash> missedHashes;
+        std::vector<Crypto::Hash> missedHashes;
         m_core.getBlocks (supplement, res.blocks, missedHashes);
         assert (missedHashes.empty ());
 
@@ -420,8 +423,8 @@ namespace CryptoNote {
         return true;
     }
 
-    bool
-    RpcServer::onQueryBlocks(const COMMAND_RPC_QUERY_BLOCKS::request &req, COMMAND_RPC_QUERY_BLOCKS::response &res)
+    bool RpcServer::onQueryBlocks(const COMMAND_RPC_QUERY_BLOCKS::request &req,
+                                  COMMAND_RPC_QUERY_BLOCKS::response &res)
     {
         uint32_t startIndex;
         uint32_t currentIndex;
@@ -458,9 +461,8 @@ namespace CryptoNote {
         return true;
     }
 
-    bool RpcServer::onQueryBlocksDetailed(
-        const COMMAND_RPC_QUERY_BLOCKS_DETAILED::request &req,
-        COMMAND_RPC_QUERY_BLOCKS_DETAILED::response &res)
+    bool RpcServer::onQueryBlocksDetailed(const COMMAND_RPC_QUERY_BLOCKS_DETAILED::request &req,
+                                          COMMAND_RPC_QUERY_BLOCKS_DETAILED::response &res)
     {
         uint64_t startIndex;
         uint64_t currentIndex;
@@ -507,9 +509,8 @@ namespace CryptoNote {
         return true;
     }
 
-    bool RpcServer::onGetTransactionsStatus(
-        const COMMAND_RPC_GET_TRANSACTIONS_STATUS::request &req,
-        COMMAND_RPC_GET_TRANSACTIONS_STATUS::response &res)
+    bool RpcServer::onGetTransactionsStatus(const COMMAND_RPC_GET_TRANSACTIONS_STATUS::request &req,
+                                            COMMAND_RPC_GET_TRANSACTIONS_STATUS::response &res)
     {
         if (!m_core.getTransactionsStatus (req.transactionHashes,
                                            res.transactionsInPool,
@@ -527,7 +528,7 @@ namespace CryptoNote {
     bool RpcServer::onGetIndexes(const COMMAND_RPC_GET_TX_GLOBAL_OUTPUTS_INDEXES::request &req,
                                  COMMAND_RPC_GET_TX_GLOBAL_OUTPUTS_INDEXES::response &res)
     {
-        std::vector <uint32_t> outputIndexes;
+        std::vector<uint32_t> outputIndexes;
         if (!m_core.getTransactionGlobalIndexes (req.txid, outputIndexes)) {
             res.status = "Failed";
             return true;
@@ -542,9 +543,8 @@ namespace CryptoNote {
         return true;
     }
 
-    bool RpcServer::onGetGlobalIndexesForRange(
-        const COMMAND_RPC_GET_GLOBAL_INDEXES_FOR_RANGE::request &req,
-        COMMAND_RPC_GET_GLOBAL_INDEXES_FOR_RANGE::response &res)
+    bool RpcServer::onGetGlobalIndexesForRange(const COMMAND_RPC_GET_GLOBAL_INDEXES_FOR_RANGE::request &req,
+                                               COMMAND_RPC_GET_GLOBAL_INDEXES_FOR_RANGE::response &res)
     {
         if (!m_core.getGlobalIndexesForRange (req.startHeight, req.endHeight, res.indexes)) {
             res.status = "Failed";
@@ -556,14 +556,14 @@ namespace CryptoNote {
         return true;
     }
 
-    bool RpcServer::on_get_random_outs(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::request &req,
+    bool RpcServer::onGetRandomOuts(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::request &req,
                                        COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::response &res)
     {
         res.status = "Failed";
 
         for (uint64_t amount : req.amounts) {
-            std::vector <uint32_t> globalIndexes;
-            std::vector <Crypto::PublicKey> publicKeys;
+            std::vector<uint32_t> globalIndexes;
+            std::vector<Crypto::PublicKey> publicKeys;
             if (!m_core.getRandomOutputs (amount, static_cast<uint16_t>(req.outs_count), globalIndexes, publicKeys)) {
                 return true;
             }
@@ -646,7 +646,7 @@ namespace CryptoNote {
                                                 COMMAND_RPC_GET_BLOCKS_DETAILS_BY_HEIGHTS::response &rsp)
     {
         try {
-            std::vector <BlockDetails> blockDetails;
+            std::vector<BlockDetails> blockDetails;
             for (const uint32_t &height : req.blockHeights) {
                 blockDetails.push_back (m_core.getBlockDetails (height));
             }
@@ -668,7 +668,7 @@ namespace CryptoNote {
                                                COMMAND_RPC_GET_BLOCKS_DETAILS_BY_HASHES::response &rsp)
     {
         try {
-            std::vector <BlockDetails> blockDetails;
+            std::vector<BlockDetails> blockDetails;
             for (const Crypto::Hash &hash : req.blockHashes) {
                 blockDetails.push_back (m_core.getBlockDetails (hash));
             }
@@ -726,7 +726,7 @@ namespace CryptoNote {
                                                     COMMAND_RPC_GET_TRANSACTION_DETAILS_BY_HASHES::response &rsp)
     {
         try {
-            std::vector <TransactionDetails> transactionDetails;
+            std::vector<TransactionDetails> transactionDetails;
             transactionDetails.reserve (req.transactionHashes.size ());
 
             for (const auto &hash: req.transactionHashes) {
@@ -768,7 +768,7 @@ namespace CryptoNote {
      * JSON handlers
      */
 
-    bool RpcServer::on_get_info(const COMMAND_RPC_GET_INFO::request &req, COMMAND_RPC_GET_INFO::response &res)
+    bool RpcServer::onGetInfo(const COMMAND_RPC_GET_INFO::request &req, COMMAND_RPC_GET_INFO::response &res)
     {
         res.height = m_core.getTopBlockIndex () + 1;
         res.difficulty = m_core.getDifficultyForNextBlock ();
@@ -782,13 +782,13 @@ namespace CryptoNote {
         res.grey_peerlist_size = m_p2p.getPeerlistManager ().getGrayPeersCount ();
         res.last_known_block_index = std::max (static_cast<uint32_t>(1), m_protocol.getObservedHeight ()) - 1;
         res.network_height = std::max (static_cast<uint32_t>(1), m_protocol.getBlockchainHeight ());
-        res.upgrade_heights =
+        res.upgradeHeights =
             CryptoNote::parameters::FORK_HEIGHTS_SIZE == 0 ? std::vector<uint64_t> () : std::vector<uint64_t> (
                 CryptoNote::parameters::FORK_HEIGHTS,
                 CryptoNote::parameters::FORK_HEIGHTS + CryptoNote::parameters::FORK_HEIGHTS_SIZE);
-        res.supported_height = CryptoNote::parameters::FORK_HEIGHTS_SIZE == 0
-                               ? 0
-                               : CryptoNote::parameters::FORK_HEIGHTS[CryptoNote::parameters::CURRENT_FORK_INDEX];
+        res.supportedHeight = CryptoNote::parameters::FORK_HEIGHTS_SIZE == 0
+                              ? 0
+                              : CryptoNote::parameters::FORK_HEIGHTS[CryptoNote::parameters::CURRENT_FORK_INDEX];
         res.hashrate = (uint32_t) round (res.difficulty / CryptoNote::parameters::DIFFICULTY_TARGET);
         res.synced = ((uint64_t) res.height == (uint64_t) res.network_height);
         res.major_version = m_core.getBlockDetails (m_core.getTopBlockIndex ()).majorVersion;
@@ -810,7 +810,7 @@ namespace CryptoNote {
     bool RpcServer::onGetTransactions(const COMMAND_RPC_GET_TRANSACTIONS::request &req,
                                       COMMAND_RPC_GET_TRANSACTIONS::response &res)
     {
-        std::vector <Hash> vh;
+        std::vector<Hash> vh;
         for (const auto &tx_hex_str : req.txs_hashes) {
             BinaryArray b;
             if (!fromHex (tx_hex_str, b)) {
@@ -825,8 +825,8 @@ namespace CryptoNote {
             vh.push_back (*reinterpret_cast<const Hash *>(b.data ()));
         }
 
-        std::vector <Hash> missed_txs;
-        std::vector <BinaryArray> txs;
+        std::vector<Hash> missed_txs;
+        std::vector<BinaryArray> txs;
         m_core.getTransactions (vh, txs, missed_txs);
 
         for (auto &tx : txs) {
@@ -843,7 +843,7 @@ namespace CryptoNote {
 
     bool RpcServer::onSendRawTx(const COMMAND_RPC_SEND_RAW_TX::request &req, COMMAND_RPC_SEND_RAW_TX::response &res)
     {
-        std::vector <BinaryArray> transactions (1);
+        std::vector<BinaryArray> transactions (1);
         if (!fromHex (req.tx_as_hex, transactions.back ())) {
             logger (INFO)
                 << "[onSendRawTx]: Failed to parse tx from hexbuff: "
@@ -887,8 +887,8 @@ namespace CryptoNote {
 
     bool RpcServer::onGetPeers(const COMMAND_RPC_GET_PEERS::request &req, COMMAND_RPC_GET_PEERS::response &res)
     {
-        std::list <PeerlistEntry> peers_white;
-        std::list <PeerlistEntry> peers_gray;
+        std::list<PeerlistEntry> peers_white;
+        std::list<PeerlistEntry> peers_gray;
 
         m_p2p.getPeerlistManager ().getPeerlistFull (peers_gray, peers_white);
 
@@ -1057,8 +1057,8 @@ namespace CryptoNote {
         transaction_short.size = getObjectBinarySize (blk.baseTransaction);
         res.block.transactions.push_back (transaction_short);
 
-        std::vector <Crypto::Hash> missed_txs;
-        std::vector <BinaryArray> txs;
+        std::vector<Crypto::Hash> missed_txs;
+        std::vector<BinaryArray> txs;
         m_core.getTransactions (blk.transactionHashes, txs, missed_txs);
 
         res.block.totalFeeAmount = 0;
@@ -1103,11 +1103,11 @@ namespace CryptoNote {
                 "Failed to parse hex representation of transaction hash. Hex = " + req.hash + '.'};
         }
 
-        std::vector <Crypto::Hash> tx_ids;
+        std::vector<Crypto::Hash> tx_ids;
         tx_ids.push_back (hash);
 
-        std::vector <Crypto::Hash> missed_txs;
-        std::vector <BinaryArray> txs;
+        std::vector<Crypto::Hash> missed_txs;
+        std::vector<BinaryArray> txs;
         m_core.getTransactions (tx_ids, txs, missed_txs);
 
         if (1 == txs.size ()) {
@@ -1380,7 +1380,7 @@ namespace CryptoNote {
         }
 
         rawBlock.transactions.reserve (blockTemplate.transactionHashes.size ());
-        std::vector <Crypto::Hash> missedTransactions;
+        std::vector<Crypto::Hash> missedTransactions;
         m_core.getTransactions (blockTemplate.transactionHashes, rawBlock.transactions, missedTransactions);
         assert (missedTransactions.empty ());
 
@@ -1485,7 +1485,7 @@ namespace CryptoNote {
         return true;
     }
 
-    bool RpcServer::on_get_block_headers_range(const COMMAND_RPC_GET_BLOCK_HEADERS_RANGE::request &req,
+    bool RpcServer::onGetBlockHeadersRange(const COMMAND_RPC_GET_BLOCK_HEADERS_RANGE::request &req,
                                                COMMAND_RPC_GET_BLOCK_HEADERS_RANGE::response &res,
                                                JsonRpc::JsonRpcError &error_resp)
     {

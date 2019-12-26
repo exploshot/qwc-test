@@ -383,8 +383,8 @@ namespace CryptoNote {
             uint64_t grey_peerlist_size;
             uint32_t last_known_block_index;
             uint32_t network_height;
-            std::vector<uint64_t> upgrade_heights;
-            uint64_t supported_height;
+            std::vector<uint64_t> upgradeHeights;
+            uint64_t supportedHeight;
             uint32_t hashrate;
             uint8_t major_version;
             uint8_t minor_version;
@@ -406,8 +406,8 @@ namespace CryptoNote {
                 KV_MEMBER(grey_peerlist_size)
                 KV_MEMBER(last_known_block_index)
                 KV_MEMBER(network_height)
-                KV_MEMBER(upgrade_heights)
-                KV_MEMBER(supported_height)
+                KV_MEMBER(upgradeHeights)
+                KV_MEMBER(supportedHeight)
                 KV_MEMBER(hashrate)
                 KV_MEMBER(major_version)
                 KV_MEMBER(minor_version)
