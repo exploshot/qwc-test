@@ -868,7 +868,7 @@ set(QwertycoinFramework_Utilities_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/ParseExtra.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/String.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/String.h"
-    "${CMAKE_CURRENT_LIST_DIR}/Utilities/ThreadPool.h"
+#    "${CMAKE_CURRENT_LIST_DIR}/Utilities/ThreadPool.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/ThreadSafeDeque.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/ThreadSafePriorityQueue.h"
     "${CMAKE_CURRENT_LIST_DIR}/Utilities/ThreadSafeQueue.h"

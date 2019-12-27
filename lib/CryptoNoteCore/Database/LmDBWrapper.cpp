@@ -96,11 +96,12 @@ void LmDBWrapper::init(const DataBaseConfig &config)
         << mapsize
         << " bytes";
 
+    std::string dbDirTemp = m_dbDir.string();
     logger (INFO)
         << "Opening DB in "
-        << m_dbDir;
+        << dbDirTemp;
     try {
-        m_db.open (m_dbDir.c_str (), MDB_NOSYNC | MDB_WRITEMAP | MDB_MAPASYNC | MDB_NORDAHEAD, 0664);
+        m_db.open (dbDirTemp.c_str(), MDB_NOSYNC | MDB_WRITEMAP | MDB_MAPASYNC | MDB_NORDAHEAD, 0664);
     } catch (const std::exception &e) {
         logger (ERROR)
             << "Failed to open database: "

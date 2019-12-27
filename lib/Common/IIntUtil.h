@@ -33,7 +33,7 @@
 #if defined(_MSC_VER)
 #include <stdlib.h>
 
-#define inline __inline
+// #define inline __inline
 
 static inline uint32_t rol32(uint32_t x, int r)
 {
