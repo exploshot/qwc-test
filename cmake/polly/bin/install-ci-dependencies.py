@@ -152,6 +152,13 @@ def get_android_full_version_url():
     if platform.system() == 'Linux':
       return 'https://dl.google.com/android/repository/android-ndk-r17-linux-x86_64.zip', '1d886a64483adf3f3a3e3aaf7ac5084184006ac7',
 
+  if toolchain.startswith('android-ndk-r18b-'):
+    if platform.system() == 'Darwin':
+      return 'https://dl.google.com/android/repository/android-ndk-r18b-darwin-x86_64.zip', '98cb9909aa8c2dab32db188bbdc3ac6207e09440',
+    if platform.system() == 'Linux':
+      return 'https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip', '500679655da3a86aecf67007e8ab230ea9b4dd7b',
+
+
   sys.exit('Android supported only for Linux and OSX')
 
 def get_android_url():
@@ -189,18 +196,18 @@ def get_android_url():
 def get_cmake_url():
   if platform.system() == 'Darwin':
     return (
-        'https://github.com/ruslo/CMake/releases/download/v3.13.4/cmake-3.13.4-Darwin-x86_64.tar.gz',
-        '21d089ac1c0e25e5683cdf4045f121990b24c123'
+        'https://github.com/Kitware/CMake/releases/download/v3.15.4/cmake-3.15.4-Darwin-x86_64.tar.gz',
+        'f50e95d22718382ddb2db8f9752b4bcb51ee7ba8'
     )
   elif platform.system() == 'Linux':
     return (
-        'https://github.com/ruslo/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.tar.gz',
-        '533919277c8148593d5bd13ed138c48ca7da28a4'
+        'https://github.com/Kitware/CMake/releases/download/v3.15.4/cmake-3.15.4-Linux-x86_64.tar.gz',
+        '98831ed604c324d1a61d5243a6021bcd13ddc8ac'
     )
   elif platform.system() == 'Windows':
     return (
-        'https://github.com/ruslo/CMake/releases/download/v3.13.4/cmake-3.13.4-win64-x64.zip',
-        '62047fc089b164bf1d42e2feb5f6a2ca1244adc1'
+        'https://github.com/Kitware/CMake/releases/download/v3.15.4/cmake-3.15.4-win64-x64.zip',
+        'e958f2210270542662da720586e64164ca66a77c'
     )
   else:
     sys.exit('Unknown system: {}'.format(platform.system()))

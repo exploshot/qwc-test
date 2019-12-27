@@ -207,6 +207,11 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    '--output_filter',
+    help="Output filter"
+)
+
+parser.add_argument(
     '--timeout',
     type=PositiveInt,
     help='Timeout for CTest'
@@ -225,6 +230,12 @@ parser.add_argument(
 parser.add_argument(
     '--ctest',
     help="CTest binary (ctest or ctest3)"
+)
+
+parser.add_argument(
+    '--dry-run',
+    action='store_true',
+    help="Print the corresponding CMake command and quit"
 )
 
 args = parser.parse_args()
@@ -423,7 +434,7 @@ timer = detail.timer.Timer()
 
 timer.start('Generate')
 detail.generate_command.run(
-    generate_command, build_dir, polly_temp_dir, args.reconfig, logging
+    generate_command, build_dir, polly_temp_dir, args.reconfig, logging, args.output_filter, args.dry_run
 )
 timer.stop()
 
@@ -476,7 +487,7 @@ if not args.nobuild:
     ]
     detail.call.call(zero_check_command, logging, sleep=1)
 
-  detail.call.call(build_command, logging, sleep=1)
+  detail.call.call(build_command, logging, sleep=1, output_filter=args.output_filter)
   timer.stop()
 
   if args.archive:
