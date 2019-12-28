@@ -699,10 +699,10 @@ namespace CryptoNote {
                 uint32_t bIntCon = context.connection.getPeerAddressAndPort ().first.getValue ();
 
                 try {
-                    m_payload_handler.ban (bIntCon);
+                    // m_payload_handler.ban (bIntCon);
                     logger (Logging::INFO)
                         << context
-                        << " banned!";
+                        << " banned! Only Text, Not Action";
                 } catch (const std::exception &e) {
                     logger (Logging::ERROR)
                         << bCon
