@@ -33,7 +33,8 @@ namespace Logging {
         WARNING = 2,
         INFO = 3,
         DEBUGGING = 4,
-        TRACE = 5
+        TRACE = 5,
+        ALL = 6
     };
 
     extern const std::string BLUE;

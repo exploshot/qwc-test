@@ -293,7 +293,7 @@ std::error_code LmDBWrapper::read(IReadBatch &batch)
     }
 
     const std::vector<std::string> rawKeys (batch.getRawKeys ());
-    logger (TRACE)
+    logger (ALL)
         << "Batch reading rawKeys, len: "
         << rawKeys.size ();
     std::vector<bool> resultStates;
