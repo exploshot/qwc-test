@@ -474,7 +474,7 @@ namespace PaymentService {
                 << "Attempting to import wallet from mnemonic seed";
 
             std::string defaultLan = "English";
-            auto[error, private_spend_key] = Mnemonics::MnemonicToPrivateKey (conf.mnemonicSeed, defaultLan);
+            auto[error, private_spend_key] = Mnemonics::MnemonicToPrivateKey (conf.mnemonicSeed);
 
             if (error) {
                 log (Logging::ERROR, Logging::BRIGHT_RED)

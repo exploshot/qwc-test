@@ -8,6 +8,8 @@
 
 #include <CryptoNoteCore/Account.h>
 
+#include <Global/Constants.h>
+
 #include <Mnemonics/Mnemonics.h>
 
 #include <SimpleWallet/Commands.h>
@@ -17,7 +19,6 @@
 #include <SimpleWallet/Transfer.h>
 
 #include <Utilities/ColouredMsg.h>
-#include <Global/Constants.h>
 
 void exportKeys(std::shared_ptr<WalletInfo> &walletInfo)
 {
@@ -59,7 +60,7 @@ void printPrivateKeys(CryptoNote::WalletGreen &wallet, bool viewWallet)
         << std::endl;
 
     if (deterministicPrivateKeys) {
-        std::string mnemonicSeed = Mnemonics::PrivateKeyToMnemonic (privateSpendKey, "English");
+        std::string mnemonicSeed = Mnemonics::PrivateKeyToMnemonic (privateSpendKey);
 
         std::cout
             << std::endl

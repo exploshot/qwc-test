@@ -220,7 +220,7 @@ std::tuple <Error, std::shared_ptr<WalletBackend>> WalletBackend::importWalletFr
      * Convert the mnemonic into a private spend key
      */
     std::string defaultLang = "English";
-    auto[mnemonicError, privateSpendKey] = Mnemonics::MnemonicToPrivateKey (mnemonicSeed, defaultLang);
+    auto[mnemonicError, privateSpendKey] = Mnemonics::MnemonicToPrivateKey (mnemonicSeed);
 
     if (mnemonicError) {
         return {mnemonicError, nullptr};
@@ -1200,7 +1200,7 @@ std::tuple <Error, std::string> WalletBackend::getMnemonicSeedForAddress(
         return {KEYS_NOT_DETERMINISTIC, std::string ()};
     }
 
-    return {SUCCESS, Mnemonics::PrivateKeyToMnemonic (privateSpendKey, "English")};
+    return {SUCCESS, Mnemonics::PrivateKeyToMnemonic (privateSpendKey)};
 }
 
 std::vector <WalletTypes::Transaction> WalletBackend::getTransactions() const
