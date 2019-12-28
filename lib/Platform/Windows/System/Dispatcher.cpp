@@ -14,6 +14,7 @@
 #define NOMINMAX
 #endif
 #include <winsock2.h>
+#include <iostream>
 #include "ErrorMessage.h"
 
 namespace System {
@@ -85,7 +86,7 @@ namespace System {
 
     Dispatcher::~Dispatcher()
     {
-        assert(GetCurrentThreadId () == threadId);
+        // assert(GetCurrentThreadId () == threadId);
         for (NativeContext *context = contextGroup.firstContext; context != nullptr; context = context->groupNext) {
             interrupt (context);
         }
@@ -113,7 +114,7 @@ namespace System {
 
     void Dispatcher::clear()
     {
-        assert(GetCurrentThreadId () == threadId);
+        // assert(GetCurrentThreadId () == threadId);
         while (firstReusableContext != nullptr) {
             void *fiber = firstReusableContext->fiber;
             firstReusableContext = firstReusableContext->next;
@@ -123,7 +124,7 @@ namespace System {
 
     void Dispatcher::dispatch()
     {
-        assert(GetCurrentThreadId () == threadId);
+        // assert(GetCurrentThreadId () == threadId);
         NativeContext *context;
         for (;;) {
             if (firstResumingContext != nullptr) {
@@ -202,7 +203,7 @@ namespace System {
 
     NativeContext *Dispatcher::getCurrentContext() const
     {
-        assert(GetCurrentThreadId () == threadId);
+        // assert(GetCurrentThreadId () == threadId);
         return currentContext;
     }
 
@@ -213,7 +214,7 @@ namespace System {
 
     void Dispatcher::interrupt(NativeContext *context)
     {
-        assert(GetCurrentThreadId () == threadId);
+        // assert(GetCurrentThreadId () == threadId);
         assert(context != nullptr);
         if (!context->interrupted) {
             if (context->interruptProcedure != nullptr) {
@@ -237,7 +238,7 @@ namespace System {
 
     void Dispatcher::pushContext(NativeContext *context)
     {
-        assert(GetCurrentThreadId () == threadId);
+        // assert(GetCurrentThreadId () == threadId);
         assert(context != nullptr);
 
         if (context->inExecutionQueue) {
@@ -275,7 +276,7 @@ namespace System {
 
     void Dispatcher::spawn(std::function<void()> &&procedure)
     {
-        assert(GetCurrentThreadId () == threadId);
+        // assert(GetCurrentThreadId () == threadId);
         NativeContext *context = &getReusableContext ();
         if (contextGroup.firstContext != nullptr) {
             context->groupPrev = contextGroup.lastContext;
@@ -297,7 +298,7 @@ namespace System {
 
     void Dispatcher::yield()
     {
-        assert(GetCurrentThreadId () == threadId);
+        // assert(GetCurrentThreadId () == threadId);
         for (;;) {
             LARGE_INTEGER frequency;
             LARGE_INTEGER ticks;
@@ -355,7 +356,7 @@ namespace System {
 
     void Dispatcher::addTimer(uint64_t time, NativeContext *context)
     {
-        assert(GetCurrentThreadId () == threadId);
+        // assert(GetCurrentThreadId () == threadId);
         timers.insert (std::make_pair (time, context));
     }
 
@@ -392,7 +393,7 @@ namespace System {
 
     void Dispatcher::interruptTimer(uint64_t time, NativeContext *context)
     {
-        assert(GetCurrentThreadId () == threadId);
+        // assert(GetCurrentThreadId () == threadId);
 
         if (context->inExecutionQueue) {
             return;
@@ -411,7 +412,7 @@ namespace System {
 
     void Dispatcher::contextProcedure()
     {
-        assert(GetCurrentThreadId () == threadId);
+        // assert(GetCurrentThreadId () == threadId);
         assert(firstReusableContext == nullptr);
         NativeContext context;
         context.interrupted = false;
