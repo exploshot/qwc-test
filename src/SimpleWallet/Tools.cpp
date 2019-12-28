@@ -37,8 +37,10 @@ void confirmPassword(std::string walletPass)
 
 std::string formatAmount(uint64_t amount)
 {
-    uint64_t dollars = amount / 100;
-    uint64_t cents = amount % 100;
+    uint64_t divider = pow(10, CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT);
+
+    uint64_t dollars = amount / divider;
+    uint64_t cents = amount % divider;
 
     return formatDollars (dollars) + "." + formatCents (cents) + " " + WalletConfig::ticker;
 }

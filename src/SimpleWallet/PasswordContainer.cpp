@@ -29,44 +29,46 @@
     #include <windows.h>
 
 #else
-    #include <termios.h>
+#include <termios.h>
     #include <unistd.h>
 #endif
 
 #include <SimpleWallet/PasswordContainer.h>
 
-namespace Tools {
-    namespace {
+namespace Tools
+{
+    namespace
+    {
         bool isCinTty();
     } // namespace
 
     PasswordContainer::PasswordContainer()
-        : m_empty (true)
+        : m_empty(true)
     {
     }
 
     PasswordContainer::PasswordContainer(std::string &&password)
-        : m_empty (false),
-          m_password (std::move (password))
+        : m_empty(false),
+          m_password(std::move(password))
     {
     }
 
     PasswordContainer::PasswordContainer(Tools::PasswordContainer &&rhs)
         : m_empty(std::move(rhs.m_empty)),
-          m_password (std::move (rhs.m_password))
+          m_password(std::move(rhs.m_password))
     {
     }
 
     PasswordContainer::~PasswordContainer()
     {
-        clear ();
+        clear();
     }
 
     void PasswordContainer::clear()
     {
-        if (0 < m_password.capacity ()) {
-            m_password.replace (0, m_password.capacity (), m_password.capacity (), '\0');
-            m_password.resize (0);
+        if (0 < m_password.capacity()) {
+            m_password.replace(0, m_password.capacity(), m_password.capacity(), '\0');
+            m_password.resize(0);
         }
 
         m_empty = true;
@@ -76,7 +78,7 @@ namespace Tools {
     {
         std::string tmpPassword = m_password;
 
-        if (!readPassword ()) {
+        if (!readPassword()) {
             std::cout
                 << "Failed to read password!"
                 << std::endl;
@@ -92,19 +94,20 @@ namespace Tools {
 
     bool PasswordContainer::readPassword()
     {
-        return readPassword (false);
+        return readPassword(false);
     }
 
     bool PasswordContainer::readPassword(bool verify)
     {
-        clear ();
+        clear();
 
         bool r;
-        if (isCinTty ()) {
+        if (isCinTty()) {
             if (verify) {
                 std::cout
                     << "Give your new wallet a password: ";
-            } else {
+            }
+            else {
                 std::cout
                     << "Enter password: ";
             }
@@ -113,36 +116,40 @@ namespace Tools {
                 std::string password1;
                 std::string password2;
 
-                r = readFromTty (password1);
+                r = readFromTty(password1);
                 if (r) {
                     std::cout
                         << "Confirm your new password: ";
-                    r = readFromTty (password2);
+                    r = readFromTty(password2);
                     if (r) {
                         if (password1 == password2) {
-                            m_password = std::move (password2);
+                            m_password = std::move(password2);
                             m_empty = false;
                             return true;
-                        } else {
+                        }
+                        else {
                             std::cout
                                 << "Passwords do not match, try again."
                                 << std::endl;
-                            clear ();
-                            return readPassword (true);
+                            clear();
+                            return readPassword(true);
                         }
                     }
                 }
-            } else {
-                r = readFromTty (m_password);
             }
-        } else {
-            r = readFromFile ();
+            else {
+                r = readFromTty(m_password);
+            }
+        }
+        else {
+            r = readFromFile();
         }
 
         if (r) {
             m_empty = false;
-        } else {
-            clear ();
+        }
+        else {
+            clear();
         }
 
         return r;
@@ -150,23 +157,26 @@ namespace Tools {
 
     bool PasswordContainer::readFromFile()
     {
-        m_password.reserve (maxPasswordSize);
+        m_password.reserve(maxPasswordSize);
         for (size_t i = 0; i < maxPasswordSize; ++i) {
-            char ch = static_cast<char>(std::cin.get ());
-            if (std::cin.eof () || ch == '\n' || ch == '\r') {
+            char ch = static_cast<char>(std::cin.get());
+            if (std::cin.eof() || ch == '\n' || ch == '\r') {
                 break;
-            } else if (std::cin.fail ()) {
+            }
+            else if (std::cin.fail()) {
                 return false;
-            } else {
-                m_password.push_back (ch);
+            }
+            else {
+                m_password.push_back(ch);
             }
         }
 
         return true;
     }
 
-    #if defined(_WIN32)
-    namespace {
+#if defined(_WIN32)
+    namespace
+    {
         bool isCinTty()
         {
             return 0 != _isatty(_fileno(stdin));
@@ -194,18 +204,21 @@ namespace Tools {
             r &= (1 == read);
             if (!r) {
                 break;
-            } else if (ch == '\n' || ch == '\r') {
+            }
+            else if (ch == '\n' || ch == '\r') {
                 std::cout
                     << std::endl;
                 break;
-            } else if (ch == BACKSPACE) {
+            }
+            else if (ch == BACKSPACE) {
                 if (!password.empty()) {
                     password.back() = '\0';
-                    password.resize(password.size() -1);
+                    password.resize(password.size() - 1);
                     std::cout
                         << "\b \b";
                 }
-            } else {
+            }
+            else {
                 password.push_back(ch);
                 std::cout
                     << '*';
@@ -216,7 +229,7 @@ namespace Tools {
 
         return r;
     }
-    #else
+#else
     namespace {
         bool isCinTty()
         {
@@ -272,5 +285,5 @@ namespace Tools {
 
         return true;
     }
-    #endif
+#endif
 } // namespace Tools

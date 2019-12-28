@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include <Global/CryptoNoteConfig.h>
+#include <Global/Constants.h>
 
 #include <SimpleWallet/ParseArguments.h>
 
@@ -46,7 +46,7 @@ Config parseArguments(int argc, char **argv)
      * checks for help Arguments
      */
     if (cmdOptionExists (argv, argv + argc, "-h") ||
-        cmdOptionExists (argv, argv + argc, "--help")) {
+            cmdOptionExists (argv, argv + argc, "--help")) {
         helpMessage ();
         config.exit = true;
         return config;
@@ -56,7 +56,7 @@ Config parseArguments(int argc, char **argv)
      * checks for version Arguments
      */
     if (cmdOptionExists (argv, argv + argc, "-v") ||
-        cmdOptionExists (argv, argv + argc, "--version")) {
+            cmdOptionExists (argv, argv + argc, "--version")) {
         versionMessage ();
         config.exit = true;
         return config;
@@ -70,8 +70,8 @@ Config parseArguments(int argc, char **argv)
 
         if (!wallet) {
             std::cout
-                << "--wallet-file was specified, but no wallet file was given!"
-                << std::endl;
+                    << "--wallet-file was specified, but no wallet file was given!"
+                    << std::endl;
         }
 
         config.walletFile = std::string (wallet);
@@ -86,8 +86,8 @@ Config parseArguments(int argc, char **argv)
 
         if (!password) {
             std::cout
-                << "--password was specified, but no password was given!"
-                << std::endl;
+                    << "--password was specified, but no password was given!"
+                    << std::endl;
 
             helpMessage ();
             config.exit = true;
@@ -109,8 +109,8 @@ Config parseArguments(int argc, char **argv)
          */
         if (!url) {
             std::cout
-                << "--remote-daemon was specified, but no daemon was given!"
-                << std::endl;
+                    << "--remote-daemon was specified, but no daemon was given!"
+                    << std::endl;
 
             helpMessage ();
 
@@ -143,8 +143,8 @@ Config parseArguments(int argc, char **argv)
                     config.port = std::stoi (port);
                 } catch (const std::invalid_argument &){
                     std::cout
-                        << "Failed to parse daemon port!"
-                        << std::endl;
+                            << "Failed to parse daemon port!"
+                            << std::endl;
                     config.exit = true;
                 }
 
@@ -158,10 +158,10 @@ Config parseArguments(int argc, char **argv)
 void versionMessage()
 {
     std::cout
-        << CryptoNote::CRYPTONOTE_NAME
-        << " wallet v"
-        << PROJECT_VERSION_LONG
-        << std::endl;
+            << CryptoNote::CRYPTONOTE_NAME
+            << " wallet v"
+            << PROJECT_VERSION_LONG
+            << std::endl;
 }
 
 void helpMessage()
@@ -169,46 +169,47 @@ void helpMessage()
     versionMessage ();
 
     std::cout
-        << std::endl
-        << "SimpleWallet [--version] [--help] "
-        << "[--remote-daemon <url>] [--wallet-file <file>] "
-        << "[--password <pass>"
-        << std::endl
-        << std::endl
-        << "Commands: "
-        << std::endl
+            << std::endl
+            << WalletConfig::walletName
+            << "[--version] [--help] "
+            << "[--remote-daemon <url>] [--wallet-file <file>] "
+            << "[--password <pass>"
+            << std::endl
+            << std::endl
+            << "Commands: "
+            << std::endl
 
-        << "  -h, "
-        << std::left
-        << std::setw (25)
-        << "--help"
-        << "Display this help message and exits"
-        << std::endl
+            << "  -h, "
+            << std::left
+            << std::setw (25)
+            << "--help"
+            << "Display this help message and exits"
+            << std::endl
 
-        << "  -v, "
-        << std::left
-        << std::setw (25)
-        << "Display the version information and exits"
-        << std::endl
+            << "  -v, "
+            << std::left
+            << std::setw (25)
+            << "Display the version information and exits"
+            << std::endl
 
-        << "      "
-        << std::left
-        << std::setw (25)
-        << "--remote-daemon <url>"
-        << "Connect to the remote daemon at <url>"
-        << std::endl
+            << "      "
+            << std::left
+            << std::setw (25)
+            << "--remote-daemon <url>"
+            << "Connect to the remote daemon at <url>"
+            << std::endl
 
-        << "      "
-        << std::left
-        << std::setw (25)
-        << "--wallet-file <file>"
-        << "Open the wallet <file>"
-        << std::endl
+            << "      "
+            << std::left
+            << std::setw (25)
+            << "--wallet-file <file>"
+            << "Open the wallet <file>"
+            << std::endl
 
-        << "      "
-        << std::left
-        << std::setw (25)
-        << "--password <pass>"
-        << "Use the password <pass> to open the wallet"
-        << std::endl;
+            << "      "
+            << std::left
+            << std::setw (25)
+            << "--password <pass>"
+            << "Use the password <pass> to open the wallet"
+            << std::endl;
 }

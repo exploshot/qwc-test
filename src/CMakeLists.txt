@@ -85,7 +85,6 @@ set_target_properties(QwertycoinTools_Daemon PROPERTIES OUTPUT_NAME "QDaemon")
 
 # QwertycoinTools::Miner
 
-
 # QwertycoinTools::SimpleWallet
 
 set(QwertycoinTools_SimpleWallet_SOURCES

@@ -51,8 +51,10 @@
 #include <SimpleWallet/ParseArguments.h>
 #include <SimpleWallet/SimpleWallet.h>
 #include <SimpleWallet/Sync.h>
-#include <SimpleWallet/Transfer.h>
 #include <SimpleWallet/Tools.h>
+#include <SimpleWallet/Transfer.h>
+
+#include <Utilities/ColouredMsg.h>
 
 #ifdef _WIN32
 /* Prevents windows.h redefining min/max which breaks compilation */
@@ -64,13 +66,9 @@
 
 int main(int argc, char **argv)
 {
-    /* On ctrl+c the program seems to throw "zedwallet.exe has stopped
-       working" when calling exit(0)... I'm not sure why, this is a bit of
-       a hack, it disables that - possibly some deconstructers calling
-       terminate() */
-    #ifdef _WIN32
+#ifdef _WIN32
     SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
-    #endif
+#endif
 
     Config config = parseArguments(argc, argv);
 
@@ -78,8 +76,7 @@ int main(int argc, char **argv)
 
     const auto logManager = std::make_shared<Logging::LoggerManager>();
 
-    if (config.debug)
-    {
+    if (config.debug) {
         logManager->setMaxLevel(Logging::DEBUGGING);
 
         Logging::FileLogger fileLogger;
@@ -88,62 +85,55 @@ int main(int argc, char **argv)
         logManager->addLogger(fileLogger);
     }
 
-    /* Currency contains our coin parameters, such as decimal places, supply */
-    const CryptoNote::Currency currency
-        = CryptoNote::CurrencyBuilder(logManager).currency();
+    const CryptoNote::Currency currency = CryptoNote::CurrencyBuilder(logManager).currency();
 
     System::Dispatcher localDispatcher;
     System::Dispatcher *dispatcher = &localDispatcher;
 
-    /* Our connection to turtlecoind */
+    /*!
+     * Connection to QDaemon
+     */
     std::unique_ptr<CryptoNote::INode> node(
-        new CryptoNote::NodeRpcProxy(config.host, config.port, 10, logManager)
+        new CryptoNote::NodeRpcProxy(config.host, config.port, 1, logManager)
     );
 
     std::promise<std::error_code> errorPromise;
 
-    /* Once the function is complete, set the error value from the promise */
     auto callback = [&errorPromise](std::error_code e)
     {
         errorPromise.set_value(e);
     };
 
-    /* Get the future of the result */
     auto initNode = errorPromise.get_future();
 
     node->init(callback);
 
-    /* Connection took to long to remote node, let program continue regardless
-       as they could perform functions like export_keys without being
-       connected */
-    if (initNode.wait_for(std::chrono::seconds(20)) != std::future_status::ready)
-    {
-        if (config.host != "127.0.0.1")
-        {
-            std::cout << WarningMsg("Unable to connect to remote node, "
-                                    "connection timed out.")
+    if (initNode.wait_for(std::chrono::seconds(5)) != std::future_status::ready) {
+        if (config.host != "127.0.0.1") {
+            std::cout << WarningMsg(
+                "Unable to connect to remote node, "
+                "connection timed out."
+            )
                       << std::endl
-                      << WarningMsg("Confirm the remote node is functioning, "
-                                    "or try a different remote node.")
+                      << WarningMsg(
+                          "Confirm the remote node is functioning, "
+                          "or try a different remote node."
+                      )
                       << std::endl << std::endl;
         }
-        else
-        {
-            std::cout << WarningMsg("Unable to connect to node, "
-                                    "connection timed out.")
+        else {
+            std::cout << WarningMsg(
+                "Unable to connect to node, "
+                "connection timed out."
+            )
                       << std::endl << std::endl;
         }
     }
 
-    /*
-      This will check to see if the node responded to /feeinfo and actually
-      returned something that it expects us to use for convenience charges
-      for using that node to send transactions.
-    */
     if (node->feeAmount() != 0 && !node->feeAddress().empty()) {
-        std::stringstream feemsg;
+        std::stringstream feeMsg;
 
-        feemsg << std::endl << "You have connected to a node that charges " <<
+        feeMsg << std::endl << "You have connected to a node that charges " <<
                "a fee to send transactions." << std::endl << std::endl
                << "The fee for sending transactions is: " <<
                formatAmount(node->feeAmount()) <<
@@ -153,13 +143,11 @@ int main(int argc, char **argv)
                " and specify a different node or run your own." <<
                std::endl;
 
-        std::cout << WarningMsg(feemsg.str()) << std::endl;
+        std::cout << WarningMsg(feeMsg.str()) << std::endl;
     }
 
-    /* Create the wallet instance */
     CryptoNote::WalletGreen wallet(*dispatcher, currency, *node, logManager);
 
-    /* Run the interactive wallet interface */
     run(wallet, *node, config);
 }
 
@@ -167,21 +155,23 @@ void run(CryptoNote::WalletGreen &wallet,
          CryptoNote::INode &node,
          Config &config)
 {
-    auto maybeWalletInfo = Nothing<std::shared_ptr<WalletInfo>> ();
+    auto maybeWalletInfo = Nothing<std::shared_ptr<WalletInfo>>();
     Action action;
 
     do {
         std::cout
-            << InformationMsg (WalletConfig::coinName + " v"
-                               + std::string (PROJECT_VERSION)
-                               + " SimpleWallet")
+            << InformationMsg(
+                WalletConfig::coinName + " v"
+                    + std::string(PROJECT_VERSION)
+                    + " " + WalletConfig::walletName
+            )
             << std::endl;
 
         /*!
          * Open/import/generate the wallet
          */
-        action = getAction (config);
-        maybeWalletInfo = handleAction (wallet, action, config);
+        action = getAction(config);
+        maybeWalletInfo = handleAction(wallet, action, config);
 
         /*!
          * Didn't manage to get the wallet info, returning to selection screen
@@ -197,33 +187,43 @@ void run(CryptoNote::WalletGreen &wallet,
      * This will call shutdown when ctrl+c is hit. This is a lambda function,
      * & means capture all variables by reference
      */
-    Tools::SignalHandler::install ([&]
-                                   {
-                                       /*!
-                                        * If we're already shutting down let control flow continue as normal
-                                        */
-                                       if (shutdown (walletInfo->wallet, node, alreadyShuttingDown)) {
-                                           exit (0);
-                                       }
-                                   });
+    Tools::SignalHandler::install(
+        [&]
+        {
+            /*!
+             * If we're already shutting down let control flow continue as normal
+             */
+            if (shutdown(walletInfo->wallet, node, alreadyShuttingDown)) {
+                exit(0);
+            }
+        }
+    );
 
-    while (node.getLastKnownBlockHeight () == 0) {
+    while (node.getLastKnownBlockHeight() == 0) {
         std::cout
-            << WarningMsg ("It looks like TurtleCoind isn't open!")
+            << WarningMsg("It looks like QDaemon isn't open!")
             << std::endl
             << std::endl
-            << WarningMsg ("Ensure TurtleCoind is open and has finished "
-                           "initializing.")
+            << WarningMsg(
+                "Ensure QDaemon is open and has finished "
+                "initializing."
+            )
             << std::endl
-            << WarningMsg ("If it's still not working, try restarting "
-                           "TurtleCoind. The daemon sometimes gets stuck.")
+            << WarningMsg(
+                "If it's still not working, try restarting "
+                "QDaemon. The daemon sometimes gets stuck."
+            )
             << std::endl
-            << WarningMsg ("Alternatively, perhaps TurtleCoind can't "
-                           "communicate with any peers.")
+            << WarningMsg(
+                "Alternatively, perhaps QDaemon can't "
+                "communicate with any peers."
+            )
             << std::endl
             << std::endl
-            << WarningMsg ("The wallet can't function until it can "
-                           "communicate with the network.")
+            << WarningMsg(
+                "The wallet can't function until it can "
+                "communicate with the network."
+            )
             << std::endl
             << std::endl;
 
@@ -232,36 +232,39 @@ void run(CryptoNote::WalletGreen &wallet,
         while (true) {
             std::cout
                 << "["
-                << InformationMsg ("T")
+                << InformationMsg("T")
                 << "]ry again, "
                 << "["
-                << InformationMsg ("E")
+                << InformationMsg("E")
                 << "]xit, or "
                 << "["
-                << InformationMsg ("C")
+                << InformationMsg("C")
                 << "]ontinue anyway?: ";
 
             std::string answer;
-            std::getline (std::cin, answer);
+            std::getline(std::cin, answer);
 
-            char c = std::tolower (answer[0]);
+            char c = std::tolower(answer[0]);
 
             /*!
              * Lets people spam enter in the transaction screen
              */
             if (c == 't' || c == '\0') {
                 break;
-            } else if (c == 'e' || c == std::ifstream::traits_type::eof ()) {
-                shutdown (walletInfo->wallet, node, alreadyShuttingDown);
+            }
+            else if (c == 'e' || c == std::ifstream::traits_type::eof()) {
+                shutdown(walletInfo->wallet, node, alreadyShuttingDown);
                 return;
-            } else if (c == 'c') {
+            }
+            else if (c == 'c') {
                 proceed = true;
                 break;
-            } else {
+            }
+            else {
                 std::cout
-                    << WarningMsg ("Bad input: ")
-                    << InformationMsg (answer)
-                    << WarningMsg (" - please enter either T, E, or C.")
+                    << WarningMsg("Bad input: ")
+                    << InformationMsg(answer)
+                    << WarningMsg(" - please enter either T, E, or C.")
                     << std::endl;
             }
         }
@@ -283,42 +286,52 @@ void run(CryptoNote::WalletGreen &wallet,
      * received any money yet.
      */
     if (action != Generate) {
-        syncWallet (node, walletInfo);
-    } else {
+        syncWallet(node, walletInfo);
+    }
+    else {
         std::cout
-            << InformationMsg ("Your wallet is syncing with the "
-                               "network in the background.")
+            << InformationMsg(
+                "Your wallet is syncing with the "
+                "network in the background."
+            )
             << std::endl
-            << InformationMsg ("Until this is completed new "
-                               "transactions might not show up.")
+            << InformationMsg(
+                "Until this is completed new "
+                "transactions might not show up."
+            )
             << std::endl
-            << InformationMsg ("Use bc_height to check the progress.")
+            << InformationMsg("Use bc_height to check the progress.")
             << std::endl
             << std::endl;
     }
 
-    welcomeMsg ();
+    welcomeMsg();
 
-    inputLoop (walletInfo, node);
+    inputLoop(walletInfo, node);
 
-    shutdown (walletInfo->wallet, node, alreadyShuttingDown);
+    shutdown(walletInfo->wallet, node, alreadyShuttingDown);
 }
 
 Maybe<std::shared_ptr<WalletInfo>> handleAction(CryptoNote::WalletGreen &wallet,
                                                 Action action, Config &config)
 {
     if (action == Generate) {
-        return Just<std::shared_ptr<WalletInfo>> (generateWallet (wallet));
-    } else if (action == Open) {
-        return openWallet (wallet, config);
-    } else if (action == Import) {
-        return Just<std::shared_ptr<WalletInfo>> (importWallet (wallet));
-    } else if (action == SeedImport) {
-        return Just<std::shared_ptr<WalletInfo>> (mnemonicImportWallet (wallet));
-    } else if (action == ViewWallet) {
-        return Just<std::shared_ptr<WalletInfo>> (createViewWallet (wallet));
-    } else {
-        throw std::runtime_error ("Unimplemented action!");
+        return Just<std::shared_ptr<WalletInfo>>(generateWallet(wallet));
+    }
+    else if (action == Open) {
+        return openWallet(wallet, config);
+    }
+    else if (action == Import) {
+        return Just<std::shared_ptr<WalletInfo>>(importWallet(wallet));
+    }
+    else if (action == SeedImport) {
+        return Just<std::shared_ptr<WalletInfo>>(mnemonicImportWallet(wallet));
+    }
+    else if (action == ViewWallet) {
+        return Just<std::shared_ptr<WalletInfo>>(createViewWallet(wallet));
+    }
+    else {
+        throw std::runtime_error("Unimplemented action!");
     }
 }
 
@@ -336,31 +349,31 @@ Action getAction(Config &config)
             << std::endl
 
             << "\t["
-            << InformationMsg ("G")
+            << InformationMsg("G")
             << "] - "
             << "Generate a new wallet address"
             << std::endl
 
             << "\t["
-            << InformationMsg ("O")
+            << InformationMsg("O")
             << "] - "
             << "Open a wallet already on your system"
             << std::endl
 
             << "\t["
-            << InformationMsg ("S")
+            << InformationMsg("S")
             << "] - "
             << "Regenerate your wallet using a seed phrase of words"
             << std::endl
 
             << "\t["
-            << InformationMsg ("I")
+            << InformationMsg("I")
             << "] - "
             << "Import your wallet using a View Key and Spend Key"
             << std::endl
 
             << "\t["
-            << InformationMsg ("V")
+            << InformationMsg("V")
             << "] - "
             << "Import a view only wallet (Unable to send transactions)"
             << std::endl
@@ -369,25 +382,30 @@ Action getAction(Config &config)
             << "or, press CTRL_C to exit: ";
 
         std::string answer;
-        std::getline (std::cin, answer);
+        std::getline(std::cin, answer);
 
         char c = answer[0];
-        c = std::tolower (c);
+        c = std::tolower(c);
 
         if (c == 'o') {
             return Open;
-        } else if (c == 'g') {
+        }
+        else if (c == 'g') {
             return Generate;
-        } else if (c == 'i') {
+        }
+        else if (c == 'i') {
             return Import;
-        } else if (c == 's') {
+        }
+        else if (c == 's') {
             return SeedImport;
-        } else if (c == 'v') {
+        }
+        else if (c == 'v') {
             return ViewWallet;
-        } else {
+        }
+        else {
             std::cout
                 << "Unknown command: "
-                << WarningMsg (answer)
+                << WarningMsg(answer)
                 << std::endl;
         }
     }
@@ -397,11 +415,11 @@ void welcomeMsg()
 {
     std::cout
         << "Use the "
-        << SuggestionMsg ("help")
+        << SuggestionMsg("help")
         << " command to see the list of available commands."
         << std::endl
         << "Use "
-        << SuggestionMsg ("exit")
+        << SuggestionMsg("exit")
         << " when closing to ensure your wallet file doesn't get "
         << "corrupted."
         << std::endl
@@ -410,45 +428,47 @@ void welcomeMsg()
 
 std::string getInputAndDoWorkWhileIdle(std::shared_ptr<WalletInfo> &walletInfo)
 {
-    auto lastUpdated = std::chrono::system_clock::now ();
+    auto lastUpdated = std::chrono::system_clock::now();
 
-    std::future<std::string> inputGetter = std::async (std::launch::async, []
-    {
-        std::string command;
-        std::getline (std::cin, command);
-        boost::algorithm::trim (command);
-        return command;
-    });
+    std::future<std::string> inputGetter = std::async(
+        std::launch::async, []
+        {
+            std::string command;
+            std::getline(std::cin, command);
+            boost::algorithm::trim(command);
+            return command;
+        }
+    );
 
     while (true) {
         /*!
          * Check if the user has inputted something yet (Wait for zero seconds
          * to instantly return)
          */
-        std::future_status status = inputGetter.wait_for (std::chrono::seconds (0));
+        std::future_status status = inputGetter.wait_for(std::chrono::seconds(0));
 
         /*!
          * User has inputted, get what they inputted and return it
          */
         if (status == std::future_status::ready) {
-            return inputGetter.get ();
+            return inputGetter.get();
         }
 
-        auto currentTime = std::chrono::system_clock::now ();
+        auto currentTime = std::chrono::system_clock::now();
 
         /*!
          * Otherwise check if we need to update the wallet cache
          */
-        if ((currentTime - lastUpdated) > std::chrono::seconds (5)) {
+        if ((currentTime - lastUpdated) > std::chrono::seconds(5)) {
             lastUpdated = currentTime;
-            checkForNewTransactions (walletInfo);
+            checkForNewTransactions(walletInfo);
         }
 
         /*!
          * Sleep for enough for it to not be noticeable when the user enters
          * something, but enough that we're not starving the CPU
          */
-        std::this_thread::sleep_for (std::chrono::milliseconds (50));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 }
 
@@ -457,56 +477,63 @@ bool shutdown(CryptoNote::WalletGreen &wallet, CryptoNote::INode &node,
 {
     if (alreadyShuttingDown) {
         std::cout
-            << "Patience little turtle, we're already shutting down!"
+            << "I do appreciate your patience so far, we're already shutting down!"
             << std::endl;
         return false;
-    } else {
+    }
+    else {
         alreadyShuttingDown = true;
         std::cout
-            << InformationMsg ("Saving wallet and shutting down, please "
-                               "wait...")
+            << InformationMsg(
+                "Saving wallet and shutting down, please "
+                "wait..."
+            )
             << std::endl;
     }
 
     bool finishedShutdown = false;
 
-    boost::thread timelyShutdown ([&finishedShutdown]
-                                  {
-                                      auto startTime = std::chrono::system_clock::now ();
+    boost::thread timelyShutdown(
+        [&finishedShutdown]
+        {
+            auto startTime = std::chrono::system_clock::now();
 
-                                      /*!
-                                       * Has shutdown finished?
-                                       */
-                                      while (!finishedShutdown) {
-                                          auto currentTime = std::chrono::system_clock::now ();
+            /*!
+             * Has shutdown finished?
+             */
+            while (!finishedShutdown) {
+                auto currentTime = std::chrono::system_clock::now();
 
-                                          /*!
-                                           * If not, wait for a max of 20 seconds then force exit.
-                                           */
-                                          if ((currentTime - startTime) > std::chrono::seconds (20)) {
-                                              std::cout
-                                                  << WarningMsg ("Wallet took too long to save! "
-                                                                 "Force closing.")
-                                                  << std::endl
-                                                  << "Bye."
-                                                  << std::endl;
-                                              exit (0);
-                                          }
+                /*!
+                 * If not, wait for a max of 20 seconds then force exit.
+                 */
+                if ((currentTime - startTime) > std::chrono::seconds(20)) {
+                    std::cout
+                        << WarningMsg(
+                            "Wallet took too long to save! "
+                            "Force closing."
+                        )
+                        << std::endl
+                        << "Bye."
+                        << std::endl;
+                    exit(0);
+                }
 
-                                          std::this_thread::sleep_for (std::chrono::seconds (1));
-                                      }
-                                  });
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+        }
+    );
 
-    wallet.save ();
-    wallet.shutdown ();
-    node.shutdown ();
+    wallet.save();
+    wallet.shutdown();
+    node.shutdown();
 
     finishedShutdown = true;
 
     /*!
      * Wait for shutdown watcher to finish
      */
-    timelyShutdown.join ();
+    timelyShutdown.join();
 
     std::cout
         << "Bye."
@@ -519,81 +546,99 @@ void inputLoop(std::shared_ptr<WalletInfo> &walletInfo, CryptoNote::INode &node)
 {
     while (true) {
         std::cout
-            << getPrompt (walletInfo);
+            << getPrompt(walletInfo);
 
-        std::string command = getInputAndDoWorkWhileIdle (walletInfo);
+        std::string command = getInputAndDoWorkWhileIdle(walletInfo);
 
         if (command == "") {
             // no-op
-        } else if (command == "export_keys") {
-            exportKeys (walletInfo);
-        } else if (command == "help") {
-            help (walletInfo->viewWallet);
-        } else if (command == "status") {
-            status (node);
-        } else if (command == "balance") {
-            balance (node, walletInfo->wallet, walletInfo->viewWallet);
-        } else if (command == "address") {
+        }
+        else if (command == "export_keys") {
+            exportKeys(walletInfo);
+        }
+        else if (command == "help") {
+            help(walletInfo->viewWallet);
+        }
+        else if (command == "status") {
+            status(node);
+        }
+        else if (command == "balance") {
+            balance(node, walletInfo->wallet, walletInfo->viewWallet);
+        }
+        else if (command == "address") {
             std::cout
-                << SuccessMsg (walletInfo->walletAddress)
+                << SuccessMsg(walletInfo->walletAddress)
                 << std::endl;
-        } else if (command == "incoming_transfers") {
-            listTransfers (true, false, walletInfo->wallet, node);
-        } else if (command == "save_csv") {
-            saveCSV (walletInfo->wallet, node);
-        } else if (command == "exit") {
+        }
+        else if (command == "incoming_transfers") {
+            listTransfers(true, false, walletInfo->wallet, node);
+        }
+        else if (command == "save_csv") {
+            saveCSV(walletInfo->wallet, node);
+        }
+        else if (command == "exit") {
             return;
-        } else if (command == "save") {
+        }
+        else if (command == "save") {
             std::cout
-                << InformationMsg ("Saving.")
+                << InformationMsg("Saving.")
                 << std::endl;
-            walletInfo->wallet.save ();
+            walletInfo->wallet.save();
             std::cout
-                << InformationMsg ("Saved.")
+                << InformationMsg("Saved.")
                 << std::endl;
-        } else if (command == "bc_height") {
-            blockchainHeight (node, walletInfo->wallet);
-        } else if (command == "reset") {
-            reset (node, walletInfo);
-        } else if (!walletInfo->viewWallet) {
+        }
+        else if (command == "bc_height") {
+            blockchainHeight(node, walletInfo->wallet);
+        }
+        else if (command == "reset") {
+            reset(node, walletInfo);
+        }
+        else if (!walletInfo->viewWallet) {
             if (command == "outgoing_transfers") {
-                listTransfers (false, true, walletInfo->wallet, node);
-            } else if (command == "list_transfers") {
-                listTransfers (true, true, walletInfo->wallet, node);
-            } else if (command == "transfer") {
-                transfer (walletInfo, node.getLastKnownBlockHeight ());
+                listTransfers(false, true, walletInfo->wallet, node);
+            }
+            else if (command == "list_transfers") {
+                listTransfers(true, true, walletInfo->wallet, node);
+            }
+            else if (command == "transfer") {
+                transfer(walletInfo, node.getLastKnownBlockHeight());
             }
                 /*!
                  * String starts with transfer, old transfer syntax
                  */
-            else if (command.find ("transfer") == 0) {
+            else if (command.find("transfer") == 0) {
                 std::cout
                     << "This transfer syntax has been removed."
                     << std::endl
                     << "Run just the "
-                    << SuggestionMsg ("transfer")
+                    << SuggestionMsg("transfer")
                     << " command for a walk through guide to "
                     << "transferring."
                     << std::endl;
-            } else if (command == "quick_optimize") {
-                quickOptimize (walletInfo->wallet);
-            } else if (command == "full_optimize" || command == "optimize") {
-                fullOptimize (walletInfo->wallet);
-            } else {
+            }
+            else if (command == "quick_optimize") {
+                quickOptimize(walletInfo->wallet);
+            }
+            else if (command == "full_optimize" || command == "optimize") {
+                fullOptimize(walletInfo->wallet);
+            }
+            else {
                 std::cout
                     << "Unknown command: "
-                    << WarningMsg (command)
+                    << WarningMsg(command)
                     << ", use "
-                    << SuggestionMsg ("help")
+                    << SuggestionMsg("help")
                     << " command to list all possible commands."
                     << std::endl;
             }
-        } else {
+        }
+        else {
             std::cout
                 << "Unknown command: "
-                << WarningMsg (command)
+                << WarningMsg(command)
                 << ", use "
-                << SuggestionMsg ("help")
+                << SuggestionMsg("help")
                 << " command to list all possible commands."
                 << std::endl
                 << "Please note some commands such as transfer are "
