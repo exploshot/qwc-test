@@ -61,9 +61,10 @@ if(WIN32)
 endif()
 
 set(QwertycoinTools_Daemon_LIBS
+    Boost::filesystem
     RapidJSON::rapidjson
     sqlite3::sqlite3
-    Boost::filesystem
+    stdc++fs
 #    QwertycoinFramework::Breakpad
     QwertycoinFramework::Common
     QwertycoinFramework::CryptoNoteCore

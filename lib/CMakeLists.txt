@@ -374,6 +374,7 @@ set(QwertycoinFramework_CryptoNoteCore_LIBS
     lmdb
     sparsehash::sparsehash
     sqlite3::sqlite3
+    stdc++fs
     QwertycoinFramework::BlockchainExplorer
     QwertycoinFramework::Common
     QwertycoinFramework::Crypto
@@ -656,10 +657,15 @@ set(QwertycoinFramework_Serialization_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Serialization/SerializationTools.h"
     )
 
+set(QwertycoinFramework_Serialization_LIBS
+    stdc++fs
+    QwertycoinFramework::Common
+    )
+
 add_library(QwertycoinFramework_Serialization STATIC ${QwertycoinFramework_Serialization_SOURCES})
 add_library(QwertycoinFramework::Serialization ALIAS QwertycoinFramework_Serialization)
 target_include_directories(QwertycoinFramework_Serialization PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_Serialization PRIVATE QwertycoinFramework::Common)
+target_link_libraries(QwertycoinFramework_Serialization PRIVATE QwertycoinFramework_Serialization_LIBS)
 
 # QwertycoinFramework::SubWallets
 
@@ -879,6 +885,7 @@ set(QwertycoinFramework_Utilities_SOURCES
     )
 
 set(QwertycoinFramework_Utilities_LIBS
+    stdc++fs
     QwertycoinFramework::SubWallets
     )
 
