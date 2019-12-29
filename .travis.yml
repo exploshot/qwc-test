@@ -25,6 +25,8 @@ matrix:
           dist: bionic
           sudo: required
           env:
+              - CC=gcc-8
+              - CXX=gcc-8
               - CMAKE_GENERATOR_NAME="Unix Makefiles"
               - CMAKE_BUILD_TYPE="Debug"
               - CMAKE_TOOLCHAIN_FILE_NAME=gcc-8-cxx17.cmake
@@ -34,6 +36,8 @@ matrix:
           dist: bionic
           sudo: required
           env:
+              - CC=gcc-8
+              - CXX=gcc-8
               - CMAKE_GENERATOR_NAME="Unix Makefiles"
               - CMAKE_BUILD_TYPE="Release"
               - CMAKE_TOOLCHAIN_FILE_NAME=gcc-8-cxx17.cmake
