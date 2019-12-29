@@ -92,7 +92,6 @@ std::shared_ptr<WalletInfo> mnemonicImportWallet(CryptoNote::WalletGreen &wallet
         }
 
         Crypto::CryptoOps::generateViewFromSpend(privateSpendKey, privateViewKey);
-        std::cout << WarningMsg("Call importFromKeys") << std::endl;
         return importFromKeys(wallet, privateSpendKey, privateViewKey);
     }
 }
