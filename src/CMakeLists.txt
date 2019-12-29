@@ -1,7 +1,7 @@
 set(QwertycoinTools_INCLUDE_DIRS
-        ${QwertycoinFramework_INCLUDE_DIRS}
-        "${CMAKE_CURRENT_LIST_DIR}"
-)
+    ${QwertycoinFramework_INCLUDE_DIRS}
+    "${CMAKE_CURRENT_LIST_DIR}"
+    )
 
 set(QwertycoinTools_INCLUDE_DIRS ${QwertycoinTools_INCLUDE_DIRS} PARENT_SCOPE)
 
@@ -11,8 +11,8 @@ find_package(RapidJSON CONFIG REQUIRED)
 
 add_custom_target(QwertycoinTools)
 add_dependencies(QwertycoinTools
-    QwertycoinTools::CryptoTest
-    )
+                 QwertycoinTools::CryptoTest
+                 )
 
 # QwertycoinTools::BinaryInfo # NOTE: Ignore this. It's not a target.
 
@@ -23,20 +23,20 @@ set(QwertycoinTools_CryptoTest_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoTest/main.cpp"
     )
 
-if(WIN32)
+if (WIN32)
     list(APPEND QwertycoinTools_CryptoTest_SOURCES
-        "${CMAKE_CURRENT_LIST_DIR}/BinaryInfo/cryptotest.rc"
-        )
-endif()
+         "${CMAKE_CURRENT_LIST_DIR}/BinaryInfo/cryptotest.rc"
+         )
+endif ()
 
 set(QwertycoinTools_CryptoTest_LIBS
     QwertycoinFramework::Common
     QwertycoinFramework::Crypto
     )
 
-if(WIN32)
+if (WIN32)
     list(APPEND QwertycoinTools_CryptoTest_LIBS ws2_32)
-endif()
+endif ()
 
 add_executable(QwertycoinTools_CryptoTest ${QwertycoinTools_CryptoTest_SOURCES})
 add_executable(QwertycoinTools::CryptoTest ALIAS QwertycoinTools_CryptoTest)
@@ -54,18 +54,17 @@ set(QwertycoinTools_Daemon_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Daemon/DaemonConfiguration.h"
     )
 
-if(WIN32)
+if (WIN32)
     list(APPEND QwertycoinTools_Daemon_SOURCES
-        "${CMAKE_CURRENT_LIST_DIR}/BinaryInfo/daemon.rc"
-        )
-endif()
+         "${CMAKE_CURRENT_LIST_DIR}/BinaryInfo/daemon.rc"
+         )
+endif ()
 
 set(QwertycoinTools_Daemon_LIBS
     Boost::filesystem
     RapidJSON::rapidjson
     sqlite3::sqlite3
-    stdc++fs
-#    QwertycoinFramework::Breakpad
+    #    QwertycoinFramework::Breakpad
     QwertycoinFramework::Common
     QwertycoinFramework::CryptoNoteCore
     QwertycoinFramework::Global
@@ -76,6 +75,10 @@ set(QwertycoinTools_Daemon_LIBS
     QwertycoinFramework::System
     QwertycoinFramework::Utilities
     )
+
+if (!WIN32)
+    list(APPEND QwertycoinTools_Daemon_Libs stdc++fs)
+endif ()
 
 add_executable(QwertycoinTools_Daemon ${QwertycoinTools_Daemon_SOURCES})
 add_executable(QwertycoinTools::Daemon ALIAS QwertycoinTools_Daemon)
@@ -109,17 +112,17 @@ set(QwertycoinTools_SimpleWallet_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/SimpleWallet/Transfer.h"
     )
 
-if(WIN32)
+if (WIN32)
     list(APPEND QwertycoinTools_SimpleWallet_SOURCES
-        "${CMAKE_CURRENT_LIST_DIR}/BinaryInfo/simplewallet.rc"
-        )
-endif()
+         "${CMAKE_CURRENT_LIST_DIR}/BinaryInfo/simplewallet.rc"
+         )
+endif ()
 
 set(QwertycoinTools_SimpleWallet_LIBS
     Boost::filesystem
     Boost::program_options
     Boost::thread
-#    QwertycoinFramework::Breakpad
+    #    QwertycoinFramework::Breakpad
     QwertycoinFramework::Common
     QwertycoinFramework::CryptoNoteCore
     QwertycoinFramework::Global
@@ -131,9 +134,9 @@ set(QwertycoinTools_SimpleWallet_LIBS
     QwertycoinFramework::Wallet
     )
 
-if(WIN32)
+if (WIN32)
     list(APPEND QwertycoinTools_SimpleWallet_LIBS ws2_32)
-endif()
+endif ()
 
 add_executable(QwertycoinTools_SimpleWallet ${QwertycoinTools_SimpleWallet_SOURCES})
 add_executable(QwertycoinTools::SimpleWallet ALIAS QwertycoinTools_SimpleWallet)
@@ -149,10 +152,10 @@ set_target_properties(QwertycoinTools_SimpleWallet PROPERTIES OUTPUT_NAME "Simpl
 # Installation
 
 install(TARGETS
-    QwertycoinTools_CryptoTest
-    QwertycoinTools_Daemon
-    QwertycoinTools_SimpleWallet
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib/static
-    )
+        QwertycoinTools_CryptoTest
+        QwertycoinTools_Daemon
+        QwertycoinTools_SimpleWallet
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib/static
+        )

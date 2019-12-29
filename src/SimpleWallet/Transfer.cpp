@@ -44,7 +44,7 @@ bool parseAmount(std::string strAmount, uint64_t amount)
 
     size_t pointIndex = strAmount.find_first_of ('.');
     size_t fractionSize;
-    size_t numDecimalPlaces = 2;
+    size_t numDecimalPlaces = CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT;
 
     if (std::string::npos != pointIndex) {
         fractionSize = strAmount.size () - pointIndex - 1;
@@ -301,6 +301,7 @@ void transfer(std::shared_ptr<WalletInfo> walletInfo, uint32_t height)
 
 
     uint64_t balance = walletInfo->wallet.getActualBalance ();
+
 
     auto maybeAddress = getDestinationAddress ();
 
