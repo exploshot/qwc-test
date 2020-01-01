@@ -1,6 +1,6 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2018-2019, The TurtleCoin Developers
-// Copyright (c) 2018-2019, The Qwertycoin developers
+// Copyright (c) 2018-2020, The Qwertycoin Project
 //
 // This file is part of Qwertycoin.
 //
@@ -16,9 +16,6 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Qwertycoin.  If not, see <http://www.gnu.org/licenses/>.
-
-
-// Copyright (c) 2018-2019, The TurtleCoin Developers
 
 #pragma once
 

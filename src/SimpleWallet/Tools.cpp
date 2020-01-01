@@ -26,9 +26,9 @@ void confirmPassword(std::string walletPass)
      * pass so copy it into a tmp string and std::move that instead
      */
     std::string tmpString = walletPass;
-    Tools::PasswordContainer pwdContainer (std::move (tmpString));
+    Tools::PasswordContainer pwdContainer(std::move(tmpString));
 
-    while (!pwdContainer.readAndValidate ()) {
+    while (!pwdContainer.readAndValidate()) {
         std::cout
             << "Incorrect password! Try again."
             << std::endl;
@@ -89,12 +89,12 @@ std::string formatDollars(uint64_t amount)
         }
     };
 
-    std::locale commaLocale (std::locale (), new CommaNumPunct ());
+    std::locale commaLocale(std::locale(), new CommaNumPunct());
     std::stringstream stream;
-    stream.imbue (commaLocale);
+    stream.imbue(commaLocale);
     stream
         << amount;
-    return stream.str ();
+    return stream.str();
 }
 
 /*!
@@ -104,16 +104,16 @@ std::string formatCents(uint64_t amount)
 {
     std::stringstream stream;
     stream
-        << std::setfill ('0')
-        << std::setw (2)
+        << std::setfill('0')
+        << std::setw(2)
         << amount;
 
-    return stream.str ();
+    return stream.str();
 }
 
 bool confirm(std::string msg)
 {
-    return confirm (msg, true);
+    return confirm(msg, true);
 }
 
 /*!
@@ -134,14 +134,14 @@ bool confirm(std::string msg, bool defaultReturn)
 
     while (true) {
         std::cout
-            << InformationMsg (msg + prompt);
+            << InformationMsg(msg + prompt);
 
         std::string answer;
-        std::getline (std::cin, answer);
+        std::getline(std::cin, answer);
 
-        char c = std::tolower (answer[0]);
+        char c = std::tolower(answer[0]);
 
-        switch (std::tolower (answer[0])) {
+        switch (std::tolower(answer[0])) {
             /*!
              * Lets people spam enter / choose default value
              */
@@ -154,9 +154,9 @@ bool confirm(std::string msg, bool defaultReturn)
         }
 
         std::cout
-            << WarningMsg ("Bad input: ")
-            << InformationMsg (answer)
-            << WarningMsg (" - please enter either Y or N.")
+            << WarningMsg("Bad input: ")
+            << InformationMsg(answer)
+            << WarningMsg(" - please enter either Y or N.")
             << std::endl;
     }
 }
@@ -165,17 +165,17 @@ std::string getPaymentID(std::string extra)
 {
     std::string paymentID;
 
-    if (extra.length () > 0) {
+    if (extra.length() > 0) {
         BinaryArray vecExtra;
 
         for (auto it : extra) {
-            vecExtra.push_back (static_cast<uint8_t>(it));
+            vecExtra.push_back(static_cast<uint8_t>(it));
         }
 
         Crypto::Hash paymentIdHash;
 
-        if (getPaymentIdFromTxExtra (vecExtra, paymentIdHash)) {
-            return Common::podToHex (paymentIdHash);
+        if (getPaymentIdFromTxExtra(vecExtra, paymentIdHash)) {
+            return Common::podToHex(paymentIdHash);
         }
     }
 
@@ -201,24 +201,24 @@ uint64_t getScanHeight()
 
         std::string stringHeight;
 
-        std::getline (std::cin, stringHeight);
+        std::getline(std::cin, stringHeight);
 
         /*!
          * Remove commas so user can enter height as e.g. 200,000
          */
-        boost::erase_all (stringHeight, ",");
+        boost::erase_all(stringHeight, ",");
 
         if (stringHeight == "") {
             return 0;
         }
 
         try {
-            return std::stoi (stringHeight);
+            return std::stoi(stringHeight);
         }
         catch (const std::invalid_argument &) {
             std::cout
-                << WarningMsg ("Failed to parse height - input is not ")
-                << WarningMsg ("a number!")
+                << WarningMsg("Failed to parse height - input is not ")
+                << WarningMsg("a number!")
                 << std::endl
                 << std::endl;
         }

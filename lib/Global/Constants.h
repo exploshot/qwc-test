@@ -1,6 +1,20 @@
 // Copyright (c) 2019, The TurtleCoin Developers
-// 
-// Please see the included LICENSE file for more information.
+// Copyright (c) 2018-2020, The Qwertycoin Project
+//
+// This file is part of Qwertycoin.
+//
+// Qwertycoin is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Qwertycoin is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with Qwertycoin.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
@@ -327,4 +341,14 @@ namespace WalletConfig {
      * The amount of memory to use storing downloaded blocks - 50MB
      */
     const size_t blockStoreMemoryLimit = 50 * Constants::MEGABYTE;
+
+    const size_t TIMESTAMP_MAX_WIDTH = 19;
+    const size_t HASH_MAX_WIDTH = 64;
+    const size_t TOTAL_AMOUNT_MAX_WIDTH = 22;
+    const size_t FEE_MAX_WIDTH = 14;
+    const size_t BLOCK_MAX_WIDTH = 7;
+    const size_t UNLOCK_TIME_MAX_WIDTH = 11;
+    const size_t MESSAGE_MAX_WIDTH = 128;
+    const size_t SENDER_MAX_WITH = 16;
+
 } // namespace WalletConfig
