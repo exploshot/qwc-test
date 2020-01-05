@@ -601,6 +601,9 @@ void inputLoop(std::shared_ptr<WalletInfo> &walletInfo, CryptoNote::INode &node)
             else if (command == "list_transfers") {
                 listTransfers(true, true, walletInfo->wallet, node);
             }
+            else if (command == "list_messages") {
+                listMessages(walletInfo->wallet, node);
+            }
             else if (command == "transfer") {
                 transfer(walletInfo, node.getLastKnownBlockHeight());
             }

@@ -27,6 +27,8 @@
 
 #include <Common/StringTools.h>
 
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
+
 #include <Global/Constants.h>
 
 #include <SimpleWallet/Sync.h>
@@ -196,6 +198,46 @@ void listTransfers(bool incoming,
         std::cout
             << WarningMsg("Total spent: " + formatAmount(totalSpent))
             << std::endl;
+    }
+}
+
+void listMessages(CryptoNote::WalletGreen &wallet,
+                  CryptoNote::INode &node)
+{
+    bool haveTransfers = false;
+    size_t txCount = wallet.getTransactionCount();
+
+    printListMessagesHeader();
+
+    for (size_t txNr = 0; txNr < txCount; ++txNr) {
+        CryptoNote::WalletTransaction t = wallet.getTransaction(txNr);
+
+        CryptoNote::KeyPair keys = wallet.getAddressSpendKey(0);
+        Crypto::SecretKey *sKey = &keys.secretKey;
+        CryptoNote::BinaryArray extraVec = Common::asBinaryArray(t.extra);
+        Crypto::PublicKey txPub = CryptoNote::getTransactionPublicKeyFromExtra(extraVec);
+        std::vector<std::string> msg = CryptoNote::getMessagesFromExtra(extraVec, txPub, sKey);
+        std::vector<std::string> sndr = CryptoNote::getSendersFromExtra(extraVec, txPub, sKey);
+
+        if (sndr.empty()) {
+            sndr = std::vector<std::string>(1);
+        }
+
+        if (msg.size() > 0) {
+            if (!haveTransfers) {
+                printListMessagesHeader();
+                haveTransfers = true;
+            }
+
+            printListMessagesItem(t, msg, sndr);
+        }
+    }
+
+    if (!haveTransfers) {
+        std::cout << WarningMsg("No messages") << std::endl;
+    }
+    else {
+        std::cout << std::endl;
     }
 }
 

@@ -42,7 +42,30 @@ std::string formatAmount(uint64_t amount)
     uint64_t dollars = amount / divider;
     uint64_t cents = amount % divider;
 
-    return formatDollars (dollars) + "." + formatCents (cents) + " " + WalletConfig::ticker;
+    return formatDollars(dollars) + "." + formatCents(cents) + " " + WalletConfig::ticker;
+}
+
+std::string formatAmountInt(int64_t amount)
+{
+    std::string s = formatAmount(static_cast<uint64_t>(std::abs(amount)));
+
+    if (amount < 0) {
+        s.insert(0, "-");
+    }
+
+    return s;
+}
+
+std::string formatAmountLegacy(uint64_t amount)
+{
+    size_t m_numberOfDecimalPlaces = CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT;
+    std::string s = std::to_string(amount);
+    if (s.size() < m_numberOfDecimalPlaces + 1) {
+        s.insert(0, m_numberOfDecimalPlaces + 1 - s.size(), '0');
+    }
+    s.insert(s.size() - m_numberOfDecimalPlaces, ".");
+
+    return s;
 }
 
 std::string formatDollars(uint64_t amount)
@@ -223,4 +246,123 @@ uint64_t getScanHeight()
                 << std::endl;
         }
     }
+}
+
+std::string makeCenteredString(size_t width, const std::string &text)
+{
+    if (text.size() >= width) {
+        return text;
+    }
+
+    size_t offset = (width - text.size() + 1) / 2;
+
+    return std::string(offset, ' ') +
+        text +
+        std::string(width - text.size() - offset, ' ');
+}
+
+void printListMessagesHeader()
+{
+    std::string header;
+    header += makeCenteredString(WalletConfig::TIMESTAMP_MAX_WIDTH, "timestamp (UTC)") + "  ";
+    header += makeCenteredString(WalletConfig::SENDER_MAX_WITH, "Sender") + "  ";
+    header += makeCenteredString(WalletConfig::MESSAGE_MAX_WIDTH, "Message");
+
+    std::cout << InformationMsg(header) << std::endl;
+    std::cout << InformationMsg(std::string(header.size(), '-')) << std::endl;
+}
+
+void printListTransfersHeader()
+{
+    std::string header;
+    header = makeCenteredString(WalletConfig::TIMESTAMP_MAX_WIDTH, "timestamp(UTC)") + "  ";
+    header += makeCenteredString(WalletConfig::HASH_MAX_WIDTH, "hash") + "  ";
+    header += makeCenteredString(WalletConfig::TOTAL_AMOUNT_MAX_WIDTH, "total amount") + "  ";
+    header += makeCenteredString(WalletConfig::FEE_MAX_WIDTH, "fee") + "  ";
+    header += makeCenteredString(WalletConfig::BLOCK_MAX_WIDTH, "block") + "  ";
+    header += makeCenteredString(WalletConfig::UNLOCK_TIME_MAX_WIDTH, "unlock time");
+
+    std::cout << InformationMsg(header) << std::endl;
+    std::cout << InformationMsg(std::string(header.size(), '-')) << std::endl;
+}
+
+void printListTransfersItem(CryptoNote::WalletTransaction tx)
+{
+    BinaryArray extraVec = Common::asBinaryArray(tx.extra);
+
+    Crypto::Hash paymentId;
+    std::string paymentIdStr = (
+        getPaymentIdFromTxExtra(extraVec, paymentId)
+            && paymentId != Constants::NULL_HASH
+        ? Common::podToHex(paymentId)
+        : ""
+    );
+
+    char timeString[WalletConfig::TIMESTAMP_MAX_WIDTH + 1];
+    time_t timestamp = static_cast<time_t>(tx.timestamp);
+    if (std::strftime(
+        timeString,
+        sizeof(timeString),
+        "%Y-%m-%d %H:%M:%S",
+        std::gmtime(&timestamp)
+    ) == 0) {
+        throw std::runtime_error("time buffer is to small");
+    }
+
+    std::stringstream txStream;
+
+    txStream << std::setw(WalletConfig::TIMESTAMP_MAX_WIDTH) << timeString << "  "
+             << std::setw(WalletConfig::HASH_MAX_WIDTH) << Common::podToHex(tx.hash) << "  "
+             << std::setw(WalletConfig::TOTAL_AMOUNT_MAX_WIDTH) << formatAmountInt(tx.totalAmount) << "  "
+             << std::setw(WalletConfig::FEE_MAX_WIDTH) << formatAmountInt(tx.fee) << "  "
+             << std::setw(WalletConfig::BLOCK_MAX_WIDTH) << tx.blockHeight << "  "
+             << std::setw(WalletConfig::UNLOCK_TIME_MAX_WIDTH) << tx.unlockTime;
+
+    std::cout << InformationMsg(txStream.str()) << std::endl;
+
+    if (!paymentIdStr.empty()) {
+        std::cout << "payment ID: " << paymentIdStr << std::endl;
+    }
+}
+
+void printListMessagesItem(CryptoNote::WalletTransaction tx,
+                           std::vector<std::string> messages,
+                           std::vector<std::string> senders)
+{
+    BinaryArray extraVec = Common::asBinaryArray(tx.extra);
+    std::string deliv = "In delivery";
+    std::string ttl = "Self destructing";
+    std::string badTime = "1970-01-01 00:00:00";
+
+    char timeString[WalletConfig::TIMESTAMP_MAX_WIDTH + 1];
+    time_t timestamp = static_cast<time_t>(tx.timestamp);
+
+    if (std::strftime(timeString, sizeof(timeString), "%Y-%m-%d %H:%M:%S", gmtime(&timestamp)) == 0) {
+        throw std::runtime_error("time buffer is too small");
+    }
+
+    if (std::strcmp(timeString, badTime.c_str()) == 0) {
+        std::strcpy(timeString, deliv.c_str());
+    }
+    else if (tx.fee == 0) {
+        std::strcpy(timeString, ttl.c_str());
+    }
+
+    for (int i = 0; i < messages.size(); ++i) {
+        std::string validSender = "";
+
+        if (senders.at(i) == "") {
+            validSender = "Anonymous";
+        }
+        else {
+            validSender = senders.at(i).substr(senders.at(i).size() - 16);
+        }
+
+        std::stringstream messageStream;
+        messageStream << std::setw(WalletConfig::TIMESTAMP_MAX_WIDTH) << timeString << "  "
+                      << std::setw(WalletConfig::SENDER_MAX_WITH) << validSender << "  "
+                      << std::setw(WalletConfig::MESSAGE_MAX_WIDTH) << messages[i];
+        std::cout << SuccessMsg(messageStream.str()) << std::endl;
+    }
+
 }

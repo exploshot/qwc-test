@@ -24,7 +24,11 @@
 #include <Utilities/ColouredMsg.h>
 
 void listTransfers(bool incoming, bool outgoing,
-                   CryptoNote::WalletGreen &wallet, CryptoNote::INode &node);
+                   CryptoNote::WalletGreen &wallet,
+                   CryptoNote::INode &node);
+
+void listMessages(CryptoNote::WalletGreen &wallet,
+                  CryptoNote::INode &node);
 
 void printOutgoingTransfer(CryptoNote::WalletTransaction t,
                            CryptoNote::INode &node);

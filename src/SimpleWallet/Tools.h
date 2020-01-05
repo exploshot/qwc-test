@@ -21,3 +21,12 @@ std::string formatCents(uint64_t amount);
 std::string getPaymentID(std::string extra);
 
 uint64_t getScanHeight();
+
+std::string makeCenteredString(size_t width, const std::string &text);
+
+void printListMessagesHeader();
+void printListTransfersHeader();
+void printListTransfersItem(CryptoNote::WalletTransaction tx);
+void printListMessagesItem(CryptoNote::WalletTransaction tx,
+                           std::vector<std::string> messages,
+                           std::vector<std::string> senders);
