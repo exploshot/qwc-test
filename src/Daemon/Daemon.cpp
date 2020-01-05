@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
      * If we were given the resync arg, we're deleting everything
      */
     if (config.resync) {
-        std::error_code ec;
+        boost::system::error_code ec;
 
         std::vector<std::string> removablePaths = {
             config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKS_FILENAME,

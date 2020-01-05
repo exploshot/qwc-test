@@ -330,7 +330,7 @@ namespace Tools {
 
     bool createDirectoriesIfNecessary(const std::string &path)
     {
-        std::error_code e;
+        boost::system::error_code e;
         fs::create_directories (path, e);
 
         return e.value () == 0;
@@ -338,7 +338,7 @@ namespace Tools {
 
     bool directoryExists(const std::string &path)
     {
-        std::error_code e;
+        boost::system::error_code e;
 
         return fs::is_directory (path, e);
     }

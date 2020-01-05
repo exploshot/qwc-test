@@ -76,10 +76,6 @@ set(QwertycoinTools_Daemon_LIBS
     QwertycoinFramework::Utilities
     )
 
-if (!WIN32)
-    list(APPEND QwertycoinTools_Daemon_Libs stdc++fs)
-endif ()
-
 add_executable(QwertycoinTools_Daemon ${QwertycoinTools_Daemon_SOURCES})
 add_executable(QwertycoinTools::Daemon ALIAS QwertycoinTools_Daemon)
 target_include_directories(QwertycoinTools_Daemon PRIVATE ${QwertycoinTools_INCLUDE_DIRS})
@@ -119,7 +115,6 @@ if (WIN32)
 endif ()
 
 set(QwertycoinTools_SimpleWallet_LIBS
-    Boost::filesystem
     Boost::program_options
     Boost::thread
     #    QwertycoinFramework::Breakpad

@@ -187,6 +187,7 @@ set(QwertycoinFramework_Common_SOURCES
     )
 
 set(QwertycoinFramework_Common_LIBS
+    Boost::filesystem
     Threads::Threads
     QwertycoinFramework::Crypto
     QwertycoinFramework::Global
@@ -382,10 +383,6 @@ set(QwertycoinFramework_CryptoNoteCore_LIBS
     QwertycoinFramework::Logging
     QwertycoinFramework::Serialization
     )
-
-if (!WIN32)
-    list(APPEND QwertycoinFramework_CryptoNoteCore_LIBS stdc++fs)
-endif ()
 
 add_library(QwertycoinFramework_CryptoNoteCore STATIC ${QwertycoinFramework_CryptoNoteCore_SOURCES})
 add_library(QwertycoinFramework::CryptoNoteCore ALIAS QwertycoinFramework_CryptoNoteCore)
@@ -665,10 +662,6 @@ set(QwertycoinFramework_Serialization_LIBS
     QwertycoinFramework::Common
     )
 
-if (!WIN32)
-    list(APPEND QwertycoinFramework_Serialization_LIBS stdc++fs)
-endif ()
-
 add_library(QwertycoinFramework_Serialization STATIC ${QwertycoinFramework_Serialization_SOURCES})
 add_library(QwertycoinFramework::Serialization ALIAS QwertycoinFramework_Serialization)
 target_include_directories(QwertycoinFramework_Serialization PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
@@ -894,10 +887,6 @@ set(QwertycoinFramework_Utilities_SOURCES
 set(QwertycoinFramework_Utilities_LIBS
     QwertycoinFramework::SubWallets
     )
-
-if (!WIN32)
-    list(APPEND QwertycoinFramework_Utilities_LIBS stdc++fs)
-endif ()
 
 add_library(QwertycoinFramework_Utilities STATIC ${QwertycoinFramework_Utilities_SOURCES})
 add_library(QwertycoinFramework::Utilities ALIAS QwertycoinFramework_Utilities)
