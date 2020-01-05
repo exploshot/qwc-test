@@ -378,7 +378,7 @@ Maybe<std::shared_ptr<WalletInfo>> openWallet(CryptoNote::WalletGreen &wallet,
 Crypto::SecretKey getPrivateKey(std::string msg)
 {
     size_t privateKeyLen = 64;
-    size_t size;
+    uint64_t size;
 
     std::string privateKeyString;
     Crypto::Hash privateKeyHash;

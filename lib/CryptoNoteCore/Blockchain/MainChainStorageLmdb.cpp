@@ -50,8 +50,8 @@ namespace CryptoNote {
         /*!
             create db file if not already exists
         */
-        if (!std::ifstream (m_dbpath)) {
-            std::ofstream file (m_dbpath);
+        if (!fs::ifstream (m_dbpath)) {
+            fs::ofstream file (m_dbpath);
             if (!file) {
                 throw std::runtime_error ("Failed to create db file");
             }

@@ -77,8 +77,8 @@ void LmDBWrapper::init(const DataBaseConfig &config)
         }
     }
 
-    if (!std::ifstream (m_dbFile)) {
-        std::ofstream file (m_dbFile);
+    if (!fs::ifstream (m_dbFile)) {
+        fs::ofstream file (m_dbFile);
         if (!file) {
             logger (ERROR)
                 << "Failed to create db file";
