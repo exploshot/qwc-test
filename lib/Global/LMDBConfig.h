@@ -20,6 +20,7 @@
 namespace LMDB {
     const std::string DB_NAME = "DB";
     const std::string TESTNET_DB_NAME = "testnet_DB";
+    const uint8_t DB_VERSION = 1;
 
     const size_t MAX_DIRTY = 1000;
 

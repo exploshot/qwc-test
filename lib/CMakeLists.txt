@@ -259,6 +259,11 @@ endif ()
 # QwertycoinFramework::CryptoNoteCore
 
 set(QwertycoinFramework_CryptoNoteCore_SOURCES
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/LMDB/BinaryArchive.h"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/LMDB/BinaryArrayDataType.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/LMDB/BinaryArrayDataType.h"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/LMDB/BlockchainDB.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/LMDB/BlockchainDB.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainCache.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainCache.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainMessages.cpp"
@@ -361,6 +366,8 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/IntrusiveLinkedList.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/ITimeProvider.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/IUpgradeDetector.h"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Hardfork.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Hardfork.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/MessageQueue.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Mixins.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/SwappedVector.h"

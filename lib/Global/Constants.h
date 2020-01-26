@@ -352,3 +352,17 @@ namespace WalletConfig {
     const size_t SENDER_MAX_WITH = 16;
 
 } // namespace WalletConfig
+
+namespace Hardfork {
+    /*!
+     * Actual Height
+     */
+    const uint64_t DEFAULT_ORIGINAL_VERSION_TILL_HEIGHT = 0;
+
+    /*!
+     * Supermajority window check length - a week
+     */
+     const uint64_t DEFAULT_WINDOW_SIZE = 10080;
+
+     const uint8_t DEFAULT_THRESHOLD_PERCENT = 80;
+}
