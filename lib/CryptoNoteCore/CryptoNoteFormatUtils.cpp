@@ -284,4 +284,27 @@ namespace CryptoNote {
                                    });
     }
 
+    blobData CryptoNote::blockToBlob(const CryptoNote::BlockTemplate &block)
+    {
+        blobData bD;
+        BinaryArray bA = storeToBinary(block);
+        bD = Common::asString(bA);
+        return bD;
+    }
+
+    blobData CryptoNote::txToBlob(const CryptoNote::Transaction &tx)
+    {
+        blobData bD;
+        BinaryArray bA = storeToBinary(tx);
+        bD = Common::asString(bA);
+        return bD;
+    }
+
+    bool CryptoNote::txToBlob(const CryptoNote::Transaction &tx, CryptoNote::blobData &txBlob)
+    {
+        BinaryArray bA = storeToBinary(tx);
+        txBlob = Common::asString(bA);
+        return !txBlob.empty();
+    }
+
 } // namespace CryptoNote
