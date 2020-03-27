@@ -276,8 +276,10 @@ int main(int argc, char *argv[])
         }
         CryptoNote::Currency currency = currencyBuilder.currency ();
 
-        /* If we were told to rewind the blockchain to a certain height
-           we will remove blocks until we're back at the height specified */
+        /*!
+         * If we were told to rewind the blockchain to a certain height
+         * we will remove blocks until we're back at the height specified
+         */
         if (config.rewindToHeight > 0) {
             logger (INFO)
                 << "Rewinding blockchain to: "

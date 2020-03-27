@@ -72,10 +72,9 @@ struct BinaryArchive;
 template<>
 struct BinaryArchive<false>: public BinaryArchiveBase<std::istream, false>
 {
-    explicit BinaryArchive(streamType &s)
-        : baseType(s)
+    explicit BinaryArchive(streamType &s) : baseType(s)
     {
-        streamType::streampos pos = mStream.tellg();
+        std::streampos pos = mStream.tellg();
         mStream.seekg(0, std::ios_base::end);
         mEofPos = mStream.tellg();
         mStream.seekg(pos);

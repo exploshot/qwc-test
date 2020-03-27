@@ -24,6 +24,7 @@
 #include <CryptoNoteCore/Account.h>
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 
 #include <Global/CryptoNoteConfig.h>
 
@@ -38,6 +39,24 @@ using namespace Crypto;
 using namespace Common;
 
 namespace CryptoNote {
+
+    bool parseAndValidateTransactionFromBinaryArray(const BinaryArray &txBinaryArray,
+                                                    Transaction &tx,
+                                                    Crypto::Hash &txHash,
+                                                    Crypto::Hash &txPrefixHash)
+    {
+        if (!fromBinaryArray (tx, txBinaryArray)) {
+            return false;
+        }
+
+        /*!
+         * TODO: validate Tx
+         */
+        CnFastHash (txBinaryArray.data(), txBinaryArray.size(), txHash);
+        getObjectHash (*static_cast<TransactionPrefix *>(&tx), txPrefixHash);
+
+        return true;
+    }
 
     bool generateKeyImageHelper(const AccountKeys &ack,
                                 const PublicKey &txPublicKey,
@@ -233,6 +252,115 @@ namespace CryptoNote {
         return isOutToAcc (acc, outKey, derivation, keyIndex);
     }
 
+    bool lookupAccOuts(const AccountKeys &acc,
+                       const Transaction &tx,
+                       std::vector<size_t> &outs,
+                       uint64_t &moneyTransfered)
+    {
+        PublicKey txPubKey = getTransactionPublicKeyFromExtra(tx.extra);
+        if (txPubKey == Constants::NULL_PUBLIC_KEY) {
+            return false;
+        }
+
+        return lookupAccOuts (acc, tx, txPubKey, outs, moneyTransfered);
+    }
+
+    bool lookupAccOuts(const AccountKeys &acc,
+                       const Transaction &tx,
+                       const Crypto::PublicKey &txPubKey,
+                       std::vector<size_t> &outs,
+                       uint64_t &moneyTransfered)
+    {
+        moneyTransfered = 0;
+        size_t keyIndex = 0;
+        size_t outputIndex = 0;
+
+        KeyDerivation derivation;
+        generateKeyDerivation(txPubKey, acc.viewSecretKey, derivation);
+
+        for (const TransactionOutput &o : tx.outputs) {
+            assert(o.target.type() == typeid (KeyOutput) || o.target.type() == typeid (MultisignatureOutput));
+            if (o.target.type() == typeid (KeyOutput)) {
+                if (isOutToAcc (acc, boost::get<KeyOutput> (o.target), derivation, keyIndex)) {
+                    outs.push_back(outputIndex);
+                    moneyTransfered += o.amount;
+                }
+
+                ++keyIndex;
+            } else if (o.target.type() == typeid (MultisignatureOutput)) {
+                keyIndex += boost::get<MultisignatureOutput>(o.target).keys.size();
+            }
+
+            ++outputIndex;
+        }
+
+        return true;
+    }
+
+    bool getBlockHashingBlob(const BlockTemplate &b, BinaryArray &blob)
+    {
+        if (!toBinaryArray (static_cast<const BlockHeader &>(b), blob)) {
+            return false;
+        }
+
+        Hash treeRootHash = getTxTreeHash(b);
+        blob.insert(blob.end(), treeRootHash.data, treeRootHash.data + 32);
+        auto txCount = asBinaryArray(Tools::getVarintData(b.transactionHashes.size() + 1));
+        blob.insert(blob.end(), txCount.begin(), txCount.end());
+
+        return true;
+    }
+
+    bool getParentBlockHashingBlob(const BlockTemplate &b, BinaryArray &blob)
+    {
+        auto serializer = makeParentBlockSerializer(b, true, true);
+
+        return toBinaryArray (serializer, blob);
+    }
+
+    bool getBlockHash(const BlockTemplate &b, Crypto::Hash &res)
+    {
+        BinaryArray bA;
+        if (!getBlockHashingBlob (b, bA)) {
+            return false;
+        }
+
+        /*!
+         * The header of block version 1 differs from headers of blocks starting from v.2
+         */
+        if (BLOCK_MAJOR_VERSION_2 == b.majorVersion || BLOCK_MAJOR_VERSION_3 == b.majorVersion) {
+            BinaryArray parentBlob;
+            auto serializer = makeParentBlockSerializer (b, true, false);
+            if (!toBinaryArray (serializer, parentBlob)) {
+                return false;
+            }
+
+            bA.insert(bA.end(), parentBlob.begin(), parentBlob.end());
+        }
+
+        return getObjectHash(bA, res);
+    }
+
+    Hash getBlockHash(const BlockTemplate &b)
+    {
+        Hash p = Constants::NULL_HASH;
+        getBlockHash(b, p);
+
+        return p;
+    }
+
+    bool getAuxBlockHeaderHash(const BlockTemplate &b, Crypto::Hash &res)
+    {
+        BinaryArray blob;
+        if (!getBlockHashingBlob (b, blob)) {
+            return false;
+        }
+
+        return getObjectHash (blob, res);
+    }
+
+
+
     uint64_t getInputAmount(const Transaction &transaction)
     {
         uint64_t amount = 0;
@@ -284,7 +412,71 @@ namespace CryptoNote {
                                    });
     }
 
-    blobData CryptoNote::blockToBlob(const CryptoNote::BlockTemplate &block)
+    void getTxTreeHash(const std::vector<Crypto::Hash> &txHashes, Crypto::Hash &h)
+    {
+        treeHash(txHashes.data(), txHashes.size(), h);
+    }
+
+    Hash getTxTreeHash(const std::vector<Crypto::Hash> &txHashes)
+    {
+        Hash h = Constants::NULL_HASH;
+        getTxTreeHash(txHashes, h);
+        return h;
+    }
+
+    Hash getTxTreeHash(const BlockTemplate &b)
+    {
+        std::vector<Hash> txIds;
+        Hash h = Constants::NULL_HASH;
+        getObjectHash(b.baseTransaction, h);
+        txIds.push_back(h);
+        for (auto &tH : b.transactionHashes) {
+            txIds.push_back (tH);
+        }
+
+        return getTxTreeHash(txIds);
+    }
+
+    bool parseAndValidateTxFromBlob(const CryptoNote::blobData &txBlob,
+                                    CryptoNote::Transaction &tx,
+                                    Crypto::Hash &txHash,
+                                    Crypto::Hash &txPrefixHash)
+    {
+        std::stringstream ss;
+        ss << txBlob;
+        BinaryArray bA = fromHex (ss.str().c_str());
+        bA.pop_back();
+        bool r = parseAndValidateTransactionFromBinaryArray(bA, tx, txHash, txPrefixHash);
+
+        return r;
+    }
+
+    bool parseAndValidateTxFromBlob(const CryptoNote::blobData &txBlob,
+                                    CryptoNote::Transaction &tx)
+    {
+        BinaryArray bA = asBinaryArray (txBlob.c_str());
+        bA.pop_back();
+        Crypto::Hash txHash, txPrefixHash;
+        bool r = parseAndValidateTransactionFromBinaryArray(bA, tx, txHash, txPrefixHash);
+
+        return r;
+    }
+
+    bool parseAndValidateBlockFromBlob(const CryptoNote::blobData &bBlob,
+                                       CryptoNote::BlockTemplate &tx)
+    {
+        std::stringstream ss;
+        ss << bBlob;
+        BinaryArchive<true> bA(ss);
+        bool r = Serial::serialize (bA, tx);
+        if (!r) {
+            return false;
+        }
+
+        return true;
+    }
+
+    blobData blockToBlob(const CryptoNote::BlockTemplate &block)
     {
         blobData bD;
         BinaryArray bA = storeToBinary(block);
@@ -292,7 +484,7 @@ namespace CryptoNote {
         return bD;
     }
 
-    blobData CryptoNote::txToBlob(const CryptoNote::Transaction &tx)
+    blobData txToBlob(const CryptoNote::Transaction &tx)
     {
         blobData bD;
         BinaryArray bA = storeToBinary(tx);
@@ -300,7 +492,7 @@ namespace CryptoNote {
         return bD;
     }
 
-    bool CryptoNote::txToBlob(const CryptoNote::Transaction &tx, CryptoNote::blobData &txBlob)
+    bool txToBlob(const CryptoNote::Transaction &tx, CryptoNote::blobData &txBlob)
     {
         BinaryArray bA = storeToBinary(tx);
         txBlob = Common::asString(bA);

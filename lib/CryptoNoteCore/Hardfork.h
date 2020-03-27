@@ -57,9 +57,9 @@ namespace CryptoNote
          */
         Hardfork(BlockchainDB &db,
                  uint8_t originalVersion = 1,
-                 uint64_t originalVersionTillHeight = Hardfork::DEFAULT_ORIGINAL_VERSION_TILL_HEIGHT,
-                 uint64_t windowSize = Hardfork::DEFAULT_WINDOW_SIZE,
-                 uint8_t defaultThresholdPercent = Hardfork::DEFAULT_THRESHOLD_PERCENT);
+                 uint64_t originalVersionTillHeight = ::Hardfork::DEFAULT_ORIGINAL_VERSION_TILL_HEIGHT,
+                 uint64_t windowSize = ::Hardfork::DEFAULT_WINDOW_SIZE,
+                 uint8_t defaultThresholdPercent = ::Hardfork::DEFAULT_THRESHOLD_PERCENT);
 
         uint8_t getBlockVote(CryptoNote::BlockTemplate const *b) const;
         uint8_t getBlockVersion(CryptoNote::BlockTemplate const *b) const;

@@ -478,7 +478,7 @@ namespace CryptoNote {
         uint64_t timeCommit1 = 0;  //!< a performance metric
         bool mAutoRemoveLogs = true;  //!< whether or not to automatically remove old logs
 
-        HardFork* mHardfork;
+        Hardfork* mHardfork;
 
     public:
         virtual void doResize();
@@ -693,7 +693,7 @@ namespace CryptoNote {
         virtual void blockTxnStop() = 0;
         virtual void blockTxnAbort() = 0;
 
-        virtual setHardFork(Hardfork *hf);
+        virtual void setHardFork(Hardfork *hf);
 
         // adds a block with the given metadata to the top of the blockchain, returns the new height
         /*!
@@ -1303,7 +1303,7 @@ namespace CryptoNote {
          *
          * @return the blob for that transaction
          */
-        virtual CryptoNote::blobdata getTxPoolTxBlob(const Crypto::Hash &txId) const = 0;
+        virtual CryptoNote::blobData getTxPoolTxBlob(const Crypto::Hash &txId) const = 0;
 
         /*!
          * @brief runs a function over all txPool transactions
@@ -1467,5 +1467,7 @@ namespace CryptoNote {
 
         bool mOpen; //!< Whether or not the BlockchainDB is open/ready for use
         mutable std::recursive_mutex mSynchronizationLock;  //!< A lock, currently for when BlockchainLMDB needs to resize the backing db file
-    };
+    }; // class BlockchainDB
+
+    BlockchainDB *newDB(const std::string &DBType);
 } // namespace CryptoNote

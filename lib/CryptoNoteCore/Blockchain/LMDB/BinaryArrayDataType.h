@@ -175,7 +175,7 @@ namespace CryptoNote {
         template <class Archive>
         bool checkStreamState(Archive &ar)
         {
-            return Detail::doCheckStreamState(ar.stream(), typename Archive::is_saving());
+            return Detail::doCheckStreamState(ar.stream(), typename Archive::isSaving());
         }
 
         /*!

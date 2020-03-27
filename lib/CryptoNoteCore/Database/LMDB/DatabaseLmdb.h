@@ -119,7 +119,7 @@ namespace CryptoNote {
         bool mBatchTxn = false;
         bool mCheck;
 
-        mdbThreadInfo mTInfo;
+        mdbThreadInfo* mTInfo;
         MDB_txn* mTxn;
 
         uint64_t numActiveTx() const;
@@ -155,7 +155,7 @@ namespace CryptoNote {
         virtual void open(const std::string &filename, const int mdbFlags = 0);
         virtual void close();
         virtual void sync();
-        virtual void safeSyncmode(const bool onOff);
+        virtual void safeSyncMode(const bool onOff);
         virtual void reset();
         virtual std::vector<std::string> getFilenames() const;
         virtual std::string getDBName() const;
@@ -163,6 +163,7 @@ namespace CryptoNote {
         virtual void unlock();
         virtual bool blockExists(const Crypto::Hash &h, uint64_t *height = NULL) const;
         virtual uint64_t getBlockHeight(const Crypto::Hash &h) const;
+        virtual CryptoNote::BlockHeader getBlockHeader(const Crypto::Hash &h) const;
         virtual CryptoNote::blobData getBlockBlob(const Crypto::Hash &h) const;
         virtual CryptoNote::blobData getBlockBlobFromHeight(const uint64_t &height) const;
         virtual uint64_t getBlockTimestamp(const uint64_t &height) const;
@@ -173,7 +174,7 @@ namespace CryptoNote {
         virtual uint64_t getBlockAlreadyGeneratedCoins(const uint64_t &height) const;
         virtual Crypto::Hash getBlockHashFromHeight(const uint64_t &height) const;
         virtual std::vector<CryptoNote::BlockTemplate> getBlocksRange(const uint64_t &h1, const uint64_t &h2) const;
-        virtual std::vector<Crypto::Hash> getHashesRange(const uint64_t &h1, const uint64_t &h2);
+        virtual std::vector<Crypto::Hash> getHashesRange(const uint64_t &h1, const uint64_t &h2) const;
         virtual Crypto::Hash topBlockHash() const;
         virtual CryptoNote::BlockTemplate getTopBlock() const;
         virtual uint64_t height() const;
@@ -193,11 +194,12 @@ namespace CryptoNote {
                                   bool allowPartial = false);
         virtual txOutIndex getOutputTxAndIndexFromGlobal(const uint64_t &index) const;
         virtual void getOutputTxAndIndexFromGlobal(const std::vector<uint64_t> &globalIndices,
-                                                   std::vecotr<txOutIndex> &txOutIndices) const;
+                                                   std::vector<txOutIndex> &txOutIndices) const;
         virtual txOutIndex getOutputTxAndIndex(const uint64_t &amount, const uint32_t &index) const;
         virtual void getOutputTxAndIndex(const uint64_t &amount,
                                          const std::vector<uint32_t> &offsets,
                                          std::vector<txOutIndex> &indices) const;
+        virtual std::vector<uint64_t> getTxAmountOutputIndices(const uint64_t txId) const;
         virtual bool hasKeyImage(const Crypto::KeyImage &kImg) const;
         virtual void addTxPoolTx(const CryptoNote::Transaction &tx, const TxPoolTxMetaT &meta);
         virtual void updateTxPoolTx(const Crypto::Hash &txId, const TxPoolTxMetaT &meta);
@@ -209,7 +211,7 @@ namespace CryptoNote {
         virtual CryptoNote::blobData getTxPoolTxBlob(const Crypto::Hash &txId) const;
         virtual bool forAllTxPoolTxes(std::function<bool(const Crypto::Hash &,
                                                          const TxPoolTxMetaT &,
-                                                         const CryptoNote::blobData*>) f,
+                                                         const CryptoNote::blobData *)> f,
                                       bool includeBlob = false,
                                       bool includeUnrelayedTxes = true) const;
         virtual bool forAllKeyImages(std::function<bool(const Crypto::KeyImage &)>) const;
@@ -238,7 +240,7 @@ namespace CryptoNote {
         virtual void blockTxnStart(bool readonly);
         virtual void blockTxnStop();
         virtual void blockTxnAbort();
-        virtual void blockRTxnStart(MDB_txn **mTxn, mdbTxnCursors **mCur) const;
+        virtual bool blockRTxnStart(MDB_txn **mTxn, mdbTxnCursors **mCur) const;
         virtual void blockRTxnStop() const;
         virtual void popBlock(CryptoNote::BlockTemplate &block, std::vector<CryptoNote::Transaction> &txs);
         virtual bool canThreadBulkIndices() const
@@ -277,7 +279,8 @@ namespace CryptoNote {
                                    const CryptoNote::TransactionOutput &txOutput,
                                    const uint64_t &localIndex,
                                    const uint64_t &unlockTime);
-        virtual void addTxAmountOutputIndices(const uint64_t txId, const std::vector<uint64_t &amountOutputIndices);
+        virtual void addTxAmountOutputIndices(const uint64_t txId,
+                                              const std::vector<uint64_t> &amountOutputIndices);
         void removeTxOutputs(const uint64_t txId, const CryptoNote::Transaction &tx);
         void removeOutput(const uint64_t amount, const uint64_t &outIndex);
         virtual void addSpentKey(const Crypto::KeyImage &kImage);
@@ -295,7 +298,7 @@ namespace CryptoNote {
          *
          * @return the resultant blob
          */
-        CryptoNote::blobData outputToBlob(const CryptoNote::TrnasactionOutput &output) const;
+        CryptoNote::blobData outputToBlob(const CryptoNote::TransactionOutput &output) const;
 
         /*!
          * @brief convert a tx output blob to a tx output
@@ -363,7 +366,7 @@ namespace CryptoNote {
         /*!
          * persist batch txn outside of BlockchainLMDB
          */
-        mdbTxnSage *mWriteBatchTxn;
+        mdbTxnSafe *mWriteBatchTxn;
         boost::thread::id mWriter;
 
         /*!
@@ -374,7 +377,7 @@ namespace CryptoNote {
         /*!
          * whether batch transaction is in progress
          */
-        bool mBatchActive
+        bool mBatchActive;
 
         mdbTxnCursors mWCursors;
         mutable boost::thread_specific_ptr<mdbThreadInfo> mTInfo;

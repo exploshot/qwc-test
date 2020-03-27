@@ -41,6 +41,7 @@ namespace CryptoNote {
 		const size_t   CRYPTONOTE_MAX_TX_SIZE 								= 1000000000;
 		const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX 				= 0x14820c; 
 		const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW 				= 60;
+		const uint32_t CRYPTONOTE_TX_SPENDABLE_AGE                          = 10;
 
 		const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT 					= DIFFICULTY_TARGET * 60; // 7200
 		const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2 				= DIFFICULTY_TARGET * 6;  // 720 //5.0
@@ -245,6 +246,9 @@ namespace CryptoNote {
 		const char     CRYPTONOTE_POOLDATA_FILENAME[]                       = "poolstate.bin";
 		const char     P2P_NET_DATA_FILENAME[]                              = "p2pstate.bin";
 		const char     MINER_CONFIG_FILE_NAME[]                             = "miner_conf.json";
+		// LMDB
+        const char     CRYPTONOTE_BLOCKCHAINDATA_LOCK_FILENAME[]            = "mdb.lock";
+        const char     CRYPTONOTE_BLOCKCHAINDATA_FILENAME[]                 = "data.mdb";
 	} // namespace parameters
 
 	const char     CRYPTONOTE_NAME[]                             		    = "Qwertycoin";
