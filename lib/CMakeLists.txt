@@ -268,6 +268,8 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/LMDB/Structures.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainCache.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainCache.h"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainIndices.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainIndices.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainMessages.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainMessages.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainReadBatch.cpp"

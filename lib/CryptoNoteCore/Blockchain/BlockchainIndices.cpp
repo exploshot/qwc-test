@@ -17,6 +17,7 @@
 // along with Qwertycoin.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <CryptoNoteCore/Blockchain/BlockchainIndices.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 
 namespace CryptoNote {
     namespace {
@@ -40,7 +41,7 @@ namespace CryptoNote {
         }
 
         Crypto::Hash paymentId;
-        Crypto::Hash txHash = getObjectHash (transaction);
+        Crypto::Hash txHash = CryptoNote::getObjectHash (transaction);
 
         if (!getPaymentIdFromTxExtra(transaction.extra, paymentId)) {
             return false;
@@ -139,7 +140,7 @@ namespace CryptoNote {
             return false;
         }
 
-        index.emplace(timestamp, hash)
+        index.emplace(timestamp, hash);
         return true;
     }
 
@@ -173,7 +174,7 @@ namespace CryptoNote {
 
         uint32_t hashesNumber = 0;
         if (timestampBegin > timestampEnd) {
-            return fasle;
+            return false;
         }
 
         auto begin = index.lower_bound(timestampBegin);
@@ -285,13 +286,13 @@ namespace CryptoNote {
         s(index, "index");
     }
 
-    GeneratedTransactionsIndex::GeneratedTransactionsIndex(bool _enabled)
+    GeneratedTransactionIndex::GeneratedTransactionIndex(bool _enabled)
         : lastGeneratedTxNumber(0),
           enabled(_enabled)
     {
     }
 
-    bool GeneratedTransactionsIndex::add(const Block &block)
+    bool GeneratedTransactionIndex::add(const BlockTemplate &block)
     {
         if (!enabled) {
             return false;
@@ -316,7 +317,7 @@ namespace CryptoNote {
         return status;
     }
 
-    bool GeneratedTransactionsIndex::remove(const Block &block)
+    bool GeneratedTransactionIndex::remove(const BlockTemplate &block)
     {
         if (!enabled) {
             return false;
@@ -346,7 +347,7 @@ namespace CryptoNote {
         return true;
     }
 
-    bool GeneratedTransactionsIndex::find(uint32_t height,
+    bool GeneratedTransactionIndex::find(uint32_t height,
                                           uint64_t& generatedTransactions)
     {
         if (!enabled) {
@@ -365,14 +366,14 @@ namespace CryptoNote {
         return true;
     }
 
-    void GeneratedTransactionsIndex::clear()
+    void GeneratedTransactionIndex::clear()
     {
         if (enabled) {
             index.clear();
         }
     }
 
-    void GeneratedTransactionsIndex::serialize(ISerializer& s)
+    void GeneratedTransactionIndex::serialize(ISerializer& s)
     {
         if (!enabled) {
             throw std::runtime_error("Generated transactions index disabled.");
@@ -387,13 +388,13 @@ namespace CryptoNote {
     {
     }
 
-    bool OrphanBlocksIndex::add(const Block& block)
+    bool OrphanBlocksIndex::add(const BlockTemplate& block)
     {
         if (!enabled) {
             return false;
         }
 
-        Crypto::Hash blockHash = get_block_hash(block);
+        Crypto::Hash blockHash = getBlockHash(block);
         uint32_t blockHeight = boost::get<BaseInput>(block
                                                      .baseTransaction
                                                      .inputs
@@ -403,13 +404,13 @@ namespace CryptoNote {
         return true;
     }
 
-    bool OrphanBlocksIndex::remove(const Block& block)
+    bool OrphanBlocksIndex::remove(const BlockTemplate& block)
     {
         if (!enabled) {
             return false;
         }
 
-        Crypto::Hash blockHash = get_block_hash(block);
+        Crypto::Hash blockHash = getBlockHash(block);
         uint32_t blockHeight = boost::get<BaseInput>(block
                                                      .baseTransaction
                                                      .inputs

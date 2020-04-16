@@ -24,8 +24,11 @@
 
 #include <boost/functional/hash.hpp>
 
+#include <Common/CryptoNoteTools.h>
+
 #include <Crypto/Hash.h>
 #include <CryptoNoteCore/CryptoNoteBasic.h>
+#include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 
 namespace CryptoNote {
 
@@ -115,10 +118,10 @@ namespace CryptoNote {
     class GeneratedTransactionIndex
     {
     public:
-        GeneratedTransactionsIndex(bool enabled);
+        GeneratedTransactionIndex(bool enabled);
 
-        bool add(const Block& block);
-        bool remove(const Block& block);
+        bool add(const BlockTemplate& block);
+        bool remove(const BlockTemplate& block);
         bool find(uint32_t height, uint64_t& generatedTransactions);
         void clear();
 
@@ -141,8 +144,8 @@ namespace CryptoNote {
     public:
         OrphanBlocksIndex(bool enabled);
 
-        bool add(const Block& block);
-        bool remove(const Block& block);
+        bool add(const BlockTemplate& block);
+        bool remove(const BlockTemplate& block);
         bool find(uint32_t height, std::vector<Crypto::Hash>& blockHashes);
         void clear();
 
