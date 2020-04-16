@@ -217,7 +217,6 @@ int main(int argc, char *argv[])
             config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKINDEXES_FILENAME,
             config.dataDirectory + "/" + CryptoNote::parameters::P2P_NET_DATA_FILENAME,
             config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKS_FILENAME + ".mdb",
-            config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKS_FILENAME + ".sqlite3",
             config.dataDirectory + "/DB"
         };
 
@@ -287,9 +286,7 @@ int main(int argc, char *argv[])
                 << std::endl;
             std::unique_ptr<IMainChainStorage> mainChainStorage;
 
-            if (config.useSqliteForLocalCaches) {
-                mainChainStorage = createSwappedMainChainStorageSqlite (config.dataDirectory, currency);
-            } else if (config.useLmdbForLocalCaches) {
+            if (config.useLmdbForLocalCaches) {
                 mainChainStorage = createSwappedMainChainStorageLmdb (config.dataDirectory, currency);
             } else {
                 mainChainStorage = createSwappedMainChainStorage (config.dataDirectory, currency);
@@ -377,13 +374,11 @@ int main(int argc, char *argv[])
         logger (INFO)
             << "Initializing core...";
 
-        std::unique_ptr<IMainChainStorage> tmainChainStorage;
-        if (config.useSqliteForLocalCaches) {
-            tmainChainStorage = createSwappedMainChainStorageSqlite (config.dataDirectory, currency);
-        } else if (config.useLmdbForLocalCaches) {
-            tmainChainStorage = createSwappedMainChainStorageLmdb (config.dataDirectory, currency);
+        std::unique_ptr<IMainChainStorage> tMainChainStorage;
+        if (config.useLmdbForLocalCaches) {
+            tMainChainStorage = createSwappedMainChainStorageLmdb (config.dataDirectory, currency);
         } else {
-            tmainChainStorage = createSwappedMainChainStorage (config.dataDirectory, currency);
+            tMainChainStorage = createSwappedMainChainStorage (config.dataDirectory, currency);
         }
 
         CryptoNote::Core ccore (
@@ -393,7 +388,7 @@ int main(int argc, char *argv[])
             dispatcher,
             std::unique_ptr<IBlockchainCacheFactory> (new DatabaseBlockchainCacheFactory (database,
                                                                                           logger.getLogger ())),
-            std::move (tmainChainStorage)
+            std::move (tMainChainStorage)
         );
 
         ccore.load ();

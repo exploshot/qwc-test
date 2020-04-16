@@ -63,7 +63,6 @@ endif ()
 set(QwertycoinTools_Daemon_LIBS
     Boost::filesystem
     RapidJSON::rapidjson
-    sqlite3::sqlite3
     #    QwertycoinFramework::Breakpad
     QwertycoinFramework::Common
     QwertycoinFramework::CryptoNoteCore

@@ -69,8 +69,6 @@ namespace DaemonConfig {
             printGenesisTx = false;
             dumpConfig = false;
             useLmdbForLocalCaches = false;
-            useSqliteForLocalCaches = false;
-            useRocksdbForLocalCaches = false;
             enableDbCompression = false;
             resync = false;
             exclusiveVersion = PROJECT_VERSION;
@@ -118,8 +116,6 @@ namespace DaemonConfig {
         bool printGenesisTx;
         bool dumpConfig;
         bool useLmdbForLocalCaches;
-        bool useSqliteForLocalCaches;
-        bool useRocksdbForLocalCaches;
         bool enableDbCompression;
 
         /*!

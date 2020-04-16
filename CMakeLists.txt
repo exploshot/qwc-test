@@ -120,7 +120,6 @@ include(external/MiniUPnP)
 include(external/nlohmann_json)
 include(external/RapidJSON)
 include(external/sparsehash)
-include(external/sqlite3)
 include(external/Threads)
 
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/external")

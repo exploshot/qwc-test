@@ -390,7 +390,6 @@ set(QwertycoinFramework_CryptoNoteCore_LIBS
     Boost::program_options
     lmdb
     sparsehash::sparsehash
-    sqlite3::sqlite3
     QwertycoinFramework::BlockchainExplorer
     QwertycoinFramework::Common
     QwertycoinFramework::Crypto
