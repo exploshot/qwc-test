@@ -290,8 +290,6 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorage.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageLmdb.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageLmdb.h"
-    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageSqlite.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MainChainStorageSqlite.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MemoryBlockchainCacheFactory.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MemoryBlockchainCacheFactory.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/MemoryBlockchainStorage.cpp"
