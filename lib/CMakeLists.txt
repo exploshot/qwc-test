@@ -382,6 +382,7 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/UpgradeDetector.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/UpgradeManager.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/UpgradeManager.h"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/VerificationContext.h"
     )
 
 set(QwertycoinFramework_CryptoNoteCore_LIBS
