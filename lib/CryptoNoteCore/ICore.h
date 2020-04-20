@@ -61,8 +61,8 @@ namespace CryptoNote {
         virtual uint64_t getBlockTimestampByIndex(uint32_t blockIndex) const = 0;
 
         virtual bool hasBlock(const Crypto::Hash &blockHash) const = 0;
-        virtual BlockTemplate getBlockByIndex(uint32_t index) const = 0;
-        virtual BlockTemplate getBlockByHash(const Crypto::Hash &blockHash) const = 0;
+        virtual Block getBlockByIndex(uint32_t index) const = 0;
+        virtual Block getBlockByHash(const Crypto::Hash &blockHash) const = 0;
 
         virtual std::vector<Crypto::Hash> buildSparseChain() const = 0;
         virtual std::vector<Crypto::Hash> findBlockchainSupplement(const std::vector<Crypto::Hash> &remoteBlockIds,
@@ -152,7 +152,7 @@ namespace CryptoNote {
                                         std::vector<TransactionPrefixInfo> &addedTransactions,
                                         std::vector<Crypto::Hash> &deletedTransactions) const = 0;
 
-        virtual bool getBlockTemplate(BlockTemplate &b,
+        virtual bool getBlockTemplate(Block &b,
                                       const AccountPublicAddress &adr,
                                       const BinaryArray &extraNonce,
                                       uint64_t &difficulty,

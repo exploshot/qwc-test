@@ -290,7 +290,7 @@ namespace CryptoNote {
             return m_isBlockexplorer;
         }
 
-        const BlockTemplate &genesisBlock() const
+        const Block &genesisBlock() const
         {
             return cachedGenesisBlock->getBlock ();
         }
@@ -440,7 +440,7 @@ namespace CryptoNote {
 
         bool m_isBlockexplorer;
 
-        BlockTemplate genesisBlockTemplate;
+        Block genesisBlockTemplate;
         std::unique_ptr<CachedBlock> cachedGenesisBlock;
 
         Logging::LoggerRef logger;

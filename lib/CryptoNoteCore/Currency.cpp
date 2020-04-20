@@ -73,7 +73,7 @@ namespace CryptoNote {
 
     bool Currency::generateGenesisBlock()
     {
-        genesisBlockTemplate = boost::value_initialized<BlockTemplate> ();
+        genesisBlockTemplate = boost::value_initialized<Block> ();
 
         /*!
             Hard code coinbase tx in genesis block, because "true" generating tx use random,

@@ -30,8 +30,8 @@ namespace CryptoNote {
     class CachedBlock
     {
     public:
-        explicit CachedBlock(const BlockTemplate &block);
-        const BlockTemplate &getBlock() const;
+        explicit CachedBlock(const Block &block);
+        const Block &getBlock() const;
         const Crypto::Hash &getTransactionTreeHash() const;
         const Crypto::Hash &getBlockHash() const;
         const Crypto::Hash &getBlockLongHash() const;
@@ -42,7 +42,7 @@ namespace CryptoNote {
         uint32_t getBlockIndex() const;
 
     private:
-        const BlockTemplate &block;
+        const Block &block;
         mutable boost::optional<BinaryArray> blockHashingBinaryArray;
         mutable boost::optional<BinaryArray> parentBlockBinaryArray;
         mutable boost::optional<BinaryArray> parentBlockHashingBinaryArray;

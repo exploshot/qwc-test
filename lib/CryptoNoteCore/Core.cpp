@@ -140,9 +140,9 @@ namespace CryptoNote {
             return blockSizeMedian * 2 - currency.minerTxBlobReservedSize ();
         }
 
-        BlockTemplate extractBlockTemplate(const RawBlock &block)
+        Block extractBlockTemplate(const RawBlock &block)
         {
-            BlockTemplate blockTemplate;
+            Block blockTemplate;
             if (!fromBinaryArray (blockTemplate, block.block)) {
                 throw std::system_error (make_error_code (error::AddBlockErrorCode::DESERIALIZATION_FAILED));
             }
@@ -152,7 +152,7 @@ namespace CryptoNote {
 
         Crypto::Hash getBlockHash(const RawBlock &block)
         {
-            BlockTemplate blockTemplate = extractBlockTemplate (block);
+            Block blockTemplate = extractBlockTemplate (block);
 
             return CachedBlock (blockTemplate).getBlockHash ();
         }
@@ -368,7 +368,7 @@ namespace CryptoNote {
         return findSegmentContainingBlock (blockHash) != nullptr;
     }
 
-    BlockTemplate Core::getBlockByIndex(uint32_t index) const
+    Block Core::getBlockByIndex(uint32_t index) const
     {
         assert(!chainsStorage.empty ());
         assert(!chainsLeaves.empty ());
@@ -381,7 +381,7 @@ namespace CryptoNote {
         return restoreBlockTemplate (segment, index);
     }
 
-    BlockTemplate Core::getBlockByHash(const Crypto::Hash &blockHash) const
+    Block Core::getBlockByHash(const Crypto::Hash &blockHash) const
     {
         assert(!chainsStorage.empty ());
         assert(!chainsLeaves.empty ());
@@ -851,7 +851,7 @@ namespace CryptoNote {
             }
 
             for (const auto rawBlock : rawBlocks) {
-                BlockTemplate block;
+                Block block;
 
                 fromBinaryArray (block, rawBlock.block);
 
@@ -1568,7 +1568,7 @@ namespace CryptoNote {
     {
         throwIfNotInitialized ();
 
-        BlockTemplate blockTemplate;
+        Block blockTemplate;
         bool result = fromBinaryArray (blockTemplate, rawBlock.block);
         if (!result) {
             return error::AddBlockErrorCode::DESERIALIZATION_FAILED;
@@ -1582,7 +1582,7 @@ namespace CryptoNote {
     {
         throwIfNotInitialized ();
 
-        BlockTemplate blockTemplate;
+        Block blockTemplate;
         bool result = fromBinaryArray (blockTemplate, rawBlockTemplate);
         if (!result) {
             logger (Logging::WARNING)
@@ -1714,7 +1714,7 @@ namespace CryptoNote {
                     transactionHashes.push_back (getBinaryArrayHash (transaction));
                 }
 
-                BlockTemplate block;
+                Block block;
 
                 fromBinaryArray (block, rawBlock.block);
 
@@ -1902,7 +1902,7 @@ namespace CryptoNote {
         return getTopBlockHash () == lastBlockHash;
     }
 
-    bool Core::getBlockTemplate(BlockTemplate &b,
+    bool Core::getBlockTemplate(Block &b,
                                 const AccountPublicAddress &adr,
                                 const BinaryArray &extraNonce,
                                 uint64_t &difficulty,
@@ -1919,7 +1919,7 @@ namespace CryptoNote {
             return false;
         }
 
-        b = boost::value_initialized<BlockTemplate> ();
+        b = boost::value_initialized<Block> ();
         b.majorVersion = getBlockMajorVersionForHeight (height);
 
         if (b.majorVersion == BLOCK_MAJOR_VERSION_1) {
@@ -2818,14 +2818,14 @@ namespace CryptoNote {
         return nullptr;
     }
 
-    BlockTemplate Core::restoreBlockTemplate(IBlockchainCache *blockchainCache,
+    Block Core::restoreBlockTemplate(IBlockchainCache *blockchainCache,
                                              uint32_t blockIndex) const
     {
         RawBlock rawBlock = blockchainCache->getBlockByIndex (blockIndex);
 
-        BlockTemplate block;
+        Block block;
         if (!fromBinaryArray (block, rawBlock.block)) {
-            throw std::runtime_error ("Coulnd't deserialize BlockTemplate");
+            throw std::runtime_error ("Coulnd't deserialize Block");
         }
 
         return block;
@@ -3096,7 +3096,7 @@ namespace CryptoNote {
         return true;
     }
 
-    void Core::fillBlockTemplate(BlockTemplate &block,
+    void Core::fillBlockTemplate(Block &block,
                                  const size_t medianSize,
                                  const size_t maxCumulativeSize,
                                  const uint64_t height,
@@ -3288,7 +3288,7 @@ namespace CryptoNote {
              ++blockIndex) {
             PushedBlockInfo info = segment->getPushedBlockInfo (blockIndex);
 
-            BlockTemplate block;
+            Block block;
             if (!fromBinaryArray (block, info.rawBlock.block)) {
                 logger (Logging::WARNING)
                     << "mergeSegments error: Couldn't deserialize block";
@@ -3334,7 +3334,7 @@ namespace CryptoNote {
         }
 
         uint32_t blockIndex = segment->getBlockIndex (blockHash);
-        BlockTemplate blockTemplate = restoreBlockTemplate (segment, blockIndex);
+        Block blockTemplate = restoreBlockTemplate (segment, blockIndex);
 
         BlockDetails blockDetails;
         blockDetails.majorVersion = blockTemplate.majorVersion;

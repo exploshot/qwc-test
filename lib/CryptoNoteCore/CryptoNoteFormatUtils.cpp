@@ -297,7 +297,7 @@ namespace CryptoNote {
         return true;
     }
 
-    bool getBlockHashingBlob(const BlockTemplate &b, BinaryArray &blob)
+    bool getBlockHashingBlob(const Block &b, BinaryArray &blob)
     {
         if (!toBinaryArray (static_cast<const BlockHeader &>(b), blob)) {
             return false;
@@ -311,14 +311,14 @@ namespace CryptoNote {
         return true;
     }
 
-    bool getParentBlockHashingBlob(const BlockTemplate &b, BinaryArray &blob)
+    bool getParentBlockHashingBlob(const Block &b, BinaryArray &blob)
     {
         auto serializer = makeParentBlockSerializer(b, true, true);
 
         return toBinaryArray (serializer, blob);
     }
 
-    bool getBlockHash(const BlockTemplate &b, Crypto::Hash &res)
+    bool getBlockHash(const Block &b, Crypto::Hash &res)
     {
         BinaryArray bA;
         if (!getBlockHashingBlob (b, bA)) {
@@ -341,7 +341,7 @@ namespace CryptoNote {
         return getObjectHash(bA, res);
     }
 
-    Hash getBlockHash(const BlockTemplate &b)
+    Hash getBlockHash(const Block &b)
     {
         Hash p = Constants::NULL_HASH;
         getBlockHash(b, p);
@@ -349,7 +349,7 @@ namespace CryptoNote {
         return p;
     }
 
-    bool getAuxBlockHeaderHash(const BlockTemplate &b, Crypto::Hash &res)
+    bool getAuxBlockHeaderHash(const Block &b, Crypto::Hash &res)
     {
         BinaryArray blob;
         if (!getBlockHashingBlob (b, blob)) {
@@ -424,7 +424,7 @@ namespace CryptoNote {
         return h;
     }
 
-    Hash getTxTreeHash(const BlockTemplate &b)
+    Hash getTxTreeHash(const Block &b)
     {
         std::vector<Hash> txIds;
         Hash h = Constants::NULL_HASH;
@@ -463,7 +463,7 @@ namespace CryptoNote {
     }
 
     bool parseAndValidateBlockFromBlob(const CryptoNote::blobData &bBlob,
-                                       CryptoNote::BlockTemplate &tx)
+                                       CryptoNote::Block &tx)
     {
         std::stringstream ss;
         ss << bBlob;
@@ -476,7 +476,7 @@ namespace CryptoNote {
         return true;
     }
 
-    blobData blockToBlob(const CryptoNote::BlockTemplate &block)
+    blobData blockToBlob(const CryptoNote::Block &block)
     {
         blobData bD;
         BinaryArray bA = storeToBinary(block);
