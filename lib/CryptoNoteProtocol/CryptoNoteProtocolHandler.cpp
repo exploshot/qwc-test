@@ -703,7 +703,7 @@ namespace CryptoNote {
 
         updateObservedHeight (arg.current_blockchain_height, context);
         context.m_remote_blockchain_height = arg.current_blockchain_height;
-        std::vector<BlockTemplate> blockTemplates;
+        std::vector<Block> blockTemplates;
         std::vector<CachedBlock> cachedBlocks;
         blockTemplates.resize (arg.blocks.size ());
         cachedBlocks.reserve (arg.blocks.size ());
@@ -890,7 +890,7 @@ void CryptoNoteProtocolHandler::setTxThreshold(size_t count)
                                                    CryptoNoteConnectionContext &context,
                                                    std::vector<BinaryArray> missingTxs)
     {
-        BlockTemplate newBlockTemplate;
+        Block newBlockTemplate;
         if (!fromBinaryArray (newBlockTemplate, arg.blockTemplate)) { // deserialize blockTemplate
             logger (Logging::WARNING)
                 << context

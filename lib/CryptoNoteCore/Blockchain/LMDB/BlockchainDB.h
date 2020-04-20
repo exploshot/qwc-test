@@ -292,7 +292,7 @@ namespace CryptoNote {
          * @param coinsGenerated        the number of coins generated total after this block
          * @param blockHash             the hash of the block
          */
-        virtual void addBlock(const CryptoNote::BlockTemplate &block,
+        virtual void addBlock(const CryptoNote::Block &block,
                               const size_t &blockSize,
                               const uint64_t &cumulativeDifficulty,
                               const uint64_t &coinsGenerated,
@@ -303,7 +303,7 @@ namespace CryptoNote {
          *
          * The subclass implementing this will remove the block data from the top
          * block in the chain.  The data to be removed is that which was added in
-         * BlockchainDB::addBlock(const CryptoNote::BlockTemplate &block,
+         * BlockchainDB::addBlock(const CryptoNote::Block &block,
          *                        const size_t &blockSize,
          *                        const uint64_t &cumulativeDifficulty,
          *                        const uint64_t &coinsGenerated,
@@ -435,7 +435,7 @@ namespace CryptoNote {
         /*!
          * @brief private version of popBlock, for undoing if an addBlock fails
          *
-         * This function simply calls popBlock(BlockTemplate &blk,
+         * This function simply calls popBlock(Block &blk,
          *                                     std::vector<CryptoNote::Transaction> &txs)
          * with dummy parameters, as the returns-by-reference can be discarded.
          */
@@ -716,7 +716,7 @@ namespace CryptoNote {
          *
          * @return the height of the chain post-addition
          */
-        virtual uint64_t addBlock(const CryptoNote::BlockTemplate &block,
+        virtual uint64_t addBlock(const CryptoNote::Block &block,
                                   const size_t &blockSize,
                                   const uint64_t &cumulativeDifficulty,
                                   const uint64_t &coinsGenerated,
@@ -756,7 +756,7 @@ namespace CryptoNote {
          *
          * @return the block requested
          */
-        virtual CryptoNote::BlockTemplate getBlock(const Crypto::Hash &h) const;
+        virtual CryptoNote::Block getBlock(const Crypto::Hash &h) const;
 
         /*!
          * @brief gets the height of the block with a given hash
@@ -809,7 +809,7 @@ namespace CryptoNote {
          *
          * @return the block
          */
-        virtual CryptoNote::BlockTemplate getBlockFromHeight(const uint64_t &height) const;
+        virtual CryptoNote::Block getBlockFromHeight(const uint64_t &height) const;
 
         /*!
          * @brief fetch a block's timestamp
@@ -919,7 +919,7 @@ namespace CryptoNote {
          *
          * @return a vector of blocks
          */
-        virtual std::vector<CryptoNote::BlockTemplate> getBlocksRange(const uint64_t &h1, const uint64_t &h2) const = 0;
+        virtual std::vector<CryptoNote::Block> getBlocksRange(const uint64_t &h1, const uint64_t &h2) const = 0;
 
         /*!
          * @brief fetch a list of block hashes
@@ -954,7 +954,7 @@ namespace CryptoNote {
          *
          * @return the top block
          */
-        virtual CryptoNote::BlockTemplate getTopBlock() const = 0;
+        virtual CryptoNote::Block getTopBlock() const = 0;
 
         /*!
          * @brief fetch the current blockchain height
@@ -983,7 +983,7 @@ namespace CryptoNote {
          * @param block       return-by-reference the block which was popped
          * @param txs       return-by-reference the transactions from the popped block
          */
-        virtual void popBlock(CryptoNote::BlockTemplate &blk,
+        virtual void popBlock(CryptoNote::Block &blk,
                               std::vector<CryptoNote::Transaction> &txs);
 
         /*!
@@ -1361,7 +1361,7 @@ namespace CryptoNote {
                                     const uint64_t &h2,
                                     std::function<bool(uint64_t,
                                                        const Crypto::Hash &,
-                                                       const CryptoNote::BlockTemplate &)>) const = 0;
+                                                       const CryptoNote::Block &)>) const = 0;
 
         /*!
          * @brief runs a function over all transactions stored

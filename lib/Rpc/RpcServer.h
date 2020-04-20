@@ -134,7 +134,7 @@ namespace CryptoNote {
         bool onGetBlockHeaderByHeight(const COMMAND_RPC_GET_BLOCK_HEADER_BY_HEIGHT::request &req,
                                       COMMAND_RPC_GET_BLOCK_HEADER_BY_HEIGHT::response &res);
 
-        void fillBlockHeaderResponse(const BlockTemplate &blk,
+        void fillBlockHeaderResponse(const Block &blk,
                                      bool orphan_status,
                                      uint32_t index,
                                      const Crypto::Hash &hash,

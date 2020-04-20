@@ -270,7 +270,7 @@ namespace CryptoNote {
                 return transaction;
             }
 
-            BlockTemplate blockTemplate;
+            Block blockTemplate;
             bool r = fromBinaryArray (blockTemplate, block.block);
             if (r) {
             }
@@ -769,7 +769,7 @@ namespace CryptoNote {
     Crypto::Hash DatabaseBlockchainCache::pushBlockToAnotherCache(IBlockchainCache &segment,
                                                                   PushedBlockInfo &&pushedBlockInfo)
     {
-        BlockTemplate block;
+        Block block;
         bool br = fromBinaryArray (block,
                                    pushedBlockInfo.rawBlock.block);
         if (br) {
@@ -1970,7 +1970,7 @@ namespace CryptoNote {
             }
 
             if (transactionIt->second.transactionIndex == 0) {
-                auto block = fromBinaryArray<BlockTemplate> (blockIt->second.block);
+                auto block = fromBinaryArray<Block> (blockIt->second.block);
                 foundTransactions.emplace_back (toBinaryArray (block.baseTransaction));
             } else {
                 assert(blockIt->second.transactions.size () >= transactionIt->second.transactionIndex - 1);

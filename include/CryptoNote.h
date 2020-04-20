@@ -113,7 +113,7 @@ namespace CryptoNote {
         Crypto::Hash previousBlockHash;
     };
 
-    struct BlockTemplate : public BlockHeader
+    struct Block : public BlockHeader
     {
         ParentBlock parentBlock;
         Transaction baseTransaction;
@@ -143,7 +143,7 @@ namespace CryptoNote {
 
     struct RawBlock
     {
-        BinaryArray block; //BlockTemplate
+        BinaryArray block; //Block
         std::vector<BinaryArray> transactions;
 
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
