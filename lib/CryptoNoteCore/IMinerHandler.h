@@ -23,8 +23,8 @@
 namespace CryptoNote {
     struct IMinerHandler
     {
-        virtual bool handleBlockFound(Block &b) = 0;
-        virtual bool getBlockTemplate(Block &b,
+        virtual bool handleBlockFound(BlockTemplate &b) = 0;
+        virtual bool getBlockTemplate(BlockTemplate &b,
                                       const AccountPublicAddress &adr,
                                       uint64_t &diffic,
                                       uint32_t &height,

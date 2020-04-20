@@ -64,11 +64,11 @@ namespace CryptoNote {
     };
 
     inline ParentBlockSerializer makeParentBlockSerializer(
-        const Block &b,
+        const BlockTemplate &b,
         bool hashingSerialization,
         bool headerOnly)
     {
-        auto &blockRef = const_cast<Block &>(b);
+        auto &blockRef = const_cast<BlockTemplate &>(b);
         return ParentBlockSerializer{
             blockRef.parentBlock,
             blockRef.timestamp,
@@ -105,7 +105,7 @@ namespace CryptoNote {
     void serialize(MultisignatureOutput &multisignature, ISerializer &serializer);
 
     void serialize(BlockHeader &header, ISerializer &serializer);
-    void serialize(Block &block, ISerializer &serializer);
+    void serialize(BlockTemplate &block, ISerializer &serializer);
     void serialize(ParentBlockSerializer &pbs, ISerializer &serializer);
     void serialize(TransactionExtraMergeMiningTag &tag, ISerializer &serializer);
 

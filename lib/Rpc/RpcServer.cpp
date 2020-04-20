@@ -958,7 +958,7 @@ namespace CryptoNote {
                     CORE_RPC_ERROR_CODE_INTERNAL_ERROR,
                     "Internal error: can't get block by height. Height = " + std::to_string (i) + '.'};
             }
-            Block blk = m_core.getBlockByHash (block_hash);
+            BlockTemplate blk = m_core.getBlockByHash (block_hash);
             BlockDetails blkDetails = m_core.getBlockDetails (block_hash);
 
             FBlockShortResponse block_short;
@@ -1011,7 +1011,7 @@ namespace CryptoNote {
                 CORE_RPC_ERROR_CODE_INTERNAL_ERROR,
                 "Internal error: can't get block by hash. Hash = " + req.hash + '.'};
         }
-        Block blk = m_core.getBlockByHash (hash);
+        BlockTemplate blk = m_core.getBlockByHash (hash);
         BlockDetails blkDetails = m_core.getBlockDetails (hash);
 
         if (blk.baseTransaction.inputs.front ().type () != typeid (BaseInput)) {
@@ -1146,7 +1146,7 @@ namespace CryptoNote {
                     "Internal error: can't get transaction by hash. Hash = " + Common::podToHex (hash) + '.'};
             }
             blockHash = m_core.getBlockHashByIndex (blockHeight);
-            Block blk = m_core.getBlockByHash (blockHash);
+            BlockTemplate blk = m_core.getBlockByHash (blockHash);
             BlockDetails blkDetails = m_core.getBlockDetails (blockHash);
 
             FBlockShortResponse block_short;
@@ -1291,7 +1291,7 @@ namespace CryptoNote {
             throw JsonRpc::JsonRpcError{CORE_RPC_ERROR_CODE_WRONG_WALLET_ADDRESS, "Failed to parse wallet address"};
         }
 
-        Block blockTemplate = boost::value_initialized<Block> ();
+        BlockTemplate blockTemplate = boost::value_initialized<BlockTemplate> ();
         CryptoNote::BinaryArray blob_reserve;
         blob_reserve.resize (req.reserve_size, 0);
 
@@ -1380,7 +1380,7 @@ namespace CryptoNote {
 
     RawBlockLegacy RpcServer::prepareRawBlockLegacy(BinaryArray &&blockBlob)
     {
-        Block blockTemplate;
+        BlockTemplate blockTemplate;
         bool result = fromBinaryArray (blockTemplate, blockBlob);
         if (result) {
         }
@@ -1403,7 +1403,7 @@ namespace CryptoNote {
 
     namespace {
 
-        uint64_t get_block_reward(const Block &blk)
+        uint64_t get_block_reward(const BlockTemplate &blk)
         {
             uint64_t reward = 0;
             for (const TransactionOutput &out : blk.baseTransaction.outputs) {
@@ -1415,7 +1415,7 @@ namespace CryptoNote {
 
     } // namespace
 
-    void RpcServer::fillBlockHeaderResponse(const Block &blk,
+    void RpcServer::fillBlockHeaderResponse(const BlockTemplate &blk,
                                             bool orphan_status,
                                             uint32_t index,
                                             const Hash &hash,
@@ -1515,7 +1515,7 @@ namespace CryptoNote {
 
         for (uint32_t h = static_cast<uint32_t>(req.start_height); h <= static_cast<uint32_t>(req.end_height); ++h) {
             Crypto::Hash block_hash = m_core.getBlockHashByIndex (h);
-            CryptoNote::Block blk = m_core.getBlockByHash (block_hash);
+            CryptoNote::BlockTemplate blk = m_core.getBlockByHash (block_hash);
 
             res.headers.push_back (BlockHeaderResponse ());
             fillBlockHeaderResponse (blk, false, h, block_hash, res.headers.back ());

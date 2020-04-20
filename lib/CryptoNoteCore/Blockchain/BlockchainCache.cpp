@@ -42,21 +42,15 @@
 
 namespace CryptoNote {
 
-#define HEIGHT_COND (r ? mBlocks.size() : mDb->height())
-#define DB_TX_START if (Tools::getDefaultDbType() == "lmdb") { mDb->blockTxnStart(true); }
-#define DB_TX_STOP if (Tools::getDefaultDbType() == "lmdb" {mDb->blockTxnStop(); })
-
-
     namespace {
 
         UseGenesis addGenesisBlock = UseGenesis (true);
+
         UseGenesis skipGenesisBlock = UseGenesis (false);
 
         template<class T, class F>
-        void splitGlobalIndexes(T &sourceContainer,
-                                T &destinationContainer,
-                                uint32_t splitBlockIndex,
-                                F lowerBoundFunction)
+        void
+        splitGlobalIndexes(T &sourceContainer, T &destinationContainer, uint32_t splitBlockIndex, F lowerBoundFunction)
         {
             for (auto it = sourceContainer.begin (); it != sourceContainer.end ();) {
                 auto newCacheOutputsIteratorStart =
@@ -171,9 +165,10 @@ namespace CryptoNote {
             assert(coinbaseTransactionSize <
                    std::numeric_limits<uint64_t>::max ());
 
-            std::vector<CachedTransaction> cachedTransactions;
+            std::vector<CachedTransaction> transactions;
             TransactionValidatorState validatorState;
-            doPushBlock (genesisBlock, cachedTransactions,
+            doPushBlock (genesisBlock,
+                         transactions,
                          validatorState,
                          coinbaseTransactionSize,
                          minerReward,

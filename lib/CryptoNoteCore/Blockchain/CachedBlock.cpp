@@ -29,12 +29,12 @@
 using namespace Crypto;
 using namespace CryptoNote;
 
-CachedBlock::CachedBlock(const Block &block)
+CachedBlock::CachedBlock(const BlockTemplate &block)
     : block (block)
 {
 }
 
-const Block &CachedBlock::getBlock() const
+const BlockTemplate &CachedBlock::getBlock() const
 {
     return block;
 }

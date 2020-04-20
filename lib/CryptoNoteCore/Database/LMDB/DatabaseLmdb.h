@@ -173,10 +173,10 @@ namespace CryptoNote {
         virtual uint64_t getBlockDifficulty(const uint64_t &height) const;
         virtual uint64_t getBlockAlreadyGeneratedCoins(const uint64_t &height) const;
         virtual Crypto::Hash getBlockHashFromHeight(const uint64_t &height) const;
-        virtual std::vector<CryptoNote::Block> getBlocksRange(const uint64_t &h1, const uint64_t &h2) const;
+        virtual std::vector<CryptoNote::BlockTemplate> getBlocksRange(const uint64_t &h1, const uint64_t &h2) const;
         virtual std::vector<Crypto::Hash> getHashesRange(const uint64_t &h1, const uint64_t &h2) const;
         virtual Crypto::Hash topBlockHash() const;
-        virtual CryptoNote::Block getTopBlock() const;
+        virtual CryptoNote::BlockTemplate getTopBlock() const;
         virtual uint64_t height() const;
         virtual bool txExists(const Crypto::Hash &h) const;
         virtual bool txExists(const Crypto::Hash &h, uint64_t &txIndex) const;
@@ -219,7 +219,7 @@ namespace CryptoNote {
                                     const uint64_t &h2,
                                     std::function<bool(uint64_t,
                                                        const Crypto::Hash &,
-                                                       const CryptoNote::Block &)>) const;
+                                                       const CryptoNote::BlockTemplate &)>) const;
         virtual bool forAllTransactions(std::function<bool(const Crypto::Hash &,
                                                            const CryptoNote::Transaction&)>) const;
         virtual bool forAllOutputs(std::function<bool(uint64_t amount,
@@ -227,7 +227,7 @@ namespace CryptoNote {
                                                  uint64_t height,
                                                  size_t txIdx)> f) const;
         virtual bool forAllOutputs(uint64_t, const std::function<bool(uint64_t height)> &f) const;
-        virtual uint64_t addBlock(const CryptoNote::Block &block,
+        virtual uint64_t addBlock(const CryptoNote::BlockTemplate &block,
                                   const size_t &blockSize,
                                   const uint64_t &cumulativeDifficulty,
                                   const uint64_t &coinsGenerated,
@@ -242,7 +242,7 @@ namespace CryptoNote {
         virtual void blockTxnAbort();
         virtual bool blockRTxnStart(MDB_txn **mTxn, mdbTxnCursors **mCur) const;
         virtual void blockRTxnStop() const;
-        virtual void popBlock(CryptoNote::Block &block, std::vector<CryptoNote::Transaction> &txs);
+        virtual void popBlock(CryptoNote::BlockTemplate &block, std::vector<CryptoNote::Transaction> &txs);
         virtual bool canThreadBulkIndices() const
         {
             return true;
@@ -265,7 +265,7 @@ namespace CryptoNote {
         void doResize(uint64_t sizeIncrease=0);
 
     private:
-        virtual void addBlock(const CryptoNote::Block &block,
+        virtual void addBlock(const CryptoNote::BlockTemplate &block,
                               const size_t &blockSize,
                               const uint64_t &cumulativeDifficulty,
                               const uint64_t &coinsGenerated,

@@ -292,7 +292,7 @@ namespace CryptoNote {
     {
     }
 
-    bool GeneratedTransactionIndex::add(const Block &block)
+    bool GeneratedTransactionIndex::add(const BlockTemplate &block)
     {
         if (!enabled) {
             return false;
@@ -317,7 +317,7 @@ namespace CryptoNote {
         return status;
     }
 
-    bool GeneratedTransactionIndex::remove(const Block &block)
+    bool GeneratedTransactionIndex::remove(const BlockTemplate &block)
     {
         if (!enabled) {
             return false;
@@ -388,7 +388,7 @@ namespace CryptoNote {
     {
     }
 
-    bool OrphanBlocksIndex::add(const Block & block)
+    bool OrphanBlocksIndex::add(const BlockTemplate& block)
     {
         if (!enabled) {
             return false;
@@ -404,7 +404,7 @@ namespace CryptoNote {
         return true;
     }
 
-    bool OrphanBlocksIndex::remove(const Block & block)
+    bool OrphanBlocksIndex::remove(const BlockTemplate& block)
     {
         if (!enabled) {
             return false;

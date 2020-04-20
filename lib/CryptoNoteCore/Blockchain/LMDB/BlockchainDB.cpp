@@ -59,7 +59,7 @@ namespace CryptoNote {
 
     void BlockchainDB::popBlock()
     {
-        CryptoNote::Block block;
+        CryptoNote::BlockTemplate block;
         std::vector<CryptoNote::Transaction> txs;
         popBlock(block, txs);
     }
@@ -105,7 +105,7 @@ namespace CryptoNote {
         addTxAmountOutputIndices (txId, amountOutputIndices);
     }
 
-    uint64_t BlockchainDB::addBlock(const CryptoNote::Block &block,
+    uint64_t BlockchainDB::addBlock(const CryptoNote::BlockTemplate &block,
                                     const size_t &blockSize,
                                     const uint64_t &cumulativeDifficulty,
                                     const uint64_t &coinsGenerated,
@@ -153,7 +153,7 @@ namespace CryptoNote {
         doResize();
     }
 
-    void BlockchainDB::popBlock(CryptoNote::Block &blk, std::vector<CryptoNote::Transaction> &txs)
+    void BlockchainDB::popBlock(CryptoNote::BlockTemplate &blk, std::vector<CryptoNote::Transaction> &txs)
     {
         blk = getTopBlock ();
         removeBlock ();
@@ -187,10 +187,10 @@ namespace CryptoNote {
         removeTransactionData (txHash, tx);
     }
 
-    CryptoNote::Block BlockchainDB::getBlockFromHeight(const uint64_t &height) const
+    CryptoNote::BlockTemplate BlockchainDB::getBlockFromHeight(const uint64_t &height) const
     {
         CryptoNote::blobData bD = getBlockBlobFromHeight (height);
-        CryptoNote::Block bT;
+        CryptoNote::BlockTemplate bT;
         if (!parseAndValidateBlockFromBlob(bD, bT)) {
             throw(DB_ERROR("Failed to parse block from blob retrieved from the db"));
         }
@@ -198,10 +198,10 @@ namespace CryptoNote {
         return bT;
     }
 
-    CryptoNote::Block BlockchainDB::getBlock(const Crypto::Hash &h) const
+    CryptoNote::BlockTemplate BlockchainDB::getBlock(const Crypto::Hash &h) const
     {
         CryptoNote::blobData bD = getBlockBlob (h);
-        CryptoNote::Block bT;
+        CryptoNote::BlockTemplate bT;
         if (!parseAndValidateBlockFromBlob (bD, bT)) {
             throw(DB_ERROR("Failed to parse block from blob retrieved from the db"));
         }

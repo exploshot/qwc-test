@@ -61,8 +61,8 @@ namespace CryptoNote
                  uint64_t windowSize = ::Hardfork::DEFAULT_WINDOW_SIZE,
                  uint8_t defaultThresholdPercent = ::Hardfork::DEFAULT_THRESHOLD_PERCENT);
 
-        uint8_t getBlockVote(CryptoNote::Block const *b) const;
-        uint8_t getBlockVersion(CryptoNote::Block const *b) const;
+        uint8_t getBlockVote(CryptoNote::BlockTemplate const *b) const;
+        uint8_t getBlockVersion(CryptoNote::BlockTemplate const *b) const;
 
         /*!
          * @brief add a new hardfork height
@@ -114,7 +114,7 @@ namespace CryptoNote
          * block being invalid, double spending, etc) would cause the
          * hardfork object to reorganize.
          */
-        bool check(const CryptoNote::Block &block) const;
+        bool check(const CryptoNote::BlockTemplate &block) const;
 
         /*!
          * @brief same as check, but for a particular height, rather than the top
@@ -128,7 +128,7 @@ namespace CryptoNote
          * @param block         the new block
          * @param height        which height to check for
          */
-        bool checkForHeight(const CryptoNote::Block &block, uint64_t const &height) const;
+        bool checkForHeight(const CryptoNote::BlockTemplate &block, uint64_t const &height) const;
 
         /*!
          * @brief add a new block
@@ -137,7 +137,7 @@ namespace CryptoNote
          *
          * @param block         the new block
          */
-        bool add(const CryptoNote::Block &block, uint64_t const &height);
+        bool add(const CryptoNote::BlockTemplate &block, uint64_t const &height);
 
         /*!
          * @brief called when the blockchain is reorganized

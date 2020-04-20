@@ -70,8 +70,8 @@ namespace CryptoNote {
         virtual uint64_t getBlockTimestampByIndex(uint32_t blockIndex) const override;
 
         virtual bool hasBlock(const Crypto::Hash &blockHash) const override;
-        virtual Block getBlockByIndex(uint32_t index) const override;
-        virtual Block getBlockByHash(const Crypto::Hash &blockHash) const override;
+        virtual BlockTemplate getBlockByIndex(uint32_t index) const override;
+        virtual BlockTemplate getBlockByHash(const Crypto::Hash &blockHash) const override;
 
         virtual std::vector<Crypto::Hash> buildSparseChain() const override;
         virtual std::vector<Crypto::Hash> findBlockchainSupplement(const std::vector<Crypto::Hash> &remoteBlockIds,
@@ -155,7 +155,7 @@ namespace CryptoNote {
                                         std::vector<TransactionPrefixInfo> &addedTransactions,
                                         std::vector<Crypto::Hash> &deletedTransactions) const override;
 
-        virtual bool getBlockTemplate(Block &b,
+        virtual bool getBlockTemplate(BlockTemplate &b,
                                       const AccountPublicAddress &adr,
                                       const BinaryArray &extraNonce,
                                       uint64_t &difficulty,
@@ -243,7 +243,7 @@ namespace CryptoNote {
 
         IBlockchainCache *findSegmentContainingTransaction(const Crypto::Hash &transactionHash) const;
 
-        Block restoreBlockTemplate(IBlockchainCache *blockchainCache, uint32_t blockIndex) const;
+        BlockTemplate restoreBlockTemplate(IBlockchainCache *blockchainCache, uint32_t blockIndex) const;
         std::vector<Crypto::Hash> doBuildSparseChain(const Crypto::Hash &blockHash) const;
 
         RawBlock getRawBlock(IBlockchainCache *segment, uint32_t blockIndex) const;
@@ -282,7 +282,7 @@ namespace CryptoNote {
         size_t calculateCumulativeBlocksizeLimit(uint32_t height) const;
         bool validateBlockTemplateTransaction(const CachedTransaction &cachedTransaction,
                                               const uint64_t blockHeight) const;
-        void fillBlockTemplate(Block &block,
+        void fillBlockTemplate(BlockTemplate &block,
                                const size_t medianSize,
                                const size_t maxCumulativeSize,
                                const uint64_t height,

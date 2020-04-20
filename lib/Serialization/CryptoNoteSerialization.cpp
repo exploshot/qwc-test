@@ -91,7 +91,7 @@ namespace {
         {
             return 0xcc;
         }
-        uint8_t operator()(const CryptoNote::Block)
+        uint8_t operator()(const CryptoNote::BlockTemplate)
         {
             return 0xbb;
         }
@@ -474,7 +474,7 @@ namespace CryptoNote {
         serializeBlockHeader (header, serializer);
     }
 
-    void serialize(Block &block, ISerializer &serializer)
+    void serialize(BlockTemplate &block, ISerializer &serializer)
     {
         serializeBlockHeader (block, serializer);
 

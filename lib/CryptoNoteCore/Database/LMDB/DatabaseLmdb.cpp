@@ -496,7 +496,7 @@ namespace CryptoNote {
         mdbTxnSafe::allowNewTxns();
     }
 
-    void BlockchainLMDB::addBlock(const CryptoNote::Block &block,
+    void BlockchainLMDB::addBlock(const CryptoNote::BlockTemplate &block,
                                   const size_t &blockSize,
                                   const uint64_t &cumulativeDifficulty,
                                   const uint64_t &coinsGenerated,
@@ -1880,10 +1880,10 @@ namespace CryptoNote {
         return ret;
     }
 
-    std::vector<CryptoNote::Block> BlockchainLMDB::getBlocksRange(const uint64_t &h1, const uint64_t &h2) const
+    std::vector<CryptoNote::BlockTemplate> BlockchainLMDB::getBlocksRange(const uint64_t &h1, const uint64_t &h2) const
     {
         checkOpen ();
-        std::vector<CryptoNote::Block> v;
+        std::vector<CryptoNote::BlockTemplate> v;
 
         for (uint64_t height = h1; height <= h2; ++height) {
             v.push_back((getBlockFromHeight (height)));
@@ -1916,12 +1916,12 @@ namespace CryptoNote {
         return Constants::NULL_HASH;
     }
 
-    CryptoNote::Block BlockchainLMDB::getTopBlock() const
+    CryptoNote::BlockTemplate BlockchainLMDB::getTopBlock() const
     {
         checkOpen ();
         uint64_t mHeight = height();
 
-        CryptoNote::Block b;
+        CryptoNote::BlockTemplate b;
         if (mHeight > 0) {
             b = getBlockFromHeight (mHeight - 1);
         }
@@ -2362,7 +2362,7 @@ namespace CryptoNote {
                                         const uint64_t &h2,
                                         std::function<bool (uint64_t,
                                                             const Crypto::Hash &,
-                                                            const CryptoNote::Block &)> f) const
+                                                            const CryptoNote::BlockTemplate &)> f) const
     {
         checkOpen ();
 
@@ -2394,7 +2394,7 @@ namespace CryptoNote {
             uint64_t height = *(const uint64_t *)k.mv_data;
             CryptoNote::blobData bD;
             bD.assign(reinterpret_cast<char *>(v.mv_data), v.mv_size);
-            CryptoNote::Block bT;
+            CryptoNote::BlockTemplate bT;
             bool r = parseAndValidateBlockFromBlob(bD, bT);
 
             if (!r) {
@@ -2836,7 +2836,7 @@ namespace CryptoNote {
         }
     }
 
-    uint64_t BlockchainLMDB::addBlock(const CryptoNote::Block &block,
+    uint64_t BlockchainLMDB::addBlock(const CryptoNote::BlockTemplate &block,
                                       const size_t &blockSize,
                                       const uint64_t &cumulativeDifficulty,
                                       const uint64_t &coinsGenerated,
@@ -2857,7 +2857,7 @@ namespace CryptoNote {
         return ++mHeight;
     }
 
-    void BlockchainLMDB::popBlock(CryptoNote::Block &block,
+    void BlockchainLMDB::popBlock(CryptoNote::BlockTemplate &block,
                                   std::vector<CryptoNote::Transaction> &txs)
     {
         checkOpen ();
@@ -3696,7 +3696,7 @@ namespace CryptoNote {
 
             MDB_dbi oTxs;
             CryptoNote::blobData bD;
-            CryptoNote::Block bT;
+            CryptoNote::BlockTemplate bT;
             MDB_val hK;
 
             oTxs = mTxs;

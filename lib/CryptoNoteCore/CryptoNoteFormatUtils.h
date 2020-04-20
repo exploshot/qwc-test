@@ -63,11 +63,11 @@ namespace CryptoNote {
     bool checkInputsOverflow(const TransactionPrefix &tx);
     bool checkOutsOverflow(const TransactionPrefix &tx);
 
-    bool getBlockHashingBlob(const Block &b, BinaryArray &blob);
-    bool getParentBlockHashingBlob(const Block &b, BinaryArray &blob);
-    bool getAuxBlockHeaderHash(const Block &b, Crypto::Hash &res);
-    bool getBlockHash(const Block &b, Crypto::Hash &res);
-    Crypto::Hash getBlockHash(const Block &b);
+    bool getBlockHashingBlob(const BlockTemplate &b, BinaryArray &blob);
+    bool getParentBlockHashingBlob(const BlockTemplate &b, BinaryArray &blob);
+    bool getAuxBlockHeaderHash(const BlockTemplate &b, Crypto::Hash &res);
+    bool getBlockHash(const BlockTemplate &b, Crypto::Hash &res);
+    Crypto::Hash getBlockHash(const BlockTemplate &b);
 
     std::vector<uint32_t> relativeOutputOffsetsToAbsolute(const std::vector<uint32_t> &off);
     std::vector<uint32_t> absoluteOutputOffsetsToRelative(const std::vector<uint32_t> &off);
@@ -120,7 +120,7 @@ namespace CryptoNote {
 
     void getTxTreeHash(const std::vector<Crypto::Hash> &txHashes, Crypto::Hash &h);
     Crypto::Hash getTxTreeHash(const std::vector<Crypto::Hash> &txHashes);
-    Crypto::Hash getTxTreeHash(const Block &b);
+    Crypto::Hash getTxTreeHash(const BlockTemplate &b);
     bool isValidDecomposedAmount(uint64_t amount);
 
     bool parseAndValidateTxFromBlob(const CryptoNote::blobData &txBlob,
@@ -128,10 +128,10 @@ namespace CryptoNote {
                                     Crypto::Hash &txHash, Crypto::Hash &txPrefixHash);
     bool parseAndValidateTxFromBlob(const CryptoNote::blobData &txBlob,
                                     CryptoNote::Transaction &tx);
-    bool parseAndValidateBlockFromBlob(const CryptoNote::blobData &bBlob, CryptoNote::Block &tx);
+    bool parseAndValidateBlockFromBlob(const CryptoNote::blobData &bBlob, CryptoNote::BlockTemplate &tx);
 
-    CryptoNote::blobData blockToBlob(const CryptoNote::Block &block);
-    bool blockToBlob(const CryptoNote::Block &block, CryptoNote::blobData &blob);
+    CryptoNote::blobData blockToBlob(const CryptoNote::BlockTemplate &block);
+    bool blockToBlob(const CryptoNote::BlockTemplate &block, CryptoNote::blobData &blob);
     CryptoNote::blobData txToBlob(const CryptoNote::Transaction &tx);
     bool txToBlob(const CryptoNote::Transaction &tx, CryptoNote::blobData &txBlob);
 
