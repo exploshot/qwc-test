@@ -24,6 +24,10 @@
 namespace Tools {
     std::string getDefaultDataDirectory();
     std::string getOsVersionString();
+    std::string getDefaultDbType();
+    std::string getDefaultDbSyncMode();
     bool createDirectoriesIfNecessary(const std::string &path);
+    std::error_code replaceFile(const std::string &replacementName,
+                                const std::string &replacedName);
     bool directoryExists(const std::string &path);
 } // namespace Tools

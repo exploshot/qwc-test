@@ -328,12 +328,52 @@ namespace Tools {
         return configFolder;
     }
 
+    std::string getDefaultDbType()
+    {
+        std::string ret = "lmdb";
+
+        return ret;
+    }
+
+    std::string getDefaultDbSyncMode()
+    {
+        std::string ret = "fastest:async:1000";
+
+        return ret;
+    }
+
     bool createDirectoriesIfNecessary(const std::string &path)
     {
         boost::system::error_code e;
         fs::create_directories (path, e);
 
         return e.value () == 0;
+    }
+
+    std::error_code replaceFile(const std::string &replacementName,
+                                const std::string &replacedName)
+    {
+        int code;
+    #ifdef WIN32
+        /*!
+         *
+         */
+        DWORD attributes = ::GetFileAttributes(replacedName.c_str());
+        if (INVALID_FILE_ATTRIBUTES != attributes) {
+            ::SetFileAttributes(replacedName.c_str(),
+                                attributes & (~FILE_ATTRIBUTE_READONLY));
+        }
+
+        bool ok = 0 != ::MoveFileEx(replacementName.c_str(),
+                                    replacedName.c_str(),
+                                    MOVEFILE_REPLACE_EXISTING);
+        code = ok ? 0 : static_cast<int>(::GetLastError());
+    #else
+        bool ok = 0 == std::rename(replacementName.c_str(),
+                                   replacedName.c_str());
+        code = ok ? 0 : errno;
+    #endif
+        return std::error_code(code, std::system_category());
     }
 
     bool directoryExists(const std::string &path)
