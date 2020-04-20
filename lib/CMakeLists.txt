@@ -280,6 +280,8 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainUtils.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainWriteBatch.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockchainWriteBatch.h"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockIndex.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/BlockIndex.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/CachedBlock.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/CachedBlock.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Blockchain/IBlockchainCache.h"
