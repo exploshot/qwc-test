@@ -976,7 +976,7 @@ namespace CryptoNote {
         } else {
             auto rawBlock = storage->getBlockByIndex (index - startIndex);
             if (transactionIndex == 0) {
-                auto block = fromBinaryArray<Block> (rawBlock.block);
+                auto block = fromBinaryArray<BlockTemplate> (rawBlock.block);
                 return toBinaryArray (block.baseTransaction);
             }
 
