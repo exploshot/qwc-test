@@ -519,22 +519,22 @@ static void oAesGetSeed( char buf[RANDSIZ + 1] )
 static uint32_t oAesGetSeed(void)
 {
     #if !defined(__FreeBSD__) && !defined(__OpenBSD__) && !defined(__ANDROID__)
-    struct timeb timer;
+    time_t timer;
     struct tm *gmTimer;
     char *test = NULL;
     uint32_t ret = 0;
 
-    ftime (&timer);
-    gmTimer = gmtime (&timer.time);
-    test = (char *) calloc (sizeof (char), timer.millitm);
+    time (&timer);
+    gmTimer = gmtime (&timer);
+    test = (char *) calloc (sizeof (char), timer);
     ret = gmTimer->tm_year + 1900 +
           gmTimer->tm_mon + 1 +
           gmTimer->tm_mday +
           gmTimer->tm_hour +
           gmTimer->tm_min +
           gmTimer->tm_sec +
-          timer.millitm +
-          (uintptr_t) (test + timer.millitm) + getpid ();
+          timer +
+          (uintptr_t) (test + timer) + getpid ();
     #else
     struct timeval timer;
     struct tm *gmTimer;
