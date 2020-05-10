@@ -30,4 +30,5 @@ namespace Tools {
     std::error_code replaceFile(const std::string &replacementName,
                                 const std::string &replacedName);
     bool directoryExists(const std::string &path);
+    bool isLmdb();
 } // namespace Tools

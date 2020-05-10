@@ -382,4 +382,9 @@ namespace Tools {
 
         return fs::is_directory (path, e);
     }
+
+    bool isLmdb()
+    {
+        return getDefaultDbType() == "lmdb";
+    }
 } // namespace Tools
