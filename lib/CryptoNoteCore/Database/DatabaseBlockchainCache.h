@@ -22,15 +22,36 @@
 
 #include <Common/StringView.h>
 
+#include <CryptoNoteCore/Blockchain/BlockIndex.h>
 #include <CryptoNoteCore/Blockchain/IBlockchainCache.h>
 #include <CryptoNoteCore/Blockchain/IBlockchainCacheFactory.h>
 #include <CryptoNoteCore/Blockchain/BlockchainReadBatch.h>
 #include <CryptoNoteCore/Blockchain/BlockchainWriteBatch.h>
+#include <CryptoNoteCore/Blockchain/LMDB/BlockchainDB.h>
 #include <CryptoNoteCore/Database/DatabaseCacheData.h>
+#include <CryptoNoteCore/Transactions/ITransactionValidator.h>
+#include <CryptoNoteCore/Transactions/TransactionPool.h>
 #include <CryptoNoteCore/Currency.h>
+#include <CryptoNoteCore/Hardfork.h>
 #include <CryptoNoteCore/UpgradeManager.h>
 
 namespace CryptoNote {
+    enum BlockchainDBSyncMode
+    {
+        dbDefaultSync,
+        dbSync,
+        dbAsync,
+        dbNoSync
+    };
+
+    struct BlockExtendedInfo
+    {
+        Block block;
+        uint64_t height;
+        size_t blockCumulativeSize;
+        uint64_t cumulativeDifficulty;
+        uint64_t alreadyGeneratedCoins;
+    };
 
     /*!
         Implementation of IBlockchainCache that uses database to store internal indexes.
@@ -49,12 +70,12 @@ namespace CryptoNote {
             Constructs new DatabaseBlockchainCache object. Currnetly, only factories that produce
             BlockchainCache objects as children are supported.
         */
-        DatabaseBlockchainCache(const Currency &currency,
-                                IDataBase &dataBase,
+        DatabaseBlockchainCache(std::unique_ptr<BlockchainDB> &db,
+                                Hardfork *&hf,
+                                const Currency &currency,
+                                TxMemoryPool &txMemPool,
                                 IBlockchainCacheFactory &blockchainCacheFactory,
                                 std::shared_ptr<Logging::ILogger> logger);
-
-        static bool checkDBSchemeVersion(IDataBase &dataBase, std::shared_ptr<Logging::ILogger> logger);
 
         /*!
             This methods splits cache, upper part (ie blocks with indexes larger than splitBlockIndex)
@@ -64,6 +85,7 @@ namespace CryptoNote {
         std::unique_ptr<IBlockchainCache> split(uint32_t splitBlockIndex) override;
         void pushBlock(const CachedBlock &cachedBlock,
                        const std::vector<CachedTransaction> &cachedTransactions,
+                       BlockVerificationContext &bVC,
                        const TransactionValidatorState &validatorState,
                        size_t blockSize,
                        uint64_t generatedCoins,
@@ -114,8 +136,11 @@ namespace CryptoNote {
         virtual uint64_t getCurrentCumulativeDifficulty() const override;
         virtual uint64_t getCurrentCumulativeDifficulty(uint32_t blockIndex) const override;
 
+        uint64_t getBlockDifficulty(uint32_t blockIndex) const;
+
         uint64_t getAlreadyGeneratedCoins() const override;
         uint64_t getAlreadyGeneratedCoins(uint32_t blockIndex) const override;
+
         uint64_t getAlreadyGeneratedTransactions(uint32_t blockIndex) const override;
         std::vector<uint64_t> getLastUnits(size_t count,
                                            uint32_t blockIndex,
@@ -189,10 +214,24 @@ namespace CryptoNote {
 
         virtual std::vector<RawBlock> getNonEmptyBlocks(const uint64_t startHeight,
                                                         const size_t blockCount) const override;
+        BlockchainDB *mDb;
+        Hardfork *mHardfork;
+        TxMemoryPool &mTxMemPool;
+        CryptoNote::BlockIndex mBlockIndex;
+        uint64_t mSyncCounter;
+        uint64_t mDbBlocksPerSync;
 
+        const BlockchainDB &getDb() const
+        {
+            return *mDb;
+        }
+
+        BlockchainDB &getDb()
+        {
+            return *mDb;
+        }
     private:
         const Currency &currency;
-        IDataBase &database;
         IBlockchainCacheFactory &blockchainCacheFactory;
         mutable boost::optional<uint32_t> topBlockIndex;
         mutable boost::optional<Crypto::Hash> topBlockHash;
@@ -238,17 +277,11 @@ namespace CryptoNote {
         TransactionValidatorState fillOutputsSpentByBlock(uint32_t blockIndex) const;
 
         Crypto::Hash pushBlockToAnotherCache(IBlockchainCache &segment, PushedBlockInfo &&pushedBlockInfo);
-        void requestDeleteSpentOutputs(BlockchainWriteBatch &writeBatch,
-                                       uint32_t splitBlockIndex,
+        void requestDeleteSpentOutputs(uint32_t splitBlockIndex,
                                        const TransactionValidatorState &spentOutputs);
         std::vector<Crypto::Hash> requestTransactionHashesFromBlockIndex(uint32_t splitBlockIndex);
-        void requestDeleteTransactions(BlockchainWriteBatch &writeBatch,
-                                       const std::vector<Crypto::Hash> &transactionHashes);
-        void requestDeletePaymentIds(BlockchainWriteBatch &writeBatch,
-                                     const std::vector<Crypto::Hash> &transactionHashes);
-        void requestDeletePaymentId(BlockchainWriteBatch &writeBatch,
-                                    const Crypto::Hash &paymentId,
-                                    size_t toDelete);
+        void requestDeleteTransactions(const std::vector<Crypto::Hash> &transactionHashes);
+
         void requestDeleteKeyOutputs(BlockchainWriteBatch &writeBatch,
                                      const std::map<IBlockchainCache::Amount,
                                                     IBlockchainCache::GlobalOutputIndex> &boundaries);
@@ -259,6 +292,8 @@ namespace CryptoNote {
         void requestRemoveTimestamp(BlockchainWriteBatch &batch,
                                     uint64_t timestamp,
                                     const Crypto::Hash &blockHash);
+
+        ExtendedTransactionInfo requestCachedTransaction(const Crypto::Hash &hash);
 
         uint8_t getBlockMajorVersionForHeight(uint32_t height) const;
         uint64_t getCachedTransactionsCount() const;

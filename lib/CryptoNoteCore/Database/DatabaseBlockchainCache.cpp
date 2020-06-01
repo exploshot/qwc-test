@@ -26,22 +26,38 @@
 
 #include <Common/CryptoNoteTools.h>
 #include <Common/ShuffleGenerator.h>
-#include <CryptoNoteCore/Transactions/TransactionExtra.h>
+#include <Common/Util.h>
 
 #include <Crypto/Hash.h>
 
 #include <CryptoNoteCore/Blockchain/BlockchainUtils.h>
 #include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
 #include <CryptoNoteCore/Database/DatabaseBlockchainCache.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 
+#define CURRENT_BLOCKCACHE_STORAGE_ARCHIVE_VER 1
+#define CURRENT_BLOCKCHAININDICES_STORAGE_ARCHIVE_VER 1
+#define FIND_BLOCKCHAIN_SUPPLEMENT_MAX_SIZE (100*1024*1024) // 100 MB
+
 namespace CryptoNote {
+#define HEIGHT_COND (r ? mBlocks.size() : mDb->height())
+#define DB_TX_START if (Tools::isLmdb()) { mDb->blockTxnStart(true); }
+#define DB_TX_STOP if (Tools::isLmdb()) {mDb->blockTxnStop(); }
 
     namespace {
 
         const uint32_t ONE_DAY_SECONDS = 60 * 60 * 24;
 
-        const CachedBlockInfo NULL_CACHED_BLOCK_INFO{Constants::NULL_HASH, 0, 0, 0, 0, 0};
+        const CachedBlockInfo NULL_CACHED_BLOCK_INFO
+        {
+            Constants::NULL_HASH,
+            0,
+            0,
+            0,
+            0,
+            0
+        };
 
         const std::string DB_VERSION_KEY = "db_scheme_version";
 
@@ -470,67 +486,27 @@ namespace CryptoNote {
                          cache.end ());
         }
 
-        class DatabaseVersionReadBatch: public IReadBatch
-        {
-        public:
-            virtual ~DatabaseVersionReadBatch()
-            {
-            }
 
-            virtual std::vector<std::string> getRawKeys() const override
-            {
-                return {DB_VERSION_KEY};
-            }
 
-            virtual void submitRawResult(const std::vector<std::string> &values,
-                                         const std::vector<bool> &resultStates) override
-            {
-                assert(values.size () == 1);
-                assert(resultStates.size () == values.size ());
-
-                if (!resultStates[0]) {
-                    return;
-                }
-
-                version = static_cast<uint32_t>(std::atoi (values[0].c_str ()));
-            }
-
-            boost::optional<uint32_t> getDbSchemeVersion()
-            {
-                return version;
-            }
-
-        private:
-            boost::optional<uint32_t> version;
-        };
-
-        class DatabaseVersionWriteBatch: public IWriteBatch
-        {
-        public:
-            DatabaseVersionWriteBatch(uint32_t version)
-                : schemeVersion (version)
-            {
-            }
-
-            virtual ~DatabaseVersionWriteBatch()
-            {
-            }
-
-            virtual std::vector<std::pair<std::string, std::string> >
-            extractRawDataToInsert() override
-            {
-                return {make_pair (DB_VERSION_KEY, std::to_string (schemeVersion))};
-            }
-
-            virtual std::vector<std::string> extractRawKeysToRemove() override
-            {
-                return {};
-            }
-
-        private:
-            uint32_t schemeVersion;
-        };
     } // namespace
+
+    ExtendedTransactionInfo DatabaseBlockchainCache::requestCachedTransaction(const Crypto::Hash &hash)
+    {
+        ExtendedTransactionInfo exTrIn;
+        CryptoNote::Transaction tx;
+        exTrIn.blockIndex = mDb->getTxBlockHeight(hash);
+        exTrIn.transactionIndex;
+        exTrIn.transactionHash = hash;
+        exTrIn.unlockTime = mDb->getTxUnlockTime(hash);
+        if (mDb->getTx(hash, tx)){
+            std::vector<CryptoNote::TransactionOutputTarget> txOutTars;
+            for (auto txOutput : tx.outputs) {
+                txOutTars.emplace_back(txOutput.target);
+            }
+
+            exTrIn.outputs = txOutTars;
+        }
+    }
 
     struct DatabaseBlockchainCache::ExtendedPushedBlockInfo
     {
@@ -538,38 +514,18 @@ namespace CryptoNote {
         uint64_t timestamp;
     };
 
-    DatabaseBlockchainCache::DatabaseBlockchainCache(const Currency &curr,
-                                                     IDataBase &dataBase,
+    DatabaseBlockchainCache::DatabaseBlockchainCache(std::unique_ptr<BlockchainDB> &db,
+                                                     Hardfork *&hf,
+                                                     const Currency &currency,
+                                                     TxMemoryPool &txMemPool,
                                                      IBlockchainCacheFactory &blockchainCacheFactory,
                                                      std::shared_ptr<Logging::ILogger> _logger)
-        : currency (curr),
-          database (dataBase),
+        : currency (currency),
+          mDb (db.release()),
+          mTxMemPool (txMemPool),
           blockchainCacheFactory (blockchainCacheFactory),
           logger (_logger, "DatabaseBlockchainCache")
     {
-        DatabaseVersionReadBatch readBatch;
-        auto ec = database.read (readBatch);
-        if (ec) {
-            throw std::system_error (ec);
-        }
-
-        auto version = readBatch.getDbSchemeVersion ();
-        if (!version) {
-            logger (Logging::DEBUGGING)
-                << "DB scheme version not found, writing: "
-                << CURRENT_DB_SCHEME_VERSION;
-
-            DatabaseVersionWriteBatch writeBatch (CURRENT_DB_SCHEME_VERSION);
-            auto writeError = database.write (writeBatch);
-            if (writeError) {
-                throw std::system_error (writeError);
-            }
-        } else {
-            logger (Logging::DEBUGGING)
-                << "Current db scheme version: "
-                << *version;
-        }
-
         if (getTopBlockIndex () == 0) {
             logger (Logging::DEBUGGING)
                 << "top block index is nill, add genesis block";
@@ -577,50 +533,14 @@ namespace CryptoNote {
         }
     }
 
-    bool DatabaseBlockchainCache::checkDBSchemeVersion(IDataBase &database,
-                                                       std::shared_ptr<Logging::ILogger> _logger)
-    {
-        Logging::LoggerRef logger (_logger, "DatabaseBlockchainCache");
-
-        DatabaseVersionReadBatch readBatch;
-        auto ec = database.read (readBatch);
-        if (ec) {
-            throw std::system_error (ec);
-        }
-
-        auto version = readBatch.getDbSchemeVersion ();
-        if (!version) {
-            /*!
-                DB scheme version not found. Looks like it was just created.
-            */
-            return true;
-        } else if (*version < CURRENT_DB_SCHEME_VERSION) {
-            logger (Logging::WARNING)
-                << "DB scheme version is less than expected. Expected version "
-                << CURRENT_DB_SCHEME_VERSION
-                << ". Actual version "
-                << *version
-                << ". DB will be destroyed and recreated from blocks.bin file.";
-            return false;
-        } else if (*version > CURRENT_DB_SCHEME_VERSION) {
-            logger (Logging::ERROR)
-                << "DB scheme version is greater than expected. Expected version "
-                << CURRENT_DB_SCHEME_VERSION
-                << ". Actual version "
-                << *version
-                << ". Please update your software.";
-            throw std::runtime_error ("DB scheme version is greater than expected");
-        } else {
-            return true;
-        }
-    }
-
     void DatabaseBlockchainCache::deleteClosestTimestampBlockIndex(BlockchainWriteBatch &writeBatch,
                                                                    uint32_t splitBlockIndex)
     {
-        auto batch = BlockchainReadBatch ().requestCachedBlock (splitBlockIndex);
-        auto blockResult = readDatabase (batch);
-        auto timestamp = blockResult.getCachedBlocks ().at (splitBlockIndex).timestamp;
+        // auto batch = BlockchainReadBatch ().requestCachedBlock (splitBlockIndex);
+        // auto blockResult = readDatabase (batch);
+        // auto timestamp = blockResult.getCachedBlocks ().at (splitBlockIndex).timestamp;
+
+        auto timestamp = mDb->getBlockTimestamp(splitBlockIndex);
 
         auto midnight = roundToMidnight (timestamp);
         auto timestampResult = requestClosestBlockIndexByTimestamp (midnight, database);
@@ -667,25 +587,28 @@ namespace CryptoNote {
 
         auto cache = blockchainCacheFactory.createBlockchainCache (currency, this, splitBlockIndex);
 
+
         using DeleteBlockInfo = std::tuple<uint32_t, Crypto::Hash, TransactionValidatorState, uint64_t>;
         std::vector<DeleteBlockInfo> deletingBlocks;
 
-        BlockchainWriteBatch writeBatch;
         auto currentTop = getTopBlockIndex ();
+        auto blockIndex = splitBlockIndex;
+        while (blockIndex < getTopBlockIndex()) {
+
+        }
+
         for (uint32_t blockIndex = splitBlockIndex; blockIndex <= currentTop; ++blockIndex) {
             ExtendedPushedBlockInfo extendedInfo = getExtendedPushedBlockInfo (blockIndex);
 
-            auto validatorState = extendedInfo.pushedBlockInfo.validatorState;
+            auto block = mDb->getBlockFromHeight(blockIndex);
+            std::vector<CryptoNote::Transaction> txHashes = mDb->getTxList(block.transactionHashes);
             logger (Logging::DEBUGGING)
                 << "pushing block "
                 << blockIndex
                 << " to child segment";
             auto blockHash = pushBlockToAnotherCache (*cache, std::move (extendedInfo.pushedBlockInfo));
 
-            deletingBlocks.emplace_back (blockIndex,
-                                         blockHash,
-                                         validatorState,
-                                         extendedInfo.timestamp);
+            mDb->popBlock(block, txHashes);
         }
 
         for (auto it = deletingBlocks.rbegin (); it != deletingBlocks.rend (); ++it) {
@@ -695,15 +618,13 @@ namespace CryptoNote {
             uint64_t timestamp = std::get<3> (*it);
 
             writeBatch.removeCachedBlock (blockHash, blockIndex).removeRawBlock (blockIndex);
-            requestDeleteSpentOutputs (writeBatch,
-                                       blockIndex,
+            requestDeleteSpentOutputs (blockIndex,
                                        validatorState);
             requestRemoveTimestamp (writeBatch, timestamp, blockHash);
         }
 
         auto deletingTransactionHashes = requestTransactionHashesFromBlockIndex (splitBlockIndex);
-        requestDeleteTransactions (writeBatch, deletingTransactionHashes);
-        requestDeletePaymentIds (writeBatch, deletingTransactionHashes);
+        requestDeleteTransactions (deletingTransactionHashes);
 
         std::vector<ExtendedTransactionInfo> extendedTransactions;
         if (!requestExtendedTransactionInfos (deletingTransactionHashes, database, extendedTransactions)) {
@@ -784,8 +705,10 @@ namespace CryptoNote {
         assert(tr);
 
         CachedBlock cachedBlock (block);
+        BlockVerificationContext bVC = boost::value_initialized<BlockVerificationContext>();
         segment.pushBlock (cachedBlock,
                            transactions,
+                           bVC,
                            pushedBlockInfo.validatorState,
                            pushedBlockInfo.blockSize,
                            pushedBlockInfo.generatedCoins,
@@ -795,6 +718,12 @@ namespace CryptoNote {
         return cachedBlock.getBlockHash ();
     }
 
+    /*!
+     * get all Transactions from blocks, starting at splitBlockIndex
+     *
+     * @param splitBlockIndex
+     * @return
+     */
     std::vector<Crypto::Hash>
     DatabaseBlockchainCache::requestTransactionHashesFromBlockIndex(uint32_t splitBlockIndex)
     {
@@ -802,70 +731,28 @@ namespace CryptoNote {
             << "Requesting transaction hashes starting from block index "
             << splitBlockIndex;
 
-        BlockchainReadBatch readBatch;
-        for (uint32_t blockIndex = splitBlockIndex; blockIndex <= getTopBlockIndex (); ++blockIndex) {
-            readBatch.requestTransactionHashesByBlock (blockIndex);
-        }
+        std::vector<Block> blocks = mDb->getBlocksRange(splitBlockIndex, getTopBlockIndex());
 
         std::vector<Crypto::Hash> transactionHashes;
-
-        auto dbResult = readDatabase (readBatch);
-        for (const auto &kv: dbResult.getTransactionHashesByBlocks ()) {
-            for (const auto &hash: kv.second) {
-                transactionHashes.emplace_back (hash);
+        for (auto block : blocks) {
+            for (auto hash : block.transactionHashes) {
+                transactionHashes.emplace_back(hash);
             }
         }
 
         return transactionHashes;
     }
 
-    void DatabaseBlockchainCache::requestDeleteTransactions(BlockchainWriteBatch &writeBatch,
-                                                            const std::vector<Crypto::Hash> &transactionHashes)
+    void DatabaseBlockchainCache::requestDeleteTransactions(const std::vector<Crypto::Hash> &transactionHashes)
     {
         for (const auto &hash: transactionHashes) {
             assert(getCachedTransactionsCount () > 0);
-            writeBatch.removeCachedTransaction (hash, getCachedTransactionsCount () - 1);
+            mDb->removeTransaction(hash);
             transactionsCount = *transactionsCount - 1;
         }
     }
 
-    void DatabaseBlockchainCache::requestDeletePaymentIds(BlockchainWriteBatch &writeBatch,
-                                                          const std::vector<Crypto::Hash> &transactionHashes)
-    {
-        std::unordered_map<Crypto::Hash, size_t> paymentCounts;
-
-        for (const auto &hash: transactionHashes) {
-            Crypto::Hash paymentId;
-            if (!requestPaymentId (database, hash, paymentId)) {
-                continue;
-            }
-
-            paymentCounts[paymentId] += 1;
-        }
-
-        for (const auto &kv: paymentCounts) {
-            requestDeletePaymentId (writeBatch, kv.first, kv.second);
-        }
-    }
-
-    void DatabaseBlockchainCache::requestDeletePaymentId(BlockchainWriteBatch &writeBatch,
-                                                         const Crypto::Hash &paymentId,
-                                                         size_t toDelete)
-    {
-        size_t count = requestPaymentIdTransactionsCount (database, paymentId);
-        assert(count > 0);
-        assert(count >= toDelete);
-
-        logger (Logging::DEBUGGING)
-            << "Deleting last "
-            << toDelete
-            << " transaction hashes of payment id "
-            << paymentId;
-        writeBatch.removePaymentId (paymentId, static_cast<uint32_t>(count - toDelete));
-    }
-
-    void DatabaseBlockchainCache::requestDeleteSpentOutputs(BlockchainWriteBatch &writeBatch,
-                                                            uint32_t blockIndex,
+    void DatabaseBlockchainCache::requestDeleteSpentOutputs(uint32_t blockIndex,
                                                             const TransactionValidatorState &spentOutputs)
     {
         logger (Logging::DEBUGGING)
@@ -875,12 +762,13 @@ namespace CryptoNote {
         std::vector<Crypto::KeyImage> spentKeys (spentOutputs.spentKeyImages.begin (),
                                                  spentOutputs.spentKeyImages.end ());
 
-        writeBatch.removeSpentKeyImages (blockIndex, spentKeys);
+        mDb->removeSpentKeys(spentKeys);
     }
 
-    void DatabaseBlockchainCache::requestDeleteKeyOutputs(BlockchainWriteBatch &writeBatch,
-                                                          const std::map<IBlockchainCache::Amount,
-                                                                         IBlockchainCache::GlobalOutputIndex> &boundaries)
+    void DatabaseBlockchainCache::requestDeleteKeyOutputs(
+            BlockchainWriteBatch &writeBatch,
+            const std::map<IBlockchainCache::Amount,
+                           IBlockchainCache::GlobalOutputIndex> &boundaries)
     {
         if (boundaries.empty ()) {
             /*!
@@ -965,6 +853,7 @@ namespace CryptoNote {
                                                   uint16_t transactionBlockIndex,
                                                   BlockchainWriteBatch &batch)
     {
+        bool r = !Tools::isLmdb();
         logger (Logging::TRACE)
             << "push transaction with hash "
             << cachedTransaction.getTransactionHash ();
@@ -1119,12 +1008,15 @@ namespace CryptoNote {
 
     void DatabaseBlockchainCache::pushBlock(const CachedBlock &cachedBlock,
                                             const std::vector<CachedTransaction> &cachedTransactions,
+                                            BlockVerificationContext &bVC,
                                             const TransactionValidatorState &validatorState,
                                             size_t blockSize,
                                             uint64_t generatedCoins,
                                             uint64_t blockDifficulty,
                                             RawBlock &&rawBlock)
     {
+        bool r = !Tools::isLmdb();
+
         BlockchainWriteBatch batch;
         /*!
             +1 for base transaction
@@ -1364,25 +1256,7 @@ namespace CryptoNote {
 
     uint32_t DatabaseBlockchainCache::getTopBlockIndex() const
     {
-        if (!topBlockIndex) {
-            auto batch = BlockchainReadBatch ().requestLastBlockIndex ();
-            auto result = database.read (batch);
-
-            if (result) {
-                logger (Logging::ERROR)
-                    << "Failed to read top block index from database";
-                throw std::system_error (result);
-            }
-
-            auto readResult = batch.extractResult ();
-            if (!readResult.getLastBlockIndex ().second) {
-                logger (Logging::TRACE)
-                    << "Top block index does not exist in database";
-                topBlockIndex = 0;
-            }
-
-            topBlockIndex = readResult.getLastBlockIndex ().first;
-        }
+        topBlockIndex = mDb->height();
 
         return *topBlockIndex;
     }
@@ -1406,36 +1280,14 @@ namespace CryptoNote {
 
     uint64_t DatabaseBlockchainCache::getCachedTransactionsCount() const
     {
-        if (!transactionsCount) {
-            auto batch = BlockchainReadBatch ().requestTransactionsCount ();
-            auto result = database.read (batch);
-
-            if (result) {
-                logger (Logging::ERROR)
-                    << "Failed to read transactions count from database";
-                throw std::system_error (result);
-            }
-
-            auto readResult = batch.extractResult ();
-            if (!readResult.getTransactionsCount ().second) {
-                logger (Logging::TRACE)
-                    << "Transactions count does not exist in database";
-                transactionsCount = 0;
-            } else {
-                transactionsCount = readResult.getTransactionsCount ().first;
-            }
-        }
+        transactionsCount = mDb->getTxCount();
 
         return *transactionsCount;
     }
 
     const Crypto::Hash &DatabaseBlockchainCache::getTopBlockHash() const
     {
-        if (!topBlockHash) {
-            auto batch = BlockchainReadBatch ().requestCachedBlock (getTopBlockIndex ());
-            auto result = readDatabase (batch);
-            topBlockHash = result.getCachedBlocks ().at (getTopBlockIndex ()).blockHash;
-        }
+        topBlockHash = mDb->getTopBlockHash();
 
         return *topBlockHash;
     }
@@ -1447,10 +1299,9 @@ namespace CryptoNote {
 
     bool DatabaseBlockchainCache::hasBlock(const Crypto::Hash &blockHash) const
     {
-        auto batch = BlockchainReadBatch ().requestBlockIndexByBlockHash (blockHash);
-        auto result = database.read (batch);
+        auto result = mDb->blockExists(blockHash);
 
-        return !result && batch.extractResult ().getBlockIndexesByBlockHashes ().count (blockHash);
+        return result;
     }
 
     uint32_t DatabaseBlockchainCache::getBlockIndex(const Crypto::Hash &blockHash) const
@@ -1459,17 +1310,16 @@ namespace CryptoNote {
             return getTopBlockIndex ();
         }
 
-        auto batch = BlockchainReadBatch ().requestBlockIndexByBlockHash (blockHash);
-        auto result = readDatabase (batch);
-        return result.getBlockIndexesByBlockHashes ().at (blockHash);
+        auto result = mDb->getBlockHeight(blockHash);
+
+        return result;
     }
 
     bool DatabaseBlockchainCache::hasTransaction(const Crypto::Hash &transactionHash) const
     {
-        auto batch = BlockchainReadBatch ().requestCachedTransaction (transactionHash);
-        auto result = database.read (batch);
+        auto result = mDb->txExists(transactionHash);
 
-        return !result && batch.extractResult ().getCachedTransactions ().count (transactionHash);
+        return result;
     }
 
     std::vector<uint64_t> DatabaseBlockchainCache::getLastTimestamps(size_t count) const
@@ -1567,12 +1417,32 @@ namespace CryptoNote {
         return getCachedBlockInfo (blockIndex).cumulativeDifficulty;
     }
 
+    uint64_t DatabaseBlockchainCache::getBlockDifficulty(uint32_t blockIndex) const
+    {
+        auto difficulties = getLastCumulativeDifficulties(2,
+                                                          blockIndex,
+                                                          UseGenesis{true});
+
+        if (difficulties.size() == 2) {
+            return difficulties[1] - difficulties[0];
+        }
+
+        assert(difficulties.size() == 1);
+
+        return difficulties[0];
+    }
+
     CachedBlockInfo DatabaseBlockchainCache::getCachedBlockInfo(uint32_t index) const
     {
-        auto batch = BlockchainReadBatch ().requestCachedBlock (index);
-        auto result = readDatabase (batch);
+        CachedBlockInfo blockInfo;
+        blockInfo.blockHash = mDb->getBlockHashFromHeight(index);
+        blockInfo.timestamp = mDb->getBlockTimestamp(index);
+        blockInfo.cumulativeDifficulty = mDb->getBlockDifficulty(index);
+        blockInfo.alreadyGeneratedCoins = mDb->getBlockAlreadyGeneratedCoins(index);
+        blockInfo.alreadyGeneratedTransactions = mDb->getBlockAlreadyGeneratedTransactions(index);
+        blockInfo.blockSize = mDb->getBlockSize(index);
 
-        return result.getCachedBlocks ().at (index);
+        return blockInfo;
     }
 
     uint64_t DatabaseBlockchainCache::getAlreadyGeneratedCoins() const
@@ -1582,12 +1452,14 @@ namespace CryptoNote {
 
     uint64_t DatabaseBlockchainCache::getAlreadyGeneratedCoins(uint32_t blockIndex) const
     {
-        return getCachedBlockInfo (blockIndex).alreadyGeneratedCoins;
+        auto alreadyGeneratedCoins = mDb->getBlockAlreadyGeneratedCoins(blockIndex);
+        return alreadyGeneratedCoins;
     }
 
     uint64_t DatabaseBlockchainCache::getAlreadyGeneratedTransactions(uint32_t blockIndex) const
     {
-        return getCachedBlockInfo (blockIndex).alreadyGeneratedTransactions;
+        auto alreadyGeneratedTransactions = mDb->getBlockAlreadyGeneratedTransactions(blockIndex);
+        return alreadyGeneratedTransactions;
     }
 
     std::vector<CachedBlockInfo> DatabaseBlockchainCache::getLastCachedUnits(uint32_t blockIndex,
@@ -1715,14 +1587,9 @@ namespace CryptoNote {
 
     Crypto::Hash DatabaseBlockchainCache::getBlockHash(uint32_t blockIndex) const
     {
-        if (blockIndex == getTopBlockIndex ()) {
-            return getTopBlockHash ();
-        }
+        auto result = mDb->getBlockHashFromHeight(blockIndex);
 
-        auto batch = BlockchainReadBatch ().requestCachedBlock (blockIndex);
-        auto result = readDatabase (batch);
-
-        return result.getCachedBlocks ().at (blockIndex).blockHash;
+        return result;
     }
 
     std::vector<Crypto::Hash> DatabaseBlockchainCache::getBlockHashes(uint32_t startIndex,
@@ -1736,28 +1603,14 @@ namespace CryptoNote {
             return {};
         }
 
-        BlockchainReadBatch request;
-        auto index = startIndex;
-        while (index != startIndex + count) {
-            request.requestCachedBlock (index++);
-        }
-
-        auto result = readDatabase (request);
-        assert(result.getCachedBlocks ().size () == count);
+        auto result = mDb->getHashesRange(startIndex, startIndex + maxCount);
+        assert(result.size () == count);
 
         std::vector<Crypto::Hash> hashes;
-        hashes.reserve (count);
 
-        std::map<uint32_t, CachedBlockInfo> sortedResult (
-            result.getCachedBlocks ().begin (), result.getCachedBlocks ().end ());
-
-        std::transform (sortedResult.begin (),
-                        sortedResult.end (),
-                        std::back_inserter (hashes),
-                        [](const std::pair<uint32_t, CachedBlockInfo> &cb)
-                        {
-                            return cb.second.blockHash;
-                        });
+        for (auto blockHash : result) {
+            hashes.emplace_back(blockHash);
+        }
 
         return hashes;
     }
@@ -2214,22 +2067,24 @@ namespace CryptoNote {
     std::vector<RawBlock> DatabaseBlockchainCache::getBlocksByHeight(const uint64_t startHeight,
                                                                      uint64_t endHeight) const
     {
-        auto blockBatch = BlockchainReadBatch ().requestRawBlocks (startHeight, endHeight);
-
         /*!
             Get the info from the DB
         */
-        auto rawBlocks = readDatabase (blockBatch).getRawBlocks ();
-
+        std::vector<CryptoNote::Block> rawBlocks = mDb->getBlocksRange(startHeight, endHeight);
         std::vector<RawBlock> orderedBlocks;
 
         /*!
             Order, and convert from map, to vector
         */
-        for (uint64_t height = startHeight;
-             height < startHeight + rawBlocks.size ();
-             height++) {
-            orderedBlocks.push_back (rawBlocks.at (height));
+        for (auto block : rawBlocks) {
+            RawBlock rBlock;
+            std::vector<BinaryArray> transactions;
+            rBlock.block = toBinaryArray(block);
+            for (auto tx : block.transactionHashes) {
+                transactions.emplace_back(toBinaryArray(mDb->getTx(tx)));
+            }
+
+            orderedBlocks.emplace_back(rBlock);
         }
 
         return orderedBlocks;
@@ -2269,9 +2124,9 @@ namespace CryptoNote {
         }
 
         auto dbResult = readDatabase (batch);
-        const CachedBlockInfo &blockInfo = dbResult.getCachedBlocks ().at (blockIndex);
+        const CachedBlockInfo &blockInfo = getCachedBlockInfo(blockIndex);
         const CachedBlockInfo &previousBlockInfo = blockIndex > 0 ?
-                                                   dbResult.getCachedBlocks ().at (blockIndex - 1) :
+                                                   getCachedBlockInfo(blockIndex - 1) :
                                                    NULL_CACHED_BLOCK_INFO;
 
         ExtendedPushedBlockInfo extendedInfo;
@@ -2314,19 +2169,6 @@ namespace CryptoNote {
         return res;
     }
 
-    BlockchainReadResult DatabaseBlockchainCache::readDatabase(BlockchainReadBatch &batch) const
-    {
-        auto result = database.read (batch);
-        if (result) {
-            logger (Logging::ERROR)
-                << "failed to read database, error is "
-                << result.message ();
-            throw std::runtime_error (result.message ());
-        }
-
-        return batch.extractResult ();
-    }
-
     void DatabaseBlockchainCache::addGenesisBlock(CachedBlock &&genesisBlock)
     {
         uint64_t minerReward = 0;
@@ -2342,23 +2184,24 @@ namespace CryptoNote {
         BlockchainWriteBatch batch;
 
         CachedBlockInfo blockInfo
-            {
-                genesisBlock.getBlockHash (),
-                genesisBlock.getBlock ().timestamp,
-                1,
-                minerReward,
-                1,
-                uint32_t (baseTransactionSize)
-            };
+        {
+            genesisBlock.getBlockHash (),
+            genesisBlock.getBlock ().timestamp,
+            1,
+            minerReward,
+            1,
+            uint32_t (baseTransactionSize)
+        };
 
         auto baseTransaction = genesisBlock.getBlock ().baseTransaction;
         auto cachedBaseTransaction = CachedTransaction
-            {
-                std::move (baseTransaction)
-            };
+        {
+            std::move (baseTransaction)
+        };
 
         pushTransaction (cachedBaseTransaction, 0, 0, batch);
 
+        /*!
         batch.insertCachedBlock (blockInfo,
                                  0,
                                  {
@@ -2372,6 +2215,12 @@ namespace CryptoNote {
                                   }
                               });
         batch.insertClosestTimestampBlockIndex (roundToMidnight (genesisBlock.getBlock ().timestamp), 0);
+        */
+
+        uint64_t cumulativeSize = 0;
+
+        mDb->addBlock(genesisBlock.getBlock(),
+                      blockInfo.blockSize)
 
         auto res = database.write (batch);
         if (res) {

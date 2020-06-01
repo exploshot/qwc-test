@@ -24,9 +24,9 @@
 
 namespace CryptoNote {
 
-    DatabaseBlockchainCacheFactory::DatabaseBlockchainCacheFactory(IDataBase &database,
+    DatabaseBlockchainCacheFactory::DatabaseBlockchainCacheFactory(std::unique_ptr<BlockchainDB> &db,
                                                                    std::shared_ptr<Logging::ILogger> logger)
-        : database (database),
+        : database (db),
           logger (logger)
     {
     }

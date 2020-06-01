@@ -19,6 +19,7 @@
 #pragma once
 
 #include <CryptoNoteCore/Blockchain/IBlockchainCacheFactory.h>
+#include <CryptoNoteCore/Blockchain/LMDB/BlockchainDB.h>
 
 #include <Logging/LoggerMessage.h>
 
@@ -29,7 +30,7 @@ namespace CryptoNote {
     class DatabaseBlockchainCacheFactory: public IBlockchainCacheFactory
     {
     public:
-        explicit DatabaseBlockchainCacheFactory(IDataBase &database,
+        explicit DatabaseBlockchainCacheFactory(std::unique_ptr<BlockchainDB> &db,
                                                 std::shared_ptr<Logging::ILogger> logger);
         virtual ~DatabaseBlockchainCacheFactory();
 
@@ -39,7 +40,7 @@ namespace CryptoNote {
                                                                         uint32_t startIndex = 0) override;
 
     private:
-        IDataBase &database;
+        BlockchainDB &database;
         std::shared_ptr<Logging::ILogger> logger;
     };
 } //namespace CryptoNote
