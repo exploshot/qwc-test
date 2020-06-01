@@ -30,14 +30,17 @@
 #include <CryptoNoteCore/Blockchain/IBlockchainCache.h>
 #include <CryptoNoteCore/Blockchain/IBlockchainCacheFactory.h>
 #include <CryptoNoteCore/Blockchain/IMainChainStorage.h>
+#include <CryptoNoteCore/Blockchain/LMDB/BlockchainDB.h>
 #include <CryptoNoteCore/Transactions/CachedTransaction.h>
 #include <CryptoNoteCore/Transactions/ITransactionPool.h>
 #include <CryptoNoteCore/Transactions/ITransactionPoolCleaner.h>
+#include <CryptoNoteCore/Transactions/TransactionPool.h>
 #include <CryptoNoteCore/Transactions/TransactionValidationState.h>
 #include <CryptoNoteCore/Currency.h>
 #include <CryptoNoteCore/Checkpoints.h>
 #include <CryptoNoteCore/ICore.h>
 #include <CryptoNoteCore/ICoreInformation.h>
+#include <CryptoNoteCore/ITimeProvider.h>
 #include <CryptoNoteCore/IUpgradeManager.h>
 #include <CryptoNoteCore/MessageQueue.h>
 
@@ -49,15 +52,19 @@
 
 namespace CryptoNote {
 
-    class Core: public ICore, public ICoreInformation
+    class Core: public ICore,
+                public ICoreInformation
     {
     public:
-        Core(const Currency &currency,
+        Core(std::unique_ptr<BlockchainDB> &db,
+             Hardfork *hf,
+             const Currency &currency,
              std::shared_ptr<Logging::ILogger> logger,
              Checkpoints &&checkpoints,
              System::Dispatcher &dispatcher,
              std::unique_ptr<IBlockchainCacheFactory> &&blockchainCacheFactory,
-             std::unique_ptr<IMainChainStorage> &&mainChainStorage);
+             std::unique_ptr<IMainChainStorage> &&mainChainStorage,
+             bool blockchainIndexesEnabled);
 
         virtual ~Core();
 
@@ -188,7 +195,10 @@ namespace CryptoNote {
         virtual uint64_t getCurrentBlockchainHeight() const;
 
     private:
+        BlockchainDB *mDb;
         const Currency &currency;
+        TxMemoryPool mMempool;
+        CryptoNote::RealTimeProvider mTimeProvider;
         System::Dispatcher &dispatcher;
         System::ContextGroup contextGroup;
         Logging::LoggerRef logger;
@@ -200,6 +210,8 @@ namespace CryptoNote {
         std::unordered_set<IBlockchainCache *> mainChainSet;
 
         std::string dataFolder;
+        std::string dbSyncMode;
+        std::string mDbType;
 
         IntrusiveLinkedList<MessageQueue<BlockchainMessage>> queueList;
         std::unique_ptr<IBlockchainCacheFactory> blockchainCacheFactory;

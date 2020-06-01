@@ -241,12 +241,15 @@ namespace CryptoNote {
         }
     } // namespace
 
-    Core::Core(const Currency &currency,
+    Core::Core(std::unique_ptr<BlockchainDB> &db,
+               Hardfork *hf,
+               const Currency &currency,
                std::shared_ptr<Logging::ILogger> logger,
                Checkpoints &&checkpoints,
                System::Dispatcher &dispatcher,
                std::unique_ptr<IBlockchainCacheFactory> &&blockchainCacheFactory,
-               std::unique_ptr<IMainChainStorage> &&mainchainStorage)
+               std::unique_ptr<IMainChainStorage> &&mainchainStorage,
+               bool blockchainIndexesEnabled)
         : currency (currency),
           dispatcher (dispatcher),
           contextGroup (dispatcher),
@@ -255,7 +258,14 @@ namespace CryptoNote {
           upgradeManager (new UpgradeManager ()),
           blockchainCacheFactory (std::move (blockchainCacheFactory)),
           mainChainStorage (std::move (mainchainStorage)),
-          initialized (false)
+          initialized (false),
+          mMempool(db,
+                   currency,
+                   mainChainStorage,
+                   *this,
+                   mTimeProvider,
+                   logger,
+                   blockchainIndexesEnabled)
     {
         upgradeManager->addMajorBlockVersion (BLOCK_MAJOR_VERSION_1,
                                               currency.upgradeHeight (BLOCK_MAJOR_VERSION_1));
@@ -3715,4 +3725,4 @@ namespace CryptoNote {
     {
         return start_time;
     }
-} // namespace CryptoNote
+    } // namespace CryptoNote
