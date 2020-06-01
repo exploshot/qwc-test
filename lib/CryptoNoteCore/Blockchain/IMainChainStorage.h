@@ -19,6 +19,7 @@
 #pragma once
 
 #include <CryptoNote.h>
+#include <CryptoNoteCore/Transactions/ITransactionValidator.h>
 
 namespace CryptoNote {
 
