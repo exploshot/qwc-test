@@ -23,7 +23,9 @@
 #include <ctime>
 
 #include <Common/StringTools.h>
+#include <Common/Util.h>
 
+#include <CryptoNoteCore/Blockchain/LMDB/BlockchainDB.h>
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 #include <CryptoNoteCore/Currency.h>
@@ -51,47 +53,53 @@ namespace CryptoNote {
     public:
         BasicUpgradeDetector(const Currency &currency,
                              BC &blockchain,
+                             BlockchainDB &db,
                              uint8_t targetVersion,
                              std::shared_ptr<Logging::ILogger> log)
-            : m_currency (currency),
-              m_blockchain (blockchain),
-              m_targetVersion (targetVersion),
-              m_votingCompleteHeight (UNDEF_HEIGHT),
+            : db(db),
+              mCurrency(currency),
+              mBlockchain(blockchain),
+              mTargetVersion(targetVersion),
+              mVotingCompleteHeight(UNDEF_HEIGHT),
               logger (log, "upgrade")
         {
         }
 
         bool init()
         {
-            uint32_t upgradeHeight = m_currency.upgradeHeight (m_targetVersion);
+            bool r = !Tools::isLmdb();
+
+            #define HEIGHT (r ? (mBlockchain.size() + 1) : db.height())
+
+            uint32_t upgradeHeight = mCurrency.upgradeHeight (mTargetVersion);
 
             if (upgradeHeight == UNDEF_HEIGHT) {
-                if (m_blockchain.empty ()) {
-                    m_votingCompleteHeight = UNDEF_HEIGHT;
+                if (mBlockchain.empty ()) {
+                    mVotingCompleteHeight = UNDEF_HEIGHT;
 
-                } else if (m_targetVersion - 1 == m_blockchain.back ().bl.majorVersion) {
-                    m_votingCompleteHeight = findVotingCompleteHeight (static_cast<uint32_t>(m_blockchain.size () - 1));
+                } else if (mTargetVersion - 1 == mBlockchain.back ().bl.majorVersion) {
+                    mVotingCompleteHeight = findVotingCompleteHeight (static_cast<uint32_t>(mBlockchain.size () - 1));
 
-                } else if (m_targetVersion <= m_blockchain.back ().bl.majorVersion) {
-                    auto it = std::lower_bound (m_blockchain.begin (),
-                                                m_blockchain.end (),
-                                                m_targetVersion,
+                } else if (mTargetVersion <= mBlockchain.back ().bl.majorVersion) {
+                    auto it = std::lower_bound (mBlockchain.begin (),
+                                                mBlockchain.end (),
+                                                mTargetVersion,
                                                 [](const typename BC::value_type &b,
                                                    uint8_t v)
                                                 {
                                                     return b.bl.majorVersion < v;
                                                 });
-                    if (it == m_blockchain.end () || it->bl.majorVersion != m_targetVersion) {
+                    if (it == mBlockchain.end () || it->bl.majorVersion != mTargetVersion) {
                         logger (Logging::ERROR, Logging::BRIGHT_RED)
                             << "Internal error: upgrade height isn't found";
 
                         return false;
                     }
 
-                    uint32_t upgradeHeight = static_cast<uint32_t>(it - m_blockchain.begin ());
-                    m_votingCompleteHeight = findVotingCompleteHeight (upgradeHeight);
+                    upgradeHeight = static_cast<uint32_t>(it - mBlockchain.begin ());
+                    mVotingCompleteHeight = findVotingCompleteHeight (upgradeHeight);
 
-                    if (m_votingCompleteHeight == UNDEF_HEIGHT) {
+                    if (mVotingCompleteHeight == UNDEF_HEIGHT) {
                         logger (Logging::ERROR, Logging::BRIGHT_RED)
                             << "Internal error: voting complete height isn't found, upgrade height = "
                             << upgradeHeight;
@@ -99,47 +107,48 @@ namespace CryptoNote {
                         return false;
                     }
                 } else {
-                    m_votingCompleteHeight = UNDEF_HEIGHT;
+                    mVotingCompleteHeight = UNDEF_HEIGHT;
                 }
-            } else if (!m_blockchain.empty ()) {
-                if (m_blockchain.size () <= upgradeHeight + 1) {
-                    if (m_blockchain.back ().bl.majorVersion >= m_targetVersion) {
+            } else if (!mBlockchain.empty ()) {
+                if (mBlockchain.size () <= upgradeHeight + 1) {
+                    if (mBlockchain.back ().bl.majorVersion >= mTargetVersion) {
                         logger (Logging::ERROR, Logging::BRIGHT_RED)
                             << "Internal error: block at height "
-                            << (m_blockchain.size () - 1)
+                            << (mBlockchain.size () - 1)
                             << " has invalid version "
-                            << static_cast<int>(m_blockchain.back ().bl.majorVersion)
+                            << static_cast<int>(mBlockchain.back ().bl.majorVersion)
                             << ", expected "
-                            << static_cast<int>(m_targetVersion - 1)
+                            << static_cast<int>(mTargetVersion - 1)
                             << " or less";
 
                         return false;
                     }
                 } else {
-                    int blockVersionAtUpgradeHeight = m_blockchain[upgradeHeight].bl.majorVersion;
+                    int blockVersionAtUpgradeHeight = mBlockchain[upgradeHeight].bl.majorVersion;
 
-                    if (blockVersionAtUpgradeHeight != m_targetVersion - 1) {
+                    if (blockVersionAtUpgradeHeight != mTargetVersion - 1) {
                         logger (Logging::ERROR, Logging::BRIGHT_RED)
                             << "Internal error: block at height "
                             << upgradeHeight
                             << " has invalid version "
                             << blockVersionAtUpgradeHeight
                             << ", expected "
-                            << static_cast<int>(m_targetVersion - 1);
+                            << static_cast<int>(mTargetVersion - 1);
 
                         return false;
                     }
 
-                    int blockVersionAfterUpgradeHeight = m_blockchain[upgradeHeight + 1].bl.majorVersion;
+                    int blockVersionAfterUpgradeHeight =
+                            mBlockchain[upgradeHeight + 1].bl.majorVersion;
 
-                    if (blockVersionAfterUpgradeHeight != m_targetVersion) {
+                    if (blockVersionAfterUpgradeHeight != mTargetVersion) {
                         logger (Logging::ERROR, Logging::BRIGHT_RED)
                             << "Internal error: block at height "
                             << (upgradeHeight + 1)
                             << " has invalid version "
                             << blockVersionAfterUpgradeHeight
                             << ", expected "
-                            << static_cast<int>(m_targetVersion);
+                            << static_cast<int>(mTargetVersion);
 
                         return false;
                     }
@@ -151,49 +160,52 @@ namespace CryptoNote {
 
         uint8_t targetVersion() const
         {
-            return m_targetVersion;
+            return mTargetVersion;
         }
 
         uint32_t votingCompleteHeight() const
         {
-            return m_votingCompleteHeight;
+            return mVotingCompleteHeight;
         }
 
         uint32_t upgradeHeight() const
         {
-            if (m_currency.upgradeHeight (m_targetVersion) == UNDEF_HEIGHT) {
-                return m_votingCompleteHeight == UNDEF_HEIGHT ? UNDEF_HEIGHT
-                                                              : m_currency.calculateUpgradeHeight (
-                        m_votingCompleteHeight);
+            if (mCurrency.upgradeHeight (mTargetVersion) == UNDEF_HEIGHT) {
+                return mVotingCompleteHeight == UNDEF_HEIGHT ? UNDEF_HEIGHT
+                                                              : mCurrency.calculateUpgradeHeight (mVotingCompleteHeight);
             } else {
-                return m_currency.upgradeHeight (m_targetVersion);
+                return mCurrency.upgradeHeight (mTargetVersion);
             }
         }
 
         void blockPushed()
         {
-            assert(!m_blockchain.empty ());
+            assert(!mBlockchain.empty ());
 
-            if (m_currency.upgradeHeight (m_targetVersion) != UNDEF_HEIGHT) {
-                if (m_blockchain.size () <= m_currency.upgradeHeight (m_targetVersion) + 1) {
-                    assert(m_blockchain.back ().bl.majorVersion <= m_targetVersion - 1);
+            bool r = !Tools::isLmdb();
+
+            if (mCurrency.upgradeHeight (mTargetVersion) != UNDEF_HEIGHT) {
+                if (HEIGHT <= mCurrency.upgradeHeight (mTargetVersion) + 1) {
+                    assert((r ? mBlockchain.back().bl.majorVersion :
+                            db.getTopBlock().majorVersion) <= mTargetVersion - 1);
                 } else {
-                    assert(m_blockchain.back ().bl.majorVersion >= m_targetVersion);
+                    assert((r ? mBlockchain.back().bl.majorVersion :
+                            db.getTopBlock().majorVersion) >= mTargetVersion);
                 }
-            } else if (m_votingCompleteHeight != UNDEF_HEIGHT) {
-                assert(m_blockchain.size () > m_votingCompleteHeight);
+            } else if (mVotingCompleteHeight != UNDEF_HEIGHT) {
+                assert(HEIGHT > mVotingCompleteHeight);
 
-                if (m_blockchain.size () <= upgradeHeight ()) {
-                    assert(m_blockchain.back ().bl.majorVersion == m_targetVersion - 1);
+                if (HEIGHT <= upgradeHeight ()) {
+                    assert(mBlockchain.back ().bl.majorVersion == mTargetVersion - 1);
 
-                    if (m_blockchain.size () % (60 * 60 / m_currency.difficultyTarget ()) == 0) {
-                        auto interval = m_currency.difficultyTarget () *
-                                        (upgradeHeight () - m_blockchain.size () + 2);
+                    if (HEIGHT % (60 * 60 / mCurrency.difficultyTarget ()) == 0) {
+                        auto interval = mCurrency.difficultyTarget () *
+                                        (upgradeHeight () - HEIGHT + 2);
                         time_t upgradeTimestamp = time (nullptr) + static_cast<time_t>(interval);
                         struct tm *upgradeTime = localtime (&upgradeTimestamp);;
                         char upgradeTimeStr[40];
                         strftime (upgradeTimeStr, 40, "%H:%M:%S %Y.%m.%d", upgradeTime);
-                        CryptoNote::CachedBlock cachedBlock (m_blockchain.back ().bl);
+                        CryptoNote::CachedBlock cachedBlock (r ? mBlockchain.back ().bl : db.getTopBlockHash());
 
                         logger (Logging::TRACE, Logging::BRIGHT_GREEN)
                             << "###### UPGRADE is going to happen after block index "
@@ -203,29 +215,30 @@ namespace CryptoNote {
                             << " (in "
                             << Common::timeIntervalToString (interval)
                             << ")! Current last block index "
-                            << (m_blockchain.size () - 1)
+                            << (mBlockchain.size () - 1)
                             << ", hash "
                             << cachedBlock.getBlockHash ();
                     }
-                } else if (m_blockchain.size () == upgradeHeight () + 1) {
-                    assert(m_blockchain.back ().bl.majorVersion == m_targetVersion - 1);
+                } else if (HEIGHT == upgradeHeight() + 1) {
+                    assert((r ? mBlockchain.back().bl.majorVersion :
+                                db.getTopBlock().majorVersion) == mTargetVersion - 1);
 
                     logger (Logging::TRACE, Logging::BRIGHT_GREEN)
                         << "###### UPGRADE has happened! Starting from block index "
                         << (upgradeHeight () + 1)
                         << " blocks with major version below "
-                        << static_cast<int>(m_targetVersion)
+                        << static_cast<int>(mTargetVersion)
                         << " will be rejected!";
                 } else {
-                    assert(m_blockchain.back ().bl.majorVersion == m_targetVersion);
+                    assert(mBlockchain.back ().bl.majorVersion == mTargetVersion);
                 }
             } else {
-                uint32_t lastBlockHeight = static_cast<uint32_t>(m_blockchain.size () - 1);
+                uint32_t lastBlockHeight = HEIGHT - 1;
                 if (isVotingComplete (lastBlockHeight)) {
-                    m_votingCompleteHeight = lastBlockHeight;
+                    mVotingCompleteHeight = lastBlockHeight;
                     logger (Logging::TRACE, Logging::BRIGHT_GREEN)
                         << "###### UPGRADE voting complete at block index "
-                        << m_votingCompleteHeight
+                        << mVotingCompleteHeight
                         << "! UPGRADE is going to happen after block index "
                         << upgradeHeight ()
                         << "!";
@@ -235,32 +248,36 @@ namespace CryptoNote {
 
         void blockPopped()
         {
-            if (m_votingCompleteHeight != UNDEF_HEIGHT) {
-                assert(m_currency.upgradeHeight (m_targetVersion) == UNDEF_HEIGHT);
+            bool r = !Tools::isLmdb();
 
-                if (m_blockchain.size () == m_votingCompleteHeight) {
+            if (mVotingCompleteHeight != UNDEF_HEIGHT) {
+                assert(mCurrency.upgradeHeight (mTargetVersion) == UNDEF_HEIGHT);
+
+                if (mBlockchain.size () == mVotingCompleteHeight) {
                     logger (Logging::TRACE, Logging::BRIGHT_YELLOW)
                         << "###### UPGRADE after block index "
                         << upgradeHeight ()
                         << " has been canceled!";
 
-                    m_votingCompleteHeight = UNDEF_HEIGHT;
+                    mVotingCompleteHeight = UNDEF_HEIGHT;
                 } else {
-                    assert(m_blockchain.size () > m_votingCompleteHeight);
+                    assert(mBlockchain.size () > mVotingCompleteHeight);
                 }
             }
         }
 
         size_t getNumberOfVotes(uint32_t height)
         {
-            if (height < m_currency.upgradeVotingWindow () - 1) {
+            bool r = !Tools::isLmdb();
+
+            if (height < mCurrency.upgradeVotingWindow () - 1) {
                 return 0;
             }
 
             size_t voteCounter = 0;
-            for (size_t i = height + 1 - m_currency.upgradeVotingWindow (); i <= height; ++i) {
-                const auto &b = m_blockchain[i].bl;
-                voteCounter += (b.majorVersion == m_targetVersion - 1) &&
+            for (size_t i = height + 1 - mCurrency.upgradeVotingWindow (); i <= height; ++i) {
+                const auto &b = (r ? mBlockchain[i].bl : db.getBlockFromHeight(i));
+                voteCounter += (b.majorVersion == mTargetVersion - 1) &&
                                (b.minorVersion == BLOCK_MINOR_VERSION_1) ? 1 : 0;
             }
 
@@ -270,12 +287,10 @@ namespace CryptoNote {
     private:
         uint32_t findVotingCompleteHeight(uint32_t probableUpgradeHeight)
         {
-            assert(m_currency.upgradeHeight (m_targetVersion) == UNDEF_HEIGHT);
+            assert(mCurrency.upgradeHeight (mTargetVersion) == UNDEF_HEIGHT);
 
-            uint32_t probableVotingCompleteHeight = probableUpgradeHeight >
-                                                    m_currency.maxUpgradeDistance () ?
-                                                    probableUpgradeHeight -
-                                                    m_currency.maxUpgradeDistance () : 0;
+            uint32_t probableVotingCompleteHeight = probableUpgradeHeight > mCurrency.maxUpgradeDistance () ?
+                                                    probableUpgradeHeight - mCurrency.maxUpgradeDistance () : 0;
             for (uint32_t i = probableVotingCompleteHeight; i <= probableUpgradeHeight; ++i) {
                 if (isVotingComplete (i)) {
                     return i;
@@ -287,20 +302,22 @@ namespace CryptoNote {
 
         bool isVotingComplete(uint32_t height)
         {
-            assert(m_currency.upgradeHeight (m_targetVersion) == UNDEF_HEIGHT);
-            assert(m_currency.upgradeVotingWindow () > 1);
-            assert(m_currency.upgradeVotingThreshold () > 0 && m_currency.upgradeVotingThreshold () <= 100);
+            assert(mCurrency.upgradeHeight (mTargetVersion) == UNDEF_HEIGHT);
+            assert(mCurrency.upgradeVotingWindow () > 1);
+            assert(mCurrency.upgradeVotingThreshold () > 0 &&
+                   mCurrency.upgradeVotingThreshold () <= 100);
 
             size_t voteCounter = getNumberOfVotes (height);
-            return m_currency.upgradeVotingThreshold () *
-                   m_currency.upgradeVotingWindow () <= 100 * voteCounter;
+            return mCurrency.upgradeVotingThreshold () *
+                   mCurrency.upgradeVotingWindow () <= 100 * voteCounter;
         }
 
     private:
         Logging::LoggerRef logger;
-        const Currency &m_currency;
-        BC &m_blockchain;
-        uint8_t m_targetVersion;
-        uint32_t m_votingCompleteHeight;
+        const Currency &mCurrency;
+        BlockchainDB &db;
+        BC &mBlockchain;
+        uint8_t mTargetVersion;
+        uint32_t mVotingCompleteHeight;
     };
 } // namespace CryptoNote
