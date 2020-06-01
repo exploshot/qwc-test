@@ -343,7 +343,7 @@ namespace CryptoNote {
         m_db.set_mapsize (mapsize);
     }
 
-    std::unique_ptr<IMainChainStorage> createSwappedMainChainStorageLmdb(const std::string &dataDir,
+    std::unique_ptr<IMainChainStorage> createMainChainStorageLmdb(const std::string &dataDir,
                                                                          const Currency &currency)
     {
         fs::path blocksFilename = fs::path (dataDir) / currency.blocksFileName ();

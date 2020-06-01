@@ -59,6 +59,6 @@ namespace CryptoNote {
         fs::path m_dbpath;
     };
 
-    std::unique_ptr<IMainChainStorage> createSwappedMainChainStorageLmdb(const std::string &dataDir,
+    std::unique_ptr<IMainChainStorage> createMainChainStorageLmdb(const std::string &dataDir,
                                                                          const Currency &currency);
 } // namespace CryptoNote
