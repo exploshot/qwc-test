@@ -21,8 +21,10 @@
 namespace CryptoNote {
 
     MemoryBlockchainCacheFactory::MemoryBlockchainCacheFactory(const std::string &filename,
+                                                               TxMemoryPool &txMemPool,
                                                                std::shared_ptr<Logging::ILogger> logger)
-        : filename (filename),
+        : mTxMemPool (txMemPool),
+          filename (filename),
           logger (logger)
     {
     }
@@ -43,6 +45,7 @@ namespace CryptoNote {
     {
         return std::unique_ptr<IBlockchainCache> (new BlockchainCache (filename,
                                                                        currency,
+                                                                       mTxMemPool,
                                                                        logger,
                                                                        parent,
                                                                        startIndex));

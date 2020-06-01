@@ -27,6 +27,7 @@ namespace CryptoNote {
     {
     public:
         MemoryBlockchainCacheFactory(const std::string &filename,
+                                     TxMemoryPool &txMemPool,
                                      std::shared_ptr<Logging::ILogger> logger);
         virtual ~MemoryBlockchainCacheFactory() override;
 
@@ -36,6 +37,9 @@ namespace CryptoNote {
                                                                 uint32_t startIndex = 0) override;
 
     private:
+        BlockchainDB *mDb;
+        Hardfork *mHf;
+        TxMemoryPool &mTxMemPool;
         std::string filename;
         std::shared_ptr<Logging::ILogger> logger;
     };

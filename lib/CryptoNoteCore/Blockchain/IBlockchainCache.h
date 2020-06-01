@@ -29,11 +29,13 @@
 #include <CryptoNoteCore/Blockchain/CachedBlock.h>
 #include <CryptoNoteCore/Transactions/CachedTransaction.h>
 #include <CryptoNoteCore/Transactions/TransactionValidationState.h>
+#include <CryptoNoteCore/VerificationContext.h>
+
+#include <Serialization/ISerializer.h>
 
 namespace CryptoNote {
 
     class ITransactionPool;
-    class ISerializer;
 
     struct CachedBlockInfo;
     struct CachedTransactionInfo;
@@ -106,6 +108,7 @@ namespace CryptoNote {
         virtual std::unique_ptr<IBlockchainCache> split(uint32_t splitBlockIndex) = 0;
         virtual void pushBlock(const CachedBlock &cachedBlock,
                                const std::vector<CachedTransaction> &cachedTransactions,
+                               BlockVerificationContext &bVC,
                                const TransactionValidatorState &validatorState,
                                size_t blockSize,
                                uint64_t generatedCoins,
@@ -251,5 +254,62 @@ namespace CryptoNote {
 
         virtual std::vector<RawBlock> getNonEmptyBlocks(const uint64_t startHeight,
                                                         const size_t blockCount) const = 0;
+
+        struct TransactionIndex
+        {
+            uint32_t block;
+            uint16_t transaction;
+
+            void serialize(ISerializer &s)
+            {
+                s(block, "block");
+                s(transaction, "tx");
+            }
+        };
+
+        struct MultisignatureOutputUsage
+        {
+            TransactionIndex transactionIndex;
+            uint16_t outputIndex;
+            bool isUsed;
+
+            void serialize(ISerializer &s)
+            {
+                s(transactionIndex, "txindex");
+                s(outputIndex, "outindex");
+                s(isUsed, "used");
+            }
+        };
+
+        struct TransactionEntry
+        {
+            Transaction tx;
+            std::vector<uint32_t> mGlobalOutputIndexes;
+
+            void serialize(ISerializer &s)
+            {
+                s(tx, "tx");
+                s(mGlobalOutputIndexes, "indexes");
+            }
+        };
+
+        struct BlockEntry
+        {
+            Block bl;
+            uint32_t height;
+            uint64_t blockCumulativeSize;
+            uint64_t cumulativeDifficulty;
+            uint64_t alreadyGeneratedCoins;
+            std::vector<TransactionEntry> transactions;
+
+            void serialize(ISerializer &s)
+            {
+                s(bl, "block");
+                s(height, "height");
+                s(blockCumulativeSize, "blockCumulativeSize");
+                s(alreadyGeneratedCoins, "alreadyGeneratedCoins");
+                s(transactions, "transactions");
+            }
+        };
     };
 } //namespace CryptoNote
