@@ -73,6 +73,11 @@ namespace CryptoNote {
             return m_timestampCheckWindow;
         }
 
+        uint64_t blockFutureTimeLimit() const
+        {
+            return m_blockFutureTimeLimit;
+        }
+
         uint64_t blockFutureTimeLimit(uint32_t blockHeight) const
         {
             if (blockHeight >= CryptoNote::parameters::LWMA_2_DIFFICULTY_BLOCK_INDEX_V3) {
