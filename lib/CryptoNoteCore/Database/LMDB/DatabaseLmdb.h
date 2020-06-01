@@ -172,10 +172,11 @@ namespace CryptoNote {
         virtual uint64_t getBlockCumulativeDifficulty(const uint64_t &height) const;
         virtual uint64_t getBlockDifficulty(const uint64_t &height) const;
         virtual uint64_t getBlockAlreadyGeneratedCoins(const uint64_t &height) const;
+        virtual uint64_t getBlockAlreadyGeneratedTransactions(const uint64_t &height) const;
         virtual Crypto::Hash getBlockHashFromHeight(const uint64_t &height) const;
         virtual std::vector<CryptoNote::Block> getBlocksRange(const uint64_t &h1, const uint64_t &h2) const;
         virtual std::vector<Crypto::Hash> getHashesRange(const uint64_t &h1, const uint64_t &h2) const;
-        virtual Crypto::Hash topBlockHash() const;
+        virtual Crypto::Hash getTopBlockHash() const;
         virtual CryptoNote::Block getTopBlock() const;
         virtual uint64_t height() const;
         virtual bool txExists(const Crypto::Hash &h) const;
@@ -231,6 +232,7 @@ namespace CryptoNote {
                                   const size_t &blockSize,
                                   const uint64_t &cumulativeDifficulty,
                                   const uint64_t &coinsGenerated,
+                                  const uint64_t &transactionsGenerated,
                                   const std::vector<CryptoNote::Transaction> &txs);
         virtual void setBatchTransactions(bool batchTransactions);
         virtual bool batchStart(uint64_t batchNumBlocks=0, uint64_t batchBytes=0);
@@ -247,6 +249,8 @@ namespace CryptoNote {
         {
             return true;
         }
+
+        virtual void removeSpentKeys(std::vector<Crypto::KeyImage> &kImages);
 
         /*!
          * @brief return a histogram of outputs on the blockchain
@@ -269,6 +273,7 @@ namespace CryptoNote {
                               const size_t &blockSize,
                               const uint64_t &cumulativeDifficulty,
                               const uint64_t &coinsGenerated,
+                              const uint64_t &transactionsGenerated,
                               const Crypto::Hash &blockHash);
         virtual void removeBlock();
         virtual uint64_t addTransactionData(const Crypto::Hash &blockHash,

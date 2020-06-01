@@ -244,6 +244,7 @@ namespace CryptoNote {
         uint64_t biHeight;
         uint64_t biTimestamp;
         uint64_t biCoins;
+        uint64_t biTransactions;
         uint64_t biSize;
         uint64_t biDiff;
         Crypto::Hash biHash;
@@ -500,6 +501,7 @@ namespace CryptoNote {
                                   const size_t &blockSize,
                                   const uint64_t &cumulativeDifficulty,
                                   const uint64_t &coinsGenerated,
+                                  const uint64_t &transactionsGenerated,
                                   const Crypto::Hash &blockHash)
     {
         checkOpen();
@@ -544,12 +546,13 @@ namespace CryptoNote {
             }
 
             mdbBlockInfo bI;
-            bI.biHeight     = mHeight;
-            bI.biTimestamp  = block.timestamp;
-            bI.biCoins      = coinsGenerated;
-            bI.biSize       = blockSize;
-            bI.biDiff       = cumulativeDifficulty;
-            bI.biHash       = blockHash;
+            bI.biHeight         = mHeight;
+            bI.biTimestamp      = block.timestamp;
+            bI.biCoins          = coinsGenerated;
+            bI.biTransactions   = transactionsGenerated;
+            bI.biSize           = blockSize;
+            bI.biDiff           = cumulativeDifficulty;
+            bI.biHash           = blockHash;
 
             MDBValSet(val, bI);
             result = mdb_cursor_put(mCurBlockInfo, (MDB_val *)&zeroKVal, &val, MDB_APPENDDUP);
@@ -1855,6 +1858,30 @@ namespace CryptoNote {
         return ret;
     }
 
+    uint64_t BlockchainLMDB::getBlockAlreadyGeneratedTransactions(const uint64_t &height) const
+    {
+        checkOpen();
+
+        TXN_PREFIX_RDONLY();
+        RCURSOR(BlockInfo);
+
+        MDBValSet(result, height);
+        auto getResult = mdb_cursor_get(mCurBlockInfo, (MDB_val *)&zeroKVal, &result, MDB_GET_BOTH);
+        if (getResult == MDB_NOTFOUND) {
+            throw(BLOCK_DNE(std::string("Attempt to get generated transactions from height ")
+                                        .append(boost::lexical_cast<std::string>(height))
+                                        .append(" failed -- block size not in db").c_str()));
+        } else if (getResult) {
+            throw(DB_ERROR("Error attempting to retrieve a total generated transactions from the db"));
+        }
+
+        mdbBlockInfo *bI = (mdbBlockInfo *)result.mv_data;
+        uint64_t ret = bI->biTransactions;
+        TXN_POSTFIX_RDONLY();
+
+        return ret;
+    }
+
     Crypto::Hash BlockchainLMDB::getBlockHashFromHeight(const uint64_t &height) const
     {
         checkOpen ();
@@ -1904,7 +1931,7 @@ namespace CryptoNote {
         return v;
     }
 
-    Crypto::Hash BlockchainLMDB::topBlockHash() const
+    Crypto::Hash BlockchainLMDB::getTopBlockHash() const
     {
         checkOpen ();
         uint64_t mHeight = height () - 1;
@@ -2840,13 +2867,19 @@ namespace CryptoNote {
                                       const size_t &blockSize,
                                       const uint64_t &cumulativeDifficulty,
                                       const uint64_t &coinsGenerated,
+                                      const uint64_t &transactionsGenerated,
                                       const std::vector<CryptoNote::Transaction> &txs)
     {
         checkOpen ();
         uint64_t mHeight = height ();
 
         try {
-            BlockchainDB::addBlock (block, blockSize, cumulativeDifficulty, coinsGenerated, txs);
+            BlockchainDB::addBlock (block,
+                                    blockSize,
+                                    cumulativeDifficulty,
+                                    coinsGenerated,
+                                    transactionsGenerated,
+                                    txs);
         } catch (const DB_ERROR_TXN_START &e) {
             throw;
         } catch (...) {
@@ -2870,6 +2903,13 @@ namespace CryptoNote {
         } catch (...) {
             blockTxnAbort ();
             throw;
+        }
+    }
+
+    void BlockchainLMDB::removeSpentKeys(std::vector<Crypto::KeyImage> &kImages)
+    {
+        for (auto image : kImages) {
+            removeSpentKey(image);
         }
     }
 
