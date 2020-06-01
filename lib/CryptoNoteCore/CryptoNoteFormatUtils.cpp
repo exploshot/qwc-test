@@ -367,10 +367,31 @@ namespace CryptoNote {
         for (auto &input : transaction.inputs) {
             if (input.type () == typeid (KeyInput)) {
                 amount += boost::get<KeyInput> (input).amount;
+            } else if (input.type() == typeid(MultisignatureInput)) {
+                amount += boost::get<MultisignatureInput>(input).amount;
             }
         }
 
         return amount;
+    }
+
+    bool getInputAmount(const Transaction &tx, uint64_t &money)
+    {
+        money = 0;
+
+        for (const auto &in : tx.inputs) {
+            uint64_t amount = 0;
+
+            if (in.type() == typeid(KeyInput)) {
+                amount = boost::get<KeyInput>(in).amount;
+            } else if (in.type() == typeid(MultisignatureInput)) {
+                amount = boost::get<MultisignatureInput>(in).amount;
+            }
+
+            money += amount;
+        }
+
+        return true;
     }
 
     std::vector<uint64_t> getInputsAmounts(const Transaction &transaction)
@@ -463,12 +484,12 @@ namespace CryptoNote {
     }
 
     bool parseAndValidateBlockFromBlob(const CryptoNote::blobData &bBlob,
-                                       CryptoNote::Block &tx)
+                                       CryptoNote::Block &block)
     {
         std::stringstream ss;
         ss << bBlob;
         BinaryArchive<true> bA(ss);
-        bool r = Serial::serialize (bA, tx);
+        bool r = Serial::serialize (bA, block);
         if (!r) {
             return false;
         }

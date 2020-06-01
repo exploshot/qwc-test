@@ -73,6 +73,7 @@ namespace CryptoNote {
     std::vector<uint32_t> absoluteOutputOffsetsToRelative(const std::vector<uint32_t> &off);
 
     uint64_t getInputAmount(const Transaction &transaction);
+    bool getInputAmount(const Transaction &tx, uint64_t &money);
     std::vector<uint64_t> getInputsAmounts(const Transaction &transaction);
     uint64_t getOutputAmount(const Transaction &transaction);
     void decomposeAmount(uint64_t amount, uint64_t dustThreshold, std::vector<uint64_t> &decomposedAmounts);
@@ -128,7 +129,7 @@ namespace CryptoNote {
                                     Crypto::Hash &txHash, Crypto::Hash &txPrefixHash);
     bool parseAndValidateTxFromBlob(const CryptoNote::blobData &txBlob,
                                     CryptoNote::Transaction &tx);
-    bool parseAndValidateBlockFromBlob(const CryptoNote::blobData &bBlob, CryptoNote::Block &tx);
+    bool parseAndValidateBlockFromBlob(const CryptoNote::blobData &bBlob, CryptoNote::Block &block);
 
     CryptoNote::blobData blockToBlob(const CryptoNote::Block &block);
     bool blockToBlob(const CryptoNote::Block &block, CryptoNote::blobData &blob);
