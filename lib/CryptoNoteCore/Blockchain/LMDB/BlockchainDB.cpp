@@ -109,6 +109,7 @@ namespace CryptoNote {
                                     const size_t &blockSize,
                                     const uint64_t &cumulativeDifficulty,
                                     const uint64_t &coinsGenerated,
+                                    const uint64_t &transactionsGenerated,
                                     const std::vector<CryptoNote::Transaction> &txs)
     {
         blockTxnStart(false);
@@ -132,7 +133,7 @@ namespace CryptoNote {
         /*!
          * call out to subclass implementation to add the block & metadata
          */
-        addBlock(block, blockSize, cumulativeDifficulty, coinsGenerated, blkHash);
+        addBlock(block, blockSize, cumulativeDifficulty, coinsGenerated, transactionsGenerated, blkHash);
 
         mHardfork->add(block, prevHeight);
 

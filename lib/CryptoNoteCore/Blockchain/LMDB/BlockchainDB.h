@@ -271,6 +271,7 @@ namespace CryptoNote {
 
     class BlockchainDB
     {
+
     private:
         /*!
          * private virtual members
@@ -296,6 +297,7 @@ namespace CryptoNote {
                               const size_t &blockSize,
                               const uint64_t &cumulativeDifficulty,
                               const uint64_t &coinsGenerated,
+                              const uint64_t &transactionsGenerated,
                               const Crypto::Hash &blockHash) = 0;
 
         /*!
@@ -307,6 +309,7 @@ namespace CryptoNote {
          *                        const size_t &blockSize,
          *                        const uint64_t &cumulativeDifficulty,
          *                        const uint64_t &coinsGenerated,
+         *                        const uint64_t &transactionsGenerated,
          *                        const Crypto::Hash &blockHash)
          *
          * If any of this cannot be done, the subclass should throw the corresponding
@@ -442,14 +445,6 @@ namespace CryptoNote {
         void popBlock();
 
         // helper function to remove transaction from blockchain
-        /*!
-         * @brief helper function to remove transaction from the blockchain
-         *
-         * This function encapsulates aspects of removing a transaction.
-         *
-         * @param txHash the hash of the transaction to be removed
-         */
-        void removeTransaction(const Crypto::Hash &txHash);
 
         /*!
          * a performance metric
@@ -484,7 +479,7 @@ namespace CryptoNote {
         virtual void doResize();
         friend class BlockchainLMDB;
 
-        BlockchainDB() : mOpen(false) {};
+        BlockchainDB() : mOpen(false) {}
 
         /*!
          * @brief An empty destructor
@@ -720,6 +715,7 @@ namespace CryptoNote {
                                   const size_t &blockSize,
                                   const uint64_t &cumulativeDifficulty,
                                   const uint64_t &coinsGenerated,
+                                  const uint64_t &transactionsGenerated,
                                   const std::vector<CryptoNote::Transaction> &txs);
 
         /*!
@@ -891,6 +887,20 @@ namespace CryptoNote {
         virtual uint64_t getBlockAlreadyGeneratedCoins(const uint64_t &height) const = 0;
 
         /*!
+         * @brief fetch a block's already generated transactions
+         *
+         * The subclass should return the total transactions generated as of the block
+         * with the given height.
+         *
+         * If the block does not exist, the subclass should throw BLOCK_DNE
+         *
+         * @param height    the height requested
+         *
+         * @return the already generated transactions
+         */
+        virtual uint64_t getBlockAlreadyGeneratedTransactions(const uint64_t &height) const = 0;
+
+        /*!
          * @brief fetch a block's hash
          *
          * The subclass should return hash of the block with the
@@ -945,7 +955,7 @@ namespace CryptoNote {
          *
          * @return the top block's hash
          */
-        virtual Crypto::Hash topBlockHash() const = 0;
+        virtual Crypto::Hash getTopBlockHash() const = 0;
 
         /*!
          * @brief fetch the top block
@@ -1467,6 +1477,14 @@ namespace CryptoNote {
 
         bool mOpen; //!< Whether or not the BlockchainDB is open/ready for use
         mutable std::recursive_mutex mSynchronizationLock;  //!< A lock, currently for when BlockchainLMDB needs to resize the backing db file
+        /*!
+         * @brief helper function to remove transaction from the blockchain
+         *
+         * This function encapsulates aspects of removing a transaction.
+         *
+         * @param txHash the hash of the transaction to be removed
+         */
+        void removeTransaction(const Crypto::Hash &txHash);
     }; // class BlockchainDB
 
     BlockchainDB *newDB(const std::string &DBType);
