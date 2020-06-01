@@ -33,6 +33,7 @@
 
 #include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
 #include <CryptoNoteCore/Blockchain/IBlockchainCache.h>
+#include <CryptoNoteCore/Transactions/TransactionPool.h>
 #include <CryptoNoteCore/Currency.h>
 #include <CryptoNoteCore/UpgradeManager.h>
 
@@ -108,7 +109,8 @@ namespace CryptoNote {
     public:
         BlockchainCache(const std::string &filename,
                         const Currency &currency,
-                        std::shared_ptr<Logging::ILogger> logger,
+                        TxMemoryPool &txMemPool,
+                        std::shared_ptr<Logging::ILogger> logger_,
                         IBlockchainCache *parent,
                         uint32_t startIndex = 0);
 
@@ -119,6 +121,7 @@ namespace CryptoNote {
         std::unique_ptr<IBlockchainCache> split(uint32_t splitBlockIndex) override;
         virtual void pushBlock(const CachedBlock &cachedBlock,
                                const std::vector<CachedTransaction> &cachedTransactions,
+                               BlockVerificationContext &bVC,
                                const TransactionValidatorState &validatorState,
                                size_t blockSize,
                                uint64_t generatedCoins,
@@ -263,6 +266,7 @@ namespace CryptoNote {
         getNonEmptyBlocks(const uint64_t startHeight,
                           const size_t blockCount) const override;
 
+        TxMemoryPool &mTxMemPool;
     private:
         struct BlockIndexTag
         {
@@ -457,6 +461,7 @@ namespace CryptoNote {
 
         void doPushBlock(const CachedBlock &cachedBlock,
                          const std::vector<CachedTransaction> &cachedTransactions,
+                         BlockVerificationContext &bVC,
                          const TransactionValidatorState &validatorState,
                          size_t blockSize,
                          uint64_t generatedCoins,

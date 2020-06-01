@@ -30,10 +30,10 @@
 #include <Common/StdInputStream.h>
 #include <Common/StdOutputStream.h>
 #include <Common/ShuffleGenerator.h>
-#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 
 #include <CryptoNoteCore/Blockchain/BlockchainCache.h>
 #include <CryptoNoteCore/Blockchain/BlockchainStorage.h>
+#include <CryptoNoteCore/Transactions/TransactionExtra.h>
 #include <CryptoNoteCore/Transactions/TransactionValidationState.h>
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 
@@ -42,9 +42,6 @@
 
 namespace CryptoNote {
 
-#define HEIGHT_COND (r ? mBlocks.size() : mDb->height())
-#define DB_TX_START if (Tools::getDefaultDbType() == "lmdb") { mDb->blockTxnStart(true); }
-#define DB_TX_STOP if (Tools::getDefaultDbType() == "lmdb" {mDb->blockTxnStop(); })
 
 
     namespace {
@@ -99,40 +96,40 @@ namespace CryptoNote {
 
     void SpentKeyImage::serialize(ISerializer &s)
     {
-        s (blockIndex, "block_index");
-        s (keyImage, "key_image");
+        s (blockIndex, "blockIndex");
+        s (keyImage, "keyImage");
     }
 
     void CachedTransactionInfo::serialize(ISerializer &s)
     {
-        s (blockIndex, "block_index");
-        s (transactionIndex, "transaction_index");
-        s (transactionHash, "transaction_hash");
-        s (unlockTime, "unlock_time");
+        s (blockIndex, "blockIndex");
+        s (transactionIndex, "transactionIndex");
+        s (transactionHash, "transactionHash");
+        s (unlockTime, "unlockTime");
         s (outputs, "outputs");
-        s (globalIndexes, "global_indexes");
+        s (globalIndexes, "globalIndexes");
     }
 
     void CachedBlockInfo::serialize(ISerializer &s)
     {
-        s (blockHash, "block_hash");
+        s (blockHash, "blockHash");
         s (timestamp, "timestamp");
-        s (blockSize, "block_size");
-        s (cumulativeDifficulty, "cumulative_difficulty");
-        s (alreadyGeneratedCoins, "already_generated_coins");
-        s (alreadyGeneratedTransactions, "already_generated_transaction_count");
+        s (blockSize, "blockSize");
+        s (cumulativeDifficulty, "cumulativeDifficulty");
+        s (alreadyGeneratedCoins, "alreadyGeneratedCoins");
+        s (alreadyGeneratedTransactions, "alreadyGeneratedTransactions");
     }
 
     void OutputGlobalIndexesForAmount::serialize(ISerializer &s)
     {
-        s (startIndex, "start_index");
+        s (startIndex, "startIndex");
         s (outputs, "outputs");
     }
 
     void PaymentIdTransactionHashPair::serialize(ISerializer &s)
     {
-        s (paymentId, "payment_id");
-        s (transactionHash, "transaction_hash");
+        s (paymentId, "paymentId");
+        s (transactionHash, "transactionHash");
     }
 
     bool serialize(PackedOutIndex &value,
@@ -144,10 +141,12 @@ namespace CryptoNote {
 
     BlockchainCache::BlockchainCache(const std::string &filename,
                                      const Currency &currency,
+                                     TxMemoryPool &txMemPool,
                                      std::shared_ptr<Logging::ILogger> logger_,
                                      IBlockchainCache *parent,
                                      uint32_t splitBlockIndex)
-        : filename (filename),
+        : mTxMemPool(txMemPool),
+          filename (filename),
           currency (currency),
           logger (logger_, "BlockchainCache"),
           parent (parent),
@@ -173,7 +172,10 @@ namespace CryptoNote {
 
             std::vector<CachedTransaction> cachedTransactions;
             TransactionValidatorState validatorState;
-            doPushBlock (genesisBlock, cachedTransactions,
+            BlockVerificationContext bVC = boost::value_initialized<BlockVerificationContext>();
+            doPushBlock (genesisBlock,
+                         cachedTransactions,
+                         bVC,
                          validatorState,
                          coinbaseTransactionSize,
                          minerReward,
@@ -193,6 +195,7 @@ namespace CryptoNote {
 
     void BlockchainCache::pushBlock(const CachedBlock &cachedBlock,
                                     const std::vector<CachedTransaction> &cachedTransactions,
+                                    BlockVerificationContext &bVC,
                                     const TransactionValidatorState &validatorState,
                                     size_t blockSize,
                                     uint64_t generatedCoins,
@@ -204,6 +207,7 @@ namespace CryptoNote {
         */
         doPushBlock (cachedBlock,
                      cachedTransactions,
+                     bVC,
                      validatorState,
                      blockSize,
                      generatedCoins,
@@ -213,6 +217,7 @@ namespace CryptoNote {
 
     void BlockchainCache::doPushBlock(const CachedBlock &cachedBlock,
                                       const std::vector<CachedTransaction> &cachedTransactions,
+                                      BlockVerificationContext &bVC,
                                       const TransactionValidatorState &validatorState,
                                       size_t blockSize,
                                       uint64_t generatedCoins,
@@ -367,6 +372,7 @@ namespace CryptoNote {
         std::unique_ptr<BlockchainCache> newCache (
             new BlockchainCache (filename,
                                  currency,
+                                 mTxMemPool,
                                  logger.getLogger (),
                                  this,
                                  splitBlockIndex));
