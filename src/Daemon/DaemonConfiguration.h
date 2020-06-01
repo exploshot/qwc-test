@@ -44,6 +44,8 @@ namespace DaemonConfig {
                 << "d.log";
 
             dataDirectory = Tools::getDefaultDataDirectory ();
+            dbType = Tools::getDefaultDbType();
+            dbSyncMode = Tools::getDefaultDbSyncMode();
             checkPoints = "default";
             logFile = logfile.str ();
             logLevel = Logging::WARNING;
@@ -60,6 +62,7 @@ namespace DaemonConfig {
             rpcPort = CryptoNote::RPC_DEFAULT_PORT;
             noConsole = false;
             enableBlockExplorer = false;
+            enableBlockIndices = false;
             localIp = false;
             hideMyPort = false;
             p2pResetPeerstate = false;
@@ -75,6 +78,8 @@ namespace DaemonConfig {
         }
 
         std::string dataDirectory;
+        std::string dbType;
+        std::string dbSyncMode;
         std::string logFile;
         std::string feeAddress;
         std::string rpcInterface;
@@ -102,6 +107,7 @@ namespace DaemonConfig {
 
         bool noConsole;
         bool enableBlockExplorer;
+        bool enableBlockIndices;
         bool localIp;
         bool hideMyPort;
         bool resync;
