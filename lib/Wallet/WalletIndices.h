@@ -83,9 +83,7 @@ namespace CryptoNote {
     struct TransactionHashIndex
     {
     };
-    struct TransactionIndex
-    {
-    };
+    struct TransactionIndex {};
     struct BlockHashIndex
     {
     };
