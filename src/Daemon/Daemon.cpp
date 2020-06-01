@@ -273,6 +273,7 @@ int main(int argc, char *argv[])
                 << std::endl;
             return 1;
         }
+        std::unique_ptr<BlockchainDB> fakeDb(newDB(Tools::getDefaultDbType()));
         CryptoNote::Currency currency = currencyBuilder.currency ();
 
         /*!
@@ -287,7 +288,7 @@ int main(int argc, char *argv[])
             std::unique_ptr<IMainChainStorage> mainChainStorage;
 
             if (config.useLmdbForLocalCaches) {
-                mainChainStorage = createSwappedMainChainStorageLmdb (config.dataDirectory, currency);
+                mainChainStorage = createMainChainStorageLmdb(config.dataDirectory, currency);
             } else {
                 mainChainStorage = createSwappedMainChainStorage (config.dataDirectory, currency);
             }
@@ -353,22 +354,26 @@ int main(int argc, char *argv[])
             throw std::runtime_error ("Can't create directory: " + dbConfig.getDataDir ());
         }
 
+        // replace from here
+        /*
         LmDBWrapper database (logManager);
         database.init (dbConfig);
-        Tools::ScopeExit dbShutdownOnExit ([&database]()
+        Tools::ScopeExit dbShutdownOnExit ([&fakeDb]()
                                            {
-                                               database.shutdown ();
+                                               fakeDb.shutdown ();
                                            });
 
-        if (!DatabaseBlockchainCache::checkDBSchemeVersion (database, logManager)) {
+        if (!DatabaseBlockchainCache::checkDBSchemeVersion (fakeDb, logManager)) {
             dbShutdownOnExit.cancel ();
-            database.shutdown ();
+            fakeDb.shutdown ();
 
-            database.destroy (dbConfig);
+            fakeDb.destroy (dbConfig);
 
-            database.init (dbConfig);
+            fakeDb.init (dbConfig);
             dbShutdownOnExit.resume ();
         }
+        */
+        // to here
 
         System::Dispatcher dispatcher;
         logger (INFO)
@@ -376,19 +381,23 @@ int main(int argc, char *argv[])
 
         std::unique_ptr<IMainChainStorage> tMainChainStorage;
         if (config.useLmdbForLocalCaches) {
-            tMainChainStorage = createSwappedMainChainStorageLmdb (config.dataDirectory, currency);
+            tMainChainStorage = createMainChainStorageLmdb(config.dataDirectory, currency);
         } else {
             tMainChainStorage = createSwappedMainChainStorage (config.dataDirectory, currency);
         }
 
-        CryptoNote::Core ccore (
-            currency,
-            logManager,
-            std::move (checkpoints),
-            dispatcher,
-            std::unique_ptr<IBlockchainCacheFactory> (new DatabaseBlockchainCacheFactory (database,
-                                                                                          logger.getLogger ())),
-            std::move (tMainChainStorage)
+
+        CryptoNote::Core ccore (fakeDb,
+                                nullptr,
+                                currency,
+                                logManager,
+                                std::move (checkpoints),
+                                dispatcher,
+                                std::unique_ptr<IBlockchainCacheFactory> (
+                                       new DatabaseBlockchainCacheFactory (fakeDb,
+                                                                           logger.getLogger ())),
+                                std::move (tMainChainStorage),
+                                config.enableBlockIndices
         );
 
         ccore.load ();
